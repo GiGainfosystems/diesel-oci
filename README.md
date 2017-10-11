@@ -1,6 +1,6 @@
 # Diesel-oci
 
-A backend implementation for [diesel](https://github.com/diesel-rs/diesel) for oracle sql database. **This crate is currently functional and only a prove of concept**.
+A backend implementation for [diesel](https://github.com/diesel-rs/diesel) for oracle sql database. **This crate is currently functional and only a proof of concept**.
 
 ## Status:
 

@@ -3,6 +3,7 @@ use diesel::query_builder::bind_collector::RawBytesBindCollector;
 use diesel::backend::UsesAnsiSavepointSyntax;
 use oracle::types::OCIDataType;
 use byteorder::NativeEndian;
+use diesel::sql_types::TypeMetadata;
 
 use super::query_builder::OciQueryBuilder;
 

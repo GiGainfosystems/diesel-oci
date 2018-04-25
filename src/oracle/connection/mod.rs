@@ -2,8 +2,8 @@ use std::rc::Rc;
 use diesel::connection::{SimpleConnection, Connection, MaybeCached};
 use diesel::result::*;
 use diesel::query_builder::{AsQuery, QueryFragment};
-use diesel::types::HasSqlType;
-use diesel::query_source::Queryable;
+use diesel::sql_types::HasSqlType;
+use diesel::deserialize::{Queryable, QueryableByName};
 use diesel::query_builder::QueryId;
 use diesel::query_builder::bind_collector::RawBytesBindCollector;
 use diesel::connection::StatementCache;
@@ -71,10 +71,10 @@ impl Connection for OciConnection {
         Ok(try!(stmt.get_affected_rows()))
     }
 
-    #[doc(hidden)]
+    /*#[doc(hidden)]
     fn silence_notices<F: FnOnce() -> T, T>(&self, f: F) -> T {
         f()
-    }
+    }*/
 
     fn transaction_manager(&self) -> &Self::TransactionManager {
         &self.transaction_manager
@@ -94,6 +94,17 @@ impl Connection for OciConnection {
         }
         Ok(ret)
     }
+
+    fn query_by_name<T, U>(&self, source: &T) -> QueryResult<Vec<U>>
+        where
+            T: QueryFragment<Self::Backend> + QueryId,
+            U: QueryableByName<Self::Backend>
+    {
+        let mut ret = Vec::new();
+        Ok(ret)
+    }
+
+
 }
 
 impl OciConnection {

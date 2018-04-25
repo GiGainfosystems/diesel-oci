@@ -2,7 +2,9 @@ extern crate chrono;
 use std::error::Error;
 use std::io::Write;
 
-use diesel::types::*;
+use diesel::sql_types::*;
+use diesel::deserialize::FromSql;
+use diesel::serialize::{ToSql, IsNull, Output};
 
 use oracle::backend::Oracle;
 
@@ -44,7 +46,7 @@ impl FromSql<Timestamp, Oracle> for NaiveDateTime {
 
 impl ToSql<Timestamp, Oracle> for NaiveDateTime {
     fn to_sql<W: Write>(&self,
-                        out: &mut ToSqlOutput<W, Oracle>)
+                        out: &mut Output<W, Oracle>)
                         -> Result<IsNull, Box<Error + Send + Sync>> {
         let year = self.year();
         if year > 0 {
@@ -93,7 +95,7 @@ impl FromSql<Date, Oracle> for NaiveDate {
 
 impl ToSql<Date, Oracle> for NaiveDate {
     fn to_sql<W: Write>(&self,
-                        out: &mut ToSqlOutput<W, Oracle>)
+                        out: &mut Output<W, Oracle>)
                         -> Result<IsNull, Box<Error + Send + Sync>> {
         let year = self.year();
         if year > 0 {

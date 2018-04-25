@@ -22,7 +22,7 @@ version = "0.4"
 
 [dependencies.diesel]
 default-features = false
-version = "0.16"
+version = "1.2.2"
 
 [dependencies.oci-sys]
 path = "oci-sys"

@@ -1,7 +1,9 @@
 use std::error::Error;
 use std::io::Write;
-use diesel::types::*;
+use diesel::sql_types::*;
 use byteorder::{NativeEndian, WriteBytesExt};
+use diesel::deserialize::FromSql;
+use diesel::serialize::{ToSql, IsNull, Output};
 use super::backend::*;
 use oci_sys as ffi;
 
@@ -165,7 +167,7 @@ impl FromSql<Bool, Oracle> for bool {
 }
 
 impl ToSql<Bool, Oracle> for bool {
-    fn to_sql<W: Write>(&self, out: &mut ToSqlOutput<W, Oracle>) -> ToSqlResult {
+    fn to_sql<W: Write>(&self, out: &mut Output<W, Oracle>) -> ToSqlResult {
         out.write_i16::<NativeEndian>(if *self { 1 } else { 0 })
             .map(|_| IsNull::No)
             .map_err(|e| Box::new(e) as ErrorType)

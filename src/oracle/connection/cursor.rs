@@ -1,6 +1,6 @@
 use std::marker::PhantomData;
-use diesel::query_source::Queryable;
-use diesel::types::{HasSqlType, FromSqlRow};
+use diesel::deserialize::{Queryable, FromSqlRow};
+use diesel::sql_types::HasSqlType;
 use diesel::result::QueryResult;
 use diesel::result::Error::DeserializationError;
 use oci_sys as ffi;

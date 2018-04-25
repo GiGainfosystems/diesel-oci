@@ -71,11 +71,6 @@ impl Connection for OciConnection {
         Ok(try!(stmt.get_affected_rows()))
     }
 
-    /*#[doc(hidden)]
-    fn silence_notices<F: FnOnce() -> T, T>(&self, f: F) -> T {
-        f()
-    }*/
-
     fn transaction_manager(&self) -> &Self::TransactionManager {
         &self.transaction_manager
     }
@@ -95,13 +90,12 @@ impl Connection for OciConnection {
         Ok(ret)
     }
 
-    fn query_by_name<T, U>(&self, source: &T) -> QueryResult<Vec<U>>
+    fn query_by_name<T, U>(&self, _source: &T) -> QueryResult<Vec<U>>
         where
             T: QueryFragment<Self::Backend> + QueryId,
             U: QueryableByName<Self::Backend>
     {
-        let mut ret = Vec::new();
-        Ok(ret)
+        unimplemented!()
     }
 
 

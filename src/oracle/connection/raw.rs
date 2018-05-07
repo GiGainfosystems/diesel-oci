@@ -87,29 +87,18 @@ fn parse_db_string(database_url: &str) -> ConnectionResult<(String, String, Stri
         let msg = format!("Could not use {} with oci backend", database_url);
         return Err(ConnectionError::InvalidConnectionUrl(msg));
     }
-    let mut state = ParseState::UserName;
-    let mut user = String::new();
-    let mut password = String::new();
-    let mut db_url = String::from("//");
-    for c in database_url[6..].chars() {
-        match state {
-            ParseState::UserName => {
-                if c == ':' {
-                    state = ParseState::Password;
-                } else {
-                    user.push(c);
-                }
-            }
-            ParseState::Password => {
-                if c == '@' {
-                    state = ParseState::ConnectionString;
-                } else {
-                    password.push(c);
-                }
-            }
-            ParseState::ConnectionString => db_url.push(c),
-        }
-    }
+
+    // example: oci://\"diesel\"/diesel@//192.168.2.81:1521/orcl, c.f. sqplus manual
+
+    let splits: Vec<&str> = database_url.split("//").collect();
+    let userandpw: Vec<&str> = splits[1].split("/").collect();
+    let user = userandpw[0].to_string();
+    let password = unsafe {
+        // discard the @ handle
+        userandpw[1].slice_unchecked(0, userandpw[1].len()-1).to_string()
+    };
+    let db_url = splits[2].to_string();
+
     Ok((user, password, db_url))
 }
 

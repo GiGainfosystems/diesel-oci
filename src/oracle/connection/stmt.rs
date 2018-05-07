@@ -1,12 +1,14 @@
 use diesel::result::*;
+use diesel::result::Error;
 use oci_sys as ffi;
 use libc;
 use std::ptr;
-use std::ffi::CString;
+use std::ffi::{CString, CStr};
 use super::raw::RawConnection;
 use super::cursor::{Cursor, Field};
 use oracle::types::OCIDataType;
 use std::rc::Rc;
+use std::os::raw::{c_char, c_void, c_int};
 
 
 pub struct Statement {
@@ -21,7 +23,7 @@ impl Statement {
         println!("prepare statment {}", sql);
         let stmt = unsafe {
             let mut stmt: *mut ffi::OCIStmt = ptr::null_mut();
-            ffi::OCIStmtPrepare2(raw_connection.service_handle,
+            let status = ffi::OCIStmtPrepare2(raw_connection.service_handle,
                                  &mut stmt,
                                  raw_connection.env.error_handle,
                                  sql.as_ptr(),
@@ -30,6 +32,50 @@ impl Statement {
                                  0,
                                  ffi::OCI_NTV_SYNTAX,
                                  ffi::OCI_DEFAULT);
+
+
+            let mut errbuf: Vec<u8> = Vec::with_capacity(3072);
+            let mut errcode : c_int = 0;
+
+            match status {
+                ffi::OCI_ERROR => {
+
+                    let res = ffi::OCIErrorGet(raw_connection.env.error_handle as *mut c_void,
+                                               1,
+                                               ptr::null_mut(),
+                                               &mut errcode,
+                                               errbuf.as_mut_ptr(),
+                                               errbuf.capacity() as u32,
+                                               ffi::OCI_HTYPE_ERROR);
+
+
+                    let msg = CStr::from_ptr(errbuf.as_ptr() as *const c_char);
+                    errbuf.set_len(msg.to_bytes().len());
+                    return Err(Error::DatabaseError(DatabaseErrorKind::UnableToSendCommand,
+                                         Box::new(format!("OCI_ERROR {:?}", String::from_utf8(errbuf).expect("Invalid UTF-8 from OCIErrorGet") ))));
+
+                },
+                ffi::OCI_INVALID_HANDLE => return Err(Error::DatabaseError(DatabaseErrorKind::UnableToSendCommand,
+                                                                    Box::new(format!("OCI_INVALID_HANDLE: {:?}", errbuf)))),
+                _ => {},
+            }
+
+
+            match sql.to_string().find("CREATE") {
+                Some(u) => if u < 10 {
+                    ffi::OCIStmtPrepare2(raw_connection.service_handle,
+                                         &mut stmt,
+                                         raw_connection.env.error_handle,
+                                         sql.as_ptr(),
+                                         sql.len() as u32,
+                                         ptr::null(),
+                                         0,
+                                         ffi::OCI_NTV_SYNTAX,
+                                         ffi::OCI_DEFAULT);
+                },
+                None => {}
+            }
+
             stmt
         };
         Ok(Statement {
@@ -40,10 +86,46 @@ impl Statement {
            })
     }
 
+    pub fn check_error(&self, status: i32) -> Option<Error> {
+
+        // c.f. https://github.com/Mingun/rust-oci/blob/2e0f2acb35066b5f510b46826937a634017cda5d/src/ffi/mod.rs#L102
+
+        let mut errbuf: Vec<u8> = Vec::with_capacity(3072);
+        let mut errcode : c_int = 0;
+
+        match status {
+            ffi::OCI_ERROR => {
+                unsafe {
+                    let res = ffi::OCIErrorGet(self.connection.env.error_handle as *mut c_void,
+                                1,
+                                ptr::null_mut(),
+                                     &mut errcode,
+                                     errbuf.as_mut_ptr(),
+                                               errbuf.capacity() as u32,
+                                ffi::OCI_HTYPE_ERROR);
+
+                    if res == (ffi::OCI_NO_DATA as i32) {
+                        return None;
+                    }
+
+                    let msg = CStr::from_ptr(errbuf.as_ptr() as *const c_char);
+                    errbuf.set_len(msg.to_bytes().len());
+                }
+
+
+                Some(Error::DatabaseError(DatabaseErrorKind::UnableToSendCommand,
+                                          Box::new(format!("OCI_ERROR {:?}", String::from_utf8(errbuf).expect("Invalid UTF-8 from OCIErrorGet") ))))
+            },
+            ffi::OCI_INVALID_HANDLE => Some(Error::DatabaseError(DatabaseErrorKind::UnableToSendCommand,
+                                                                 Box::new(format!("OCI_INVALID_HANDLE {:?}", errbuf)))),
+            _ => None,
+        }
+    }
+
     pub fn run(&self) -> QueryResult<()> {
         let iters = if self.is_select { 0 } else { 1 };
         unsafe {
-            ffi::OCIStmtExecute(self.connection.service_handle,
+            let status = ffi::OCIStmtExecute(self.connection.service_handle,
                                 self.inner_statement,
                                 self.connection.env.error_handle,
                                 iters,
@@ -51,8 +133,11 @@ impl Statement {
                                 ptr::null(),
                                 ptr::null_mut(),
                                 ffi::OCI_DEFAULT);
+            match self.check_error(status) {
+                Some(err) => Err(err),
+                _ => Ok(()),
+            }
         }
-        Ok(())
     }
 
     pub fn get_affected_rows(&self) -> QueryResult<usize> {

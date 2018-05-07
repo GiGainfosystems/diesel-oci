@@ -2,6 +2,7 @@ use std::str;
 use oci_sys as ffi;
 use std::os::raw as libc;
 use std::ptr;
+use std::ffi::{CStr};
 
 use diesel::result::*;
 
@@ -14,7 +15,7 @@ impl ConnectionEnviroment {
     pub fn new() -> Result<ConnectionEnviroment, ()> {
         let env_handle = unsafe {
             let mut handle: *mut ffi::OCIEnv = ptr::null_mut();
-            ffi::OCIEnvNlsCreate(&mut handle as *mut _,
+            let code = ffi::OCIEnvNlsCreate(&mut handle as *mut _,
                                  ffi::OCI_DEFAULT,
                                  ptr::null_mut(),
                                  None,
@@ -24,6 +25,9 @@ impl ConnectionEnviroment {
                                  ptr::null_mut(),
                                  0,
                                  0);
+            if code != 0 {
+                println!("Couldn't create environment");
+            }
             handle
         };
         let error_handle = unsafe {
@@ -103,6 +107,32 @@ fn parse_db_string(database_url: &str) -> ConnectionResult<(String, String, Stri
 }
 
 impl RawConnection {
+
+    pub fn check_error(error_handle: *mut ffi::OCIError, status: i32) {
+        let mut errbuf: Vec<u8> = Vec::with_capacity(3072);
+        let mut errcode : libc::c_int = 0;
+
+        match status {
+            ffi::OCI_ERROR => {
+                unsafe {
+                    let res = ffi::OCIErrorGet(error_handle as *mut libc::c_void,
+                                     1,
+                                     ptr::null_mut(),
+                                     &mut errcode,
+                                     errbuf.as_mut_ptr(),
+                                     errbuf.capacity() as u32,
+                                     ffi::OCI_HTYPE_ERROR);
+
+                    let msg = CStr::from_ptr(errbuf.as_ptr() as *const libc::c_char);
+                    errbuf.set_len(msg.to_bytes().len());
+                };
+
+                println!("{:?}", String::from_utf8(errbuf).expect("Invalid UTF-8 from OCIErrorGet"));
+            },
+            _ => {},
+        }
+    }
+
     pub fn establish(database_url: &str) -> ConnectionResult<Self> {
         let (username, password, database) = parse_db_string(database_url)?;
 
@@ -122,11 +152,14 @@ impl RawConnection {
             let transaction_handle = alloc_handle(&env, ffi::OCI_HTYPE_TRANS) as *mut ffi::OCITrans;
 
 
-            ffi::OCIServerAttach(server_handle,
+            let status = ffi::OCIServerAttach(server_handle,
                                  env.error_handle,
                                  (&database).as_ptr() as *const libc::c_uchar,
                                  database.len() as i32,
                                  ffi::OCI_DEFAULT);
+
+            Self::check_error(env.error_handle, status);
+
             // Set attribute server context in the service context
             ffi::OCIAttrSet(service_handle as *mut libc::c_void,
                             ffi::OCI_HTYPE_SVCCTX,
@@ -149,11 +182,12 @@ impl RawConnection {
                             ffi::OCI_ATTR_PASSWORD,
                             env.error_handle);
             // Begin session
-            ffi::OCISessionBegin(service_handle,
+            let status = ffi::OCISessionBegin(service_handle,
                                  env.error_handle,
                                  session_handle,
                                  ffi::OCI_CRED_RDBMS,
                                  ffi::OCI_DEFAULT);
+            Self::check_error(env.error_handle, status);
 
             // Set session context in the service context
             ffi::OCIAttrSet(service_handle as *mut libc::c_void,

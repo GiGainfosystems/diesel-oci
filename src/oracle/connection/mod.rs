@@ -8,6 +8,7 @@ use diesel::query_builder::QueryId;
 use diesel::query_builder::bind_collector::RawBytesBindCollector;
 use diesel::connection::StatementCache;
 use diesel::connection::AnsiTransactionManager;
+use diesel::migration::MigrationConnection;
 
 use super::backend::Oracle;
 use self::stmt::Statement;
@@ -29,6 +30,14 @@ pub struct OciConnection {
 // would not be thread safe.
 // Similar to diesel::sqlite::SqliteConnection;
 unsafe impl Send for OciConnection {}
+
+impl MigrationConnection for OciConnection {
+    const CREATE_MIGRATIONS_TABLE: &'static str =
+         "CREATE TABLE \"__DIESEL_SCHEMA_MIGRATIONS\" (\
+         \"VERSION\" VARCHAR2(50) PRIMARY KEY NOT NULL,\
+         \"RUN_ON\" TIMESTAMP with time zone DEFAULT sysdate not null\
+         )";
+}
 
 impl SimpleConnection for OciConnection {
     fn batch_execute(&self, query: &str) -> QueryResult<()> {

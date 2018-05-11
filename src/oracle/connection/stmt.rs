@@ -258,23 +258,33 @@ impl Statement {
 
     pub fn bind(&mut self, tpe: OCIDataType, value: Option<Vec<u8>>) -> QueryResult<()> {
         self.bind_index += 1;
-        let (buf, size): (*mut _, i32) = match (tpe, value) {
-            (_, None) => (ptr::null_mut(), 0),
-            (OCIDataType::OCIString, Some(value)) => {
-                let s = CString::new(::std::str::from_utf8(&value).unwrap()).unwrap();
-                (s.as_ptr() as *mut _, s.as_bytes().len() as i32)
-            }
-            (_, Some(value)) => (value.as_ptr() as *mut _, value.len() as i32),
+        let mut bndp = ptr::null_mut() as *mut ffi::OCIBind;
+        let mut is_null: ffi::OCIInd = 0;
+        // otherwise the string will be deleted before reaching OCIBindByPos
+        let mut s = CString::new("").unwrap();
+        let (buf, size): (*const c_void, i32) = match (tpe, value) {
+            (_, None) => {
+                is_null = -1;
+                (ptr::null_mut(), 0)
+            },
+            (OCIDataType::OCIString, Some(value)) | (OCIDataType::String, Some(value)) => {
+                s = CString::new(::std::str::from_utf8(&value).unwrap()).unwrap();
+                (s.as_ptr() as *const c_void, s.as_bytes_with_nul().len() as i32)
+            },
+            (_, Some(value)) => {
+                (value.as_ptr() as *const c_void, value.len() as i32)
+            },
         };
         unsafe {
-            ffi::OCIBindByPos(self.inner_statement,
-                              &mut ptr::null_mut(),
+            let status = ffi::OCIBindByPos(self.inner_statement,
+                              &mut bndp,
                               self.connection.env.error_handle,
                               self.bind_index,
-                              buf,
+                              buf as *mut c_void,
                               size,
-                              tpe as libc::c_ushort,
-                              ptr::null_mut(),
+                              //tpe as libc::c_ushort,
+                              ffi::SQLT_CHR as u16,
+                              is_null as *mut ffi::OCIInd as *mut c_void,
                               ptr::null_mut(),
                               ptr::null_mut(),
                               0,

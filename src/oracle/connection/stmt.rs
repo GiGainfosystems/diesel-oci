@@ -16,6 +16,7 @@ pub struct Statement {
     pub inner_statement: *mut ffi::OCIStmt,
     bind_index: libc::c_uint,
     is_select: bool,
+    k: Vec<*mut ffi::OCIBind>,
 }
 
 impl Statement {
@@ -65,6 +66,7 @@ impl Statement {
                inner_statement: stmt,
                bind_index: 0,
                is_select: sql.contains("SELECT"),
+               k: Vec::new(),
            })
     }
 
@@ -290,6 +292,10 @@ impl Statement {
                               0,
                               ptr::null_mut(),
                               ffi::OCI_DEFAULT);
+            self.k.push(bndp);
+            if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
+                return Err(err);
+            }
         }
         Ok(())
 

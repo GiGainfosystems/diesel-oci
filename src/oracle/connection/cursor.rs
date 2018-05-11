@@ -65,15 +65,20 @@ impl<'a, ST, T> Iterator for Cursor<'a, ST, T>
     fn next(&mut self) -> Option<Self::Item> {
         //        println!("before fetch");
         unsafe {
-            ffi::OCIStmtFetch2(self.stmt.inner_statement,
+            let status = ffi::OCIStmtFetch2(self.stmt.inner_statement,
                                self.stmt.connection.env.error_handle,
                                1,
                                ffi::OCI_FETCH_NEXT as u16,
                                0,
                                ffi::OCI_DEFAULT);
+            if let Some(err) = Statement::check_error(self.stmt.connection.env.error_handle, status) {
+                return Some(Err(err));
+            }
+            if status as u32 == ffi::OCI_NO_DATA {
+                return None;
+            }
         }
 
-        //        println!("after fetch");
         self.current_row += 1;
         let mut row = OciRow::new(self.results
                                       .iter()

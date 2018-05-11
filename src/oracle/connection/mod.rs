@@ -57,11 +57,13 @@ impl Connection for OciConnection {
     /// documentation for the specific backend for specifics.
     fn establish(database_url: &str) -> ConnectionResult<Self> {
         let r = try!(raw::RawConnection::establish(database_url));
-        Ok(OciConnection {
+        let ret = OciConnection {
                raw: Rc::new(r),
                transaction_manager: OCITransactionManager::new(),
                statement_cache: StatementCache::new(),
-           })
+           };
+        let k = ret.execute("alter session set sql_trace=true");
+        Ok(ret)
     }
 
 

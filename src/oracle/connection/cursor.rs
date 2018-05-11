@@ -63,7 +63,6 @@ impl<'a, ST, T> Iterator for Cursor<'a, ST, T>
     type Item = QueryResult<T>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        //        println!("before fetch");
         unsafe {
             let status = ffi::OCIStmtFetch2(self.stmt.inner_statement,
                                self.stmt.connection.env.error_handle,

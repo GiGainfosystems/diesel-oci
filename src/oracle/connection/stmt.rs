@@ -20,7 +20,7 @@ pub struct Statement {
 
 impl Statement {
     pub fn prepare(raw_connection: &Rc<RawConnection>, sql: &str) -> QueryResult<Self> {
-        println!("prepare statment {}", sql);
+        println!("prepare statement {}", sql);
         let stmt = unsafe {
             let mut stmt: *mut ffi::OCIStmt = ptr::null_mut();
             let status = ffi::OCIStmtPrepare2(raw_connection.service_handle,

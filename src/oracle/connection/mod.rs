@@ -7,21 +7,22 @@ use diesel::deserialize::{Queryable, QueryableByName};
 use diesel::query_builder::QueryId;
 use diesel::query_builder::bind_collector::RawBytesBindCollector;
 use diesel::connection::StatementCache;
-use diesel::connection::AnsiTransactionManager;
 use diesel::migration::MigrationConnection;
 
 use super::backend::Oracle;
 use self::stmt::Statement;
 use self::cursor::Cursor;
+use self::transaction::OCITransactionManager;
 
 mod raw;
 mod stmt;
 mod cursor;
 mod row;
+mod transaction;
 
 pub struct OciConnection {
     raw: Rc<raw::RawConnection>,
-    transaction_manager: AnsiTransactionManager,
+    transaction_manager: OCITransactionManager,
     statement_cache: StatementCache<Oracle, Statement>,
 }
 
@@ -49,7 +50,7 @@ impl SimpleConnection for OciConnection {
 
 impl Connection for OciConnection {
     type Backend = Oracle;
-    type TransactionManager = AnsiTransactionManager;
+    type TransactionManager = OCITransactionManager;
 
     /// Establishes a new connection to the database at the given URL. The URL
     /// should be a valid connection string for a given backend. See the
@@ -58,7 +59,7 @@ impl Connection for OciConnection {
         let r = try!(raw::RawConnection::establish(database_url));
         Ok(OciConnection {
                raw: Rc::new(r),
-               transaction_manager: AnsiTransactionManager::new(),
+               transaction_manager: OCITransactionManager::new(),
                statement_cache: StatementCache::new(),
            })
     }

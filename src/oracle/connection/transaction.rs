@@ -72,6 +72,9 @@ impl TransactionManager<OciConnection> for OCITransactionManager
     }
 
     fn rollback_transaction(&self, conn: &OciConnection) -> QueryResult<()> {
+        // DDL will never rolled back: https://asktom.oracle.com/pls/apex/f?p=100:11:0::::P11_QUESTION_ID:9532421900346923086
+        // all preceding DML will be commited with a DDL statement !!!
+        // c.f. https://docs.oracle.com/cd/E25054_01/server.1111/e25789/transact.htm#sthref1318
         let transaction_depth = self.transaction_depth.get();
         self.change_transaction_depth(
             -1,

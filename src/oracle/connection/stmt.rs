@@ -21,6 +21,9 @@ pub struct Statement {
     sizes: Vec<i32>,
 }
 
+const IS_NULL: ffi::OCIInd = -1;
+const IS_NOT_NULL: ffi::OCIInd = 0;
+
 impl Statement {
     pub fn prepare(raw_connection: &Rc<RawConnection>, sql: &str) -> QueryResult<Self> {
         println!("prepare statement {}", sql);
@@ -291,7 +294,7 @@ impl Statement {
                               size,
                                //tpe as libc::c_ushort,
                               ffi::SQLT_CHR as u16,
-                              is_null as *mut ffi::OCIInd as *mut c_void,
+                              IS_NOT_NULL as *mut ffi::OCIInd as *mut c_void,
                               ptr::null_mut(),
                               ptr::null_mut(),
                               0,

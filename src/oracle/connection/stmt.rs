@@ -192,45 +192,67 @@ impl Statement {
                 if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
                     return Err(err);
                 }
-                let status = ffi::OCIAttrGet(col_handle as *mut _,
-                                ffi::OCI_DTYPE_PARAM,
-                                (&mut len_type as *mut u32) as *mut _,
-                                &mut 0,
-                                ffi::OCI_ATTR_CHAR_USED,
-                                self.connection.env.error_handle);
-                if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
-                    return Err(err);
-                }
-                let attr = if len_type != 0 {
-                    ffi::OCI_ATTR_CHAR_SIZE
-                } else {
-                    ffi::OCI_ATTR_DATA_SIZE
-                };
-                let status = ffi::OCIAttrGet(col_handle as *mut _,
-                                ffi::OCI_DTYPE_PARAM,
-                                (&mut tpe_size as *mut u32) as *mut _,
-                                &mut 0,
-                                attr,
-                                self.connection.env.error_handle);
-                if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
-                    return Err(err);
+
+
+                match tpe {
+                    ffi::SQLT_INT | ffi::SQLT_UIN => {
+                        tpe_size = 8;
+                    },
+                    ffi::SQLT_NUM => {
+                        let mut attributesize = 16u32; //sb2
+                        let mut scale = 0i8;
+                        let mut precision = 0i16;
+                        let status = ffi::OCIAttrGet(col_handle as *mut _,
+                        ffi::OCI_DTYPE_PARAM,
+                         (&mut precision as *mut i16) as *mut _,
+                         &mut attributesize as *mut u32,
+                        ffi::OCI_ATTR_PRECISION,
+                                                 self.connection.env.error_handle);
+                        if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
+                            return Err(err);
+                        }
+                        let mut attributesize = 8u32; // sb1
+                        let status = ffi::OCIAttrGet(col_handle as *mut _,
+                        ffi::OCI_DTYPE_PARAM,
+                         (&mut scale as *mut i8) as *mut _,
+                        &mut attributesize as *mut u32,
+                        ffi::OCI_ATTR_SCALE,
+                        self.connection.env.error_handle);
+                        if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
+                            return Err(err);
+                        }
+                        if scale == 0 && precision == 1 {
+                            tpe_size = 8;
+                        }
+                        else
+                        {
+                            tpe_size = 8;
+                        }
+                    }
+                    ffi::SQLT_FLT | ffi::SQLT_BFLOAT | ffi::SQLT_BDOUBLE | ffi::SQLT_LNG => {
+                        tpe_size= 8;
+
+                    },
+                    ffi::SQLT_CHR | ffi::SQLT_VCS | ffi::SQLT_LVC | ffi::SQLT_AFC | ffi::SQLT_VST | ffi::SQLT_ODT | ffi::SQLT_DATE | ffi::SQLT_TIMESTAMP | ffi::SQLT_TIMESTAMP_TZ | ffi::SQLT_TIMESTAMP_LTZ => {
+                        let mut length = 0u32;
+                        let status =  ffi::OCIAttrGet(col_handle as *mut _, ffi::OCI_DTYPE_PARAM, (&mut tpe_size as *mut u32) as *mut _, &mut length as *mut u32, ffi::OCI_ATTR_CHAR_SIZE,
+                                                      self.connection.env.error_handle  );
+                        if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
+                            return Err(err);
+                        }
+                        //tpe_size -= 1;
+                    }
+                    _ => {
+                        panic!("Shit")
+                    }
+
                 }
             }
 
+            let k = tpe;
             if let Some(tpe) = ::oracle::types::OCIDataType::from_raw(tpe) {
                 use oracle::types::OCIDataType;
-                let (tpe, tpe_size) = match tpe {
-                    // Maybe we should check the exact size of the
-                    // numeric and then do this conversion only in some cases
-                    OCIDataType::Numeric => (OCIDataType::BDouble, 8),
-                    OCIDataType::IBDouble => (OCIDataType::BDouble, 8),
-                    OCIDataType::IBFloat => (OCIDataType::BFloat, 4),
-                    OCIDataType::Char => (OCIDataType::String, tpe_size),
-                    OCIDataType::Timestamp => (OCIDataType::InternDate, 7),
-                    _ => (tpe, tpe_size),
 
-                };
-                info!("{} -> {:?}", tpe_size, tpe);
                 let mut v = Vec::with_capacity(tpe_size as usize);
                 v.resize(tpe_size as usize, 0);
                 let mut null_indicator: Box<i16> = Box::new(0);

@@ -2,13 +2,14 @@ use std::str;
 use oci_sys as ffi;
 use std::os::raw as libc;
 use std::ptr;
-use std::ffi::{CStr};
+use std::ffi::{CStr, CString};
 
 use diesel::result::*;
 
 pub struct ConnectionEnviroment {
     handle: *mut ffi::OCIEnv,
     pub error_handle: *mut ffi::OCIError,
+    pub cs_id: u16,
 }
 
 impl ConnectionEnviroment {
@@ -40,9 +41,14 @@ impl ConnectionEnviroment {
 
             handle
         };
+        let enc = CString::new("UTF8").unwrap();
+        let cs_id = unsafe {
+            ffi::OCINlsCharSetNameToId(env_handle as *mut libc::c_void, enc.as_ptr() as *const ffi::OraText)
+        };
         Ok(ConnectionEnviroment {
                handle: env_handle,
                error_handle: error_handle,
+                cs_id,
            })
     }
 }

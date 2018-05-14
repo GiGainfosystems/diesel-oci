@@ -16,7 +16,9 @@ pub struct Statement {
     pub inner_statement: *mut ffi::OCIStmt,
     bind_index: libc::c_uint,
     is_select: bool,
-    k: Vec<*mut ffi::OCIBind>,
+    binds: Vec<Box<ffi::OCIBind>>,
+    buffers: Vec<Box<c_void>>,
+    sizes: Vec<i32>,
 }
 
 impl Statement {
@@ -66,7 +68,9 @@ impl Statement {
                inner_statement: stmt,
                bind_index: 0,
                is_select: sql.contains("SELECT"),
-               k: Vec::new(),
+                binds: Vec::with_capacity(20),
+                buffers: Vec::with_capacity(20),
+                sizes: Vec::with_capacity(20),
            })
     }
 
@@ -264,17 +268,18 @@ impl Statement {
         let mut is_null: ffi::OCIInd = 0;
         // otherwise the string will be deleted before reaching OCIBindByPos
         let mut s = CString::new("").unwrap();
-        let (buf, size): (*const c_void, i32) = match (tpe, value) {
+        let (buf, size): (*mut c_void, i32) = match (tpe, value) {
             (_, None) => {
                 is_null = -1;
                 (ptr::null_mut(), 0)
             },
-            (OCIDataType::OCIString, Some(value)) | (OCIDataType::String, Some(value)) => {
+            (OCIDataType::OCIString, Some(value)) | (OCIDataType::String, Some(value)) | (OCIDataType::Char, Some(value)) | (OCIDataType::Clob, Some(value)) => {
                 s = CString::new(::std::str::from_utf8(&value).unwrap()).unwrap();
-                (s.as_ptr() as *const c_void, s.as_bytes_with_nul().len() as i32)
+                let len = s.as_bytes_with_nul().len();
+                (s.into_raw() as *mut c_void, len as i32)
             },
-            (_, Some(value)) => {
-                (value.as_ptr() as *const c_void, value.len() as i32)
+            (_, Some(mut value)) => {
+                (value.as_mut_ptr() as *mut c_void, value.len() as i32)
             },
         };
         unsafe {
@@ -284,7 +289,7 @@ impl Statement {
                               self.bind_index,
                               buf as *mut c_void,
                               size,
-                              //tpe as libc::c_ushort,
+                               //tpe as libc::c_ushort,
                               ffi::SQLT_CHR as u16,
                               is_null as *mut ffi::OCIInd as *mut c_void,
                               ptr::null_mut(),
@@ -292,10 +297,25 @@ impl Statement {
                               0,
                               ptr::null_mut(),
                               ffi::OCI_DEFAULT);
-            self.k.push(bndp);
+            self.buffers.push(Box::from_raw(buf));
+            self.sizes.push(size);
+
             if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
                 return Err(err);
             }
+
+            if tpe == OCIDataType::Char {
+                unsafe {
+                    let mut cs_id = self.connection.env.cs_id;
+                    ffi::OCIAttrSet(bndp as *mut c_void,
+                                    ffi::OCI_HTYPE_BIND,
+                                    &mut cs_id as *mut u16 as *mut c_void,
+                                    0,
+                                    ffi::OCI_ATTR_CHARSET_ID,
+                                    self.connection.env.error_handle);
+                }
+            }
+            self.binds.push(Box::from_raw(bndp));
         }
         Ok(())
 

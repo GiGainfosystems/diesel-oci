@@ -1,3 +1,4 @@
+#[macro_use]
 extern crate diesel;
 extern crate oci_sys;
 extern crate libc;

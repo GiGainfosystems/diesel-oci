@@ -114,7 +114,7 @@ fn parse_db_string(database_url: &str) -> ConnectionResult<(String, String, Stri
 
 impl RawConnection {
 
-    pub fn check_error(error_handle: *mut ffi::OCIError, status: i32) {
+    pub fn check_error(error_handle: *mut ffi::OCIError, status: i32) -> Option<ConnectionError> {
         let mut errbuf: Vec<u8> = Vec::with_capacity(3072);
         let mut errcode : libc::c_int = 0;
 
@@ -133,9 +133,10 @@ impl RawConnection {
                     errbuf.set_len(msg.to_bytes().len());
                 };
 
-                println!("{:?}", String::from_utf8(errbuf).expect("Invalid UTF-8 from OCIErrorGet"));
+                Some(ConnectionError::BadConnection
+                (format!("OCI_ERROR {:?}", String::from_utf8(errbuf).expect("Invalid UTF-8 from OCIErrorGet") )))
             },
-            _ => {},
+            _ => None,
         }
     }
 
@@ -164,7 +165,9 @@ impl RawConnection {
                                  database.len() as i32,
                                  ffi::OCI_DEFAULT);
 
-            Self::check_error(env.error_handle, status);
+            if let Some(err) = Self::check_error(env.error_handle, status) {
+                return Err(err);
+            }
 
             // Set attribute server context in the service context
             ffi::OCIAttrSet(service_handle as *mut libc::c_void,
@@ -193,7 +196,9 @@ impl RawConnection {
                                  session_handle,
                                  ffi::OCI_CRED_RDBMS,
                                  ffi::OCI_DEFAULT);
-            Self::check_error(env.error_handle, status);
+            if let Some(err) = Self::check_error(env.error_handle, status) {
+                return Err(err);
+            }
 
             // Set session context in the service context
             ffi::OCIAttrSet(service_handle as *mut libc::c_void,

@@ -255,10 +255,7 @@ impl Statement {
                 }
             }
 
-            let k = tpe;
             if let Some(tpe) = ::oracle::types::OCIDataType::from_raw(tpe) {
-                use oracle::types::OCIDataType;
-
                 let mut v = Vec::with_capacity(tpe_size as usize);
                 v.resize(tpe_size as usize, 0);
                 let mut null_indicator: Box<i16> = Box::new(0);

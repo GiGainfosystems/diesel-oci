@@ -8,20 +8,23 @@ use oci_sys as ffi;
 use super::stmt::Statement;
 use super::super::backend::Oracle;
 use super::row::OciRow;
+use super::super::types::OCIDataType;
 
 
 pub struct Field {
     inner: *mut ffi::OCIDefine,
     buffer: Vec<u8>,
     null_indicator: Box<i16>,
+    typ: OCIDataType,
 }
 
 impl Field {
-    pub fn new(raw: *mut ffi::OCIDefine, buffer: Vec<u8>, indicator: Box<i16>) -> Field {
+    pub fn new(raw: *mut ffi::OCIDefine, buffer: Vec<u8>, indicator: Box<i16>, typ: OCIDataType) -> Field {
         Field {
             inner: raw,
             buffer: buffer,
             null_indicator: indicator,
+            typ,
         }
     }
 
@@ -79,11 +82,24 @@ impl<'a, ST, T> Iterator for Cursor<'a, ST, T>
         }
 
         self.current_row += 1;
+        let null_indicators = self.results.iter().map(|r| r.is_null()).collect();
         let mut row = OciRow::new(self.results
-                                      .iter()
-                                      .map(|r| &r.buffer[..])
+                                      .iter_mut()
+                                      .map(|r: &mut Field| {
+                                          use std::ffi::CString;
+                                          use std::os::raw::c_char;
+                                          if r.typ == OCIDataType::Char {
+                                              let s = unsafe {
+                                                  CString::from_raw(r.buffer.as_ptr() as *mut c_char)
+                                              };
+                                              r.buffer = s.into_bytes();
+
+                                          }
+                                          &r.buffer[..]
+
+                                      })
                                       .collect::<Vec<&[u8]>>(),
-                                  self.results.iter().map(|r| r.is_null()).collect());
+                                  null_indicators);
         let value = T::Row::build_from_row(&mut row)
             .map(T::build)
             .map_err(DeserializationError);

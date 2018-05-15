@@ -275,7 +275,7 @@ impl Statement {
                     def
 
                 };
-                fields.push(Field::new(def, v, null_indicator));
+                fields.push(Field::new(def, v, null_indicator, tpe));
             } else {
                 return Err(Error::DatabaseError(DatabaseErrorKind::__Unknown,
                                                 Box::new(format!("unknown type {}", tpe))));

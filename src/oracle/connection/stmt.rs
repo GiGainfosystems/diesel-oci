@@ -16,6 +16,12 @@ pub struct Statement {
     pub inner_statement: *mut ffi::OCIStmt,
     bind_index: libc::c_uint,
     is_select: bool,
+    /// TODO: resolve double frees
+    // we may introduce double free's here
+    // c.f. https://docs.oracle.com/cd/B10501_01/appdev.920/a96584/oci15r30.htm
+    // [...] An address of a bind handle which is implicitly allocated by this call. The bind
+    // handle maintains all the bind information for this particular input value. The handle is
+    // freed implicitly when the statement handle is deallocated. [...]
     binds: Vec<Box<ffi::OCIBind>>,
     buffers: Vec<Box<c_void>>,
     sizes: Vec<i32>,

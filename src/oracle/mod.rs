@@ -69,6 +69,13 @@ table! {
      }
 }
 
+table! {
+    __diesel_schema_migrations (version) {
+        version -> VarChar,
+        run_on -> Timestamp,
+    }
+}
+
 
 fn create_test_table(conn: &OciConnection) -> usize {
     let ret = conn.execute(CREATE_TEST_TABLE);
@@ -225,4 +232,37 @@ fn insert_string_diesel_way() {
     // drop the table immediately
     let ret = conn.execute(DROP_TEST_TABLE);
     assert_result!(ret);
+}
+
+#[test]
+fn test_diesel_migration() {
+    let conn = OciConnection::establish(&DB_URL).unwrap();
+
+    clean_test(&conn);
+
+    use self::__diesel_schema_migrations::dsl::*;
+    use diesel::QueryDsl;
+    use diesel::ExpressionMethods;
+    use std::iter::FromIterator;
+    use diesel::QueryResult;
+    use std::collections::HashSet;
+
+    let already_run: HashSet<String> = self::__diesel_schema_migrations::dsl::__diesel_schema_migrations
+        .select(version)
+        .load(&conn)
+        .map(FromIterator::from_iter).unwrap();
+
+    let migrations = vec!["00000000000000", "20160107090901", "20151219180527"];
+    println!("migrations: {:?}", migrations);
+    println!("already_run: {:?}", already_run);
+
+    let mut pending_migrations: Vec<_> = migrations
+        .into_iter()
+        .filter(|m| !already_run.contains(&m.to_string()))
+        .collect();
+
+    println!("already_run: {:?}", already_run);
+    println!("pending_migrations: {:?}", pending_migrations);
+
+    assert_eq!(pending_migrations.len(), 0);
 }

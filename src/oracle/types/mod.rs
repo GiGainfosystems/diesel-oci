@@ -126,7 +126,7 @@ impl HasSqlType<Double> for Oracle {
 
 impl HasSqlType<VarChar> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::String
+        OCIDataType::Char
     }
 }
 

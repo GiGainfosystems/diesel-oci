@@ -5,6 +5,7 @@ use byteorder::{NativeEndian, WriteBytesExt};
 use diesel::deserialize::FromSql;
 use diesel::serialize::{ToSql, IsNull, Output};
 use super::backend::*;
+use super::connection::OracleValue;
 use oci_sys as ffi;
 
 pub type FromSqlResult<T> = Result<T, ErrorType>;
@@ -161,7 +162,7 @@ impl HasSqlType<Bool> for Oracle {
 }
 
 impl FromSql<Bool, Oracle> for bool {
-    fn from_sql(bytes: Option<&[u8]>) -> FromSqlResult<Self> {
+    fn from_sql(bytes: Option<&OracleValue>) -> FromSqlResult<Self> {
         FromSql::<Double, Oracle>::from_sql(bytes).map(|v: f64| v != 0.0)
     }
 }
@@ -177,3 +178,7 @@ impl ToSql<Bool, Oracle> for bool {
 
 #[cfg(feature = "chrono-time")]
 mod chrono_date_time;
+
+mod integers;
+mod primitives;
+mod decimal;

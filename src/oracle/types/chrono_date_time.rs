@@ -10,9 +10,15 @@ use oracle::backend::Oracle;
 
 use self::chrono::{NaiveDateTime, NaiveDate, Datelike, Timelike};
 
+use std::ffi::{CString, CStr};
+use std::os::raw::c_char;
+
+use super::super::connection::OracleValue;
+
 impl FromSql<Timestamp, Oracle> for NaiveDateTime {
-    fn from_sql(bytes: Option<&[u8]>) -> Result<Self, Box<Error + Send + Sync>> {
+    fn from_sql(bytes: Option<&OracleValue>) -> Result<Self, Box<Error + Send + Sync>> {
         let bytes = not_none!(bytes);
+        let bytes = &bytes.bytes;
         let s = bytes[6] as u32 - 1;
         let mi = bytes[5] as u32 - 1;
         let h = bytes[4] as u32 - 1;
@@ -74,8 +80,9 @@ impl ToSql<Timestamp, Oracle> for NaiveDateTime {
 
 
 impl FromSql<Date, Oracle> for NaiveDate {
-    fn from_sql(bytes: Option<&[u8]>) -> Result<Self, Box<Error + Send + Sync>> {
+    fn from_sql(bytes: Option<&OracleValue>) -> Result<Self, Box<Error + Send + Sync>> {
         let bytes = not_none!(bytes);
+        let bytes = &bytes.bytes;
         let d = bytes[3] as u32;
         let mo = bytes[2] as u32;
         let y = bytes[1] as i32;

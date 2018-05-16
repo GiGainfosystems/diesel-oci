@@ -5,6 +5,8 @@ use oracle::types::OCIDataType;
 use byteorder::NativeEndian;
 use diesel::sql_types::TypeMetadata;
 
+
+use super::connection::OracleValue;
 use super::query_builder::OciQueryBuilder;
 
 #[derive(Debug, Hash, PartialEq, Eq)]
@@ -13,7 +15,7 @@ pub struct Oracle;
 impl Backend for Oracle {
     type QueryBuilder = OciQueryBuilder;
     type BindCollector = RawBytesBindCollector<Oracle>;
-    type RawValue = [u8];
+    type RawValue = OracleValue;
     type ByteOrder = NativeEndian;
 }
 

@@ -13,6 +13,8 @@ use super::backend::Oracle;
 use self::stmt::Statement;
 use self::cursor::Cursor;
 use self::transaction::OCITransactionManager;
+mod oracle_value;
+pub use self::oracle_value::OracleValue;
 
 mod raw;
 mod stmt;

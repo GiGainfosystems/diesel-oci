@@ -86,15 +86,18 @@ impl<'a, ST, T> Iterator for Cursor<'a, ST, T>
         let mut row = OciRow::new(self.results
                                       .iter_mut()
                                       .map(|r: &mut Field| {
-                                          use std::ffi::CString;
-                                          use std::os::raw::c_char;
-                                          if r.typ == OCIDataType::Char {
-                                              let s = unsafe {
-                                                  CString::from_raw(r.buffer.as_ptr() as *mut c_char)
-                                              };
-                                              r.buffer = s.into_bytes();
-
-                                          }
+//                                          use std::ffi::{CString, CStr};
+//                                          use std::os::raw::c_char;
+//                                          if r.typ == OCIDataType::Char {
+//                                              println!("{:?}", r.buffer);
+//                                              let s = unsafe {
+//                                                  CStr::from_ptr(r.buffer.as_ptr() as *const c_char)
+//                                              };
+//                                              let s = s.to_str().unwrap();
+//                                              r.buffer = s.as_bytes().to_vec();
+//                                              //r.buffer = CString::new(r.buffer.clone()).unwrap().into_bytes();
+//
+//                                          }
                                           &r.buffer[..]
 
                                       })

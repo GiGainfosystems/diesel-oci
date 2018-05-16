@@ -69,6 +69,15 @@ table! {
      }
 }
 
+const DROP_DIESEL_TABLE: &'static str =
+    "DROP TABLE \"__DIESEL_SCHEMA_MIGRATIONS\"";
+
+const CREATE_DIESEL_MIGRATIONS_TABLE: &'static str =
+    "CREATE TABLE \"__DIESEL_SCHEMA_MIGRATIONS\" (\
+         VERSION VARCHAR(50) PRIMARY KEY NOT NULL,\
+         RUN_ON TIMESTAMP with time zone DEFAULT sysdate not null\
+         )";
+
 table! {
     __diesel_schema_migrations (version) {
         version -> VarChar,
@@ -85,6 +94,12 @@ fn create_test_table(conn: &OciConnection) -> usize {
 
 fn drop_test_table(conn: &OciConnection) -> usize {
     let ret = conn.execute(DROP_TEST_TABLE);
+    assert_result!(ret);
+    ret.unwrap()
+}
+
+fn drop_diesel_table(conn: &OciConnection) -> usize {
+    let ret = conn.execute(DROP_DIESEL_TABLE);
     assert_result!(ret);
     ret.unwrap()
 }
@@ -106,6 +121,11 @@ fn clean_test(conn: &OciConnection) {
     let ret = conn.execute(sql);
     if ret.is_ok() {
         let ret = drop_test_table(conn);
+    }
+    let sql = "SELECT * FROM \"__DIESEL_SCHEMA_MIGRATIONS\"";
+    let ret = conn.execute(sql);
+    if ret.is_ok() {
+        let ret = drop_diesel_table(conn);
     }
 }
 
@@ -240,6 +260,9 @@ fn test_diesel_migration() {
 
     clean_test(&conn);
 
+    let ret = conn.execute(CREATE_DIESEL_MIGRATIONS_TABLE);
+    assert_result!(ret);
+
     use self::__diesel_schema_migrations::dsl::*;
     use diesel::QueryDsl;
     use diesel::ExpressionMethods;
@@ -247,13 +270,77 @@ fn test_diesel_migration() {
     use diesel::QueryResult;
     use std::collections::HashSet;
 
+    let migrations = vec!["00000000000000", "20151219180527", "20160107090901"];
+
+    for mig in &migrations {
+        let ret = ::diesel::insert_into(__diesel_schema_migrations)
+            .values(&version.eq(mig))
+            .execute(&conn);
+        assert_result!(ret);
+    }
+
+    let already_run: HashSet<String> = self::__diesel_schema_migrations::dsl::__diesel_schema_migrations
+        .select(version)
+        .load(&conn)
+        .map(FromIterator::from_iter).unwrap();
+
+    let ret = self::__diesel_schema_migrations::dsl::__diesel_schema_migrations
+            .select(version)
+            .load(&conn);
+    let already_run: HashSet<String> = ret.map(FromIterator::from_iter).unwrap();
+
+
+    println!("migrations: {:?}", migrations);
+    println!("already_run: {:?}", already_run);
+
+    let mut pending_migrations: Vec<_> = migrations
+        .into_iter()
+        .filter(|m| !already_run.contains(&m.to_string()))
+        .collect();
+
+    println!("pending_migrations: {:?}", pending_migrations);
+
+    assert_eq!(pending_migrations.len(), 0);
+}
+
+#[test]
+fn test_multi_insert() {
+    let conn = OciConnection::establish(&DB_URL).unwrap();
+
+    clean_test(&conn);
+
+    let ret = conn.execute(CREATE_DIESEL_MIGRATIONS_TABLE);
+    assert_result!(ret);
+
+    use self::__diesel_schema_migrations::dsl::*;
+    use diesel::QueryDsl;
+    use diesel::ExpressionMethods;
+    use std::iter::FromIterator;
+    use diesel::QueryResult;
+    use std::collections::HashSet;
+
+    let migrations = vec![version.eq("00000000000000"),
+                          version.eq("20160107090901"),
+                          version.eq("20151219180527")];
+
+
+    let ret = ::diesel::insert_into(__diesel_schema_migrations)
+        .values(&migrations)
+        .execute(&conn);
+
+    assert_result!(ret);
+
+    let migrations = vec!["00000000000000",
+                          "20160107090901",
+                          "20151219180527"];
+
     let already_run: HashSet<String> = self::__diesel_schema_migrations::dsl::__diesel_schema_migrations
         .select(version)
         .order(version)
         .load(&conn)
         .map(FromIterator::from_iter).unwrap();
 
-    let migrations = vec!["00000000000000", "20160107090901", "20151219180527"];
+
     println!("migrations: {:?}", migrations);
     println!("already_run: {:?}", already_run);
 

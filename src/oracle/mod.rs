@@ -249,6 +249,7 @@ fn test_diesel_migration() {
 
     let already_run: HashSet<String> = self::__diesel_schema_migrations::dsl::__diesel_schema_migrations
         .select(version)
+        .order(version)
         .load(&conn)
         .map(FromIterator::from_iter).unwrap();
 

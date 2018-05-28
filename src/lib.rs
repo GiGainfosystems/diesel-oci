@@ -5,5 +5,5 @@ extern crate libc;
 extern crate byteorder;
 #[macro_use]
 extern crate log;
-
+extern crate bigdecimal;
 pub mod oracle;

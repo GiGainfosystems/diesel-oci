@@ -125,6 +125,12 @@ impl HasSqlType<Double> for Oracle {
     }
 }
 
+impl HasSqlType<Numeric> for Oracle {
+    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
+        OCIDataType::Float
+    }
+}
+
 impl HasSqlType<VarChar> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
         OCIDataType::Char

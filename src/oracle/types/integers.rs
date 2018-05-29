@@ -1,15 +1,10 @@
 
 use std::error::Error;
-use std::io::Write;
 
 use diesel::sql_types::*;
 use diesel::deserialize::FromSql;
-use diesel::serialize::{ToSql, IsNull, Output};
 
 use oracle::backend::Oracle;
-
-use std::ffi::{CString, CStr};
-use std::os::raw::c_char;
 
 use super::super::connection::OracleValue;
 
@@ -18,12 +13,11 @@ use diesel::backend::*;
 
 pub type FromSqlResult<T> = Result<T, ErrorType>;
 pub type ErrorType = Box<Error + Send + Sync>;
-pub type ToSqlResult = FromSqlResult<IsNull>;
 
 impl FromSql<BigInt, Oracle> for i64 {
     fn from_sql(bytes: Option<&OracleValue>) -> FromSqlResult<Self> {
-        let mut bytes = not_none!(bytes);
-        let mut bytes = &bytes.bytes;
+        let bytes = not_none!(bytes);
+        let bytes = &bytes.bytes;
         debug_assert!(
             bytes.len() <= 8,
             "Received more than 8 bytes decoding i64. \
@@ -42,8 +36,8 @@ impl FromSql<BigInt, Oracle> for i64 {
 
 impl FromSql<Integer, Oracle> for i32 {
     fn from_sql(bytes: Option<&OracleValue>) -> FromSqlResult<Self> {
-        let mut bytes = not_none!(bytes);
-        let mut bytes = &bytes.bytes;
+        let bytes = not_none!(bytes);
+        let bytes = &bytes.bytes;
         debug_assert!(
             bytes.len() <= 4,
             "Received more than 4 bytes decoding i32. \
@@ -62,8 +56,8 @@ impl FromSql<Integer, Oracle> for i32 {
 
 impl FromSql<SmallInt, Oracle> for i16 {
     fn from_sql(bytes: Option<&OracleValue>) -> FromSqlResult<Self> {
-        let mut bytes = not_none!(bytes);
-        let mut bytes = &bytes.bytes;
+        let bytes = not_none!(bytes);
+        let bytes = &bytes.bytes;
         debug_assert!(
             bytes.len() <= 2,
             "Received more than 2 bytes decoding i16. \

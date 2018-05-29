@@ -1,6 +1,5 @@
 use diesel::connection::TransactionManager;
-use diesel::backend::UsesAnsiSavepointSyntax;
-use diesel::connection::{Connection, SimpleConnection};
+use diesel::connection::SimpleConnection;
 use diesel::result::QueryResult;
 use std::cell::Cell;
 use oci_sys as ffi;
@@ -55,7 +54,7 @@ impl TransactionManager<OciConnection> for OCITransactionManager
         self.change_transaction_depth(
             1,
             if transaction_depth == 0 {
-                let status = unsafe {
+                let _status = unsafe {
                     ffi::OCITransStart(
                         conn.raw.service_handle,
                         conn.raw.env.error_handle,
@@ -79,7 +78,7 @@ impl TransactionManager<OciConnection> for OCITransactionManager
         self.change_transaction_depth(
             -1,
             if transaction_depth == 1 {
-                let status = unsafe {
+                let _status = unsafe {
                     ffi::OCITransRollback(
                         conn.raw.service_handle,
                         conn.raw.env.error_handle,
@@ -101,7 +100,7 @@ impl TransactionManager<OciConnection> for OCITransactionManager
         self.change_transaction_depth(
             -1,
             if transaction_depth <= 1 {
-                let status = unsafe {
+                let _status = unsafe {
                     ffi::OCITransCommit(
                         conn.raw.service_handle,
                         conn.raw.env.error_handle,

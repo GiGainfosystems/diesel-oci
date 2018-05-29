@@ -1,16 +1,11 @@
 use std::error::Error;
-use std::io::Write;
 
 use diesel::sql_types::*;
 use diesel::deserialize::FromSql;
-use diesel::serialize::{ToSql, IsNull, Output};
 
 use bigdecimal::BigDecimal;
 
 use oracle::backend::Oracle;
-
-use std::ffi::{CString, CStr};
-use std::os::raw::c_char;
 
 use super::super::connection::OracleValue;
 
@@ -48,8 +43,8 @@ impl Error for BigDecimalError {
 
 impl FromSql<Double, Oracle> for f64 {
     fn from_sql(bytes: Option<&OracleValue>) -> Result<Self, Box<Error + Send + Sync>> {
-        let mut bytes = not_none!(bytes);
-        let mut bytes = &bytes.bytes;
+        let bytes = not_none!(bytes);
+        let bytes = &bytes.bytes;
         debug_assert!(
             bytes.len() <= 8,
             "Received more than 8 bytes while decoding \
@@ -63,8 +58,8 @@ impl FromSql<Double, Oracle> for f64 {
 
 impl FromSql<Float, Oracle> for f32 {
     fn from_sql(bytes: Option<&OracleValue>) -> Result<Self, Box<Error + Send + Sync>> {
-        let mut bytes = not_none!(bytes);
-        let mut bytes = &bytes.bytes;
+        let bytes = not_none!(bytes);
+        let bytes = &bytes.bytes;
         debug_assert!(
             bytes.len() <= 4,
             "Received more than 4 bytes while decoding \
@@ -78,8 +73,8 @@ impl FromSql<Float, Oracle> for f32 {
 
 impl FromSql<Numeric, Oracle> for BigDecimal {
     fn from_sql(bytes: Option<&OracleValue>) -> Result<Self, Box<Error + Send + Sync>> {
-        let mut bytes = not_none!(bytes);
-        let mut bytes = &bytes.bytes;
+        let bytes = not_none!(bytes);
+        let bytes = &bytes.bytes;
         debug_assert!(
             bytes.len() <= 8,
             "Received more than 8 bytes while decoding \

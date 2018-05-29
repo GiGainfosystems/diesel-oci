@@ -15,6 +15,7 @@ pub struct Field {
     inner: *mut ffi::OCIDefine,
     buffer: Vec<u8>,
     null_indicator: Box<i16>,
+    #[allow(dead_code)]
     typ: OCIDataType,
 }
 

@@ -7,17 +7,18 @@ mod types;
 
 use self::dotenv::dotenv;
 use self::connection::OciConnection;
-use diesel::{Connection, ConnectionError};
+use diesel::{Connection};
 use diesel::result::Error;
 use std::{env};
 use diesel::RunQueryDsl;
 
+#[allow(dead_code)]
 fn connection() -> OciConnection {
     let database_url = database_url_from_env("OCI_DATABASE_URL");
     OciConnection::establish(&database_url).unwrap()
 }
 
-
+#[allow(dead_code)]
 fn database_url_from_env(backend_specific_env_var: &str) -> String {
     dotenv().ok();
     match env::var(backend_specific_env_var) {
@@ -33,17 +34,18 @@ fn database_url_from_env(backend_specific_env_var: &str) -> String {
 const DB_URL: &'static str = "oci://\"diesel\"/diesel@//192.168.2.81:1521/orcl";
 
 const CREATE_TEST_TABLE: &'static str =
-    "CREATE TABLE TEST (\
+    "CREATE TABLE test (\
          ID NUMBER(38), \
          TST_CHR VARCHAR(50),\
          TST_NUM NUMBER(38)\
          )";
 
 const DROP_TEST_TABLE: &'static str =
-    "DROP TABLE TEST";
+    "DROP TABLE test";
 
+#[allow(dead_code)]
 const INSERT_TEMPLATE: &'static str =
-    "INSERT INTO TEST ({}) VALUES ({})";
+    "INSERT INTO test ({}) VALUES ({})";
 
 const TEST_VARCHAR: &'static str =
     "'blabla'";
@@ -52,7 +54,6 @@ const TEST_VARCHAR: &'static str =
 //    assert!(r.is_ok() && !r.is_err(), format!("{:?}", r.err()));
 //}
 
-use diesel::sql_types::{Integer, Text, BigInt};
 
 macro_rules! assert_result {
     ($r:expr) => ({
@@ -62,7 +63,7 @@ macro_rules! assert_result {
 }
 
 table! {
-     TEST {
+     test {
          id -> BigInt,
          TST_CHR -> Text,
          TST_NUM -> BigInt,
@@ -85,7 +86,7 @@ table! {
     }
 }
 
-
+#[allow(dead_code)]
 fn create_test_table(conn: &OciConnection) -> usize {
     let ret = conn.execute(CREATE_TEST_TABLE);
     assert_result!(ret);
@@ -104,6 +105,7 @@ fn drop_diesel_table(conn: &OciConnection) -> usize {
     ret.unwrap()
 }
 
+#[allow(dead_code)]
 fn execute_sql_or_rollback(conn: &OciConnection, sql: String, rollback_sql: String) -> usize {
     let ret = conn.execute(&*sql);
     if ret.is_err() {
@@ -117,15 +119,15 @@ fn execute_sql_or_rollback(conn: &OciConnection, sql: String, rollback_sql: Stri
 
 fn clean_test(conn: &OciConnection) {
 
-    let sql = "SELECT * FROM TEST";
+    let sql = "SELECT * FROM test";
     let ret = conn.execute(sql);
     if ret.is_ok() {
-        let ret = drop_test_table(conn);
+        let _ret = drop_test_table(conn);
     }
     let sql = "SELECT * FROM \"__DIESEL_SCHEMA_MIGRATIONS\"";
     let ret = conn.execute(sql);
     if ret.is_ok() {
-        let ret = drop_diesel_table(conn);
+        let _ret = drop_diesel_table(conn);
     }
 }
 
@@ -147,14 +149,14 @@ fn transaction_commit() {
     let ret = conn.execute(CREATE_TEST_TABLE);
     assert_result!(ret);
     let out = conn.transaction::<_, Error, _>(| | {
-        let sql = format!("INSERT INTO TEST ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-        let ret = conn.execute(&*sql)?;
-        let ret = self::TEST::dsl::TEST.load::<(i64, String, i64)>(&conn)?;
+        let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
+        let _ret = conn.execute(&*sql)?;
+        let ret = self::test::dsl::test.load::<(i64, String, i64)>(&conn)?;
         assert_eq!(ret.len(), 1);
         Ok(())
     });
     assert_result!(out);
-    let ret = self::TEST::dsl::TEST.load::<(i64, String, i64)>(&conn);
+    let ret = self::test::dsl::test.load::<(i64, String, i64)>(&conn);
     assert_result!(ret);
     assert_eq!(ret.unwrap().len(), 1);
 }
@@ -169,14 +171,14 @@ fn transaction_rollback() {
     let ret = conn.execute(CREATE_TEST_TABLE);
     assert_result!(ret);
     let out = conn.transaction::<i32, Error, _>(| | {
-        let sql = format!("INSERT INTO TEST ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-        let ret = conn.execute(&*sql)?;
-        let ret = self::TEST::dsl::TEST.load::<(i64, String, i64)>(&conn)?;
+        let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
+        let _ret = conn.execute(&*sql)?;
+        let ret = self::test::dsl::test.load::<(i64, String, i64)>(&conn)?;
         assert_eq!(ret.len(), 1);
         Err(Error::NotFound)
     });
     assert!(out.is_err() && !out.is_ok(), "What :shrug:?");
-    let ret = self::TEST::dsl::TEST.load::<(i64, String, i64)>(&conn);
+    let ret = self::test::dsl::test.load::<(i64, String, i64)>(&conn);
     assert_result!(ret);
     assert_eq!(ret.unwrap().len(), 0);
 }
@@ -205,11 +207,11 @@ fn insert_string() {
     let ret = conn.execute(CREATE_TEST_TABLE);
     assert_result!(ret);
 
-    let sql = format!("INSERT INTO TEST ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
+    let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
     let ret = conn.execute(&*sql);
     assert_result!(ret);
 
-    let ret = self::TEST::dsl::TEST.load::<(i64, String, i64)>(&conn);
+    let ret = self::test::dsl::test.load::<(i64, String, i64)>(&conn);
     assert_result!(ret);
     let ret = ret.unwrap();
     assert_ne!(ret.len(), 0);
@@ -230,10 +232,10 @@ fn insert_string_diesel_way() {
     let ret = conn.execute(CREATE_TEST_TABLE);
     assert_result!(ret);
 
-    use self::TEST::dsl::*;
+    use self::test::dsl::*;
     use diesel::ExpressionMethods;
 
-    let ret = ::diesel::insert_into(TEST)
+    let ret = ::diesel::insert_into(test)
         .values(&TST_CHR.eq(TEST_VARCHAR))
         .execute(&conn);
 
@@ -241,8 +243,8 @@ fn insert_string_diesel_way() {
 
     use diesel::QueryDsl;
 
-    //let ret = self::TEST::dsl::TEST.load::<(i64, String, i64)>(&conn);
-    let ret = self::TEST::dsl::TEST.select(TST_CHR).load::<String>(&conn);
+    //let ret = self::test::dsl::test.load::<(i64, String, i64)>(&conn);
+    let ret = self::test::dsl::test.select(TST_CHR).load::<String>(&conn);
     assert_result!(ret);
     let ret = ret.unwrap();
     assert_ne!(ret.len(), 0);
@@ -267,7 +269,6 @@ fn test_diesel_migration() {
     use diesel::QueryDsl;
     use diesel::ExpressionMethods;
     use std::iter::FromIterator;
-    use diesel::QueryResult;
     use std::collections::HashSet;
 
     let migrations = vec!["00000000000000", "20151219180527", "20160107090901"];
@@ -279,7 +280,7 @@ fn test_diesel_migration() {
         assert_result!(ret);
     }
 
-    let already_run: HashSet<String> = self::__diesel_schema_migrations::dsl::__diesel_schema_migrations
+    let _already_run: HashSet<String> = self::__diesel_schema_migrations::dsl::__diesel_schema_migrations
         .select(version)
         .load(&conn)
         .map(FromIterator::from_iter).unwrap();
@@ -293,7 +294,7 @@ fn test_diesel_migration() {
     println!("migrations: {:?}", migrations);
     println!("already_run: {:?}", already_run);
 
-    let mut pending_migrations: Vec<_> = migrations
+    let pending_migrations: Vec<_> = migrations
         .into_iter()
         .filter(|m| !already_run.contains(&m.to_string()))
         .collect();
@@ -316,7 +317,6 @@ fn test_multi_insert() {
     use diesel::QueryDsl;
     use diesel::ExpressionMethods;
     use std::iter::FromIterator;
-    use diesel::QueryResult;
     use std::collections::HashSet;
 
     let migrations = vec![version.eq("00000000000000"),
@@ -344,7 +344,7 @@ fn test_multi_insert() {
     println!("migrations: {:?}", migrations);
     println!("already_run: {:?}", already_run);
 
-    let mut pending_migrations: Vec<_> = migrations
+    let pending_migrations: Vec<_> = migrations
         .into_iter()
         .filter(|m| !already_run.contains(&m.to_string()))
         .collect();

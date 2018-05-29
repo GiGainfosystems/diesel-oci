@@ -86,6 +86,7 @@ unsafe fn alloc_handle(env: &ConnectionEnviroment,
     handle
 }
 
+#[allow(dead_code)]
 enum ParseState {
     UserName,
     Password,
@@ -121,7 +122,7 @@ impl RawConnection {
         match status {
             ffi::OCI_ERROR => {
                 unsafe {
-                    let res = ffi::OCIErrorGet(error_handle as *mut libc::c_void,
+                    ffi::OCIErrorGet(error_handle as *mut libc::c_void,
                                      1,
                                      ptr::null_mut(),
                                      &mut errcode,

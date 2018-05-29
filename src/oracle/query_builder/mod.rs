@@ -3,8 +3,6 @@ use super::backend::Oracle;
 use diesel::query_builder::QueryBuilder;
 use diesel::result::Error as DieselError;
 
-use super::OciConnection;
-
 mod insert_statement;
 
 #[derive(Default)]

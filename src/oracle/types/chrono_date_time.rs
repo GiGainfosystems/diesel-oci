@@ -10,9 +10,6 @@ use oracle::backend::Oracle;
 
 use self::chrono::{NaiveDateTime, NaiveDate, Datelike, Timelike};
 
-use std::ffi::{CString, CStr};
-use std::os::raw::c_char;
-
 use super::super::connection::OracleValue;
 
 impl FromSql<Timestamp, Oracle> for NaiveDateTime {

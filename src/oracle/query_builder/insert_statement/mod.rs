@@ -1,4 +1,4 @@
-//#![feature(specialization)]
+#![feature(specialization)]
 
 use diesel::query_builder::QueryFragment;
 use diesel::query_builder::ValuesClause;
@@ -10,14 +10,15 @@ use diesel::query_builder::AstPass;
 use diesel::result::QueryResult;
 use diesel::backend::Backend;
 
-impl<T, Tab, DB> QueryFragment<DB> for ValuesClause<T, Tab>
+use super::Oracle;
+
+impl<T, Tab> QueryFragment<Oracle> for ValuesClause<T, Tab>
     where
-        DB: Backend,
         Tab: Table,
-        T: InsertValues<Tab, DB>,
-        DefaultValues: QueryFragment<DB>,
+        T: InsertValues<Tab, Oracle>,
+        DefaultValues: QueryFragment<Oracle>,
 {
-    fn walk_ast(&self, mut out: AstPass<DB>) -> QueryResult<()> {
+    fn walk_ast(&self, mut out: AstPass<Oracle>) -> QueryResult<()> {
         if self.values.is_noop()? {
             DefaultValues.walk_ast(out)?;
         } else {

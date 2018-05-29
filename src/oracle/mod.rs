@@ -354,3 +354,45 @@ fn test_multi_insert() {
 
     assert_eq!(pending_migrations.len(), 0);
 }
+
+#[test]
+fn test_multi_insert_plain() {
+    let conn = OciConnection::establish(&DB_URL).unwrap();
+
+    //clean_test(&conn);
+
+    //let ret = conn.execute(CREATE_DIESEL_MIGRATIONS_TABLE);
+    //assert_result!(ret);
+
+    use self::__diesel_schema_migrations::dsl::*;
+    use diesel::QueryDsl;
+    use std::iter::FromIterator;
+    use std::collections::HashSet;
+
+
+    //let ret = conn.execute("INSERT INTO \"__DIESEL_SCHEMA_MIGRATIONS\" (\"VERSION\") select ('00000000000000') from dual union all select ('20160107090901') from dual union all select ('20151219180527') from dual");
+    //assert_result!(ret);
+
+    let migrations = vec!["00000000000000",
+                          "20160107090901",
+                          "20151219180527"];
+
+    let already_run: HashSet<String> = self::__diesel_schema_migrations::dsl::__diesel_schema_migrations
+        .select(version)
+        .order(version)
+        .load(&conn)
+        .map(FromIterator::from_iter).unwrap();
+
+
+    println!("migrations: {:?}", migrations);
+
+    let pending_migrations: Vec<_> = migrations
+        .into_iter()
+        .filter(|m| !already_run.contains(&m.to_string()))
+        .collect();
+
+    println!("already_run: {:?}", already_run);
+    println!("pending_migrations: {:?}", pending_migrations);
+
+    assert_eq!(pending_migrations.len(), 0);
+}

@@ -3,3 +3,7 @@ Cargo.lock
 .cargo
 *~
 *\#*\#
+
+cmake-build-debug/
+.vscode/
+.idea/

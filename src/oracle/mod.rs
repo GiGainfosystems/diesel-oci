@@ -4,6 +4,8 @@ mod backend;
 mod query_builder;
 pub mod connection;
 mod types;
+mod query_dsl;
+mod insertable;
 
 use self::dotenv::dotenv;
 use self::connection::OciConnection;

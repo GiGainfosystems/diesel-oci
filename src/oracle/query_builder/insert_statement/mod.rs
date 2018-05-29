@@ -1,36 +1,35 @@
 #![feature(specialization)]
 
-use diesel::query_builder::QueryFragment;
-use diesel::query_builder::ValuesClause;
-
-use diesel::query_source::Table;
-use diesel::insertable::InsertValues;
-use diesel::query_builder::insert_statement::DefaultValues;
-use diesel::query_builder::AstPass;
-use diesel::result::QueryResult;
-use diesel::backend::Backend;
-
-use super::Oracle;
-
-impl<T, Tab> QueryFragment<Oracle> for ValuesClause<T, Tab>
-    where
-        Tab: Table,
-        T: InsertValues<Tab, Oracle>,
-        DefaultValues: QueryFragment<Oracle>,
-{
-    fn walk_ast(&self, mut out: AstPass<Oracle>) -> QueryResult<()> {
-        if self.values.is_noop()? {
-            DefaultValues.walk_ast(out)?;
-        } else {
-            out.push_sql("(");
-            self.values.column_names(out.reborrow())?;
-            out.push_sql(") select ");
-            self.values.walk_ast(out.reborrow())?;
-            out.push_sql(" from dual");
-        }
-        Ok(())
-    }
-}
+//use diesel::query_builder::QueryFragment;
+//use diesel::query_builder::ValuesClause;
+//
+//use diesel::query_source::Table;
+//use diesel::insertable::InsertValues;
+//use diesel::query_builder::insert_statement::DefaultValues;
+//use diesel::query_builder::AstPass;
+//use diesel::result::QueryResult;
+//
+//use super::Oracle;
+//
+//impl<T, Tab> QueryFragment<Oracle> for ValuesClause<T, Tab>
+//    where
+//        Tab: Table,
+//        T: InsertValues<Tab, Oracle>,
+//        DefaultValues: QueryFragment<Oracle>,
+//{
+//    fn walk_ast(&self, mut out: AstPass<Oracle>) -> QueryResult<()> {
+//        if self.values.is_noop()? {
+//            DefaultValues.walk_ast(out)?;
+//        } else {
+//            out.push_sql("(");
+//            self.values.column_names(out.reborrow())?;
+//            out.push_sql(") select ");
+//            self.values.walk_ast(out.reborrow())?;
+//            out.push_sql(" from dual");
+//        }
+//        Ok(())
+//    }
+//}
 
 
 

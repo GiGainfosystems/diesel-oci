@@ -27,12 +27,10 @@ impl<'a, T, Tab, Inner, DB> QueryFragment<DB> for BatchInsert<'a, T, Tab>
         if let Some(record) = records.next() {
             record.walk_ast(out.reborrow())?;
         }
-        let mut i = 0;
         for record in records {
             out.push_sql(" union all select ");
             record.values.walk_ast(out.reborrow())?;
             out.push_sql(" from dual");
-            i = i+1;
         }
         Ok(())
     }

@@ -1,12 +1,12 @@
-use std::error::Error;
-use std::io::Write;
-use diesel::sql_types::*;
-use byteorder::{NativeEndian, WriteBytesExt};
-use diesel::deserialize::FromSql;
-use diesel::serialize::{ToSql, IsNull, Output};
 use super::backend::*;
 use super::connection::OracleValue;
+use byteorder::{NativeEndian, WriteBytesExt};
+use diesel::deserialize::FromSql;
+use diesel::serialize::{IsNull, Output, ToSql};
+use diesel::sql_types::*;
 use oci_sys as ffi;
+use std::error::Error;
+use std::io::Write;
 
 pub type FromSqlResult<T> = Result<T, ErrorType>;
 pub type ErrorType = Box<Error + Send + Sync>;
@@ -85,15 +85,13 @@ macro_rules! not_none {
     ($bytes:expr) => {
         match $bytes {
             Some(bytes) => bytes,
-            None =>
-                panic!(),
-                // return Err(Box::new(diesel::types::impls::option::UnexpectedNullError {
+            None => panic!(),
+            // return Err(Box::new(diesel::types::impls::option::UnexpectedNullError {
             //     msg: "Unexpected null for non-null column".to_string(),
             // })),
         }
-    }
+    };
 }
-
 
 impl HasSqlType<SmallInt> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
@@ -181,10 +179,9 @@ impl ToSql<Bool, Oracle> for bool {
     }
 }
 
-
 #[cfg(feature = "chrono-time")]
 mod chrono_date_time;
 
+mod decimal;
 mod integers;
 mod primitives;
-mod decimal;

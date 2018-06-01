@@ -1,27 +1,27 @@
-use std::rc::Rc;
-use diesel::connection::{SimpleConnection, Connection, MaybeCached};
-use diesel::result::*;
-use diesel::query_builder::{AsQuery, QueryFragment};
-use diesel::sql_types::HasSqlType;
-use diesel::deserialize::{Queryable, QueryableByName};
-use diesel::query_builder::QueryId;
-use diesel::query_builder::bind_collector::RawBytesBindCollector;
 use diesel::connection::StatementCache;
+use diesel::connection::{Connection, MaybeCached, SimpleConnection};
+use diesel::deserialize::{Queryable, QueryableByName};
+use diesel::query_builder::bind_collector::RawBytesBindCollector;
+use diesel::query_builder::QueryId;
+use diesel::query_builder::{AsQuery, QueryFragment};
+use diesel::result::*;
+use diesel::sql_types::HasSqlType;
+use std::rc::Rc;
 
 #[cfg(test)]
 use diesel::migration::MigrationConnection;
 
-use super::backend::Oracle;
-use self::stmt::Statement;
 use self::cursor::Cursor;
+use self::stmt::Statement;
 use self::transaction::OCITransactionManager;
+use super::backend::Oracle;
 mod oracle_value;
 pub use self::oracle_value::OracleValue;
 
-mod raw;
-mod stmt;
 mod cursor;
+mod raw;
 mod row;
+mod stmt;
 mod transaction;
 
 pub struct OciConnection {
@@ -40,17 +40,17 @@ unsafe impl Send for OciConnection {}
 impl MigrationConnection for OciConnection {
     const CREATE_MIGRATIONS_FUNCTION: &'static str =
         "create or replace procedure create_if_not_exists(input_sql varchar2) \
-        as \
-        begin \
-            execute immediate input_sql; \
-            exception \
-                when others then \
-                if sqlcode = -955 then \
-                    NULL; \
-                else \
-                    raise; \
-            end if; \
-        end; \n ";
+         as \
+         begin \
+         execute immediate input_sql; \
+         exception \
+         when others then \
+         if sqlcode = -955 then \
+         NULL; \
+         else \
+         raise; \
+         end if; \
+         end; \n ";
 
     const CREATE_MIGRATIONS_TABLE: &'static str = "
     declare \
@@ -80,14 +80,13 @@ impl Connection for OciConnection {
     fn establish(database_url: &str) -> ConnectionResult<Self> {
         let r = try!(raw::RawConnection::establish(database_url));
         let ret = OciConnection {
-               raw: Rc::new(r),
-               transaction_manager: OCITransactionManager::new(),
-               statement_cache: StatementCache::new(),
-           };
+            raw: Rc::new(r),
+            transaction_manager: OCITransactionManager::new(),
+            statement_cache: StatementCache::new(),
+        };
         let _k = ret.execute("alter session set sql_trace=true");
         Ok(ret)
     }
-
 
     #[doc(hidden)]
     fn execute(&self, query: &str) -> QueryResult<usize> {
@@ -98,7 +97,8 @@ impl Connection for OciConnection {
 
     #[doc(hidden)]
     fn execute_returning_count<T>(&self, source: &T) -> QueryResult<usize>
-        where T: QueryFragment<Self::Backend> + QueryId
+    where
+        T: QueryFragment<Self::Backend> + QueryId,
     {
         let stmt = try!(self.prepare_query(source));
         try!(stmt.run());
@@ -110,10 +110,11 @@ impl Connection for OciConnection {
     }
 
     fn query_by_index<T, U>(&self, source: T) -> QueryResult<Vec<U>>
-        where T: AsQuery,
-              T::Query: QueryFragment<Self::Backend> + QueryId,
-              Self::Backend: HasSqlType<T::SqlType>,
-              U: Queryable<T::SqlType, Self::Backend>
+    where
+        T: AsQuery,
+        T::Query: QueryFragment<Self::Backend> + QueryId,
+        Self::Backend: HasSqlType<T::SqlType>,
+        U: Queryable<T::SqlType, Self::Backend>,
     {
         let stmt = try!(self.prepare_query(&source.as_query()));
         let cursor: Cursor<T::SqlType, U> = try!(stmt.run_with_cursor());
@@ -125,20 +126,19 @@ impl Connection for OciConnection {
     }
 
     fn query_by_name<T, U>(&self, _source: &T) -> QueryResult<Vec<U>>
-        where
-            T: QueryFragment<Self::Backend> + QueryId,
-            U: QueryableByName<Self::Backend>
+    where
+        T: QueryFragment<Self::Backend> + QueryId,
+        U: QueryableByName<Self::Backend>,
     {
         unimplemented!()
     }
-
-
 }
 
 impl OciConnection {
-    fn prepare_query<T: QueryFragment<Oracle> + QueryId>(&self,
-                                                         source: &T)
-                                                         -> QueryResult<MaybeCached<Statement>> {
+    fn prepare_query<T: QueryFragment<Oracle> + QueryId>(
+        &self,
+        source: &T,
+    ) -> QueryResult<MaybeCached<Statement>> {
         let mut statement = try!(self.cached_prepared_statement(source));
 
         let mut bind_collector = RawBytesBindCollector::<Oracle>::new();
@@ -152,10 +152,10 @@ impl OciConnection {
         Ok(statement)
     }
 
-    fn cached_prepared_statement<T: QueryFragment<Oracle> + QueryId>
-        (&self,
-         source: &T)
-         -> QueryResult<MaybeCached<Statement>> {
+    fn cached_prepared_statement<T: QueryFragment<Oracle> + QueryId>(
+        &self,
+        source: &T,
+    ) -> QueryResult<MaybeCached<Statement>> {
         self.statement_cache
             .cached_statement(source, &[], |sql| Statement::prepare(&self.raw, sql))
     }

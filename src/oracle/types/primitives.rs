@@ -1,8 +1,7 @@
-
 use std::error::Error;
 
-use diesel::sql_types::*;
 use diesel::deserialize::FromSql;
+use diesel::sql_types::*;
 
 use oracle::backend::Oracle;
 

@@ -3,20 +3,20 @@
 use diesel::query_builder::QueryFragment;
 use diesel::query_builder::ValuesClause;
 
-use diesel::query_source::Table;
+use diesel::backend::Backend;
 use diesel::insertable::InsertValues;
 use diesel::query_builder::insert_statement::DefaultValues;
 use diesel::query_builder::AstPass;
+use diesel::query_source::Table;
 use diesel::result::QueryResult;
-use diesel::backend::Backend;
 
 use super::Oracle;
 
 impl<T, Tab> QueryFragment<Oracle> for ValuesClause<T, Tab>
-    where
-        Tab: Table,
-        T: InsertValues<Tab, Oracle>,
-        DefaultValues: QueryFragment<Oracle>,
+where
+    Tab: Table,
+    T: InsertValues<Tab, Oracle>,
+    DefaultValues: QueryFragment<Oracle>,
 {
     fn walk_ast(&self, mut out: AstPass<Oracle>) -> QueryResult<()> {
         if self.values.is_noop()? {
@@ -31,8 +31,6 @@ impl<T, Tab> QueryFragment<Oracle> for ValuesClause<T, Tab>
         Ok(())
     }
 }
-
-
 
 //use diesel::insertable::Insertable;
 //use diesel::query_builder::insert_statement::InsertStatement;

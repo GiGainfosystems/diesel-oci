@@ -1,10 +1,9 @@
+use byteorder::NativeEndian;
+use diesel::backend::UsesAnsiSavepointSyntax;
 use diesel::backend::*;
 use diesel::query_builder::bind_collector::RawBytesBindCollector;
-use diesel::backend::UsesAnsiSavepointSyntax;
-use oracle::types::OCIDataType;
-use byteorder::NativeEndian;
 use diesel::sql_types::TypeMetadata;
-
+use oracle::types::OCIDataType;
 
 use super::connection::OracleValue;
 use super::query_builder::OciQueryBuilder;

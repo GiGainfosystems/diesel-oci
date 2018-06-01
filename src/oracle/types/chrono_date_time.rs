@@ -2,13 +2,13 @@ extern crate chrono;
 use std::error::Error;
 use std::io::Write;
 
-use diesel::sql_types::*;
 use diesel::deserialize::FromSql;
-use diesel::serialize::{ToSql, IsNull, Output};
+use diesel::serialize::{IsNull, Output, ToSql};
+use diesel::sql_types::*;
 
 use oracle::backend::Oracle;
 
-use self::chrono::{NaiveDateTime, NaiveDate, Datelike, Timelike};
+use self::chrono::{Datelike, NaiveDate, NaiveDateTime, Timelike};
 
 use super::super::connection::OracleValue;
 
@@ -43,25 +43,29 @@ impl FromSql<Timestamp, Oracle> for NaiveDateTime {
         } else {
             unreachable!()
         }
-
     }
 }
 
 impl ToSql<Timestamp, Oracle> for NaiveDateTime {
-    fn to_sql<W: Write>(&self,
-                        out: &mut Output<W, Oracle>)
-                        -> Result<IsNull, Box<Error + Send + Sync>> {
+    fn to_sql<W: Write>(
+        &self,
+        out: &mut Output<W, Oracle>,
+    ) -> Result<IsNull, Box<Error + Send + Sync>> {
         let year = self.year();
         if year > 0 {
             let c: u8 = (year / 100 + 100) as u8;
             let y: u8 = (year % 100 + 100) as u8;
-            try!(out.write(&[c, y])
-                     .map_err(|e| Box::new(e) as Box<Error + Send + Sync>));
+            try!(
+                out.write(&[c, y])
+                    .map_err(|e| Box::new(e) as Box<Error + Send + Sync>)
+            );
         } else {
             let c: u8 = (year / 100) as u8;
             let y: u8 = (year % 100) as u8;
-            try!(out.write(&[c, y])
-                     .map_err(|e| Box::new(e) as Box<Error + Send + Sync>));
+            try!(
+                out.write(&[c, y])
+                    .map_err(|e| Box::new(e) as Box<Error + Send + Sync>)
+            );
         }
         let mo = self.month() as u8;
         let d = self.day() as u8;
@@ -71,10 +75,8 @@ impl ToSql<Timestamp, Oracle> for NaiveDateTime {
         out.write(&[mo, d, h, mi, s])
             .map_err(|e| Box::new(e) as Box<Error + Send + Sync>)
             .map(|_| IsNull::No)
-
     }
 }
-
 
 impl FromSql<Date, Oracle> for NaiveDate {
     fn from_sql(bytes: Option<&OracleValue>) -> Result<Self, Box<Error + Send + Sync>> {
@@ -93,31 +95,34 @@ impl FromSql<Date, Oracle> for NaiveDate {
         } else {
             unreachable!()
         }
-
     }
 }
 
 impl ToSql<Date, Oracle> for NaiveDate {
-    fn to_sql<W: Write>(&self,
-                        out: &mut Output<W, Oracle>)
-                        -> Result<IsNull, Box<Error + Send + Sync>> {
+    fn to_sql<W: Write>(
+        &self,
+        out: &mut Output<W, Oracle>,
+    ) -> Result<IsNull, Box<Error + Send + Sync>> {
         let year = self.year();
         if year > 0 {
             let c: u8 = (year / 100 + 100) as u8;
             let y: u8 = (year % 100 + 100) as u8;
-            try!(out.write(&[c, y])
-                     .map_err(|e| Box::new(e) as Box<Error + Send + Sync>));
+            try!(
+                out.write(&[c, y])
+                    .map_err(|e| Box::new(e) as Box<Error + Send + Sync>)
+            );
         } else {
             let c: u8 = (year / 100) as u8;
             let y: u8 = (year % 100) as u8;
-            try!(out.write(&[c, y])
-                     .map_err(|e| Box::new(e) as Box<Error + Send + Sync>));
+            try!(
+                out.write(&[c, y])
+                    .map_err(|e| Box::new(e) as Box<Error + Send + Sync>)
+            );
         }
         let mo = self.month() as u8;
         let d = self.day() as u8;
         out.write(&[mo, d, 1, 1, 1])
             .map_err(|e| Box::new(e) as Box<Error + Send + Sync>)
             .map(|_| IsNull::No)
-
     }
 }

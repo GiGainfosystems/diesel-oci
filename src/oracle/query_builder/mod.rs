@@ -43,6 +43,3 @@ impl QueryBuilder<Oracle> for OciQueryBuilder {
         self.sql
     }
 }
-
-
-

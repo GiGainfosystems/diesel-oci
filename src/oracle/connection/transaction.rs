@@ -1,9 +1,9 @@
-use diesel::connection::TransactionManager;
-use diesel::connection::SimpleConnection;
-use diesel::result::QueryResult;
-use std::cell::Cell;
-use oci_sys as ffi;
 use super::OciConnection;
+use diesel::connection::SimpleConnection;
+use diesel::connection::TransactionManager;
+use diesel::result::QueryResult;
+use oci_sys as ffi;
+use std::cell::Cell;
 
 /// An implementation of `TransactionManager` which can be used for oracle
 #[allow(missing_debug_implementations)]
@@ -34,8 +34,8 @@ impl OCITransactionManager {
     /// Returns an error if already inside of a transaction.
     #[allow(dead_code)]
     pub fn begin_transaction_sql<Conn>(&self, conn: &Conn, sql: &str) -> QueryResult<()>
-        where
-            Conn: SimpleConnection
+    where
+        Conn: SimpleConnection,
     {
         use diesel::result::Error::AlreadyInTransaction;
 
@@ -47,8 +47,7 @@ impl OCITransactionManager {
     }
 }
 
-impl TransactionManager<OciConnection> for OCITransactionManager
-{
+impl TransactionManager<OciConnection> for OCITransactionManager {
     fn begin_transaction(&self, conn: &OciConnection) -> QueryResult<()> {
         let transaction_depth = self.transaction_depth.get();
         self.change_transaction_depth(
@@ -59,7 +58,7 @@ impl TransactionManager<OciConnection> for OCITransactionManager
                         conn.raw.service_handle,
                         conn.raw.env.error_handle,
                         0,
-                        ffi::OCI_TRANS_NEW
+                        ffi::OCI_TRANS_NEW,
                     )
                 };
                 Ok(())
@@ -67,7 +66,6 @@ impl TransactionManager<OciConnection> for OCITransactionManager
                 conn.batch_execute(&format!("SAVEPOINT diesel_savepoint_{}", transaction_depth))
             },
         )
-
     }
 
     fn rollback_transaction(&self, conn: &OciConnection) -> QueryResult<()> {
@@ -82,7 +80,7 @@ impl TransactionManager<OciConnection> for OCITransactionManager
                     ffi::OCITransRollback(
                         conn.raw.service_handle,
                         conn.raw.env.error_handle,
-                        ffi::OCI_DEFAULT
+                        ffi::OCI_DEFAULT,
                     )
                 };
                 Ok(())
@@ -104,7 +102,7 @@ impl TransactionManager<OciConnection> for OCITransactionManager
                     ffi::OCITransCommit(
                         conn.raw.service_handle,
                         conn.raw.env.error_handle,
-                        ffi::OCI_DEFAULT
+                        ffi::OCI_DEFAULT,
                     )
                 };
                 Ok(())

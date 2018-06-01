@@ -5,8 +5,6 @@ pub struct OracleValue {
 
 impl OracleValue {
     pub fn new() -> Self {
-        OracleValue{
-            bytes: Vec::new(),
-        }
+        OracleValue { bytes: Vec::new() }
     }
 }

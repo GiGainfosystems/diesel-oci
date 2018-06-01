@@ -461,29 +461,34 @@ impl Statement {
         let mut bndp = ptr::null_mut() as *mut ffi::OCIBind;
         let mut is_null = false;
         // otherwise the string will be deleted before reaching OCIBindByPos
-        let mut s = CString::new("").unwrap();
-        let (buf, size): (*mut c_void, i32) = match (tpe, value) {
+        //let mut s = CString::new("").unwrap();
+        let (buf, size): (Box<c_void>, i32) = match (tpe, value) {
             (_, None) => {
                 is_null = true;
-                (ptr::null_mut(), 0)
+                unsafe {
+                    (Box::from_raw(ptr::null_mut()), 0)
+                }
             }
             (OCIDataType::OCIString, Some(value))
             | (OCIDataType::String, Some(value))
             | (OCIDataType::Char, Some(value))
             | (OCIDataType::Clob, Some(value)) => {
-                s = CString::new(::std::str::from_utf8(&value).unwrap()).unwrap();
+                let s = CString::new(::std::str::from_utf8(&value).unwrap()).unwrap();
                 let len = s.as_bytes_with_nul().len();
-                (s.into_raw() as *mut c_void, len as i32)
+                unsafe {
+                    (Box::from_raw(s.into_raw() as *mut c_void), len as i32)
+                }
             }
-            (_, Some(mut value)) => (value.as_mut_ptr() as *mut c_void, value.len() as i32),
+            (_, Some(mut value)) => unsafe {(Box::from_raw(value.as_mut_ptr() as *mut c_void), value.len() as i32)},
         };
+        let ptr = Box::into_raw(buf);
         unsafe {
             let status = ffi::OCIBindByPos(
                 self.inner_statement,
                 &mut bndp,
                 self.connection.env.error_handle,
                 self.bind_index,
-                buf as *mut c_void,
+                ptr,
                 size,
                 // TODO: What happened here? why does this work with other datatypes?
                 //tpe as libc::c_ushort,
@@ -498,7 +503,7 @@ impl Statement {
                 ptr::null_mut(),
                 ffi::OCI_DEFAULT,
             );
-            self.buffers.push(Box::from_raw(buf));
+            self.buffers.push(Box::from_raw(ptr));
             self.sizes.push(size);
 
             if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {

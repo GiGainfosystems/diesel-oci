@@ -7,6 +7,8 @@ use diesel::deserialize::{Queryable, QueryableByName};
 use diesel::query_builder::QueryId;
 use diesel::query_builder::bind_collector::RawBytesBindCollector;
 use diesel::connection::StatementCache;
+
+#[cfg(test)]
 use diesel::migration::MigrationConnection;
 
 use super::backend::Oracle;
@@ -34,6 +36,7 @@ pub struct OciConnection {
 // Similar to diesel::sqlite::SqliteConnection;
 unsafe impl Send for OciConnection {}
 
+#[cfg(test)]
 impl MigrationConnection for OciConnection {
     const CREATE_MIGRATIONS_FUNCTION: &'static str =
         "create or replace procedure create_if_not_exists(input_sql varchar2) \

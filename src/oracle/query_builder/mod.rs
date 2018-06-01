@@ -3,7 +3,7 @@ use super::backend::Oracle;
 use diesel::query_builder::QueryBuilder;
 use diesel::result::Error as DieselError;
 
-mod insert_statement;
+//mod insert_statement;
 
 #[derive(Default)]
 pub struct OciQueryBuilder {

@@ -4,7 +4,7 @@ A backend implementation for [diesel](https://github.com/diesel-rs/diesel) for o
 
 ## Status:
 
-- [x] Builds with diesel 1.2.2
+- [x] Builds with diesel 1.3.0
 - [x] Able to execute simplest queries (`SELECT * from table;`)
 
 ## Not working/TODO:

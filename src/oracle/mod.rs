@@ -8,9 +8,7 @@ mod types;
 use self::dotenv::dotenv;
 use self::connection::OciConnection;
 use diesel::{Connection};
-use diesel::result::Error;
 use std::{env};
-use diesel::RunQueryDsl;
 
 #[allow(dead_code)]
 fn connection() -> OciConnection {
@@ -30,7 +28,7 @@ fn database_url_from_env(backend_specific_env_var: &str) -> String {
     }
 }
 
-
+#[allow(dead_code)]
 const DB_URL: &'static str = "oci://\"diesel\"/diesel@//192.168.2.81:1521/orcl";
 
 const CREATE_TEST_TABLE: &'static str =
@@ -40,6 +38,7 @@ const CREATE_TEST_TABLE: &'static str =
          TST_NUM NUMBER(38)\
          )";
 
+#[allow(dead_code)]
 const DROP_TEST_TABLE: &'static str =
     "DROP TABLE test";
 
@@ -47,6 +46,7 @@ const DROP_TEST_TABLE: &'static str =
 const INSERT_TEMPLATE: &'static str =
     "INSERT INTO test ({}) VALUES ({})";
 
+#[allow(dead_code)]
 const TEST_VARCHAR: &'static str =
     "'blabla'";
 
@@ -70,9 +70,11 @@ table! {
      }
 }
 
+#[allow(dead_code)]
 const DROP_DIESEL_TABLE: &'static str =
     "DROP TABLE \"__DIESEL_SCHEMA_MIGRATIONS\"";
 
+#[allow(dead_code)]
 const CREATE_DIESEL_MIGRATIONS_TABLE: &'static str =
     "CREATE TABLE \"__DIESEL_SCHEMA_MIGRATIONS\" (\
          VERSION VARCHAR(50) PRIMARY KEY NOT NULL,\
@@ -93,12 +95,14 @@ fn create_test_table(conn: &OciConnection) -> usize {
     ret.unwrap()
 }
 
+#[allow(dead_code)]
 fn drop_test_table(conn: &OciConnection) -> usize {
     let ret = conn.execute(DROP_TEST_TABLE);
     assert_result!(ret);
     ret.unwrap()
 }
 
+#[allow(dead_code)]
 fn drop_diesel_table(conn: &OciConnection) -> usize {
     let ret = conn.execute(DROP_DIESEL_TABLE);
     assert_result!(ret);
@@ -116,7 +120,7 @@ fn execute_sql_or_rollback(conn: &OciConnection, sql: String, rollback_sql: Stri
     ret.unwrap()
 }
 
-
+#[allow(dead_code)]
 fn clean_test(conn: &OciConnection) {
 
     let sql = "SELECT * FROM test";

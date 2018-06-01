@@ -38,6 +38,7 @@ unsafe impl Send for OciConnection {}
 
 #[cfg(test)]
 impl MigrationConnection for OciConnection {
+    #[cfg(ka)]
     const CREATE_MIGRATIONS_FUNCTION: &'static str =
         "create or replace procedure create_if_not_exists(input_sql varchar2) \
          as \

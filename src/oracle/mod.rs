@@ -9,6 +9,10 @@ use self::connection::OciConnection;
 use self::dotenv::dotenv;
 use diesel::Connection;
 use std::env;
+#[cfg(test)]
+use diesel::result::Error;
+#[cfg(test)]
+use diesel::RunQueryDsl;
 
 #[allow(dead_code)]
 fn connection() -> OciConnection {

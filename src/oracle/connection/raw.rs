@@ -109,6 +109,7 @@ fn parse_db_string(database_url: &str) -> ConnectionResult<(String, String, Stri
     // example: oci://\"diesel\"/diesel@//192.168.2.81:1521/orcl, c.f. sqplus manual
 
     let splits: Vec<&str> = database_url.split("//").collect();
+    assert_eq!(splits.len(), 3);
     let userandpw: Vec<&str> = splits[1].split("/").collect();
     let user = userandpw[0].to_string();
     let password = unsafe {

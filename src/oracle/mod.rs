@@ -416,10 +416,10 @@ fn gst_compat() {
     let neg_base: i64 = -2;
     let base: i128 = 2;
 
-    let sqls = format!("INSERT INTO gst_types ({}) VALUES ({},{},{},{},{},{},{})", "big, small, normal, text, d, r, v", neg_base.pow(63), neg_base.pow(15), neg_base.pow(31), "'text'", "1e-307", "1e-37", "'test'");
+    let sqls = format!("INSERT INTO gst_types ({}) VALUES ({},{},{},{},{}d,{},{})", "big, small, normal, text, d, r, v", neg_base.pow(63), neg_base.pow(15), neg_base.pow(31), "'text'", "1e-307", "1e-37", "'test'");
     let ret = conn.execute(&*sqls);
     assert_result!(ret);
-    let sqls = format!("INSERT INTO gst_types ({}) VALUES ({},{},{},{},{},{},{})", "big, small, normal, text, d, r, v", base.pow(63)-1, base.pow(15)-1, base.pow(31)-1, "'text'", "1e308d", "1e37", "'test'");
+    let sqls = format!("INSERT INTO gst_types ({}) VALUES ({},{},{},{},{}d,{},{})", "big, small, normal, text, d, r, v", base.pow(63)-1, base.pow(15)-1, base.pow(31)-1, "'text'", "1e308", "1e37", "'test'");
     let ret = conn.execute(&*sqls);
     assert_result!(ret);
 
@@ -428,8 +428,21 @@ fn gst_compat() {
     use diesel::dsl::sql;
     //let sqls = "SELECT big, small, normal, text, d, r, v from gst_types";
     //let r = sql::<(BigInt, SmallInt, Integer, Text, Double, Float, VarChar),>(sqls).load::<(i64, i16, i32, String, f64, f32, String)>(&conn);
-    let sqls = "SELECT big from gst_types";
-    let r = sql::<(BigInt),>(sqls).load::<(i64)>(&conn);
+    let sqls = "SELECT big, small, normal, d, r, v from gst_types";
+    let r = sql::<(BigInt, SmallInt, Integer, Double, Float, Text),>(sqls).load::<(i64, i16, i32, f64, f32, String)>(&conn);
     assert_result!(r);
-    let _v = r.unwrap();
+    let v = r.unwrap();
+    assert_eq!(v[0].0, neg_base.pow(63));
+    assert_eq!(v[1].0, (base.pow(63)-1) as i64);
+    assert_eq!(v[0].1, neg_base.pow(15) as i16);
+    assert_eq!(v[1].1, (base.pow(15)-1) as i16);
+    assert_eq!(v[0].2, neg_base.pow(31) as i32);
+    assert_eq!(v[1].2, (base.pow(31)-1) as i32);
+    assert_eq!(v[0].3, 1e-307f64);
+    assert_eq!(v[1].3, 1e308f64);
+    assert_eq!(v[0].4, 1e-37f32);
+    assert_eq!(v[1].4, 1e37f32);
+    assert_eq!(v[0].5, "test");
+    assert_eq!(v[1].5, "test");
+
 }

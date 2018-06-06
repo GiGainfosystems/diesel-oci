@@ -536,9 +536,11 @@ impl Statement {
                 self.bind_index,
                 ptr,
                 size,
-                // TODO: What happened here? why does this work with other datatypes?
-                //tpe as libc::c_ushort,
-                ffi::SQLT_CHR as u16,
+                if size == 4 && tpe == OCIDataType::Float {
+                    ffi::SQLT_BFLOAT as u16
+                } else {
+                    tpe.to_raw() as u16
+                },
                 match is_null {
                     true => IS_NULL as *mut ffi::OCIInd as *mut c_void,
                     false => IS_NOT_NULL as *mut ffi::OCIInd as *mut c_void,

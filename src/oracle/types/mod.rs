@@ -79,6 +79,17 @@ impl OCIDataType {
             _ => None,
         }
     }
+
+    pub fn to_raw(&self) -> u32 {
+        use self::OCIDataType::*;
+        match self {
+            Int => ffi::SQLT_INT,
+            Float | BFloat | IBFloat => ffi::SQLT_BDOUBLE, // this should be SQLT_BFLOAT, but diesel comes with a float here
+            BDouble | IBDouble => ffi::SQLT_BDOUBLE,
+            Char | String => ffi::SQLT_CHR,
+            _ => 0u32,
+        }
+    }
 }
 
 macro_rules! not_none {

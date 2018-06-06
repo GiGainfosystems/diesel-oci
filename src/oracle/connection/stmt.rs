@@ -208,7 +208,7 @@ impl Statement {
             connection: raw_connection.clone(),
             inner_statement: stmt,
             bind_index: 0,
-            is_select: sql.contains("SELECT"),
+            is_select: sql.contains("SELECT") || sql.contains("select") ,
             binds: Vec::with_capacity(20),
             buffers: Vec::with_capacity(20),
             sizes: Vec::with_capacity(20),
@@ -297,8 +297,7 @@ impl Statement {
         Ok(affected_rows as usize)
     }
 
-    pub fn run_with_cursor<ST, T>(&self) -> QueryResult<Cursor<ST, T>> {
-        try!(self.run());
+    fn get_column_count(&self) -> QueryResult<u32> {
         let mut col_count: u32 = 0;
         unsafe {
             let status = ffi::OCIAttrGet(
@@ -314,145 +313,181 @@ impl Statement {
                 return Err(err);
             }
         }
-        let mut fields = Vec::<Field>::with_capacity(col_count as usize);
-        for i in 0..col_count as usize {
-            let col_number = i + 1;
-            let col_handle = unsafe {
-                let mut parameter_descriptor: *mut ffi::OCIStmt = ptr::null_mut();
-                let status = ffi::OCIParamGet(
-                    self.inner_statement as *const _,
-                    ffi::OCI_HTYPE_STMT,
-                    self.connection.env.error_handle,
-                    (&mut parameter_descriptor as *mut *mut ffi::OCIStmt) as *mut _,
-                    col_number as u32,
-                );
-                if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
-                    return Err(err);
-                }
-                parameter_descriptor
-            };
+        Ok(col_count)
+    }
 
-            let mut tpe: u32 = 0;
-            let mut tpe_size: u32 = 0;
-            unsafe {
-                let status = ffi::OCIAttrGet(
-                    col_handle as *mut _,
-                    ffi::OCI_DTYPE_PARAM,
-                    (&mut tpe as *mut u32) as *mut _,
-                    &mut 0,
-                    ffi::OCI_ATTR_DATA_TYPE,
-                    self.connection.env.error_handle,
-                );
-                if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
-                    return Err(err);
-                }
-
-                match tpe {
-                    ffi::SQLT_INT | ffi::SQLT_UIN => {
-                        tpe_size = 8;
-                    }
-                    ffi::SQLT_NUM => {
-                        let mut attributesize = 16u32; //sb2
-                        let mut scale = 0i8;
-                        let mut precision = 0i16;
-                        let status = ffi::OCIAttrGet(
-                            col_handle as *mut _,
-                            ffi::OCI_DTYPE_PARAM,
-                            (&mut precision as *mut i16) as *mut _,
-                            &mut attributesize as *mut u32,
-                            ffi::OCI_ATTR_PRECISION,
-                            self.connection.env.error_handle,
-                        );
-                        if let Some(err) =
-                            Self::check_error(self.connection.env.error_handle, status)
-                        {
-                            return Err(err);
-                        }
-                        let mut attributesize = 8u32; // sb1
-                        let status = ffi::OCIAttrGet(
-                            col_handle as *mut _,
-                            ffi::OCI_DTYPE_PARAM,
-                            (&mut scale as *mut i8) as *mut _,
-                            &mut attributesize as *mut u32,
-                            ffi::OCI_ATTR_SCALE,
-                            self.connection.env.error_handle,
-                        );
-                        if let Some(err) =
-                            Self::check_error(self.connection.env.error_handle, status)
-                        {
-                            return Err(err);
-                        }
-                        if scale == 0 && precision == 1 {
-                            tpe_size = 8;
-                        } else {
-                            tpe_size = 8;
-                        }
-                    }
-                    ffi::SQLT_FLT | ffi::SQLT_BFLOAT | ffi::SQLT_BDOUBLE | ffi::SQLT_LNG => {
-                        tpe_size = 8;
-                    }
-                    ffi::SQLT_CHR
-                    | ffi::SQLT_VCS
-                    | ffi::SQLT_LVC
-                    | ffi::SQLT_AFC
-                    | ffi::SQLT_VST
-                    | ffi::SQLT_ODT
-                    | ffi::SQLT_DATE
-                    | ffi::SQLT_TIMESTAMP
-                    | ffi::SQLT_TIMESTAMP_TZ
-                    | ffi::SQLT_TIMESTAMP_LTZ => {
-                        let mut length = 0u32;
-                        let status = ffi::OCIAttrGet(
-                            col_handle as *mut _,
-                            ffi::OCI_DTYPE_PARAM,
-                            (&mut tpe_size as *mut u32) as *mut _,
-                            &mut length as *mut u32,
-                            ffi::OCI_ATTR_CHAR_SIZE,
-                            self.connection.env.error_handle,
-                        );
-                        if let Some(err) =
-                            Self::check_error(self.connection.env.error_handle, status)
-                        {
-                            return Err(err);
-                        }
-                        //tpe_size -= 1;
-                    }
-                    _ => panic!("Shit"),
-                }
+    fn get_attr_type_and_size(&self, col_handle: *mut ffi::OCIStmt) -> QueryResult<(u32, u32)> {
+        let mut tpe: u32 = 0;
+        let mut tpe_size: u32 = 0;
+        unsafe {
+            let status = ffi::OCIAttrGet(
+                col_handle as *mut _,
+                ffi::OCI_DTYPE_PARAM,
+                (&mut tpe as *mut u32) as *mut _,
+                &mut 0,
+                ffi::OCI_ATTR_DATA_TYPE,
+                self.connection.env.error_handle,
+            );
+            if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
+                return Err(err);
             }
 
-            if let Some(tpe) = ::oracle::types::OCIDataType::from_raw(tpe) {
-                let mut v = Vec::with_capacity(tpe_size as usize);
-                v.resize(tpe_size as usize, 0);
-                let mut null_indicator: Box<i16> = Box::new(0);
-                let def = unsafe {
-                    let mut def = ptr::null_mut();
-                    let status = ffi::OCIDefineByPos(
-                        self.inner_statement,
-                        &mut def,
+            match tpe {
+                ffi::SQLT_INT | ffi::SQLT_UIN => {
+                    tpe_size = 8;
+                }
+                ffi::SQLT_NUM => {
+                    let mut attributesize = 16u32; //sb2
+                    let mut scale = 0i8;
+                    let mut precision = 0i16;
+                    let status = ffi::OCIAttrGet(
+                        col_handle as *mut _,
+                        ffi::OCI_DTYPE_PARAM,
+                        (&mut precision as *mut i16) as *mut _,
+                        &mut attributesize as *mut u32,
+                        ffi::OCI_ATTR_PRECISION,
                         self.connection.env.error_handle,
-                        col_number as u32,
-                        v.as_ptr() as *mut _,
-                        v.len() as i32,
-                        tpe as libc::c_ushort,
-                        (&mut *null_indicator as *mut i16) as *mut _,
-                        ptr::null_mut(),
-                        ptr::null_mut(),
-                        ffi::OCI_DEFAULT,
                     );
                     if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
                         return Err(err);
                     }
-                    def
-                };
-                fields.push(Field::new(def, v, null_indicator, tpe));
-            } else {
-                return Err(Error::DatabaseError(
-                    DatabaseErrorKind::__Unknown,
-                    Box::new(format!("unknown type {}", tpe)),
-                ));
+                    let mut attributesize = 8u32; // sb1
+                    let status = ffi::OCIAttrGet(
+                        col_handle as *mut _,
+                        ffi::OCI_DTYPE_PARAM,
+                        (&mut scale as *mut i8) as *mut _,
+                        &mut attributesize as *mut u32,
+                        ffi::OCI_ATTR_SCALE,
+                        self.connection.env.error_handle,
+                    );
+                    if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
+                        return Err(err);
+                    }
+                    if scale == 0 {
+                        tpe_size = 8;
+                        tpe = ffi::SQLT_INT;
+                    } else {
+                        tpe = ffi::SQLT_FLT;
+                        tpe_size = 8;
+                    }
+                }
+                ffi::SQLT_FLT | ffi::SQLT_BFLOAT | ffi::SQLT_BDOUBLE | ffi::SQLT_LNG | ffi::SQLT_IBDOUBLE => {
+                    tpe_size = 8;
+                }
+                ffi::SQLT_CHR
+                | ffi::SQLT_VCS
+                | ffi::SQLT_LVC
+                | ffi::SQLT_AFC
+                | ffi::SQLT_VST
+                | ffi::SQLT_ODT
+                | ffi::SQLT_DATE
+                | ffi::SQLT_TIMESTAMP
+                | ffi::SQLT_TIMESTAMP_TZ
+                | ffi::SQLT_TIMESTAMP_LTZ => {
+                    let mut length = 0u32;
+                    let status = ffi::OCIAttrGet(
+                        col_handle as *mut _,
+                        ffi::OCI_DTYPE_PARAM,
+                        (&mut tpe_size as *mut u32) as *mut _,
+                        &mut length as *mut u32,
+                        ffi::OCI_ATTR_CHAR_SIZE,
+                        self.connection.env.error_handle,
+                    );
+                    if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
+                        return Err(err);
+                    }
+                    //tpe_size -= 1;
+                }
+                _ => {
+                    return Err(Error::DatabaseError(
+                        DatabaseErrorKind::__Unknown,
+                        Box::new(format!("unsupported type {}", tpe)),
+                    ))
+                }
             }
         }
+        Ok((tpe, tpe_size))
+    }
+
+    pub fn define(
+        &self,
+        fields: &mut Vec<Field>,
+        tpe: u32,
+        tpe_size: u32,
+        col_number: usize,
+    ) -> QueryResult<()> {
+        let mut v = Vec::with_capacity(tpe_size as usize);
+        v.resize(tpe_size as usize, 0);
+        let mut null_indicator: Box<i16> = Box::new(0);
+        let def = unsafe {
+            let mut def = ptr::null_mut();
+            let status = ffi::OCIDefineByPos(
+                self.inner_statement,
+                &mut def,
+                self.connection.env.error_handle,
+                col_number as u32,
+                v.as_ptr() as *mut _,
+                v.len() as i32,
+                 tpe as libc::c_ushort,
+                (&mut *null_indicator as *mut i16) as *mut _,
+                ptr::null_mut(),
+                ptr::null_mut(),
+                ffi::OCI_DEFAULT,
+            );
+            if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
+                return Err(err);
+            }
+            def
+        };
+        if let Some(tpe) = ::oracle::types::OCIDataType::from_raw(tpe) {
+            fields.push(Field::new(def, v, null_indicator, tpe));
+        } else {
+            return Err(Error::DatabaseError(
+                DatabaseErrorKind::__Unknown,
+                Box::new(format!("unsupported type {}", tpe)),
+            ));
+        }
+
+        Ok(())
+    }
+
+    fn define_column(&self, mut fields: &mut Vec<Field>, col_number: usize) -> QueryResult<()> {
+        let col_handle = unsafe {
+            let mut parameter_descriptor: *mut ffi::OCIStmt = ptr::null_mut();
+            let status = ffi::OCIParamGet(
+                self.inner_statement as *const _,
+                ffi::OCI_HTYPE_STMT,
+                self.connection.env.error_handle,
+                (&mut parameter_descriptor as *mut *mut ffi::OCIStmt) as *mut _,
+                col_number as u32,
+            );
+            if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
+                return Err(err);
+            }
+            parameter_descriptor
+        };
+
+        let (tpe, tpe_size): (u32, u32) = self.get_attr_type_and_size(col_handle)?;
+
+        self.define(&mut fields, tpe, tpe_size, col_number)?;
+        Ok(())
+    }
+
+    fn define_all_columns(&self) -> QueryResult<Vec<Field>> {
+
+        let col_count = self.get_column_count()?;
+        let mut fields = Vec::<Field>::with_capacity(col_count as usize);
+        for i in 0..col_count as usize {
+            let col_number = i + 1;
+            self.define_column(&mut fields, col_number)?;
+        }
+        Ok(fields)
+    }
+
+    pub fn run_with_cursor<ST, T>(&self) -> QueryResult<Cursor<ST, T>> {
+        self.run()?;
+        let fields = self.define_all_columns()?;
+
         Ok(Cursor::new(self, fields))
     }
 
@@ -461,13 +496,10 @@ impl Statement {
         let mut bndp = ptr::null_mut() as *mut ffi::OCIBind;
         let mut is_null = false;
         // otherwise the string will be deleted before reaching OCIBindByPos
-        //let mut s = CString::new("").unwrap();
         let (buf, size): (Box<c_void>, i32) = match (tpe, value) {
             (_, None) => {
                 is_null = true;
-                unsafe {
-                    (Box::from_raw(ptr::null_mut()), 0)
-                }
+                unsafe { (Box::from_raw(ptr::null_mut()), 0) }
             }
             (OCIDataType::OCIString, Some(value))
             | (OCIDataType::String, Some(value))
@@ -475,11 +507,14 @@ impl Statement {
             | (OCIDataType::Clob, Some(value)) => {
                 let s = CString::new(::std::str::from_utf8(&value).unwrap()).unwrap();
                 let len = s.as_bytes_with_nul().len();
-                unsafe {
-                    (Box::from_raw(s.into_raw() as *mut c_void), len as i32)
-                }
+                unsafe { (Box::from_raw(s.into_raw() as *mut c_void), len as i32) }
             }
-            (_, Some(mut value)) => unsafe {(Box::from_raw(value.as_mut_ptr() as *mut c_void), value.len() as i32)},
+            (_, Some(mut value)) => unsafe {
+                (
+                    Box::from_raw(value.as_mut_ptr() as *mut c_void),
+                    value.len() as i32,
+                )
+            },
         };
         let ptr = Box::into_raw(buf);
         unsafe {

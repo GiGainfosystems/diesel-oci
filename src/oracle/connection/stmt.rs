@@ -335,7 +335,7 @@ impl Statement {
             match tpe {
                 ffi::SQLT_INT | ffi::SQLT_UIN => {
                     tpe_size = 8;
-                }
+                },
                 ffi::SQLT_NUM => {
                     let mut attributesize = 16u32; //sb2
                     let mut scale = 0i8;
@@ -364,15 +364,25 @@ impl Statement {
                         return Err(err);
                     }
                     if scale == 0 {
-                        tpe_size = 8;
+                        match precision {
+                            5 => tpe_size=2, // number(5) -> smallint
+                            10 => tpe_size=4, // number(10) -> int
+                            19 => tpe_size=8, // number(19) -> bigint
+                            _ => tpe_size=21, // number(38) -> consume_all
+                        }
                         tpe = ffi::SQLT_INT;
                     } else {
                         tpe = ffi::SQLT_FLT;
                         tpe_size = 8;
                     }
-                }
-                ffi::SQLT_FLT | ffi::SQLT_BFLOAT | ffi::SQLT_BDOUBLE | ffi::SQLT_LNG | ffi::SQLT_IBDOUBLE => {
+                },
+                ffi::SQLT_BDOUBLE | ffi::SQLT_LNG | ffi::SQLT_IBDOUBLE => {
                     tpe_size = 8;
+                    tpe = ffi::SQLT_BDOUBLE;
+                },
+                ffi::SQLT_FLT | ffi::SQLT_BFLOAT | ffi::SQLT_IBFLOAT => {
+                    tpe_size=4;
+                    tpe = ffi::SQLT_BFLOAT;
                 }
                 ffi::SQLT_CHR
                 | ffi::SQLT_VCS
@@ -396,14 +406,15 @@ impl Statement {
                     if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
                         return Err(err);
                     }
-                    //tpe_size -= 1;
-                }
+                    //tpe_size += 1;
+                    tpe = ffi::SQLT_STR;
+                },
                 _ => {
                     return Err(Error::DatabaseError(
                         DatabaseErrorKind::__Unknown,
                         Box::new(format!("unsupported type {}", tpe)),
                     ))
-                }
+                },
             }
         }
         Ok((tpe, tpe_size))

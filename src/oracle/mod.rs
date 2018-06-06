@@ -362,3 +362,74 @@ fn test_multi_insert() {
 
     assert_eq!(pending_migrations.len(), 0);
 }
+
+#[test]
+fn gst_compat() {
+    // bigint -2^63 to 2^63-1 http://wiki.ispirer.com/sqlways/postgresql/data-types/bigint // 12 byte
+    // smallint -2^15 to 2^15-1 http://wiki.ispirer.com/sqlways/postgresql/data-types/smallint
+    // timestamp
+    // text
+    // int -2147483647 2147483647 -2^31 to 2^31-1 http://wiki.ispirer.com/sqlways/postgresql/data-types/int
+    // varchar
+    // bytea
+    // double precision 1E-307 to 1E+308 http://wiki.ispirer.com/sqlways/postgresql/data-types/double_precision
+    // boolean
+    // jsonb
+    // real	1E-37 to 1E+37 http://wiki.ispirer.com/sqlways/postgresql/data-types/real
+
+    // https://docs.oracle.com/cd/B19306_01/gateways.102/b14270/apa.htm
+    const CREATE_GST_TYPE_TABLE: &'static str =
+        "CREATE TABLE gst_types (\
+            big NUMBER(19),
+            small NUMBER(5),
+            normal NUMBER(10),
+            tz timestamp default sysdate,
+            text clob,
+            byte blob,
+            d binary_double,
+            r binary_float,
+            v VARCHAR2(50) NOT NULL
+     )";
+
+    const CREATE_GST_TYPE_TABLE2: &'static str =
+        "CREATE TABLE gst_types (\
+            big NUMBER(19),
+            small smallint,
+            normal integer,
+            tz timestamp default sysdate,
+            text clob,
+            byte blob,
+            d binary_double,
+            r binary_float,
+            v VARCHAR2(50) NOT NULL
+     )";
+
+
+
+    let conn = OciConnection::establish(&DB_URL).unwrap();
+
+    drop_table(&conn, "GST_TYPES");
+
+    let ret = conn.execute(CREATE_GST_TYPE_TABLE);
+    assert_result!(ret);
+
+    let neg_base: i64 = -2;
+    let base: i128 = 2;
+
+    let sqls = format!("INSERT INTO gst_types ({}) VALUES ({},{},{},{},{},{},{})", "big, small, normal, text, d, r, v", neg_base.pow(63), neg_base.pow(15), neg_base.pow(31), "'text'", "1e-307", "1e-37", "'test'");
+    let ret = conn.execute(&*sqls);
+    assert_result!(ret);
+    let sqls = format!("INSERT INTO gst_types ({}) VALUES ({},{},{},{},{},{},{})", "big, small, normal, text, d, r, v", base.pow(63)-1, base.pow(15)-1, base.pow(31)-1, "'text'", "1e308d", "1e37", "'test'");
+    let ret = conn.execute(&*sqls);
+    assert_result!(ret);
+
+
+    use diesel::sql_types::{BigInt, SmallInt, Integer, Text, Double, Float, VarChar};
+    use diesel::dsl::sql;
+    //let sqls = "SELECT big, small, normal, text, d, r, v from gst_types";
+    //let r = sql::<(BigInt, SmallInt, Integer, Text, Double, Float, VarChar),>(sqls).load::<(i64, i16, i32, String, f64, f32, String)>(&conn);
+    let sqls = "SELECT big from gst_types";
+    let r = sql::<(BigInt),>(sqls).load::<(i64)>(&conn);
+    assert_result!(r);
+    let _v = r.unwrap();
+}

@@ -377,6 +377,11 @@ fn test_multi_insert() {
     assert_eq!(pending_migrations.len(), 0);
 }
 
+enum way {
+    Diesel,
+    Native,
+}
+
 #[test]
 fn gst_compat() {
     // bigint -2^63 to 2^63-1 http://wiki.ispirer.com/sqlways/postgresql/data-types/bigint // 12 byte
@@ -427,36 +432,68 @@ fn gst_compat() {
     let ret = conn.execute(CREATE_GST_TYPE_TABLE);
     assert_result!(ret);
 
-    let neg_base: i64 = -2;
-    let base: i128 = 2;
 
-    let sqls = format!("INSERT INTO gst_types ({}) VALUES ({},{},{},{},{}d,{},{})", "big, small, normal, text, d, r, v", neg_base.pow(63), neg_base.pow(15), neg_base.pow(31), "'text'", "1e-307", "1e-37", "'test'");
-    let ret = conn.execute(&*sqls);
-    assert_result!(ret);
-    let sqls = format!("INSERT INTO gst_types ({}) VALUES ({},{},{},{},{}d,{},{})", "big, small, normal, text, d, r, v", base.pow(63)-1, base.pow(15)-1, base.pow(31)-1, "'text'", "1e308", "1e37", "'test'");
-    let ret = conn.execute(&*sqls);
-    assert_result!(ret);
+    use self::gst_types::dsl::{gst_types};
+    use self::gst_types::columns::{big, small, normal, v, d, r};
+    use diesel::ExpressionMethods;
+    use diesel::QueryDsl;
+    use std::collections::HashSet;
+    use std::iter::FromIterator;
+    use std::{i16, i32, i64};
 
+
+    let way_to_try = way::Native;
+    match way_to_try {
+        way::Native => {
+            let neg_base: i64 = -2;
+            let base: i128 = 2;
+
+            let sqls = format!("INSERT INTO gst_types ({}) VALUES ({},{},{},{},{}d,{},{})", "big, small, normal, text, d, r, v", neg_base.pow(63), neg_base.pow(15), neg_base.pow(31), "'text'", "1e-307", "1e-37", "'test'");
+            let ret = conn.execute(&*sqls);
+            assert_result!(ret);
+            let sqls = format!("INSERT INTO gst_types ({}) VALUES ({},{},{},{},{}d,{},{})", "big, small, normal, text, d, r, v", base.pow(63) - 1, base.pow(15) - 1, base.pow(31) - 1, "'text'", "1e308", "1e37", "'test'");
+            let ret = conn.execute(&*sqls);
+            assert_result!(ret);
+        },
+        way::Diesel => {
+            println!("{:?}", i32::MIN);
+            println!("{:?}", i32::MAX);
+
+            let new_row = (big.eq(i64::MIN), small.eq(i16::MIN), normal.eq(i32::MIN), v.eq("test"), d.eq(1e-307f64), r.eq(1e-37f32));
+            let ret = ::diesel::insert_into(gst_types)
+                .values(&new_row)
+                .execute(&conn);
+            assert_result!(ret);
+
+            let new_row = (big.eq(i64::MAX), small.eq(i16::MAX), normal.eq(i32::MAX), v.eq("test"), d.eq(1e308f64), r.eq(1e37f32));
+            let ret = ::diesel::insert_into(gst_types)
+                .values(&new_row)
+                .execute(&conn);
+            assert_result!(ret);
+        },
+    }
 
     use diesel::sql_types::{BigInt, SmallInt, Integer, Text, Double, Float, VarChar};
     use diesel::dsl::sql;
     //let sqls = "SELECT big, small, normal, text, d, r, v from gst_types";
     //let r = sql::<(BigInt, SmallInt, Integer, Text, Double, Float, VarChar),>(sqls).load::<(i64, i16, i32, String, f64, f32, String)>(&conn);
+
     let sqls = "SELECT big, small, normal, d, r, v from gst_types";
-    let r = sql::<(BigInt, SmallInt, Integer, Double, Float, Text),>(sqls).load::<(i64, i16, i32, f64, f32, String)>(&conn);
-    assert_result!(r);
-    let v = r.unwrap();
-    assert_eq!(v[0].0, neg_base.pow(63));
-    assert_eq!(v[1].0, (base.pow(63)-1) as i64);
-    assert_eq!(v[0].1, neg_base.pow(15) as i16);
-    assert_eq!(v[1].1, (base.pow(15)-1) as i16);
-    assert_eq!(v[0].2, neg_base.pow(31) as i32);
-    assert_eq!(v[1].2, (base.pow(31)-1) as i32);
-    assert_eq!(v[0].3, 1e-307f64);
-    assert_eq!(v[1].3, 1e308f64);
-    assert_eq!(v[0].4, 1e-37f32);
-    assert_eq!(v[1].4, 1e37f32);
-    assert_eq!(v[0].5, "test");
-    assert_eq!(v[1].5, "test");
+    let ret = sql::<(BigInt, SmallInt, Integer, Double, Float, Text),>(sqls).load::<(i64, i16, i32, f64, f32, String)>(&conn);
+    assert_result!(ret);
+    let val = ret.unwrap();
+    assert_eq!(val.len(), 2);
+    assert_eq!(val[0].0, i64::MIN);
+    assert_eq!(val[1].0, i64::MAX);
+    assert_eq!(val[0].1, i16::MIN);
+    assert_eq!(val[1].1, i16::MAX);
+    assert_eq!(val[0].2, i32::MIN);
+    assert_eq!(val[1].2, i32::MAX);
+    assert_eq!(val[0].3, 1e-307f64);
+    assert_eq!(val[1].3, 1e308f64);
+    assert_eq!(val[0].4, 1e-37f32);
+    assert_eq!(val[1].4, 1e37f32);
+    assert_eq!(val[0].5, "test");
+    assert_eq!(val[1].5, "test");
 
 }

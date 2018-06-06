@@ -68,6 +68,20 @@ table! {
      }
 }
 
+table! {
+    gst_types (big) {
+        big -> BigInt,
+        small -> SmallInt,
+        normal -> Integer,
+        tz -> Timestamp,
+        text -> VarChar,
+        byte -> VarChar,
+        d -> Double,
+        r -> Float,
+        v -> VarChar,
+    }
+}
+
 #[allow(dead_code)]
 const DROP_DIESEL_TABLE: &'static str = "DROP TABLE \"__DIESEL_SCHEMA_MIGRATIONS\"";
 

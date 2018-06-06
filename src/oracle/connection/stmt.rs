@@ -527,8 +527,14 @@ impl Statement {
                 )
             },
         };
+
         let ptr = Box::into_raw(buf);
         unsafe {
+            println!("{:?}", tpe);
+            println!("{:?}", tpe.to_raw() as u16);
+            println!("{:?}", size);
+
+
             let status = ffi::OCIBindByPos(
                 self.inner_statement,
                 &mut bndp,

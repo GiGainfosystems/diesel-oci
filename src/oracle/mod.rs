@@ -131,6 +131,17 @@ fn clean_test(conn: &OciConnection) {
     }
 }
 
+#[allow(dead_code)]
+fn drop_table(conn: &OciConnection, tbl: &str) {
+    let sql = format!("SELECT * FROM {:?}", tbl);
+    let sql = sql.replace("\"", "");
+    let ret = conn.execute(&sql);
+    if ret.is_ok() {
+        let sql = format!("drop table {:?}", tbl);
+        let _ret = conn.execute(&sql);
+    }
+}
+
 #[test]
 fn connect() {
     //let database_url = database_url_from_env("OCI_DATABASE_URL");
@@ -190,11 +201,9 @@ fn create_table() {
 
     clean_test(&conn);
 
-    let ret = conn.execute(CREATE_TEST_TABLE);
-    assert_result!(ret);
-    // drop the table immediately
-    let ret = conn.execute(DROP_TEST_TABLE);
-    assert_result!(ret);
+    let _u = create_test_table(&conn);
+    let _u = drop_test_table(&conn);
+
 }
 
 #[test]

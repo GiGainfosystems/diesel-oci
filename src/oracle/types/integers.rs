@@ -17,9 +17,8 @@ impl FromSql<BigInt, Oracle> for i64 {
     fn from_sql(bytes: Option<&OracleValue>) -> FromSqlResult<Self> {
         let bytes = not_none!(bytes);
         let bytes = &bytes.bytes;
-        println!("{:?}", bytes);
         debug_assert!(
-            bytes.len() <= 12,
+            bytes.len() <= 8,
             "Received more than 8 bytes decoding i64. \
              Was an expression of a different type misidentified as BigInteger?"
         );
@@ -28,12 +27,11 @@ impl FromSql<BigInt, Oracle> for i64 {
             "Received fewer than 8 bytes decoding i64. \
              Was an Integer expression misidentified as BigInteger?"
         );
-        let k = bytes
+        bytes
             .as_slice()
             .read_i64::<<Oracle as Backend>::ByteOrder>()
-            .map_err(|e| Box::new(e) as Box<Error + Send + Sync>);
-        println!("{:?}", k);
-        Ok(0i64)
+            .map_err(|e| Box::new(e) as Box<Error + Send + Sync>)
+
     }
 }
 
@@ -41,9 +39,8 @@ impl FromSql<Integer, Oracle> for i32 {
     fn from_sql(bytes: Option<&OracleValue>) -> FromSqlResult<Self> {
         let bytes = not_none!(bytes);
         let bytes = &bytes.bytes;
-        println!("{:?}", bytes);
         debug_assert!(
-            bytes.len() <= 8,
+            bytes.len() <= 4,
             "Received more than 4 bytes decoding i32. \
              Was an expression of a different type misidentified as Integer?"
         );
@@ -52,12 +49,10 @@ impl FromSql<Integer, Oracle> for i32 {
             "Received fewer than 4 bytes decoding i32. \
              Was an Integer expression misidentified as Integer?"
         );
-        let k = bytes
+        bytes
             .as_slice()
             .read_i32::<<Oracle as Backend>::ByteOrder>()
-            .map_err(|e| Box::new(e) as Box<Error + Send + Sync>);
-        println!("{:?}", k);
-        Ok(0i32)
+            .map_err(|e| Box::new(e) as Box<Error + Send + Sync>)
     }
 }
 

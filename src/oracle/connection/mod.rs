@@ -117,11 +117,11 @@ impl Connection for OciConnection {
         Self::Backend: HasSqlType<T::SqlType>,
         U: Queryable<T::SqlType, Self::Backend>,
     {
-        let stmt = try!(self.prepare_query(&source.as_query()));
-        let cursor: Cursor<T::SqlType, U> = try!(stmt.run_with_cursor());
+        let stmt = self.prepare_query(&source.as_query())?;
+        let cursor: Cursor<T::SqlType, U> = stmt.run_with_cursor()?;
         let mut ret = Vec::new();
         for el in cursor {
-            ret.push(try!(el));
+            ret.push(el?);
         }
         Ok(ret)
     }

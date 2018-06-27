@@ -75,7 +75,7 @@ fn reform_insert_query(sql: &str) -> String {
                         if state == ValueClauseState::OUTSIDE {
                             state = ValueClauseState::INSIDE;
                         } else {
-                            num_openings = num_openings + 1;
+                            num_openings += 1;
                         }
                     }
 
@@ -83,7 +83,7 @@ fn reform_insert_query(sql: &str) -> String {
                         if state == ValueClauseState::INSIDE && num_openings == 0 {
                             state = ValueClauseState::OUTSIDE;
                         } else {
-                            num_openings = num_openings - 1;
+                            num_openings -= 1;
                         }
                     }
 
@@ -124,7 +124,7 @@ fn reform_insert_query2(sql: &str) -> String {
                     if state == ValueClauseState::OUTSIDE {
                         state = ValueClauseState::INSIDE;
                     } else {
-                        num_openings = num_openings + 1;
+                        num_openings += 1;
                     }
                 }
 
@@ -132,7 +132,7 @@ fn reform_insert_query2(sql: &str) -> String {
                     if state == ValueClauseState::INSIDE && num_openings == 0 {
                         state = ValueClauseState::OUTSIDE;
                     } else {
-                        num_openings = num_openings - 1;
+                        num_openings -= 1;
                     }
                 }
 
@@ -519,10 +519,7 @@ impl Statement {
                 (value.into_boxed_slice(), len)
             }
         };
-        let mut nullind: Box<ffi::OCIInd> = match is_null {
-            true => Box::new(-1),
-            false => Box::new(0),
-        };
+        let mut nullind: Box<ffi::OCIInd> = if is_null { Box::new(-1) } else { Box::new(0) };
 
         unsafe {
             let status = ffi::OCIBindByPos(

@@ -54,7 +54,7 @@ impl ConnectionEnviroment {
         };
         Ok(ConnectionEnviroment {
             handle: env_handle,
-            error_handle: error_handle,
+            error_handle,
             cs_id,
         })
     }
@@ -110,7 +110,7 @@ fn parse_db_string(database_url: &str) -> ConnectionResult<(String, String, Stri
 
     let splits: Vec<&str> = database_url.split("//").collect();
     assert_eq!(splits.len(), 3);
-    let userandpw: Vec<&str> = splits[1].split("/").collect();
+    let userandpw: Vec<&str> = splits[1].split('/').collect();
     let user = userandpw[0].to_string();
     let password = unsafe {
         // discard the @ handle
@@ -242,11 +242,11 @@ impl RawConnection {
             );
 
             Ok(RawConnection {
-                env: env,
-                service_handle: service_handle,
-                server_handle: server_handle,
-                session_handle: session_handle,
-                transaction_handle: transaction_handle,
+                env,
+                service_handle,
+                server_handle,
+                session_handle,
+                transaction_handle,
             })
         }
     }

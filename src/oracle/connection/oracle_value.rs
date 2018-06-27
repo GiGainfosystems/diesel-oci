@@ -1,4 +1,5 @@
 #[allow(missing_debug_implementations, missing_copy_implementations)]
+#[derive(Default)]
 pub struct OracleValue {
     pub bytes: Vec<u8>,
 }

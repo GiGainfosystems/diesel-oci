@@ -80,7 +80,7 @@ impl OCIDataType {
         }
     }
 
-    pub fn to_raw(&self) -> u32 {
+    pub fn to_raw(self) -> u32 {
         use self::OCIDataType::*;
         match self {
             Int => ffi::SQLT_INT,

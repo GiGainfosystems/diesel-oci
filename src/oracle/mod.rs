@@ -33,22 +33,22 @@ fn database_url_from_env(backend_specific_env_var: &str) -> String {
 }
 
 #[allow(dead_code)]
-const DB_URL: &'static str = "oci://\"diesel\"/diesel@//192.168.2.81:1521/orcl";
+const DB_URL: &str = "oci://\"diesel\"/diesel@//192.168.2.81:1521/orcl";
 
-const CREATE_TEST_TABLE: &'static str = "CREATE TABLE test (\
-                                         ID NUMBER(38), \
-                                         TST_CHR VARCHAR(50),\
-                                         TST_NUM NUMBER(38)\
-                                         )";
-
-#[allow(dead_code)]
-const DROP_TEST_TABLE: &'static str = "DROP TABLE test";
+const CREATE_TEST_TABLE: &str = "CREATE TABLE test (\
+                                 ID NUMBER(38), \
+                                 TST_CHR VARCHAR(50),\
+                                 TST_NUM NUMBER(38)\
+                                 )";
 
 #[allow(dead_code)]
-const INSERT_TEMPLATE: &'static str = "INSERT INTO test ({}) VALUES ({})";
+const DROP_TEST_TABLE: &str = "DROP TABLE test";
 
 #[allow(dead_code)]
-const TEST_VARCHAR: &'static str = "'blabla'";
+const INSERT_TEMPLATE: &str = "INSERT INTO test ({}) VALUES ({})";
+
+#[allow(dead_code)]
+const TEST_VARCHAR: &str = "'blabla'";
 
 //fn assert_result(r: Result<T>) {
 //    assert!(r.is_ok() && !r.is_err(), format!("{:?}", r.err()));
@@ -84,10 +84,10 @@ table! {
 }
 
 #[allow(dead_code)]
-const DROP_DIESEL_TABLE: &'static str = "DROP TABLE \"__DIESEL_SCHEMA_MIGRATIONS\"";
+const DROP_DIESEL_TABLE: &str = "DROP TABLE \"__DIESEL_SCHEMA_MIGRATIONS\"";
 
 #[allow(dead_code)]
-const CREATE_DIESEL_MIGRATIONS_TABLE: &'static str =
+const CREATE_DIESEL_MIGRATIONS_TABLE: &str =
     "CREATE TABLE \"__DIESEL_SCHEMA_MIGRATIONS\" (\
      VERSION VARCHAR(50) PRIMARY KEY NOT NULL,\
      RUN_ON TIMESTAMP with time zone DEFAULT sysdate not null\
@@ -122,7 +122,7 @@ fn drop_diesel_table(conn: &OciConnection) -> usize {
 }
 
 #[allow(dead_code)]
-fn execute_sql_or_rollback(conn: &OciConnection, sql: String, rollback_sql: String) -> usize {
+fn execute_sql_or_rollback(conn: &OciConnection, sql: &str, rollback_sql: &str) -> usize {
     let ret = conn.execute(&*sql);
     if ret.is_err() {
         let inner = conn.execute(&*rollback_sql);
@@ -377,6 +377,7 @@ fn test_multi_insert() {
     assert_eq!(pending_migrations.len(), 0);
 }
 
+#[allow(dead_code)]
 enum Way {
     Diesel,
     Native,
@@ -420,7 +421,7 @@ fn gst_compat() {
     use self::gst_types::columns::{big, big2, d, normal, r, small, v};
     use self::gst_types::dsl::gst_types;
     use diesel::dsl::sql;
-    use diesel::sql_types::{BigInt, Double, Float, Integer, SmallInt, Text, VarChar};
+    use diesel::sql_types::{BigInt, Double, Float, Integer, SmallInt, Text};
     use diesel::ExpressionMethods;
     use diesel::QueryDsl;
     use std::{i16, i32, i64};
@@ -466,7 +467,9 @@ fn gst_compat() {
                 f64,
                 f32,
                 String,
-            )>(&conn);
+            )>(
+                &conn
+            );
             assert_result!(ret);
             let val = ret.unwrap();
             assert_eq!(val.len(), 3);

@@ -27,7 +27,7 @@ impl Field {
     ) -> Field {
         Field {
             inner: raw,
-            buffer: buffer,
+            buffer,
             null_indicator: indicator,
             typ,
         }
@@ -56,7 +56,7 @@ pub struct Cursor<'a, ST, T> {
 impl<'a, ST, T> Cursor<'a, ST, T> {
     pub fn new(stmt: &'a Statement, binds: Vec<Field>) -> Cursor<'a, ST, T> {
         Cursor {
-            stmt: stmt,
+            stmt,
             _marker: PhantomData,
             results: binds,
             current_row: 0,

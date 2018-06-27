@@ -14,7 +14,7 @@ impl<'a> OciRow<'a> {
     pub fn new(row_buf: Vec<&'a [u8]>, is_null: Vec<bool>) -> Self {
         OciRow {
             buf: row_buf,
-            is_null: is_null,
+            is_null,
             col_idx: 0,
             val: OracleValue::new(),
         }

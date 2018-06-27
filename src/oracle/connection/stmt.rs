@@ -22,7 +22,7 @@ pub struct Statement {
     // handle maintains all the bind information for this particular input value. The handle is
     // freed implicitly when the statement handle is deallocated. [...]
     binds: Vec<Box<ffi::OCIBind>>,
-    buffers: Vec<Box<c_void>>,
+    buffers: Vec<Box<[u8]>>,
     sizes: Vec<i32>,
     #[allow(dead_code)]
     sql: String,
@@ -506,29 +506,20 @@ impl Statement {
         self.bind_index += 1;
         let mut bndp = ptr::null_mut() as *mut ffi::OCIBind;
         let mut is_null = false;
-        // otherwise the string will be deleted before reaching OCIBindByPos
-        let (buf, size): (Box<c_void>, i32) = match (tpe, value) {
+        // using a box here otherwise the string will be deleted before
+        // reaching OCIBindByPos
+        let (mut buf, size): (Box<[u8]>, i32) = match (tpe, value) {
             (_, None) => {
                 is_null = true;
-                unsafe { (Box::from_raw(ptr::null_mut()), 0) }
+                (Vec::new().into_boxed_slice(), 0)
             }
-            (OCIDataType::OCIString, Some(value))
-            | (OCIDataType::String, Some(value))
-            | (OCIDataType::Char, Some(value))
-            | (OCIDataType::Clob, Some(value)) => {
-                let s = CString::new(::std::str::from_utf8(&value).unwrap()).unwrap();
-                let len = s.as_bytes_with_nul().len();
-                unsafe { (Box::from_raw(s.into_raw() as *mut c_void), len as i32) }
+            (_, Some(mut value)) => {
+                let len = value.len() as i32;
+                (value.into_boxed_slice(), len)
             }
-            (_, Some(mut value)) => unsafe {
-                (
-                    Box::from_raw(value.as_mut_ptr() as *mut c_void),
-                    value.len() as i32,
-                )
-            },
+        };
         };
 
-        let ptr = Box::into_raw(buf);
         unsafe {
             println!("{:?}", tpe);
             println!("{:?}", tpe.to_raw() as u16);
@@ -540,8 +531,8 @@ impl Statement {
                 &mut bndp,
                 self.connection.env.error_handle,
                 self.bind_index,
-                ptr,
-                size,
+                buf.as_mut_ptr() as *mut c_void,
+                buf.len() as i32,
                 if size == 4 && tpe == OCIDataType::Float {
                     ffi::SQLT_BFLOAT as u16
                 } else {
@@ -557,7 +548,8 @@ impl Statement {
                 ptr::null_mut(),
                 ffi::OCI_DEFAULT,
             );
-            self.buffers.push(Box::from_raw(ptr));
+
+            self.buffers.push(buf);
             self.sizes.push(size);
 
             if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {

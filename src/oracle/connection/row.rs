@@ -24,10 +24,14 @@ impl<'a> OciRow<'a> {
 impl<'a> Row<Oracle> for OciRow<'a> {
     fn take(&mut self) -> Option<&OracleValue> {
         let ret = if self.col_idx < self.buf.len() {
-            // TODO: find a better way to create vec from slice
-            self.val.bytes.clear();
-            self.val.bytes.extend_from_slice(self.buf[self.col_idx]);
-            Some(&self.val)
+            if self.is_null[self.col_idx] {
+                None
+            } else {
+                // TODO: find a better way to create vec from slice
+                self.val.bytes.clear();
+                self.val.bytes.extend_from_slice(self.buf[self.col_idx]);
+                Some(&self.val)
+            }
         } else {
             None
         };

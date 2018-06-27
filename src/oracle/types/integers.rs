@@ -17,7 +17,6 @@ impl FromSql<BigInt, Oracle> for i64 {
     fn from_sql(bytes: Option<&OracleValue>) -> FromSqlResult<Self> {
         let bytes = not_none!(bytes);
         let bytes = &bytes.bytes;
-        println!("{:?}", bytes);
         debug_assert!(
             bytes.len() <= 8,
             "Received more than 8 bytes decoding i64. \
@@ -28,13 +27,10 @@ impl FromSql<BigInt, Oracle> for i64 {
             "Received fewer than 8 bytes decoding i64. \
              Was an Integer expression misidentified as BigInteger?"
         );
-        let k = bytes
+        bytes
             .as_slice()
             .read_i64::<<Oracle as Backend>::ByteOrder>()
-            .map_err(|e| Box::new(e) as Box<Error + Send + Sync>);
-        println!("{:?}", k);
-        k
-
+            .map_err(|e| Box::new(e) as Box<Error + Send + Sync>)
     }
 }
 

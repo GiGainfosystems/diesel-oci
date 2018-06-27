@@ -24,6 +24,7 @@ pub struct Statement {
     binds: Vec<Box<ffi::OCIBind>>,
     buffers: Vec<Box<[u8]>>,
     sizes: Vec<i32>,
+    indicators: Vec<Box<ffi::OCIInd>>,
     #[allow(dead_code)]
     sql: String,
 }
@@ -212,6 +213,7 @@ impl Statement {
             binds: Vec::with_capacity(20),
             buffers: Vec::with_capacity(20),
             sizes: Vec::with_capacity(20),
+            indicators: Vec::with_capacity(20),
             sql: mysql,
         })
     }
@@ -429,7 +431,7 @@ impl Statement {
     ) -> QueryResult<()> {
         let mut v = Vec::with_capacity(tpe_size as usize);
         v.resize(tpe_size as usize, 0);
-        let mut null_indicator: Box<i16> = Box::new(0);
+        let mut null_indicator: Box<i16> = Box::new(-1);
         let def = unsafe {
             let mut def = ptr::null_mut();
             let status = ffi::OCIDefineByPos(
@@ -439,8 +441,8 @@ impl Statement {
                 col_number as u32,
                 v.as_ptr() as *mut _,
                 v.len() as i32,
-                 tpe as libc::c_ushort,
-                (&mut *null_indicator as *mut i16) as *mut _,
+                tpe as libc::c_ushort,
+                &mut *null_indicator as *mut i16 as *mut c_void,
                 ptr::null_mut(),
                 ptr::null_mut(),
                 ffi::OCI_DEFAULT,
@@ -518,6 +520,9 @@ impl Statement {
                 (value.into_boxed_slice(), len)
             }
         };
+        let mut nullind: Box<ffi::OCIInd> = match is_null {
+            true => Box::new(-1),
+            false => Box::new(0),
         };
 
         unsafe {
@@ -538,10 +543,7 @@ impl Statement {
                 } else {
                     tpe.to_raw() as u16
                 },
-                match is_null {
-                    true => IS_NULL as *mut ffi::OCIInd as *mut c_void,
-                    false => IS_NOT_NULL as *mut ffi::OCIInd as *mut c_void,
-                },
+                &mut *nullind as *mut i16 as *mut c_void,
                 ptr::null_mut(),
                 ptr::null_mut(),
                 0,
@@ -551,6 +553,7 @@ impl Statement {
 
             self.buffers.push(buf);
             self.sizes.push(size);
+            self.indicators.push(nullind);
 
             if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
                 return Err(err);

@@ -7,12 +7,12 @@ mod types;
 
 use self::connection::OciConnection;
 use self::dotenv::dotenv;
-use diesel::Connection;
-use std::env;
 #[cfg(test)]
 use diesel::result::Error;
+use diesel::Connection;
 #[cfg(test)]
 use diesel::RunQueryDsl;
+use std::env;
 
 #[allow(dead_code)]
 fn connection() -> OciConnection {
@@ -70,15 +70,16 @@ table! {
 
 table! {
     gst_types (big) {
-        big -> BigInt,
-        small -> SmallInt,
-        normal -> Integer,
-        tz -> Timestamp,
-        text -> VarChar,
-        byte -> VarChar,
-        d -> Double,
-        r -> Float,
-        v -> VarChar,
+        big -> Nullable<BigInt>,
+        big2 -> Nullable<BigInt>,
+        small -> Nullable<SmallInt>,
+        normal -> Nullable<Integer>,
+        tz -> Nullable<Timestamp>,
+        text -> Nullable<VarChar>,
+        byte -> Nullable<VarChar>,
+        d -> Nullable<Double>,
+        r -> Nullable<Float>,
+        v -> Nullable<VarChar>,
     }
 }
 
@@ -217,7 +218,6 @@ fn create_table() {
 
     let _u = create_test_table(&conn);
     let _u = drop_test_table(&conn);
-
 }
 
 #[test]
@@ -377,7 +377,7 @@ fn test_multi_insert() {
     assert_eq!(pending_migrations.len(), 0);
 }
 
-enum way {
+enum Way {
     Diesel,
     Native,
 }
@@ -397,9 +397,9 @@ fn gst_compat() {
     // real	1E-37 to 1E+37 http://wiki.ispirer.com/sqlways/postgresql/data-types/real
 
     // https://docs.oracle.com/cd/B19306_01/gateways.102/b14270/apa.htm
-    const CREATE_GST_TYPE_TABLE: &'static str =
-        "CREATE TABLE gst_types (\
+    const CREATE_GST_TYPE_TABLE: &'static str = "CREATE TABLE gst_types (\
             big NUMBER(19),
+            big2 NUMBER(19),
             small NUMBER(5),
             normal NUMBER(10),
             tz timestamp default sysdate,
@@ -407,23 +407,8 @@ fn gst_compat() {
             byte blob,
             d binary_double,
             r binary_float,
-            v VARCHAR2(50) NOT NULL
+            v VARCHAR2(50)
      )";
-
-    const CREATE_GST_TYPE_TABLE2: &'static str =
-        "CREATE TABLE gst_types (\
-            big NUMBER(19),
-            small smallint,
-            normal integer,
-            tz timestamp default sysdate,
-            text clob,
-            byte blob,
-            d binary_double,
-            r binary_float,
-            v VARCHAR2(50) NOT NULL
-     )";
-
-
 
     let conn = OciConnection::establish(&DB_URL).unwrap();
 
@@ -432,68 +417,153 @@ fn gst_compat() {
     let ret = conn.execute(CREATE_GST_TYPE_TABLE);
     assert_result!(ret);
 
-
-    use self::gst_types::dsl::{gst_types};
-    use self::gst_types::columns::{big, small, normal, v, d, r};
+    use self::gst_types::columns::{big, big2, d, normal, r, small, v};
+    use self::gst_types::dsl::gst_types;
+    use diesel::dsl::sql;
+    use diesel::sql_types::{BigInt, Double, Float, Integer, SmallInt, Text, VarChar};
     use diesel::ExpressionMethods;
     use diesel::QueryDsl;
-    use std::collections::HashSet;
-    use std::iter::FromIterator;
     use std::{i16, i32, i64};
 
-
-    let way_to_try = way::Native;
+    let way_to_try = Way::Diesel;
     match way_to_try {
-        way::Native => {
+        Way::Native => {
             let neg_base: i64 = -2;
             let base: i128 = 2;
 
-            let sqls = format!("INSERT INTO gst_types ({}) VALUES ({},{},{},{},{}d,{},{})", "big, small, normal, text, d, r, v", neg_base.pow(63), neg_base.pow(15), neg_base.pow(31), "'text'", "1e-307", "1e-37", "'test'");
+            let sqls = format!(
+                "INSERT INTO gst_types ({}) VALUES ({},{},{},{},{}d,{},{})",
+                "big, small, normal, text, d, r, v",
+                neg_base.pow(63),
+                neg_base.pow(15),
+                neg_base.pow(31),
+                "'text'",
+                "1e-307",
+                "1e-37",
+                "'test'"
+            );
             let ret = conn.execute(&*sqls);
             assert_result!(ret);
-            let sqls = format!("INSERT INTO gst_types ({}) VALUES ({},{},{},{},{}d,{},{})", "big, small, normal, text, d, r, v", base.pow(63) - 1, base.pow(15) - 1, base.pow(31) - 1, "'text'", "1e308", "1e37", "'test'");
+            let sqls = format!(
+                "INSERT INTO gst_types ({}) VALUES ({},{},{},{},{}d,{},{})",
+                "big, small, normal, text, d, r, v",
+                base.pow(63) - 1,
+                base.pow(15) - 1,
+                base.pow(31) - 1,
+                "'text'",
+                "1e308",
+                "1e37",
+                "'test'"
+            );
             let ret = conn.execute(&*sqls);
             assert_result!(ret);
-        },
-        way::Diesel => {
-            println!("{:?}", i32::MIN);
-            println!("{:?}", i32::MAX);
 
-            let new_row = (big.eq(i64::MIN), small.eq(i16::MIN), normal.eq(i32::MIN), v.eq("test"), d.eq(1e-307f64), r.eq(1e-37f32));
+            let sqls = "SELECT big, small, normal, d, r, v from gst_types";
+            let ret = sql::<(BigInt, SmallInt, Integer, Double, Float, Text)>(sqls).load::<(
+                i64,
+                i16,
+                i32,
+                f64,
+                f32,
+                String,
+            )>(&conn);
+            assert_result!(ret);
+            let val = ret.unwrap();
+            assert_eq!(val.len(), 3);
+
+            assert_eq!(val[0].0, i64::MIN);
+            assert_eq!(val[1].0, i64::MAX);
+            assert_eq!(val[0].1, i16::MIN);
+            assert_eq!(val[1].1, i16::MAX);
+            assert_eq!(val[0].2, i32::MIN);
+            assert_eq!(val[1].2, i32::MAX);
+            assert_eq!(val[0].3, 1e-307f64);
+            assert_eq!(val[1].3, 1e308f64);
+            assert_eq!(val[0].4, 1e-37f32);
+            assert_eq!(val[1].4, 1e37f32);
+            assert_eq!(val[0].5, "test");
+            assert_eq!(val[1].5, "test");
+        }
+        Way::Diesel => {
+            let new_row = (
+                big.eq(i64::MIN),
+                big2.eq(i64::MIN),
+                small.eq(i16::MIN),
+                normal.eq(i32::MIN),
+                v.eq("test"),
+                d.eq(1e-307f64),
+                r.eq(1e-37f32),
+            );
             let ret = ::diesel::insert_into(gst_types)
                 .values(&new_row)
                 .execute(&conn);
             assert_result!(ret);
 
-            let new_row = (big.eq(i64::MAX), small.eq(i16::MAX), normal.eq(i32::MAX), v.eq("test"), d.eq(1e308f64), r.eq(1e37f32));
+            let new_row = (
+                big.eq(i64::MAX),
+                big2.eq(i64::MAX),
+                small.eq(i16::MAX),
+                normal.eq(i32::MAX),
+                v.eq("test"),
+                d.eq(1e308f64),
+                r.eq(1e37f32),
+            );
             let ret = ::diesel::insert_into(gst_types)
                 .values(&new_row)
                 .execute(&conn);
             assert_result!(ret);
-        },
+
+            let ret = ::diesel::insert_into(gst_types)
+                .values(big.eq::<Option<i64>>(None))
+                .execute(&conn);
+            assert_result!(ret);
+
+            let ret: Result<
+                Vec<(
+                    Option<i64>,
+                    Option<i16>,
+                    Option<i32>,
+                    Option<f64>,
+                    Option<f32>,
+                    Option<String>,
+                )>,
+                Error,
+            > = gst_types.select((big, small, normal, d, r, v)).load(&conn);
+            assert_result!(ret);
+            let val = ret.unwrap();
+            assert_eq!(val.len(), 3);
+
+            // value should not be null
+            assert_ne!(val[0].0, None);
+            assert_eq!(val[0].0, Some(i64::MIN));
+            assert_ne!(val[1].0, None);
+            assert_eq!(val[1].0, Some(i64::MAX));
+            assert_ne!(val[0].1, None);
+            assert_eq!(val[0].1, Some(i16::MIN));
+            assert_ne!(val[1].1, None);
+            assert_eq!(val[1].1, Some(i16::MAX));
+            assert_ne!(val[0].2, None);
+            assert_eq!(val[0].2, Some(i32::MIN));
+            assert_ne!(val[1].2, None);
+            assert_eq!(val[1].2, Some(i32::MAX));
+            assert_ne!(val[0].3, None);
+            assert_eq!(val[0].3, Some(1e-307f64));
+            assert_ne!(val[1].3, None);
+            assert_eq!(val[1].3, Some(1e308f64));
+            assert_ne!(val[0].4, None);
+            assert_eq!(val[0].4, Some(1e-37f32));
+            assert_ne!(val[1].4, None);
+            assert_eq!(val[1].4, Some(1e37f32));
+            assert_ne!(val[0].5, None);
+            assert_eq!(val[0].5, Some("test".to_string()));
+            assert_ne!(val[1].5, None);
+            assert_eq!(val[1].5, Some("test".to_string()));
+            assert_eq!(val[2].0, None);
+            assert_eq!(val[2].1, None);
+            assert_eq!(val[2].2, None);
+            assert_eq!(val[2].3, None);
+            assert_eq!(val[2].4, None);
+            assert_eq!(val[2].5, None);
+        }
     }
-
-    use diesel::sql_types::{BigInt, SmallInt, Integer, Text, Double, Float, VarChar};
-    use diesel::dsl::sql;
-    //let sqls = "SELECT big, small, normal, text, d, r, v from gst_types";
-    //let r = sql::<(BigInt, SmallInt, Integer, Text, Double, Float, VarChar),>(sqls).load::<(i64, i16, i32, String, f64, f32, String)>(&conn);
-
-    let sqls = "SELECT big, small, normal, d, r, v from gst_types";
-    let ret = sql::<(BigInt, SmallInt, Integer, Double, Float, Text),>(sqls).load::<(i64, i16, i32, f64, f32, String)>(&conn);
-    assert_result!(ret);
-    let val = ret.unwrap();
-    assert_eq!(val.len(), 2);
-    assert_eq!(val[0].0, i64::MIN);
-    assert_eq!(val[1].0, i64::MAX);
-    assert_eq!(val[0].1, i16::MIN);
-    assert_eq!(val[1].1, i16::MAX);
-    assert_eq!(val[0].2, i32::MIN);
-    assert_eq!(val[1].2, i32::MAX);
-    assert_eq!(val[0].3, 1e-307f64);
-    assert_eq!(val[1].3, 1e308f64);
-    assert_eq!(val[0].4, 1e-37f32);
-    assert_eq!(val[1].4, 1e37f32);
-    assert_eq!(val[0].5, "test");
-    assert_eq!(val[1].5, "test");
-
 }

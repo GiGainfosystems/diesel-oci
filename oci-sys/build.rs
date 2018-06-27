@@ -10,4 +10,3 @@ fn main() {
     //println!("cargo:rustc-link-lib={}", "ociei");
     println!("cargo:rustc-link-lib={}", "clntsh");
 }
-

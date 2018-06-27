@@ -5,7 +5,7 @@ use diesel::result::*;
 use libc;
 use oci_sys as ffi;
 use oracle::types::OCIDataType;
-use std::ffi::{CStr, CString};
+use std::ffi::CStr;
 use std::os::raw::{c_char, c_int, c_void};
 use std::ptr;
 use std::rc::Rc;
@@ -209,7 +209,7 @@ impl Statement {
             connection: raw_connection.clone(),
             inner_statement: stmt,
             bind_index: 0,
-            is_select: sql.contains("SELECT") || sql.contains("select") ,
+            is_select: sql.contains("SELECT") || sql.contains("select"),
             binds: Vec::with_capacity(20),
             buffers: Vec::with_capacity(20),
             sizes: Vec::with_capacity(20),
@@ -337,7 +337,7 @@ impl Statement {
             match tpe {
                 ffi::SQLT_INT | ffi::SQLT_UIN => {
                     tpe_size = 8;
-                },
+                }
                 ffi::SQLT_NUM => {
                     let mut attributesize = 16u32; //sb2
                     let mut scale = 0i8;
@@ -367,23 +367,23 @@ impl Statement {
                     }
                     if scale == 0 {
                         match precision {
-                            5 => tpe_size=2, // number(5) -> smallint
-                            10 => tpe_size=4, // number(10) -> int
-                            19 => tpe_size=8, // number(19) -> bigint
-                            _ => tpe_size=21, // number(38) -> consume_all
+                            5 => tpe_size = 2,  // number(5) -> smallint
+                            10 => tpe_size = 4, // number(10) -> int
+                            19 => tpe_size = 8, // number(19) -> bigint
+                            _ => tpe_size = 21, // number(38) -> consume_all
                         }
                         tpe = ffi::SQLT_INT;
                     } else {
                         tpe = ffi::SQLT_FLT;
                         tpe_size = 8;
                     }
-                },
+                }
                 ffi::SQLT_BDOUBLE | ffi::SQLT_LNG | ffi::SQLT_IBDOUBLE => {
                     tpe_size = 8;
                     tpe = ffi::SQLT_BDOUBLE;
-                },
+                }
                 ffi::SQLT_FLT | ffi::SQLT_BFLOAT | ffi::SQLT_IBFLOAT => {
-                    tpe_size=4;
+                    tpe_size = 4;
                     tpe = ffi::SQLT_BFLOAT;
                 }
                 ffi::SQLT_CHR
@@ -410,13 +410,13 @@ impl Statement {
                     }
                     //tpe_size += 1;
                     tpe = ffi::SQLT_STR;
-                },
+                }
                 _ => {
                     return Err(Error::DatabaseError(
                         DatabaseErrorKind::__Unknown,
                         Box::new(format!("unsupported type {}", tpe)),
                     ))
-                },
+                }
             }
         }
         Ok((tpe, tpe_size))
@@ -487,7 +487,6 @@ impl Statement {
     }
 
     fn define_all_columns(&self) -> QueryResult<Vec<Field>> {
-
         let col_count = self.get_column_count()?;
         let mut fields = Vec::<Field>::with_capacity(col_count as usize);
         for i in 0..col_count as usize {
@@ -526,11 +525,6 @@ impl Statement {
         };
 
         unsafe {
-            println!("{:?}", tpe);
-            println!("{:?}", tpe.to_raw() as u16);
-            println!("{:?}", size);
-
-
             let status = ffi::OCIBindByPos(
                 self.inner_statement,
                 &mut bndp,

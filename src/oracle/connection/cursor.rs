@@ -81,7 +81,8 @@ where
                 0,
                 ffi::OCI_DEFAULT,
             );
-            if let Some(err) = Statement::check_error(self.stmt.connection.env.error_handle, status)
+            if let Some(err) =
+                Statement::check_error(self.stmt.connection.env.error_handle, status).err()
             {
                 return Some(Err(err));
             }

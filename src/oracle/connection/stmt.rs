@@ -47,9 +47,7 @@ impl Statement {
                 ffi::OCI_DEFAULT,
             );
 
-            if let Some(err) = Self::check_error(raw_connection.env.error_handle, status) {
-                return Err(err);
-            }
+            Self::check_error(raw_connection.env.error_handle, status)?;
 
             // for create statements we need to run OCIStmtPrepare2 twice
             // c.f. https://docs.oracle.com/database/121/LNOCI/oci17msc001.htm#LNOCI17165
@@ -68,9 +66,7 @@ impl Statement {
                         ffi::OCI_DEFAULT,
                     );
 
-                    if let Some(err) = Self::check_error(raw_connection.env.error_handle, status) {
-                        return Err(err);
-                    }
+                    Self::check_error(raw_connection.env.error_handle, status)?;
                 }
             }
 
@@ -90,10 +86,10 @@ impl Statement {
         })
     }
 
-    pub fn check_error(error_handle: *mut ffi::OCIError, status: i32) -> Option<Error> {
+    pub fn check_error(error_handle: *mut ffi::OCIError, status: i32) -> Result<(), Error> {
         // c.f. https://github.com/Mingun/rust-oci/blob/2e0f2acb35066b5f510b46826937a634017cda5d/src/ffi/mod.rs#L102
-
-        let mut errbuf: Vec<u8> = Vec::with_capacity(3072);
+        // ffi::OCI_ERROR_MAXMSG_SIZE2 is 3072
+        let mut errbuf: Vec<u8> = Vec::with_capacity(ffi::OCI_ERROR_MAXMSG_SIZE2 as usize);
         let mut errcode: c_int = 0;
 
         match status {
@@ -110,14 +106,14 @@ impl Statement {
                     );
 
                     if res == (ffi::OCI_NO_DATA as i32) {
-                        return None;
+                        return Ok(());
                     }
 
                     let msg = CStr::from_ptr(errbuf.as_ptr() as *const c_char);
                     errbuf.set_len(msg.to_bytes().len());
                 }
 
-                Some(Error::DatabaseError(
+                Err(Error::DatabaseError(
                     DatabaseErrorKind::UnableToSendCommand,
                     Box::new(format!(
                         "OCI_ERROR {:?}",
@@ -125,11 +121,11 @@ impl Statement {
                     )),
                 ))
             }
-            ffi::OCI_INVALID_HANDLE => Some(Error::DatabaseError(
+            ffi::OCI_INVALID_HANDLE => Err(Error::DatabaseError(
                 DatabaseErrorKind::UnableToSendCommand,
                 Box::new(format!("OCI_INVALID_HANDLE {:?}", errbuf)),
             )),
-            _ => None,
+            _ => Ok(()),
         }
     }
 
@@ -146,9 +142,7 @@ impl Statement {
                 ptr::null_mut(),
                 ffi::OCI_DEFAULT,
             );
-            if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
-                return Err(err);
-            }
+            Self::check_error(self.connection.env.error_handle, status)?;
         }
         Ok(())
     }
@@ -164,9 +158,7 @@ impl Statement {
                 ffi::OCI_ATTR_ROW_COUNT,
                 self.connection.env.error_handle,
             );
-            if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
-                return Err(err);
-            }
+            Self::check_error(self.connection.env.error_handle, status)?;
         }
         Ok(affected_rows as usize)
     }
@@ -183,9 +175,7 @@ impl Statement {
                 self.connection.env.error_handle,
             );
 
-            if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
-                return Err(err);
-            }
+            Self::check_error(self.connection.env.error_handle, status)?;
         }
         Ok(col_count)
     }
@@ -202,9 +192,7 @@ impl Statement {
                 ffi::OCI_ATTR_DATA_TYPE,
                 self.connection.env.error_handle,
             );
-            if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
-                return Err(err);
-            }
+            Self::check_error(self.connection.env.error_handle, status)?;
 
             match tpe {
                 ffi::SQLT_INT | ffi::SQLT_UIN => {
@@ -222,9 +210,7 @@ impl Statement {
                         ffi::OCI_ATTR_PRECISION,
                         self.connection.env.error_handle,
                     );
-                    if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
-                        return Err(err);
-                    }
+                    Self::check_error(self.connection.env.error_handle, status)?;
                     let mut attributesize = 8u32; // sb1
                     let status = ffi::OCIAttrGet(
                         col_handle as *mut _,
@@ -234,9 +220,7 @@ impl Statement {
                         ffi::OCI_ATTR_SCALE,
                         self.connection.env.error_handle,
                     );
-                    if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
-                        return Err(err);
-                    }
+                    Self::check_error(self.connection.env.error_handle, status)?;
                     if scale == 0 {
                         match precision {
                             5 => tpe_size = 2,  // number(5) -> smallint
@@ -277,9 +261,7 @@ impl Statement {
                         ffi::OCI_ATTR_CHAR_SIZE,
                         self.connection.env.error_handle,
                     );
-                    if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
-                        return Err(err);
-                    }
+                    Self::check_error(self.connection.env.error_handle, status)?;
                     //tpe_size += 1;
                     tpe = ffi::SQLT_STR;
                 }
@@ -319,9 +301,7 @@ impl Statement {
                 ptr::null_mut(),
                 ffi::OCI_DEFAULT,
             );
-            if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
-                return Err(err);
-            }
+            Self::check_error(self.connection.env.error_handle, status)?;
             def
         };
         if let Some(tpe) = ::oracle::types::OCIDataType::from_raw(tpe) {
@@ -346,9 +326,7 @@ impl Statement {
                 (&mut parameter_descriptor as *mut *mut ffi::OCIStmt) as *mut _,
                 col_number as u32,
             );
-            if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
-                return Err(err);
-            }
+            Self::check_error(self.connection.env.error_handle, status)?;
             parameter_descriptor
         };
 
@@ -418,9 +396,7 @@ impl Statement {
             self.sizes.push(size);
             self.indicators.push(nullind);
 
-            if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
-                return Err(err);
-            }
+            Self::check_error(self.connection.env.error_handle, status)?;
 
             if tpe == OCIDataType::Char {
                 let mut cs_id = self.connection.env.cs_id;
@@ -449,7 +425,7 @@ impl Drop for Statement {
                 0,
                 ffi::OCI_DEFAULT,
             );
-            if let Some(err) = Self::check_error(self.connection.env.error_handle, status) {
+            if let Some(err) = Self::check_error(self.connection.env.error_handle, status).err() {
                 println!("{:?}", err);
             }
         }

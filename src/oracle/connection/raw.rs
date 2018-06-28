@@ -1,10 +1,12 @@
 use oci_sys as ffi;
-use std::ffi::{CStr, CString};
+use std::ffi::CString;
 use std::os::raw as libc;
 use std::ptr;
 use std::str;
 
 use diesel::result::*;
+
+use super::stmt::Statement;
 
 pub struct ConnectionEnviroment {
     handle: *mut ffi::OCIEnv,
@@ -108,37 +110,6 @@ fn parse_db_string(database_url: &str) -> ConnectionResult<(String, String, Stri
 }
 
 impl RawConnection {
-    pub fn check_error(error_handle: *mut ffi::OCIError, status: i32) -> Option<ConnectionError> {
-        // ffi::OCI_ERROR_MAXMSG_SIZE2 is 3072
-        let mut errbuf: Vec<u8> = Vec::with_capacity(ffi::OCI_ERROR_MAXMSG_SIZE2 as usize);
-        let mut errcode: libc::c_int = 0;
-
-        match status {
-            ffi::OCI_ERROR => {
-                unsafe {
-                    ffi::OCIErrorGet(
-                        error_handle as *mut libc::c_void,
-                        1,
-                        ptr::null_mut(),
-                        &mut errcode,
-                        errbuf.as_mut_ptr(),
-                        errbuf.capacity() as u32,
-                        ffi::OCI_HTYPE_ERROR,
-                    );
-
-                    let msg = CStr::from_ptr(errbuf.as_ptr() as *const libc::c_char);
-                    errbuf.set_len(msg.to_bytes().len());
-                };
-
-                Some(ConnectionError::BadConnection(format!(
-                    "OCI_ERROR {:?}",
-                    String::from_utf8(errbuf).expect("Invalid UTF-8 from OCIErrorGet")
-                )))
-            }
-            _ => None,
-        }
-    }
-
     pub fn establish(database_url: &str) -> ConnectionResult<Self> {
         let (username, password, database) = parse_db_string(database_url)?;
 
@@ -168,9 +139,8 @@ impl RawConnection {
                 ffi::OCI_DEFAULT,
             );
 
-            if let Some(err) = Self::check_error(env.error_handle, status) {
-                return Err(err);
-            }
+            Statement::check_error(env.error_handle, status)
+                .map_err(|e| ConnectionError::BadConnection(format!("{:?}", e)))?;
 
             // Set attribute server context in the service context
             ffi::OCIAttrSet(
@@ -207,9 +177,8 @@ impl RawConnection {
                 ffi::OCI_CRED_RDBMS,
                 ffi::OCI_DEFAULT,
             );
-            if let Some(err) = Self::check_error(env.error_handle, status) {
-                return Err(err);
-            }
+            Statement::check_error(env.error_handle, status)
+                .map_err(|e| ConnectionError::BadConnection(format!("{:?}", e)))?;
 
             // Set session context in the service context
             ffi::OCIAttrSet(

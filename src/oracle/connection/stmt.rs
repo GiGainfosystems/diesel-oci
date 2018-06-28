@@ -15,13 +15,6 @@ pub struct Statement {
     pub inner_statement: *mut ffi::OCIStmt,
     bind_index: libc::c_uint,
     is_select: bool,
-    /// TODO: resolve double frees
-    // we may introduce double free's here
-    // c.f. https://docs.oracle.com/cd/B10501_01/appdev.920/a96584/oci15r30.htm
-    // [...] An address of a bind handle which is implicitly allocated by this call. The bind
-    // handle maintains all the bind information for this particular input value. The handle is
-    // freed implicitly when the statement handle is deallocated. [...]
-    binds: Vec<Box<ffi::OCIBind>>,
     buffers: Vec<Box<[u8]>>,
     sizes: Vec<i32>,
     indicators: Vec<Box<ffi::OCIInd>>,
@@ -78,7 +71,6 @@ impl Statement {
             bind_index: 0,
             // TODO: this can go wrong: `UPDATE table SET k='select';`
             is_select: sql.contains("SELECT") || sql.contains("select"),
-            binds: Vec::with_capacity(20),
             buffers: Vec::with_capacity(20),
             sizes: Vec::with_capacity(20),
             indicators: Vec::with_capacity(20),
@@ -222,12 +214,12 @@ impl Statement {
                     );
                     Self::check_error(self.connection.env.error_handle, status)?;
                     if scale == 0 {
-                        match precision {
-                            5 => tpe_size = 2,  // number(5) -> smallint
-                            10 => tpe_size = 4, // number(10) -> int
-                            19 => tpe_size = 8, // number(19) -> bigint
-                            _ => tpe_size = 21, // number(38) -> consume_all
-                        }
+                        tpe_size = match precision {
+                            5 => 2,  // number(5) -> smallint
+                            10 => 4, // number(10) -> int
+                            19 => 8, // number(19) -> bigint
+                            _ => 21, // number(38) -> consume_all
+                        };
                         tpe = ffi::SQLT_INT;
                     } else {
                         tpe = ffi::SQLT_FLT;
@@ -359,15 +351,12 @@ impl Statement {
         let mut is_null = false;
         // using a box here otherwise the string will be deleted before
         // reaching OCIBindByPos
-        let (mut buf, size): (Box<[u8]>, i32) = match (tpe, value) {
-            (_, None) => {
-                is_null = true;
-                (Vec::new().into_boxed_slice(), 0)
-            }
-            (_, Some(mut value)) => {
-                let len = value.len() as i32;
-                (value.into_boxed_slice(), len)
-            }
+        let (mut buf, size): (Box<[u8]>, i32) = if let Some(mut value) = value {
+            let len = value.len() as i32;
+            (value.into_boxed_slice(), len)
+        } else {
+            is_null = true;
+            (Vec::new().into_boxed_slice(), 0)
         };
         let mut nullind: Box<ffi::OCIInd> = if is_null { Box::new(-1) } else { Box::new(0) };
 
@@ -409,7 +398,6 @@ impl Statement {
                     self.connection.env.error_handle,
                 );
             }
-            self.binds.push(Box::from_raw(bndp));
         }
         Ok(())
     }

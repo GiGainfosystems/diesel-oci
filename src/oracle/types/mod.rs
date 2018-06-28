@@ -1,6 +1,7 @@
 use super::backend::*;
 use super::connection::OracleValue;
-use byteorder::{NativeEndian, WriteBytesExt};
+use byteorder::WriteBytesExt;
+use diesel::backend::*;
 use diesel::deserialize::FromSql;
 use diesel::serialize::{IsNull, Output, ToSql};
 use diesel::sql_types::*;
@@ -96,10 +97,7 @@ macro_rules! not_none {
     ($bytes:expr) => {
         match $bytes {
             Some(bytes) => bytes,
-            None => panic!(),
-            // return Err(Box::new(diesel::types::impls::option::UnexpectedNullError {
-            //     msg: "Unexpected null for non-null column".to_string(),
-            // })),
+            None => panic!("Unexpected null for non-null column"),
         }
     };
 }
@@ -184,7 +182,7 @@ impl FromSql<Bool, Oracle> for bool {
 
 impl ToSql<Bool, Oracle> for bool {
     fn to_sql<W: Write>(&self, out: &mut Output<W, Oracle>) -> ToSqlResult {
-        out.write_i16::<NativeEndian>(if *self { 1 } else { 0 })
+        out.write_i16::<<Oracle as Backend>::ByteOrder>(if *self { 1 } else { 0 })
             .map(|_| IsNull::No)
             .map_err(|e| Box::new(e) as ErrorType)
     }

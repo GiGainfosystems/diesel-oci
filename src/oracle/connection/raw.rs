@@ -15,7 +15,7 @@ pub struct ConnectionEnviroment {
 }
 
 impl ConnectionEnviroment {
-    pub fn new() -> Result<ConnectionEnviroment, ()> {
+    pub fn new() -> Result<ConnectionEnviroment, ConnectionError> {
         let env_handle = unsafe {
             let mut handle: *mut ffi::OCIEnv = ptr::null_mut();
             let code = ffi::OCIEnvNlsCreate(
@@ -31,7 +31,10 @@ impl ConnectionEnviroment {
                 0,
             );
             if code != 0 {
-                println!("Couldn't create environment");
+                return Err(ConnectionError::BadConnection(format!(
+                    "Couldn't create Environment: {:?}",
+                    code
+                )));
             }
             handle
         };
@@ -71,13 +74,6 @@ pub struct RawConnection {
     transaction_handle: *mut ffi::OCITrans,
 }
 
-fn wrap_oci_error<T>(o: Result<T, ()>) -> ConnectionResult<T> {
-    match o {
-        Ok(o) => Ok(o),
-        Err(e) => Err(ConnectionError::BadConnection(format!("{:?}", e))),
-    }
-}
-
 unsafe fn alloc_handle<R>(env: *mut ffi::OCIEnv, tpe: libc::c_uint) -> *mut R {
     let mut handle = ptr::null_mut();
     ffi::OCIHandleAlloc(
@@ -114,7 +110,7 @@ impl RawConnection {
         let (username, password, database) = parse_db_string(database_url)?;
 
         // Initialize environment
-        let env = try!(wrap_oci_error(ConnectionEnviroment::new()));
+        let env = ConnectionEnviroment::new()?;
 
         unsafe {
             // Allocate the server handle

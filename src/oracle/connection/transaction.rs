@@ -14,7 +14,6 @@ pub struct OCITransactionManager {
 
 impl OCITransactionManager {
     /// Create a new transaction manager
-    #[allow(dead_code)]
     pub fn new() -> Self {
         OCITransactionManager::default()
     }

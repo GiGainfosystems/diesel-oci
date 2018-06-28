@@ -46,7 +46,7 @@ impl FromSql<Integer, Oracle> for i32 {
         debug_assert!(
             bytes.len() >= 4,
             "Received fewer than 4 bytes decoding i32. \
-             Was an Integer expression misidentified as Integer?"
+             Was an SmallInt expression misidentified as Integer?"
         );
         bytes
             .as_slice()
@@ -67,7 +67,7 @@ impl FromSql<SmallInt, Oracle> for i16 {
         debug_assert!(
             bytes.len() >= 2,
             "Received fewer than 2 bytes decoding i16. \
-             Was an Integer expression misidentified as SmallInteger?"
+             Was an expression of a different type misidentified as SmallInteger?"
         );
         bytes
             .as_slice()

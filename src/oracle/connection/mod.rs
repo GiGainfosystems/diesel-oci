@@ -85,7 +85,6 @@ impl Connection for OciConnection {
             transaction_manager: OCITransactionManager::new(),
             statement_cache: StatementCache::new(),
         };
-        let _k = ret.execute("alter session set sql_trace=true");
         Ok(ret)
     }
 

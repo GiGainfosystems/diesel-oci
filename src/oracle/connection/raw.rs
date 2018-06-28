@@ -33,18 +33,10 @@ impl ConnectionEnviroment {
             }
             handle
         };
-        let error_handle = unsafe {
-            let mut handle: *mut ffi::OCIError = ptr::null_mut();
-            ffi::OCIHandleAlloc(
-                env_handle as *const _,
-                (&mut handle as *mut *mut ffi::OCIError) as *mut _,
-                ffi::OCI_HTYPE_ERROR,
-                0,
-                ptr::null_mut(),
-            );
-
-            handle
-        };
+        let error_handle =
+            unsafe { alloc_handle::<ffi::OCIError>(env_handle, ffi::OCI_HTYPE_ERROR) };
+        // we are certain that our string doesn't have 0 bytes in the middle,
+        // so we can .unwrap()
         let enc = CString::new("UTF8").unwrap();
         let cs_id = unsafe {
             ffi::OCINlsCharSetNameToId(
@@ -84,20 +76,16 @@ fn wrap_oci_error<T>(o: Result<T, ()>) -> ConnectionResult<T> {
     }
 }
 
-unsafe fn alloc_handle(
-    env: &ConnectionEnviroment,
-    tpe: libc::c_uint,
-) -> *mut ::std::os::raw::c_void {
+unsafe fn alloc_handle<R>(env: *mut ffi::OCIEnv, tpe: libc::c_uint) -> *mut R {
     let mut handle = ptr::null_mut();
-    ffi::OCIHandleAlloc(env.handle as *const _, &mut handle, tpe, 0, ptr::null_mut());
+    ffi::OCIHandleAlloc(
+        env as *const _,
+        (&mut handle as *mut *mut R) as *mut _,
+        tpe,
+        0,
+        ptr::null_mut(),
+    );
     handle
-}
-
-#[allow(dead_code)]
-enum ParseState {
-    UserName,
-    Password,
-    ConnectionString,
 }
 
 fn parse_db_string(database_url: &str) -> ConnectionResult<(String, String, String)> {
@@ -112,12 +100,8 @@ fn parse_db_string(database_url: &str) -> ConnectionResult<(String, String, Stri
     assert_eq!(splits.len(), 3);
     let userandpw: Vec<&str> = splits[1].split('/').collect();
     let user = userandpw[0].to_string();
-    let password = unsafe {
-        // discard the @ handle
-        userandpw[1]
-            .slice_unchecked(0, userandpw[1].len() - 1)
-            .to_string()
-    };
+    let mut password = userandpw[1].to_string();
+    password.pop();
     let db_url = splits[2].to_string();
 
     Ok((user, password, db_url))
@@ -125,7 +109,8 @@ fn parse_db_string(database_url: &str) -> ConnectionResult<(String, String, Stri
 
 impl RawConnection {
     pub fn check_error(error_handle: *mut ffi::OCIError, status: i32) -> Option<ConnectionError> {
-        let mut errbuf: Vec<u8> = Vec::with_capacity(3072);
+        // ffi::OCI_ERROR_MAXMSG_SIZE2 is 3072
+        let mut errbuf: Vec<u8> = Vec::with_capacity(ffi::OCI_ERROR_MAXMSG_SIZE2 as usize);
         let mut errcode: libc::c_int = 0;
 
         match status {
@@ -162,14 +147,18 @@ impl RawConnection {
 
         unsafe {
             // Allocate the server handle
-            let server_handle = alloc_handle(&env, ffi::OCI_HTYPE_SERVER) as *mut ffi::OCIServer;
+            let server_handle =
+                alloc_handle(env.handle, ffi::OCI_HTYPE_SERVER) as *mut ffi::OCIServer;
             // Allocate the service context handle
-            let service_handle = alloc_handle(&env, ffi::OCI_HTYPE_SVCCTX) as *mut ffi::OCISvcCtx;
+            let service_handle =
+                alloc_handle(env.handle, ffi::OCI_HTYPE_SVCCTX) as *mut ffi::OCISvcCtx;
 
             // Allocate the session handle
-            let session_handle = alloc_handle(&env, ffi::OCI_HTYPE_SESSION) as *mut ffi::OCISession;
+            let session_handle =
+                alloc_handle(env.handle, ffi::OCI_HTYPE_SESSION) as *mut ffi::OCISession;
 
-            let transaction_handle = alloc_handle(&env, ffi::OCI_HTYPE_TRANS) as *mut ffi::OCITrans;
+            let transaction_handle =
+                alloc_handle(env.handle, ffi::OCI_HTYPE_TRANS) as *mut ffi::OCITrans;
 
             let status = ffi::OCIServerAttach(
                 server_handle,

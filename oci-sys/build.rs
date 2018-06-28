@@ -6,7 +6,5 @@ fn main() {
     } else {
         println!("Please set OCI_LIB_DIR to build oci-sys");
     }
-    //println!("cargo:rustc-link-lib={}", "occi");
-    //println!("cargo:rustc-link-lib={}", "ociei");
     println!("cargo:rustc-link-lib={}", "clntsh");
 }

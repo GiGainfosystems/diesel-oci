@@ -29,139 +29,10 @@ pub struct Statement {
     sql: String,
 }
 
-#[allow(dead_code)]
-const IS_NULL: ffi::OCIInd = -1;
-#[allow(dead_code)]
-const IS_NOT_NULL: ffi::OCIInd = 0;
-
-#[allow(dead_code)]
-#[derive(PartialEq)]
-enum ValueClauseState {
-    INSIDE,
-    OUTSIDE,
-}
-
-/// https://stackoverflow.com/a/21568297/698496
-/// https://livesql.oracle.com/apex/livesql/file/content_BM1LJQ87M5CNIOKPOWPV6ZGR3.html
-/// convert ```insert into t(f1) values (:1),(:2)``` into
-/// ```
-/// INSERT INTO t (f1)
-///    select :1 from dual union all
-///    select :2 from dual
-/// ```
-/// or (since I am not sure which is better, yet)
-/// ```
-/// insert all
-///      into t(f1) values (:1)
-///      into t(f1) values (:2)
-/// select * from dual
-/// ```
-#[allow(dead_code)]
-fn reform_insert_query(sql: &str) -> String {
-    let mut mysql = sql.to_string();
-    println!("{:?}", mysql);
-
-    if let Some(u) = sql.to_string().find("INSERT") {
-        if u < 10 {
-            if let Some(u) = mysql.find("VALUES") {
-                let mut values = mysql.clone().split_off(u);
-                let values = values.split_off(6);
-                let mut state = ValueClauseState::OUTSIDE;
-                let mut num_openings = 0;
-                let mut cur_value_clause = String::default();
-                let mut clauses: Vec<String> = Vec::new();
-                values.chars().for_each(|c| {
-                    if c == '(' {
-                        if state == ValueClauseState::OUTSIDE {
-                            state = ValueClauseState::INSIDE;
-                        } else {
-                            num_openings += 1;
-                        }
-                    }
-
-                    if c == ')' {
-                        if state == ValueClauseState::INSIDE && num_openings == 0 {
-                            state = ValueClauseState::OUTSIDE;
-                        } else {
-                            num_openings -= 1;
-                        }
-                    }
-
-                    if c == ',' && state == ValueClauseState::OUTSIDE {
-                        clauses.push(cur_value_clause.to_string());
-                        cur_value_clause = String::default();
-                    } else {
-                        cur_value_clause.push(c);
-                    }
-                });
-                clauses.push(cur_value_clause.to_string());
-
-                mysql = format!(
-                    "{:?} select {:?} {:?}",
-                    mysql,
-                    clauses.join(" from dual union all select"),
-                    "from dual"
-                );
-                println!("{:?}", mysql);
-            }
-        }
-    }
-    mysql
-}
-
-#[allow(dead_code)]
-fn reform_insert_query2(sql: &str) -> String {
-    let mut mysql = sql.to_string();
-
-    if sql.starts_with("INSERT") {
-        if let Some(u) = sql.find("VALUES") {
-            let mut state = ValueClauseState::OUTSIDE;
-            let mut num_openings = 0;
-            let mut cur_value_clause = String::default();
-            let mut clauses: Vec<String> = Vec::new();
-            sql.chars().skip(u + 6).for_each(|c| {
-                if c == '(' {
-                    if state == ValueClauseState::OUTSIDE {
-                        state = ValueClauseState::INSIDE;
-                    } else {
-                        num_openings += 1;
-                    }
-                }
-
-                if c == ')' {
-                    if state == ValueClauseState::INSIDE && num_openings == 0 {
-                        state = ValueClauseState::OUTSIDE;
-                    } else {
-                        num_openings -= 1;
-                    }
-                }
-
-                if c == ',' && state == ValueClauseState::OUTSIDE {
-                    clauses.push(cur_value_clause.to_string());
-                    cur_value_clause = String::default();
-                } else {
-                    cur_value_clause.push(c);
-                }
-            });
-            clauses.push(cur_value_clause.to_string());
-
-            let (one, _) = sql.split_at(u);
-
-            let clauses = clauses.join(" from dual union all select");
-            mysql = vec![one, "select", clauses.as_str(), " from dual"].join("");
-
-            println!("{:?}", mysql);
-        }
-    }
-    mysql
-}
-
 impl Statement {
     pub fn prepare(raw_connection: &Rc<RawConnection>, sql: &str) -> QueryResult<Self> {
-        //let mysql = reform_insert_query2(sql);
         let mysql = sql.to_string();
 
-        println!("prepare statement {}", mysql);
         let stmt = unsafe {
             let mut stmt: *mut ffi::OCIStmt = ptr::null_mut();
             let status = ffi::OCIStmtPrepare2(
@@ -209,6 +80,7 @@ impl Statement {
             connection: raw_connection.clone(),
             inner_statement: stmt,
             bind_index: 0,
+            // TODO: this can go wrong: `UPDATE table SET k='select';`
             is_select: sql.contains("SELECT") || sql.contains("select"),
             binds: Vec::with_capacity(20),
             buffers: Vec::with_capacity(20),

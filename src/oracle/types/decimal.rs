@@ -43,14 +43,13 @@ impl Error for BigDecimalError {
 impl FromSql<Double, Oracle> for f64 {
     fn from_sql(bytes: Option<&OracleValue>) -> Result<Self, Box<Error + Send + Sync>> {
         let bytes = not_none!(bytes);
-        let bytes = &bytes.bytes;
+        let mut bytes = &bytes.bytes;
         debug_assert!(
             bytes.len() <= 8,
             "Received more than 8 bytes while decoding \
              an f64. Was a numeric accidentally marked as double?"
         );
         bytes
-            .as_slice()
             .read_f64::<<Oracle as Backend>::ByteOrder>()
             .map_err(|e| Box::new(e) as Box<Error + Send + Sync>)
     }
@@ -59,14 +58,13 @@ impl FromSql<Double, Oracle> for f64 {
 impl FromSql<Float, Oracle> for f32 {
     fn from_sql(bytes: Option<&OracleValue>) -> Result<Self, Box<Error + Send + Sync>> {
         let bytes = not_none!(bytes);
-        let bytes = &bytes.bytes;
+        let mut bytes = &bytes.bytes;
         debug_assert!(
             bytes.len() <= 4,
             "Received more than 4 bytes while decoding \
              an f32. Was a numeric accidentally marked as double?"
         );
         bytes
-            .as_slice()
             .read_f32::<<Oracle as Backend>::ByteOrder>()
             .map_err(|e| Box::new(e) as Box<Error + Send + Sync>)
     }
@@ -82,7 +80,7 @@ impl FromSql<Numeric, Oracle> for BigDecimal {
              an f64. Was a numeric accidentally marked as double?"
         );
 
-        BigDecimal::parse_bytes(bytes.as_slice(), 10)
+        BigDecimal::parse_bytes(bytes,10)
             .ok_or(Box::new(BigDecimalError) as Box<Error + Send + Sync>)
     }
 }

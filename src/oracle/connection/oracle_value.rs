@@ -1,11 +1,10 @@
 #[allow(missing_debug_implementations, missing_copy_implementations)]
-#[derive(Default)]
 pub struct OracleValue {
-    pub bytes: Vec<u8>,
+    pub(crate) bytes: [u8],
 }
 
 impl OracleValue {
-    pub fn new() -> Self {
-        OracleValue { bytes: Vec::new() }
+    pub fn new(bytes: &[u8]) -> &Self {
+        unsafe { &*(bytes as *const [u8] as *const Self) }
     }
 }

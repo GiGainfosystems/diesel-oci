@@ -7,7 +7,6 @@ pub struct OciRow<'a> {
     buf: Vec<&'a [u8]>,
     is_null: Vec<bool>,
     col_idx: usize,
-    val: OracleValue,
 }
 
 impl<'a> OciRow<'a> {
@@ -16,7 +15,6 @@ impl<'a> OciRow<'a> {
             buf: row_buf,
             is_null,
             col_idx: 0,
-            val: OracleValue::new(),
         }
     }
 }
@@ -27,10 +25,7 @@ impl<'a> Row<Oracle> for OciRow<'a> {
             if self.is_null[self.col_idx] {
                 None
             } else {
-                // TODO: find a better way to create vec from slice
-                self.val.bytes.clear();
-                self.val.bytes.extend_from_slice(self.buf[self.col_idx]);
-                Some(&self.val)
+                Some(OracleValue::new(self.buf[self.col_idx]))
             }
         } else {
             None

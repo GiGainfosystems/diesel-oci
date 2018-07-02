@@ -49,22 +49,20 @@ impl OCITransactionManager {
 impl TransactionManager<OciConnection> for OCITransactionManager {
     fn begin_transaction(&self, conn: &OciConnection) -> QueryResult<()> {
         let transaction_depth = self.transaction_depth.get();
-        self.change_transaction_depth(
-            1,
-            if transaction_depth == 0 {
-                let _status = unsafe {
-                    ffi::OCITransStart(
-                        conn.raw.service_handle,
-                        conn.raw.env.error_handle,
-                        0,
-                        ffi::OCI_TRANS_NEW,
-                    )
-                };
-                Ok(())
-            } else {
-                conn.batch_execute(&format!("SAVEPOINT diesel_savepoint_{}", transaction_depth))
-            },
-        )
+        let query = if transaction_depth == 0 {
+            let _status = unsafe {
+                ffi::OCITransStart(
+                    conn.raw.service_handle,
+                    conn.raw.env.error_handle,
+                    0,
+                    ffi::OCI_TRANS_NEW,
+                )
+            };
+            Ok(())
+        } else {
+            conn.batch_execute(&format!("SAVEPOINT diesel_savepoint_{}", transaction_depth))
+        };
+        self.change_transaction_depth(1, query)
     }
 
     fn rollback_transaction(&self, conn: &OciConnection) -> QueryResult<()> {
@@ -72,46 +70,42 @@ impl TransactionManager<OciConnection> for OCITransactionManager {
         // all preceding DML will be commited with a DDL statement !!!
         // c.f. https://docs.oracle.com/cd/E25054_01/server.1111/e25789/transact.htm#sthref1318
         let transaction_depth = self.transaction_depth.get();
-        self.change_transaction_depth(
-            -1,
-            if transaction_depth == 1 {
-                let _status = unsafe {
-                    ffi::OCITransRollback(
-                        conn.raw.service_handle,
-                        conn.raw.env.error_handle,
-                        ffi::OCI_DEFAULT,
-                    )
-                };
-                Ok(())
-            } else {
-                conn.batch_execute(&format!(
-                    "ROLLBACK TO SAVEPOINT diesel_savepoint_{}",
-                    transaction_depth - 1
-                ))
-            },
-        )
+        let query = if transaction_depth == 1 {
+            let _status = unsafe {
+                ffi::OCITransRollback(
+                    conn.raw.service_handle,
+                    conn.raw.env.error_handle,
+                    ffi::OCI_DEFAULT,
+                )
+            };
+            Ok(())
+        } else {
+            conn.batch_execute(&format!(
+                "ROLLBACK TO SAVEPOINT diesel_savepoint_{}",
+                transaction_depth - 1
+            ))
+        };
+        self.change_transaction_depth(-1, query)
     }
 
     fn commit_transaction(&self, conn: &OciConnection) -> QueryResult<()> {
         let transaction_depth = self.transaction_depth.get();
-        self.change_transaction_depth(
-            -1,
-            if transaction_depth <= 1 {
-                let _status = unsafe {
-                    ffi::OCITransCommit(
-                        conn.raw.service_handle,
-                        conn.raw.env.error_handle,
-                        ffi::OCI_DEFAULT,
-                    )
-                };
-                Ok(())
-            } else {
-                conn.batch_execute(&format!(
-                    "COMMIT diesel_savepoint_{}",
-                    transaction_depth - 1
-                ))
-            },
-        )
+        let query = if transaction_depth <= 1 {
+            let _status = unsafe {
+                ffi::OCITransCommit(
+                    conn.raw.service_handle,
+                    conn.raw.env.error_handle,
+                    ffi::OCI_DEFAULT,
+                )
+            };
+            Ok(())
+        } else {
+            conn.batch_execute(&format!(
+                "COMMIT diesel_savepoint_{}",
+                transaction_depth - 1
+            ))
+        };
+        self.change_transaction_depth(-1, query)
     }
 
     fn get_transaction_depth(&self) -> u32 {

@@ -2,10 +2,8 @@ extern crate dotenv;
 
 use super::oracle::connection::OciConnection;
 use self::dotenv::dotenv;
-#[cfg(test)]
 use diesel::result::Error;
 use diesel::Connection;
-#[cfg(test)]
 use diesel::RunQueryDsl;
 use std::env;
 
@@ -28,7 +26,6 @@ fn database_url_from_env(backend_specific_env_var: &str) -> String {
 }
 
 
-#[allow(dead_code)]
 const DB_URL: &str = "oci://\"diesel\"/diesel@//192.168.2.81:1521/orcl";
 
 const CREATE_TEST_TABLE: &str = "CREATE TABLE test (\
@@ -37,18 +34,10 @@ const CREATE_TEST_TABLE: &str = "CREATE TABLE test (\
                                  TST_NUM NUMBER(38)\
                                  )";
 
-#[allow(dead_code)]
+
 const DROP_TEST_TABLE: &str = "DROP TABLE test";
 
-#[allow(dead_code)]
-const INSERT_TEMPLATE: &str = "INSERT INTO test ({}) VALUES ({})";
-
-#[allow(dead_code)]
 const TEST_VARCHAR: &str = "'blabla'";
-
-//fn assert_result(r: Result<T>) {
-//    assert!(r.is_ok() && !r.is_err(), format!("{:?}", r.err()));
-//}
 
 macro_rules! assert_result {
     ($r:expr) => {{
@@ -79,10 +68,8 @@ table! {
     }
 }
 
-#[allow(dead_code)]
 const DROP_DIESEL_TABLE: &str = "DROP TABLE \"__DIESEL_SCHEMA_MIGRATIONS\"";
 
-#[allow(dead_code)]
 const CREATE_DIESEL_MIGRATIONS_TABLE: &str =
     "CREATE TABLE \"__DIESEL_SCHEMA_MIGRATIONS\" (\
      VERSION VARCHAR(50) PRIMARY KEY NOT NULL,\
@@ -96,21 +83,18 @@ table! {
     }
 }
 
-#[allow(dead_code)]
 fn create_test_table(conn: &OciConnection) -> usize {
     let ret = conn.execute(CREATE_TEST_TABLE);
     assert_result!(ret);
     ret.unwrap()
 }
 
-#[allow(dead_code)]
 fn drop_test_table(conn: &OciConnection) -> usize {
     let ret = conn.execute(DROP_TEST_TABLE);
     assert_result!(ret);
     ret.unwrap()
 }
 
-#[allow(dead_code)]
 fn drop_diesel_table(conn: &OciConnection) -> usize {
     let ret = conn.execute(DROP_DIESEL_TABLE);
     assert_result!(ret);
@@ -128,7 +112,6 @@ fn execute_sql_or_rollback(conn: &OciConnection, sql: &str, rollback_sql: &str) 
     ret.unwrap()
 }
 
-#[allow(dead_code)]
 fn clean_test(conn: &OciConnection) {
     let sql = "SELECT * FROM test";
     let ret = conn.execute(sql);
@@ -142,7 +125,6 @@ fn clean_test(conn: &OciConnection) {
     }
 }
 
-#[allow(dead_code)]
 fn drop_table(conn: &OciConnection, tbl: &str) {
     let sql = format!("SELECT * FROM {:?}", tbl);
     let sql = sql.replace("\"", "");
@@ -214,63 +196,6 @@ fn create_table() {
 
     let _u = create_test_table(&conn);
     let _u = drop_test_table(&conn);
-}
-
-#[test]
-fn insert_string() {
-    //let database_url = database_url_from_env("OCI_DATABASE_URL");
-    let conn = OciConnection::establish(&DB_URL).unwrap();
-
-    clean_test(&conn);
-
-    let ret = conn.execute(CREATE_TEST_TABLE);
-    assert_result!(ret);
-
-    let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-    let ret = conn.execute(&*sql);
-    assert_result!(ret);
-
-    let ret = self::test::dsl::test.load::<(i64, String, i64)>(&conn);
-    assert_result!(ret);
-    let ret = ret.unwrap();
-    assert_ne!(ret.len(), 0);
-
-    // drop the table immediately
-    let ret = conn.execute(DROP_TEST_TABLE);
-    assert_result!(ret);
-}
-
-#[test]
-fn insert_string_diesel_way() {
-    //let database_url = database_url_from_env("OCI_DATABASE_URL");
-    let conn = OciConnection::establish(&DB_URL).unwrap();
-
-    clean_test(&conn);
-
-    let ret = conn.execute(CREATE_TEST_TABLE);
-    assert_result!(ret);
-
-    use self::test::dsl::*;
-    use diesel::ExpressionMethods;
-
-    let ret = ::diesel::insert_into(test)
-        .values(&TST_CHR.eq(TEST_VARCHAR))
-        .execute(&conn);
-
-    assert_result!(ret);
-
-    use diesel::QueryDsl;
-
-    //let ret = self::test::dsl::test.load::<(i64, String, i64)>(&conn);
-    let ret = self::test::dsl::test.select(TST_CHR).load::<String>(&conn);
-    assert_result!(ret);
-    let ret = ret.unwrap();
-    assert_ne!(ret.len(), 0);
-    assert_eq!(TEST_VARCHAR, ret[0]);
-
-    // drop the table immediately
-    let ret = conn.execute(DROP_TEST_TABLE);
-    assert_result!(ret);
 }
 
 #[test]

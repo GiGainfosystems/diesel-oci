@@ -20,7 +20,7 @@ pub struct Statement {
     indicators: Vec<Box<ffi::OCIInd>>,
 }
 
-const NUM_ELEMENTS : usize = 20;
+const NUM_ELEMENTS: usize = 20;
 
 impl Statement {
     pub fn prepare(raw_connection: &Rc<RawConnection>, sql: &str) -> QueryResult<Self> {
@@ -78,13 +78,13 @@ impl Statement {
     }
 
     pub fn check_error(error_handle: *mut ffi::OCIError, status: i32) -> Result<(), Error> {
-        // c.f. https://github.com/Mingun/rust-oci/blob/2e0f2acb35066b5f510b46826937a634017cda5d/src/ffi/mod.rs#L102
-        // ffi::OCI_ERROR_MAXMSG_SIZE2 is 3072
-        let mut errbuf: Vec<u8> = Vec::with_capacity(ffi::OCI_ERROR_MAXMSG_SIZE2 as usize);
-        let mut errcode: c_int = 0;
-
         match status {
             ffi::OCI_ERROR => {
+                // c.f. https://github.com/Mingun/rust-oci/blob/2e0f2acb35066b5f510b46826937a634017cda5d/src/ffi/mod.rs#L102
+                // ffi::OCI_ERROR_MAXMSG_SIZE2 is 3072
+                let mut errbuf: Vec<u8> = vec![0; ffi::OCI_ERROR_MAXMSG_SIZE2 as usize + 1];
+                let mut errcode: c_int = 0;
+
                 unsafe {
                     let res = ffi::OCIErrorGet(
                         error_handle as *mut c_void,
@@ -92,7 +92,7 @@ impl Statement {
                         ptr::null_mut(),
                         &mut errcode,
                         errbuf.as_mut_ptr(),
-                        errbuf.capacity() as u32,
+                        errbuf.len() as u32,
                         ffi::OCI_HTYPE_ERROR,
                     );
 
@@ -100,8 +100,11 @@ impl Statement {
                         return Ok(());
                     }
 
-                    let msg = CStr::from_ptr(errbuf.as_ptr() as *const c_char);
-                    errbuf.set_len(msg.to_bytes().len());
+                    let nul_byte_pos = errbuf
+                        .iter()
+                        .position(|&b| b == 0)
+                        .expect("Expected at least one null byte");
+                    errbuf.resize(nul_byte_pos, 0);
                 }
 
                 Err(Error::DatabaseError(
@@ -114,7 +117,7 @@ impl Statement {
             }
             ffi::OCI_INVALID_HANDLE => Err(Error::DatabaseError(
                 DatabaseErrorKind::UnableToSendCommand,
-                Box::new(format!("OCI_INVALID_HANDLE {:?}", errbuf)),
+                Box::new(format!("OCI_INVALID_HANDLE {:?}", status)),
             )),
             _ => Ok(()),
         }

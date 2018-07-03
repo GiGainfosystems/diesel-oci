@@ -7,6 +7,5 @@ extern crate log;
 extern crate oci_sys;
 pub mod oracle;
 
-
 #[cfg(test)]
 mod test;

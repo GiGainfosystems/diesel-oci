@@ -8,9 +8,6 @@ use diesel::result::*;
 use diesel::sql_types::HasSqlType;
 use std::rc::Rc;
 
-#[cfg(test)]
-use diesel::migration::MigrationConnection;
-
 use self::cursor::Cursor;
 use self::stmt::Statement;
 use self::transaction::OCITransactionManager;
@@ -36,32 +33,6 @@ pub struct OciConnection {
 // Similar to diesel::sqlite::SqliteConnection;
 unsafe impl Send for OciConnection {}
 
-#[cfg(test)]
-impl MigrationConnection for OciConnection {
-    #[cfg(ka)]
-    const CREATE_MIGRATIONS_FUNCTION: &'static str =
-        "create or replace procedure create_if_not_exists(input_sql varchar2) \
-         as \
-         begin \
-         execute immediate input_sql; \
-         exception \
-         when others then \
-         if sqlcode = -955 then \
-         NULL; \
-         else \
-         raise; \
-         end if; \
-         end; \n ";
-
-    const CREATE_MIGRATIONS_TABLE: &'static str = "
-    declare \
-    begin \
-    create_if_not_exists('CREATE TABLE \"__DIESEL_SCHEMA_MIGRATIONS\" (\
-         \"VERSION\" VARCHAR2(50) PRIMARY KEY NOT NULL,\
-         \"RUN_ON\" TIMESTAMP with time zone DEFAULT sysdate not null\
-         )'); \
-        end; \n";
-}
 
 impl SimpleConnection for OciConnection {
     fn batch_execute(&self, query: &str) -> QueryResult<()> {

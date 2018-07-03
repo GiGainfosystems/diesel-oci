@@ -7,6 +7,36 @@ use diesel::Connection;
 use diesel::RunQueryDsl;
 use std::env;
 
+#[cfg(ka)]
+use diesel::migration::MigrationConnection;
+
+#[cfg(ka)]
+impl MigrationConnection for OciConnection {
+    #[cfg(ka)]
+    const CREATE_MIGRATIONS_FUNCTION: &'static str =
+        "create or replace procedure create_if_not_exists(input_sql varchar2) \
+         as \
+         begin \
+         execute immediate input_sql; \
+         exception \
+         when others then \
+         if sqlcode = -955 then \
+         NULL; \
+         else \
+         raise; \
+         end if; \
+         end; \n ";
+
+    const CREATE_MIGRATIONS_TABLE: &'static str = "
+    declare \
+    begin \
+    create_if_not_exists('CREATE TABLE \"__DIESEL_SCHEMA_MIGRATIONS\" (\
+         \"VERSION\" VARCHAR2(50) PRIMARY KEY NOT NULL,\
+         \"RUN_ON\" TIMESTAMP with time zone DEFAULT sysdate not null\
+         )'); \
+        end; \n";
+}
+
 #[allow(dead_code)]
 fn connection() -> OciConnection {
     let database_url = database_url_from_env("OCI_DATABASE_URL");

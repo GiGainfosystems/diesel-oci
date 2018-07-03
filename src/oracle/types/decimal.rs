@@ -33,11 +33,6 @@ impl Error for BigDecimalError {
     fn description(&self) -> &str {
         "Error while converting numeric to BigDecimal"
     }
-
-    fn cause(&self) -> Option<&Error> {
-        // Generic error, underlying cause isn't tracked.
-        None
-    }
 }
 
 impl FromSql<Double, Oracle> for f64 {

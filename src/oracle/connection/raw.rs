@@ -239,28 +239,28 @@ mod tests {
 
     #[test]
     fn check_parse_database_url_1() {
-        let input = "oci://user:password@localhost:1234/my_database";
+        let input = "oci://user/password@//localhost:1234/my_database";
         let output = parse_db_string(input).unwrap();
         assert_eq!(
             output,
             (
                 "user".into(),
                 "password".into(),
-                "//localhost:1234/my_database".into()
+                "localhost:1234/my_database".into()
             )
         );
     }
 
     #[test]
     fn check_parse_database_url_2() {
-        let input = "oci://user:password@localhost/my_database";
+        let input = "oci://user/password@//localhost/my_database";
         let output = parse_db_string(input).unwrap();
         assert_eq!(
             output,
             (
                 "user".into(),
                 "password".into(),
-                "//localhost/my_database".into()
+                "localhost/my_database".into()
             )
         );
     }

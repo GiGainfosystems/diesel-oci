@@ -18,9 +18,9 @@ pub struct Statement {
     buffers: Vec<Box<[u8]>>,
     sizes: Vec<i32>,
     indicators: Vec<Box<ffi::OCIInd>>,
-    #[allow(dead_code)]
-    sql: String,
 }
+
+const NUM_ELEMENTS : usize = 20;
 
 impl Statement {
     pub fn prepare(raw_connection: &Rc<RawConnection>, sql: &str) -> QueryResult<Self> {
@@ -71,10 +71,9 @@ impl Statement {
             bind_index: 0,
             // TODO: this can go wrong: `UPDATE table SET k='select';`
             is_select: sql.contains("SELECT") || sql.contains("select"),
-            buffers: Vec::with_capacity(20),
-            sizes: Vec::with_capacity(20),
-            indicators: Vec::with_capacity(20),
-            sql: mysql,
+            buffers: Vec::with_capacity(NUM_ELEMENTS),
+            sizes: Vec::with_capacity(NUM_ELEMENTS),
+            indicators: Vec::with_capacity(NUM_ELEMENTS),
         })
     }
 

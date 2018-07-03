@@ -115,17 +115,17 @@ impl RawConnection {
         unsafe {
             // Allocate the server handle
             let server_handle =
-                alloc_handle(env.handle, ffi::OCI_HTYPE_SERVER) as *mut ffi::OCIServer;
+                alloc_handle(env.handle, ffi::OCI_HTYPE_SERVER);
             // Allocate the service context handle
             let service_handle =
-                alloc_handle(env.handle, ffi::OCI_HTYPE_SVCCTX) as *mut ffi::OCISvcCtx;
+                alloc_handle(env.handle, ffi::OCI_HTYPE_SVCCTX);
 
             // Allocate the session handle
             let session_handle =
-                alloc_handle(env.handle, ffi::OCI_HTYPE_SESSION) as *mut ffi::OCISession;
+                alloc_handle(env.handle, ffi::OCI_HTYPE_SESSION);
 
             let transaction_handle =
-                alloc_handle(env.handle, ffi::OCI_HTYPE_TRANS) as *mut ffi::OCITrans;
+                alloc_handle(env.handle, ffi::OCI_HTYPE_TRANS);
 
             let status = ffi::OCIServerAttach(
                 server_handle,

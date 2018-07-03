@@ -69,12 +69,6 @@ impl FromSql<Numeric, Oracle> for BigDecimal {
     fn from_sql(bytes: Option<&OracleValue>) -> Result<Self, Box<Error + Send + Sync>> {
         let bytes = not_none!(bytes);
         let bytes = &bytes.bytes;
-        debug_assert!(
-            bytes.len() <= 8,
-            "Received more than 8 bytes while decoding \
-             an f64. Was a numeric accidentally marked as double?"
-        );
-
         BigDecimal::parse_bytes(bytes,10)
             .ok_or(Box::new(BigDecimalError) as Box<Error + Send + Sync>)
     }

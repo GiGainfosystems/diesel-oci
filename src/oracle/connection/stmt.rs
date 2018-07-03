@@ -5,8 +5,7 @@ use diesel::result::*;
 use libc;
 use oci_sys as ffi;
 use oracle::types::OCIDataType;
-use std::ffi::CStr;
-use std::os::raw::{c_char, c_int, c_void};
+use std::os::raw::{c_int, c_void};
 use std::ptr;
 use std::rc::Rc;
 

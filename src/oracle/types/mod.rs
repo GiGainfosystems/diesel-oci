@@ -1,9 +1,13 @@
+use super::backend::*;
+use super::connection::OracleValue;
+use byteorder::WriteBytesExt;
+use diesel::backend::*;
+use diesel::deserialize::FromSql;
+use diesel::serialize::{IsNull, Output, ToSql};
+use diesel::sql_types::*;
+use oci_sys as ffi;
 use std::error::Error;
 use std::io::Write;
-use diesel::types::*;
-use byteorder::{NativeEndian, WriteBytesExt};
-use super::backend::*;
-use oci_sys as ffi;
 
 pub type FromSqlResult<T> = Result<T, ErrorType>;
 pub type ErrorType = Box<Error + Send + Sync>;
@@ -76,21 +80,27 @@ impl OCIDataType {
             _ => None,
         }
     }
+
+    pub fn to_raw(self) -> u32 {
+        use self::OCIDataType::*;
+        match self {
+            Int => ffi::SQLT_INT,
+            Float | BFloat | IBFloat => ffi::SQLT_BDOUBLE, // this should be SQLT_BFLOAT, but diesel comes with a float here
+            BDouble | IBDouble => ffi::SQLT_BDOUBLE,
+            Char | String => ffi::SQLT_CHR,
+            _ => 0u32,
+        }
+    }
 }
 
 macro_rules! not_none {
     ($bytes:expr) => {
         match $bytes {
             Some(bytes) => bytes,
-            None =>
-                panic!(),
-                // return Err(Box::new(diesel::types::impls::option::UnexpectedNullError {
-            //     msg: "Unexpected null for non-null column".to_string(),
-            // })),
+            None => panic!("Unexpected null for non-null column"),
         }
-    }
+    };
 }
-
 
 impl HasSqlType<SmallInt> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
@@ -122,9 +132,15 @@ impl HasSqlType<Double> for Oracle {
     }
 }
 
+impl HasSqlType<Numeric> for Oracle {
+    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
+        OCIDataType::Float
+    }
+}
+
 impl HasSqlType<VarChar> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::String
+        OCIDataType::Char
     }
 }
 
@@ -159,19 +175,22 @@ impl HasSqlType<Bool> for Oracle {
 }
 
 impl FromSql<Bool, Oracle> for bool {
-    fn from_sql(bytes: Option<&[u8]>) -> FromSqlResult<Self> {
+    fn from_sql(bytes: Option<&OracleValue>) -> FromSqlResult<Self> {
         FromSql::<Double, Oracle>::from_sql(bytes).map(|v: f64| v != 0.0)
     }
 }
 
 impl ToSql<Bool, Oracle> for bool {
-    fn to_sql<W: Write>(&self, out: &mut ToSqlOutput<W, Oracle>) -> ToSqlResult {
-        out.write_i16::<NativeEndian>(if *self { 1 } else { 0 })
+    fn to_sql<W: Write>(&self, out: &mut Output<W, Oracle>) -> ToSqlResult {
+        out.write_i16::<<Oracle as Backend>::ByteOrder>(if *self { 1 } else { 0 })
             .map(|_| IsNull::No)
             .map_err(|e| Box::new(e) as ErrorType)
     }
 }
 
-
 #[cfg(feature = "chrono-time")]
 mod chrono_date_time;
+
+mod decimal;
+mod integers;
+mod primitives;

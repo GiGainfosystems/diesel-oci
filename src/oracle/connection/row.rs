@@ -1,6 +1,8 @@
 use super::super::backend::Oracle;
 use diesel::row::Row;
 
+use super::oracle_value::OracleValue;
+
 pub struct OciRow<'a> {
     buf: Vec<&'a [u8]>,
     is_null: Vec<bool>,
@@ -11,16 +13,20 @@ impl<'a> OciRow<'a> {
     pub fn new(row_buf: Vec<&'a [u8]>, is_null: Vec<bool>) -> Self {
         OciRow {
             buf: row_buf,
-            is_null: is_null,
+            is_null,
             col_idx: 0,
         }
     }
 }
 
 impl<'a> Row<Oracle> for OciRow<'a> {
-    fn take(&mut self) -> Option<&[u8]> {
+    fn take(&mut self) -> Option<&OracleValue> {
         let ret = if self.col_idx < self.buf.len() {
-            Some(self.buf[self.col_idx])
+            if self.is_null[self.col_idx] {
+                None
+            } else {
+                Some(OracleValue::new(self.buf[self.col_idx]))
+            }
         } else {
             None
         };

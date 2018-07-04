@@ -494,7 +494,7 @@ pub const OCI_ATTR_DIRPATH_RESERVED_25: ::std::os::raw::c_uint = 2021;
 pub const OCI_ATTR_DIRPATH_PGA_LIM: ::std::os::raw::c_uint = 2022;
 pub const OCI_ATTR_DIRPATH_SPILL_PASSES: ::std::os::raw::c_uint = 2023;
 pub const OCI_ATTR_DIRPATH_FLAGS: ::std::os::raw::c_uint = 2024;
-pub const OCI_ATTR_DIRPATH_FLAGS_RESERVED: ::std::os::raw::c_uint = 4294901760;
+pub const OCI_ATTR_DIRPATH_FLAGS_RESERVED: ::std::os::raw::c_uint = 4_294_901_760;
 pub const OCI_EVENT_NONE: ::std::os::raw::c_uint = 0;
 pub const OCI_EVENT_STARTUP: ::std::os::raw::c_uint = 1;
 pub const OCI_EVENT_SHUTDOWN: ::std::os::raw::c_uint = 2;
@@ -643,20 +643,20 @@ pub const OCI_REG_LDAPONLY: ::std::os::raw::c_uint = 8192;
 pub const OCI_UTF16: ::std::os::raw::c_uint = 16384;
 pub const OCI_AFC_PAD_ON: ::std::os::raw::c_uint = 32768;
 pub const OCI_ENVCR_RESERVED3: ::std::os::raw::c_uint = 65536;
-pub const OCI_NEW_LENGTH_SEMANTICS: ::std::os::raw::c_uint = 131072;
-pub const OCI_NO_MUTEX_STMT: ::std::os::raw::c_uint = 262144;
-pub const OCI_MUTEX_ENV_ONLY: ::std::os::raw::c_uint = 524288;
-pub const OCI_SUPPRESS_NLS_VALIDATION: ::std::os::raw::c_uint = 1048576;
-pub const OCI_MUTEX_TRY: ::std::os::raw::c_uint = 2097152;
-pub const OCI_NCHAR_LITERAL_REPLACE_ON: ::std::os::raw::c_uint = 4194304;
-pub const OCI_NCHAR_LITERAL_REPLACE_OFF: ::std::os::raw::c_uint = 8388608;
-pub const OCI_ENABLE_NLS_VALIDATION: ::std::os::raw::c_uint = 16777216;
-pub const OCI_ENVCR_RESERVED4: ::std::os::raw::c_uint = 33554432;
-pub const OCI_ENVCR_RESERVED5: ::std::os::raw::c_uint = 67108864;
-pub const OCI_ENVCR_RESERVED6: ::std::os::raw::c_uint = 134217728;
-pub const OCI_ENVCR_RESERVED7: ::std::os::raw::c_uint = 268435456;
-pub const OCI_SECURE_NOTIFICATION: ::std::os::raw::c_uint = 536870912;
-pub const OCI_DISABLE_DIAG: ::std::os::raw::c_uint = 1073741824;
+pub const OCI_NEW_LENGTH_SEMANTICS: ::std::os::raw::c_uint = 131_072;
+pub const OCI_NO_MUTEX_STMT: ::std::os::raw::c_uint = 262_144;
+pub const OCI_MUTEX_ENV_ONLY: ::std::os::raw::c_uint = 524_288;
+pub const OCI_SUPPRESS_NLS_VALIDATION: ::std::os::raw::c_uint = 1_048_576;
+pub const OCI_MUTEX_TRY: ::std::os::raw::c_uint = 2_097_152;
+pub const OCI_NCHAR_LITERAL_REPLACE_ON: ::std::os::raw::c_uint = 4_194_304;
+pub const OCI_NCHAR_LITERAL_REPLACE_OFF: ::std::os::raw::c_uint = 8_388_608;
+pub const OCI_ENABLE_NLS_VALIDATION: ::std::os::raw::c_uint = 16_777_216;
+pub const OCI_ENVCR_RESERVED4: ::std::os::raw::c_uint = 33_554_432;
+pub const OCI_ENVCR_RESERVED5: ::std::os::raw::c_uint = 67_108_864;
+pub const OCI_ENVCR_RESERVED6: ::std::os::raw::c_uint = 134_217_728;
+pub const OCI_ENVCR_RESERVED7: ::std::os::raw::c_uint = 268_435_456;
+pub const OCI_SECURE_NOTIFICATION: ::std::os::raw::c_uint = 536_870_912;
+pub const OCI_DISABLE_DIAG: ::std::os::raw::c_uint = 1_073_741_824;
 pub const OCI_CPOOL_REINITIALIZE: ::std::os::raw::c_uint = 273;
 pub const OCI_LOGON2_SPOOL: ::std::os::raw::c_uint = 1;
 pub const OCI_LOGON2_STMTCACHE: ::std::os::raw::c_uint = 4;
@@ -710,10 +710,10 @@ pub const OCI_EXEC_RESERVED_3: ::std::os::raw::c_uint = 8192;
 pub const OCI_EXEC_RESERVED_4: ::std::os::raw::c_uint = 16384;
 pub const OCI_EXEC_RESERVED_5: ::std::os::raw::c_uint = 32768;
 pub const OCI_EXEC_RESERVED_6: ::std::os::raw::c_uint = 65536;
-pub const OCI_RESULT_CACHE: ::std::os::raw::c_uint = 131072;
-pub const OCI_NO_RESULT_CACHE: ::std::os::raw::c_uint = 262144;
-pub const OCI_EXEC_RESERVED_7: ::std::os::raw::c_uint = 524288;
-pub const OCI_RETURN_ROW_COUNT_ARRAY: ::std::os::raw::c_uint = 1048576;
+pub const OCI_RESULT_CACHE: ::std::os::raw::c_uint = 131_072;
+pub const OCI_NO_RESULT_CACHE: ::std::os::raw::c_uint = 262_144;
+pub const OCI_EXEC_RESERVED_7: ::std::os::raw::c_uint = 524_288;
+pub const OCI_RETURN_ROW_COUNT_ARRAY: ::std::os::raw::c_uint = 1_048_576;
 pub const OCI_MIGRATE: ::std::os::raw::c_uint = 1;
 pub const OCI_SYSDBA: ::std::os::raw::c_uint = 2;
 pub const OCI_SYSOPER: ::std::os::raw::c_uint = 4;
@@ -730,9 +730,9 @@ pub const OCI_AUTH_RESERVED_4: ::std::os::raw::c_uint = 4096;
 pub const OCI_AUTH_RESERVED_5: ::std::os::raw::c_uint = 8192;
 pub const OCI_SYSASM: ::std::os::raw::c_uint = 32768;
 pub const OCI_AUTH_RESERVED_6: ::std::os::raw::c_uint = 65536;
-pub const OCI_SYSBKP: ::std::os::raw::c_uint = 131072;
-pub const OCI_SYSDGD: ::std::os::raw::c_uint = 262144;
-pub const OCI_SYSKMT: ::std::os::raw::c_uint = 524288;
+pub const OCI_SYSBKP: ::std::os::raw::c_uint = 131_072;
+pub const OCI_SYSDGD: ::std::os::raw::c_uint = 262_144;
+pub const OCI_SYSKMT: ::std::os::raw::c_uint = 524_288;
 pub const OCI_SESSEND_RESERVED_1: ::std::os::raw::c_uint = 1;
 pub const OCI_SESSEND_RESERVED_2: ::std::os::raw::c_uint = 2;
 pub const OCI_FASTPATH: ::std::os::raw::c_uint = 16;
@@ -745,9 +745,9 @@ pub const OCI_ATCH_RESERVED_5: ::std::os::raw::c_uint = 8192;
 pub const OCI_ATCH_ENABLE_BEQ: ::std::os::raw::c_uint = 16384;
 pub const OCI_ATCH_RESERVED_6: ::std::os::raw::c_uint = 32768;
 pub const OCI_ATCH_RESERVED_7: ::std::os::raw::c_uint = 65536;
-pub const OCI_ATCH_RESERVED_8: ::std::os::raw::c_uint = 131072;
-pub const OCI_SRVATCH_RESERVED5: ::std::os::raw::c_uint = 16777216;
-pub const OCI_SRVATCH_RESERVED6: ::std::os::raw::c_uint = 33554432;
+pub const OCI_ATCH_RESERVED_8: ::std::os::raw::c_uint = 131_072;
+pub const OCI_SRVATCH_RESERVED5: ::std::os::raw::c_uint = 16_777_216;
+pub const OCI_SRVATCH_RESERVED6: ::std::os::raw::c_uint = 33_554_432;
 pub const OCI_PREP2_CACHE_SEARCHONLY: ::std::os::raw::c_uint = 16;
 pub const OCI_PREP2_GET_PLSQL_WARNINGS: ::std::os::raw::c_uint = 32;
 pub const OCI_PREP2_RESERVED_1: ::std::os::raw::c_uint = 64;
@@ -757,7 +757,7 @@ pub const OCI_PREP2_RESERVED_4: ::std::os::raw::c_uint = 512;
 pub const OCI_PREP2_IMPL_RESULTS_CLIENT: ::std::os::raw::c_uint = 1024;
 pub const OCI_PREP2_RESERVED_5: ::std::os::raw::c_uint = 2048;
 pub const OCI_STRLS_CACHE_DELETE: ::std::os::raw::c_uint = 16;
-pub const OCI_STM_RESERVED4: ::std::os::raw::c_uint = 1048576;
+pub const OCI_STM_RESERVED4: ::std::os::raw::c_uint = 1_048_576;
 pub const OCI_PARAM_IN: ::std::os::raw::c_uint = 1;
 pub const OCI_PARAM_OUT: ::std::os::raw::c_uint = 2;
 pub const OCI_TRANS_NEW: ::std::os::raw::c_uint = 1;
@@ -770,13 +770,13 @@ pub const OCI_TRANS_READWRITE: ::std::os::raw::c_uint = 512;
 pub const OCI_TRANS_SERIALIZABLE: ::std::os::raw::c_uint = 1024;
 pub const OCI_TRANS_ISOLMASK: ::std::os::raw::c_uint = 65280;
 pub const OCI_TRANS_LOOSE: ::std::os::raw::c_uint = 65536;
-pub const OCI_TRANS_TIGHT: ::std::os::raw::c_uint = 131072;
-pub const OCI_TRANS_TYPEMASK: ::std::os::raw::c_uint = 983040;
-pub const OCI_TRANS_NOMIGRATE: ::std::os::raw::c_uint = 1048576;
-pub const OCI_TRANS_SEPARABLE: ::std::os::raw::c_uint = 2097152;
-pub const OCI_TRANS_OTSRESUME: ::std::os::raw::c_uint = 4194304;
-pub const OCI_TRANS_OTHRMASK: ::std::os::raw::c_uint = 4293918720;
-pub const OCI_TRANS_TWOPHASE: ::std::os::raw::c_uint = 16777216;
+pub const OCI_TRANS_TIGHT: ::std::os::raw::c_uint = 131_072;
+pub const OCI_TRANS_TYPEMASK: ::std::os::raw::c_uint = 983_040;
+pub const OCI_TRANS_NOMIGRATE: ::std::os::raw::c_uint = 1_048_576;
+pub const OCI_TRANS_SEPARABLE: ::std::os::raw::c_uint = 2_097_152;
+pub const OCI_TRANS_OTSRESUME: ::std::os::raw::c_uint = 4_194_304;
+pub const OCI_TRANS_OTHRMASK: ::std::os::raw::c_uint = 4_293_918_720;
+pub const OCI_TRANS_TWOPHASE: ::std::os::raw::c_uint = 16_777_216;
 pub const OCI_TRANS_WRITEBATCH: ::std::os::raw::c_uint = 1;
 pub const OCI_TRANS_WRITEIMMED: ::std::os::raw::c_uint = 2;
 pub const OCI_TRANS_WRITEWAIT: ::std::os::raw::c_uint = 4;
@@ -816,7 +816,7 @@ pub const OCI_AQ_RESERVED_1: ::std::os::raw::c_uint = 2;
 pub const OCI_AQ_RESERVED_2: ::std::os::raw::c_uint = 4;
 pub const OCI_AQ_RESERVED_3: ::std::os::raw::c_uint = 8;
 pub const OCI_AQ_RESERVED_4: ::std::os::raw::c_uint = 16;
-pub const OCI_AQ_STREAMING_FLAG: ::std::os::raw::c_uint = 33554432;
+pub const OCI_AQ_STREAMING_FLAG: ::std::os::raw::c_uint = 33_554_432;
 pub const OCI_AQJMS_RAW_MSG: ::std::os::raw::c_uint = 1;
 pub const OCI_AQJMS_TEXT_MSG: ::std::os::raw::c_uint = 2;
 pub const OCI_AQJMS_MAP_MSG: ::std::os::raw::c_uint = 4;
@@ -1607,32 +1607,31 @@ pub const OCI_DIRPATH_EXPR_SQL: ::std::os::raw::c_uint = 2;
 pub const OCI_DIRPATH_EXPR_REF_TBLNAME: ::std::os::raw::c_uint = 3;
 pub const OCI_LCR_XROW: ::std::os::raw::c_uint = 3;
 pub const OCI_LCR_XDDL: ::std::os::raw::c_uint = 4;
-pub const OCI_LCR_ROW_CMD_INSERT: &'static [u8; 7usize] = b"INSERT\x00";
-pub const OCI_LCR_ROW_CMD_DELETE: &'static [u8; 7usize] = b"DELETE\x00";
-pub const OCI_LCR_ROW_CMD_UPDATE: &'static [u8; 7usize] = b"UPDATE\x00";
-pub const OCI_LCR_ROW_CMD_COMMIT: &'static [u8; 7usize] = b"COMMIT\x00";
-pub const OCI_LCR_ROW_CMD_LOB_WRITE: &'static [u8; 10usize] = b"LOB WRITE\x00";
-pub const OCI_LCR_ROW_CMD_LOB_TRIM: &'static [u8; 9usize] = b"LOB TRIM\x00";
-pub const OCI_LCR_ROW_CMD_LOB_ERASE: &'static [u8; 10usize] = b"LOB ERASE\x00";
-pub const OCI_LCR_ROW_CMD_ROLLBACK: &'static [u8; 9usize] = b"ROLLBACK\x00";
-pub const OCI_LCR_ROW_CMD_START_TX: &'static [u8; 9usize] = b"START_TX\x00";
-pub const OCI_LCR_ROW_CMD_CTRL_INFO: &'static [u8; 13usize] = b"CONTROL INFO\x00";
+pub const OCI_LCR_ROW_CMD_INSERT: &[u8; 7usize] = b"INSERT\x00";
+pub const OCI_LCR_ROW_CMD_DELETE: &[u8; 7usize] = b"DELETE\x00";
+pub const OCI_LCR_ROW_CMD_UPDATE: &[u8; 7usize] = b"UPDATE\x00";
+pub const OCI_LCR_ROW_CMD_COMMIT: &[u8; 7usize] = b"COMMIT\x00";
+pub const OCI_LCR_ROW_CMD_LOB_WRITE: &[u8; 10usize] = b"LOB WRITE\x00";
+pub const OCI_LCR_ROW_CMD_LOB_TRIM: &[u8; 9usize] = b"LOB TRIM\x00";
+pub const OCI_LCR_ROW_CMD_LOB_ERASE: &[u8; 10usize] = b"LOB ERASE\x00";
+pub const OCI_LCR_ROW_CMD_ROLLBACK: &[u8; 9usize] = b"ROLLBACK\x00";
+pub const OCI_LCR_ROW_CMD_START_TX: &[u8; 9usize] = b"START_TX\x00";
+pub const OCI_LCR_ROW_CMD_CTRL_INFO: &[u8; 13usize] = b"CONTROL INFO\x00";
 pub const OCI_LCR_CTRLINFO_MEMORY_PRESSURE: ::std::os::raw::c_uint = 32768;
 pub const OCI_LCR_CTRLINFO_MISSING_LOGFILE: ::std::os::raw::c_uint = 32769;
 pub const OCI_LCR_CTRLINFO_UNSUPPORTED_LCR: ::std::os::raw::c_uint = 32770;
-pub const OCI_LCR_ATTR_THREAD_NO: &'static [u8; 8usize] = b"THREAD#\x00";
-pub const OCI_LCR_ATTR_ROW_ID: &'static [u8; 7usize] = b"ROW_ID\x00";
-pub const OCI_LCR_ATTR_SESSION_NO: &'static [u8; 9usize] = b"SESSION#\x00";
-pub const OCI_LCR_ATTR_SERIAL_NO: &'static [u8; 8usize] = b"SERIAL#\x00";
-pub const OCI_LCR_ATTR_USERNAME: &'static [u8; 9usize] = b"USERNAME\x00";
-pub const OCI_LCR_ATTR_TX_NAME: &'static [u8; 8usize] = b"TX_NAME\x00";
-pub const OCI_LCR_ATTR_EDITION_NAME: &'static [u8; 13usize] = b"EDITION_NAME\x00";
-pub const OCI_LCR_ATTR_MESSAGE_TRACKING_LABEL: &'static [u8; 23usize] =
-    b"MESSAGE_TRACKING_LABEL\x00";
-pub const OCI_LCR_ATTR_CURRENT_USER: &'static [u8; 13usize] = b"CURRENT_USER\x00";
-pub const OCI_LCR_ATTR_ROOT_NAME: &'static [u8; 10usize] = b"ROOT_NAME\x00";
-pub const OCI_LCR_ATTR_OLD_OWNER: &'static [u8; 10usize] = b"OLD_OWNER\x00";
-pub const OCI_LCR_ATTR_OLD_ONAME: &'static [u8; 10usize] = b"OLD_ONAME\x00";
+pub const OCI_LCR_ATTR_THREAD_NO: &[u8; 8usize] = b"THREAD#\x00";
+pub const OCI_LCR_ATTR_ROW_ID: &[u8; 7usize] = b"ROW_ID\x00";
+pub const OCI_LCR_ATTR_SESSION_NO: &[u8; 9usize] = b"SESSION#\x00";
+pub const OCI_LCR_ATTR_SERIAL_NO: &[u8; 8usize] = b"SERIAL#\x00";
+pub const OCI_LCR_ATTR_USERNAME: &[u8; 9usize] = b"USERNAME\x00";
+pub const OCI_LCR_ATTR_TX_NAME: &[u8; 8usize] = b"TX_NAME\x00";
+pub const OCI_LCR_ATTR_EDITION_NAME: &[u8; 13usize] = b"EDITION_NAME\x00";
+pub const OCI_LCR_ATTR_MESSAGE_TRACKING_LABEL: &[u8; 23usize] = b"MESSAGE_TRACKING_LABEL\x00";
+pub const OCI_LCR_ATTR_CURRENT_USER: &[u8; 13usize] = b"CURRENT_USER\x00";
+pub const OCI_LCR_ATTR_ROOT_NAME: &[u8; 10usize] = b"ROOT_NAME\x00";
+pub const OCI_LCR_ATTR_OLD_OWNER: &[u8; 10usize] = b"OLD_OWNER\x00";
+pub const OCI_LCR_ATTR_OLD_ONAME: &[u8; 10usize] = b"OLD_ONAME\x00";
 pub const OCI_LCR_ROW_COLVAL_OLD: ::std::os::raw::c_uint = 0;
 pub const OCI_LCR_ROW_COLVAL_NEW: ::std::os::raw::c_uint = 1;
 pub const OCI_LCR_MAX_POSITION_LEN: ::std::os::raw::c_uint = 64;
@@ -1656,8 +1655,8 @@ pub const OCI_XSTREAM_MORE_ROW_DATA: ::std::os::raw::c_uint = 1;
 pub const OCILCR_NEW_ONLY_MODE: ::std::os::raw::c_uint = 1;
 pub const OCIXSTREAM_IN_FLUSH_WAIT_FOR_COMPLETE: ::std::os::raw::c_uint = 1;
 pub const OCIXSTREAM_SESSION_SET_MAX_PARAM_LEN: ::std::os::raw::c_uint = 128;
-pub const OCIXSTREAM_ATTR_ATTACH_TIMEOUT: &'static [u8; 20usize] = b"ATTACH_TIMEOUT_SECS\x00";
-pub const OCIXSTREAM_ATTR_MAX_ATTACH_RETRIES: &'static [u8; 19usize] = b"MAX_ATTACH_RETRIES\x00";
+pub const OCIXSTREAM_ATTR_ATTACH_TIMEOUT: &[u8; 20usize] = b"ATTACH_TIMEOUT_SECS\x00";
+pub const OCIXSTREAM_ATTR_MAX_ATTACH_RETRIES: &[u8; 19usize] = b"MAX_ATTACH_RETRIES\x00";
 pub const OCIXSTREAM_OUT_ATTACH_RESERVED_1: ::std::os::raw::c_uint = 1;
 pub const OCIXSTREAM_OUT_ATTACH_APP_FREE_LCR: ::std::os::raw::c_uint = 2;
 pub const OCIXSTREAM_IN_ATTACH_RESTART_INBOUND: ::std::os::raw::c_uint = 1;
@@ -1672,25 +1671,31 @@ pub struct max_align_t {
 }
 #[test]
 fn bindgen_test_layout_max_align_t() {
-    assert_eq!(::std::mem::size_of::<max_align_t>(),
-               32usize,
-               concat!("Size of: ", stringify!(max_align_t)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const max_align_t)).__clang_max_align_nonce1 as *const _ as usize
-               },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(max_align_t),
-                       "::",
-                       stringify!(__clang_max_align_nonce1)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const max_align_t)).__clang_max_align_nonce2 as *const _ as usize
-               },
-               16usize,
-               concat!("Alignment of field: ",
-                       stringify!(max_align_t),
-                       "::",
-                       stringify!(__clang_max_align_nonce2)));
+    assert_eq!(
+        ::std::mem::size_of::<max_align_t>(),
+        32usize,
+        concat!("Size of: ", stringify!(max_align_t))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const max_align_t)).__clang_max_align_nonce1 as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(max_align_t),
+            "::",
+            stringify!(__clang_max_align_nonce1)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const max_align_t)).__clang_max_align_nonce2 as *const _ as usize },
+        16usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(max_align_t),
+            "::",
+            stringify!(__clang_max_align_nonce2)
+        )
+    );
 }
 impl Clone for max_align_t {
     fn clone(&self) -> Self {
@@ -1756,18 +1761,26 @@ pub struct __fsid_t {
 }
 #[test]
 fn bindgen_test_layout___fsid_t() {
-    assert_eq!(::std::mem::size_of::<__fsid_t>(),
-               8usize,
-               concat!("Size of: ", stringify!(__fsid_t)));
-    assert_eq!(::std::mem::align_of::<__fsid_t>(),
-               4usize,
-               concat!("Alignment of ", stringify!(__fsid_t)));
-    assert_eq!(unsafe { &(*(0 as *const __fsid_t)).__val as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(__fsid_t),
-                       "::",
-                       stringify!(__val)));
+    assert_eq!(
+        ::std::mem::size_of::<__fsid_t>(),
+        8usize,
+        concat!("Size of: ", stringify!(__fsid_t))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<__fsid_t>(),
+        4usize,
+        concat!("Alignment of ", stringify!(__fsid_t))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const __fsid_t)).__val as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(__fsid_t),
+            "::",
+            stringify!(__val)
+        )
+    );
 }
 impl Clone for __fsid_t {
     fn clone(&self) -> Self {
@@ -1841,18 +1854,26 @@ pub struct __sigset_t {
 }
 #[test]
 fn bindgen_test_layout___sigset_t() {
-    assert_eq!(::std::mem::size_of::<__sigset_t>(),
-               128usize,
-               concat!("Size of: ", stringify!(__sigset_t)));
-    assert_eq!(::std::mem::align_of::<__sigset_t>(),
-               8usize,
-               concat!("Alignment of ", stringify!(__sigset_t)));
-    assert_eq!(unsafe { &(*(0 as *const __sigset_t)).__val as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(__sigset_t),
-                       "::",
-                       stringify!(__val)));
+    assert_eq!(
+        ::std::mem::size_of::<__sigset_t>(),
+        128usize,
+        concat!("Size of: ", stringify!(__sigset_t))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<__sigset_t>(),
+        8usize,
+        concat!("Alignment of ", stringify!(__sigset_t))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const __sigset_t)).__val as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(__sigset_t),
+            "::",
+            stringify!(__val)
+        )
+    );
 }
 impl Clone for __sigset_t {
     fn clone(&self) -> Self {
@@ -1868,24 +1889,36 @@ pub struct timespec {
 }
 #[test]
 fn bindgen_test_layout_timespec() {
-    assert_eq!(::std::mem::size_of::<timespec>(),
-               16usize,
-               concat!("Size of: ", stringify!(timespec)));
-    assert_eq!(::std::mem::align_of::<timespec>(),
-               8usize,
-               concat!("Alignment of ", stringify!(timespec)));
-    assert_eq!(unsafe { &(*(0 as *const timespec)).tv_sec as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(timespec),
-                       "::",
-                       stringify!(tv_sec)));
-    assert_eq!(unsafe { &(*(0 as *const timespec)).tv_nsec as *const _ as usize },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(timespec),
-                       "::",
-                       stringify!(tv_nsec)));
+    assert_eq!(
+        ::std::mem::size_of::<timespec>(),
+        16usize,
+        concat!("Size of: ", stringify!(timespec))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<timespec>(),
+        8usize,
+        concat!("Alignment of ", stringify!(timespec))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const timespec)).tv_sec as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(timespec),
+            "::",
+            stringify!(tv_sec)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const timespec)).tv_nsec as *const _ as usize },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(timespec),
+            "::",
+            stringify!(tv_nsec)
+        )
+    );
 }
 impl Clone for timespec {
     fn clone(&self) -> Self {
@@ -1900,24 +1933,36 @@ pub struct timeval {
 }
 #[test]
 fn bindgen_test_layout_timeval() {
-    assert_eq!(::std::mem::size_of::<timeval>(),
-               16usize,
-               concat!("Size of: ", stringify!(timeval)));
-    assert_eq!(::std::mem::align_of::<timeval>(),
-               8usize,
-               concat!("Alignment of ", stringify!(timeval)));
-    assert_eq!(unsafe { &(*(0 as *const timeval)).tv_sec as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(timeval),
-                       "::",
-                       stringify!(tv_sec)));
-    assert_eq!(unsafe { &(*(0 as *const timeval)).tv_usec as *const _ as usize },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(timeval),
-                       "::",
-                       stringify!(tv_usec)));
+    assert_eq!(
+        ::std::mem::size_of::<timeval>(),
+        16usize,
+        concat!("Size of: ", stringify!(timeval))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<timeval>(),
+        8usize,
+        concat!("Alignment of ", stringify!(timeval))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const timeval)).tv_sec as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(timeval),
+            "::",
+            stringify!(tv_sec)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const timeval)).tv_usec as *const _ as usize },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(timeval),
+            "::",
+            stringify!(tv_usec)
+        )
+    );
 }
 impl Clone for timeval {
     fn clone(&self) -> Self {
@@ -1933,18 +1978,26 @@ pub struct fd_set {
 }
 #[test]
 fn bindgen_test_layout_fd_set() {
-    assert_eq!(::std::mem::size_of::<fd_set>(),
-               128usize,
-               concat!("Size of: ", stringify!(fd_set)));
-    assert_eq!(::std::mem::align_of::<fd_set>(),
-               8usize,
-               concat!("Alignment of ", stringify!(fd_set)));
-    assert_eq!(unsafe { &(*(0 as *const fd_set)).__fds_bits as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(fd_set),
-                       "::",
-                       stringify!(__fds_bits)));
+    assert_eq!(
+        ::std::mem::size_of::<fd_set>(),
+        128usize,
+        concat!("Size of: ", stringify!(fd_set))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<fd_set>(),
+        8usize,
+        concat!("Alignment of ", stringify!(fd_set))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const fd_set)).__fds_bits as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(fd_set),
+            "::",
+            stringify!(__fds_bits)
+        )
+    );
 }
 impl Clone for fd_set {
     fn clone(&self) -> Self {
@@ -1953,21 +2006,23 @@ impl Clone for fd_set {
 }
 pub type fd_mask = __fd_mask;
 extern "C" {
-    pub fn select(__nfds: ::std::os::raw::c_int,
-                  __readfds: *mut fd_set,
-                  __writefds: *mut fd_set,
-                  __exceptfds: *mut fd_set,
-                  __timeout: *mut timeval)
-                  -> ::std::os::raw::c_int;
+    pub fn select(
+        __nfds: ::std::os::raw::c_int,
+        __readfds: *mut fd_set,
+        __writefds: *mut fd_set,
+        __exceptfds: *mut fd_set,
+        __timeout: *mut timeval,
+    ) -> ::std::os::raw::c_int;
 }
 extern "C" {
-    pub fn pselect(__nfds: ::std::os::raw::c_int,
-                   __readfds: *mut fd_set,
-                   __writefds: *mut fd_set,
-                   __exceptfds: *mut fd_set,
-                   __timeout: *const timespec,
-                   __sigmask: *const __sigset_t)
-                   -> ::std::os::raw::c_int;
+    pub fn pselect(
+        __nfds: ::std::os::raw::c_int,
+        __readfds: *mut fd_set,
+        __writefds: *mut fd_set,
+        __exceptfds: *mut fd_set,
+        __timeout: *const timespec,
+        __sigmask: *const __sigset_t,
+    ) -> ::std::os::raw::c_int;
 }
 extern "C" {
     pub fn gnu_dev_major(__dev: ::std::os::raw::c_ulonglong) -> ::std::os::raw::c_uint;
@@ -1976,9 +2031,10 @@ extern "C" {
     pub fn gnu_dev_minor(__dev: ::std::os::raw::c_ulonglong) -> ::std::os::raw::c_uint;
 }
 extern "C" {
-    pub fn gnu_dev_makedev(__major: ::std::os::raw::c_uint,
-                           __minor: ::std::os::raw::c_uint)
-                           -> ::std::os::raw::c_ulonglong;
+    pub fn gnu_dev_makedev(
+        __major: ::std::os::raw::c_uint,
+        __minor: ::std::os::raw::c_uint,
+    ) -> ::std::os::raw::c_ulonglong;
 }
 pub type blksize_t = __blksize_t;
 pub type blkcnt_t = __blkcnt_t;
@@ -1994,24 +2050,36 @@ pub union pthread_attr_t {
 }
 #[test]
 fn bindgen_test_layout_pthread_attr_t() {
-    assert_eq!(::std::mem::size_of::<pthread_attr_t>(),
-               56usize,
-               concat!("Size of: ", stringify!(pthread_attr_t)));
-    assert_eq!(::std::mem::align_of::<pthread_attr_t>(),
-               8usize,
-               concat!("Alignment of ", stringify!(pthread_attr_t)));
-    assert_eq!(unsafe { &(*(0 as *const pthread_attr_t)).__size as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_attr_t),
-                       "::",
-                       stringify!(__size)));
-    assert_eq!(unsafe { &(*(0 as *const pthread_attr_t)).__align as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_attr_t),
-                       "::",
-                       stringify!(__align)));
+    assert_eq!(
+        ::std::mem::size_of::<pthread_attr_t>(),
+        56usize,
+        concat!("Size of: ", stringify!(pthread_attr_t))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<pthread_attr_t>(),
+        8usize,
+        concat!("Alignment of ", stringify!(pthread_attr_t))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_attr_t)).__size as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_attr_t),
+            "::",
+            stringify!(__size)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_attr_t)).__align as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_attr_t),
+            "::",
+            stringify!(__align)
+        )
+    );
 }
 impl Clone for pthread_attr_t {
     fn clone(&self) -> Self {
@@ -2026,24 +2094,36 @@ pub struct __pthread_internal_list {
 }
 #[test]
 fn bindgen_test_layout___pthread_internal_list() {
-    assert_eq!(::std::mem::size_of::<__pthread_internal_list>(),
-               16usize,
-               concat!("Size of: ", stringify!(__pthread_internal_list)));
-    assert_eq!(::std::mem::align_of::<__pthread_internal_list>(),
-               8usize,
-               concat!("Alignment of ", stringify!(__pthread_internal_list)));
-    assert_eq!(unsafe { &(*(0 as *const __pthread_internal_list)).__prev as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(__pthread_internal_list),
-                       "::",
-                       stringify!(__prev)));
-    assert_eq!(unsafe { &(*(0 as *const __pthread_internal_list)).__next as *const _ as usize },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(__pthread_internal_list),
-                       "::",
-                       stringify!(__next)));
+    assert_eq!(
+        ::std::mem::size_of::<__pthread_internal_list>(),
+        16usize,
+        concat!("Size of: ", stringify!(__pthread_internal_list))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<__pthread_internal_list>(),
+        8usize,
+        concat!("Alignment of ", stringify!(__pthread_internal_list))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const __pthread_internal_list)).__prev as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(__pthread_internal_list),
+            "::",
+            stringify!(__prev)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const __pthread_internal_list)).__next as *const _ as usize },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(__pthread_internal_list),
+            "::",
+            stringify!(__next)
+        )
+    );
 }
 impl Clone for __pthread_internal_list {
     fn clone(&self) -> Self {
@@ -2073,78 +2153,103 @@ pub struct pthread_mutex_t___pthread_mutex_s {
 }
 #[test]
 fn bindgen_test_layout_pthread_mutex_t___pthread_mutex_s() {
-    assert_eq!(::std::mem::size_of::<pthread_mutex_t___pthread_mutex_s>(),
-               40usize,
-               concat!("Size of: ", stringify!(pthread_mutex_t___pthread_mutex_s)));
-    assert_eq!(::std::mem::align_of::<pthread_mutex_t___pthread_mutex_s>(),
-               8usize,
-               concat!("Alignment of ",
-                       stringify!(pthread_mutex_t___pthread_mutex_s)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_mutex_t___pthread_mutex_s)).__lock as *const _ as usize
-               },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_mutex_t___pthread_mutex_s),
-                       "::",
-                       stringify!(__lock)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_mutex_t___pthread_mutex_s)).__count as *const _ as usize
-               },
-               4usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_mutex_t___pthread_mutex_s),
-                       "::",
-                       stringify!(__count)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_mutex_t___pthread_mutex_s)).__owner as *const _ as usize
-               },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_mutex_t___pthread_mutex_s),
-                       "::",
-                       stringify!(__owner)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_mutex_t___pthread_mutex_s)).__nusers as *const _ as usize
-               },
-               12usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_mutex_t___pthread_mutex_s),
-                       "::",
-                       stringify!(__nusers)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_mutex_t___pthread_mutex_s)).__kind as *const _ as usize
-               },
-               16usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_mutex_t___pthread_mutex_s),
-                       "::",
-                       stringify!(__kind)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_mutex_t___pthread_mutex_s)).__spins as *const _ as usize
-               },
-               20usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_mutex_t___pthread_mutex_s),
-                       "::",
-                       stringify!(__spins)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_mutex_t___pthread_mutex_s)).__elision as *const _ as
-                   usize
-               },
-               22usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_mutex_t___pthread_mutex_s),
-                       "::",
-                       stringify!(__elision)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_mutex_t___pthread_mutex_s)).__list as *const _ as usize
-               },
-               24usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_mutex_t___pthread_mutex_s),
-                       "::",
-                       stringify!(__list)));
+    assert_eq!(
+        ::std::mem::size_of::<pthread_mutex_t___pthread_mutex_s>(),
+        40usize,
+        concat!("Size of: ", stringify!(pthread_mutex_t___pthread_mutex_s))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<pthread_mutex_t___pthread_mutex_s>(),
+        8usize,
+        concat!(
+            "Alignment of ",
+            stringify!(pthread_mutex_t___pthread_mutex_s)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_mutex_t___pthread_mutex_s)).__lock as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_mutex_t___pthread_mutex_s),
+            "::",
+            stringify!(__lock)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_mutex_t___pthread_mutex_s)).__count as *const _ as usize },
+        4usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_mutex_t___pthread_mutex_s),
+            "::",
+            stringify!(__count)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_mutex_t___pthread_mutex_s)).__owner as *const _ as usize },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_mutex_t___pthread_mutex_s),
+            "::",
+            stringify!(__owner)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(0 as *const pthread_mutex_t___pthread_mutex_s)).__nusers as *const _ as usize
+        },
+        12usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_mutex_t___pthread_mutex_s),
+            "::",
+            stringify!(__nusers)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_mutex_t___pthread_mutex_s)).__kind as *const _ as usize },
+        16usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_mutex_t___pthread_mutex_s),
+            "::",
+            stringify!(__kind)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_mutex_t___pthread_mutex_s)).__spins as *const _ as usize },
+        20usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_mutex_t___pthread_mutex_s),
+            "::",
+            stringify!(__spins)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(0 as *const pthread_mutex_t___pthread_mutex_s)).__elision as *const _ as usize
+        },
+        22usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_mutex_t___pthread_mutex_s),
+            "::",
+            stringify!(__elision)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_mutex_t___pthread_mutex_s)).__list as *const _ as usize },
+        24usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_mutex_t___pthread_mutex_s),
+            "::",
+            stringify!(__list)
+        )
+    );
 }
 impl Clone for pthread_mutex_t___pthread_mutex_s {
     fn clone(&self) -> Self {
@@ -2153,30 +2258,46 @@ impl Clone for pthread_mutex_t___pthread_mutex_s {
 }
 #[test]
 fn bindgen_test_layout_pthread_mutex_t() {
-    assert_eq!(::std::mem::size_of::<pthread_mutex_t>(),
-               40usize,
-               concat!("Size of: ", stringify!(pthread_mutex_t)));
-    assert_eq!(::std::mem::align_of::<pthread_mutex_t>(),
-               8usize,
-               concat!("Alignment of ", stringify!(pthread_mutex_t)));
-    assert_eq!(unsafe { &(*(0 as *const pthread_mutex_t)).__data as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_mutex_t),
-                       "::",
-                       stringify!(__data)));
-    assert_eq!(unsafe { &(*(0 as *const pthread_mutex_t)).__size as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_mutex_t),
-                       "::",
-                       stringify!(__size)));
-    assert_eq!(unsafe { &(*(0 as *const pthread_mutex_t)).__align as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_mutex_t),
-                       "::",
-                       stringify!(__align)));
+    assert_eq!(
+        ::std::mem::size_of::<pthread_mutex_t>(),
+        40usize,
+        concat!("Size of: ", stringify!(pthread_mutex_t))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<pthread_mutex_t>(),
+        8usize,
+        concat!("Alignment of ", stringify!(pthread_mutex_t))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_mutex_t)).__data as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_mutex_t),
+            "::",
+            stringify!(__data)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_mutex_t)).__size as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_mutex_t),
+            "::",
+            stringify!(__size)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_mutex_t)).__align as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_mutex_t),
+            "::",
+            stringify!(__align)
+        )
+    );
 }
 impl Clone for pthread_mutex_t {
     fn clone(&self) -> Self {
@@ -2192,24 +2313,36 @@ pub union pthread_mutexattr_t {
 }
 #[test]
 fn bindgen_test_layout_pthread_mutexattr_t() {
-    assert_eq!(::std::mem::size_of::<pthread_mutexattr_t>(),
-               4usize,
-               concat!("Size of: ", stringify!(pthread_mutexattr_t)));
-    assert_eq!(::std::mem::align_of::<pthread_mutexattr_t>(),
-               4usize,
-               concat!("Alignment of ", stringify!(pthread_mutexattr_t)));
-    assert_eq!(unsafe { &(*(0 as *const pthread_mutexattr_t)).__size as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_mutexattr_t),
-                       "::",
-                       stringify!(__size)));
-    assert_eq!(unsafe { &(*(0 as *const pthread_mutexattr_t)).__align as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_mutexattr_t),
-                       "::",
-                       stringify!(__align)));
+    assert_eq!(
+        ::std::mem::size_of::<pthread_mutexattr_t>(),
+        4usize,
+        concat!("Size of: ", stringify!(pthread_mutexattr_t))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<pthread_mutexattr_t>(),
+        4usize,
+        concat!("Alignment of ", stringify!(pthread_mutexattr_t))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_mutexattr_t)).__size as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_mutexattr_t),
+            "::",
+            stringify!(__size)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_mutexattr_t)).__align as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_mutexattr_t),
+            "::",
+            stringify!(__align)
+        )
+    );
 }
 impl Clone for pthread_mutexattr_t {
     fn clone(&self) -> Self {
@@ -2238,77 +2371,98 @@ pub struct pthread_cond_t__bindgen_ty_1 {
 }
 #[test]
 fn bindgen_test_layout_pthread_cond_t__bindgen_ty_1() {
-    assert_eq!(::std::mem::size_of::<pthread_cond_t__bindgen_ty_1>(),
-               48usize,
-               concat!("Size of: ", stringify!(pthread_cond_t__bindgen_ty_1)));
-    assert_eq!(::std::mem::align_of::<pthread_cond_t__bindgen_ty_1>(),
-               8usize,
-               concat!("Alignment of ", stringify!(pthread_cond_t__bindgen_ty_1)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_cond_t__bindgen_ty_1)).__lock as *const _ as usize
-               },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_cond_t__bindgen_ty_1),
-                       "::",
-                       stringify!(__lock)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_cond_t__bindgen_ty_1)).__futex as *const _ as usize
-               },
-               4usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_cond_t__bindgen_ty_1),
-                       "::",
-                       stringify!(__futex)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_cond_t__bindgen_ty_1)).__total_seq as *const _ as usize
-               },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_cond_t__bindgen_ty_1),
-                       "::",
-                       stringify!(__total_seq)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_cond_t__bindgen_ty_1)).__wakeup_seq as *const _ as usize
-               },
-               16usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_cond_t__bindgen_ty_1),
-                       "::",
-                       stringify!(__wakeup_seq)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_cond_t__bindgen_ty_1)).__woken_seq as *const _ as usize
-               },
-               24usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_cond_t__bindgen_ty_1),
-                       "::",
-                       stringify!(__woken_seq)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_cond_t__bindgen_ty_1)).__mutex as *const _ as usize
-               },
-               32usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_cond_t__bindgen_ty_1),
-                       "::",
-                       stringify!(__mutex)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_cond_t__bindgen_ty_1)).__nwaiters as *const _ as usize
-               },
-               40usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_cond_t__bindgen_ty_1),
-                       "::",
-                       stringify!(__nwaiters)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_cond_t__bindgen_ty_1)).__broadcast_seq as *const _ as
-                   usize
-               },
-               44usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_cond_t__bindgen_ty_1),
-                       "::",
-                       stringify!(__broadcast_seq)));
+    assert_eq!(
+        ::std::mem::size_of::<pthread_cond_t__bindgen_ty_1>(),
+        48usize,
+        concat!("Size of: ", stringify!(pthread_cond_t__bindgen_ty_1))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<pthread_cond_t__bindgen_ty_1>(),
+        8usize,
+        concat!("Alignment of ", stringify!(pthread_cond_t__bindgen_ty_1))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_cond_t__bindgen_ty_1)).__lock as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_cond_t__bindgen_ty_1),
+            "::",
+            stringify!(__lock)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_cond_t__bindgen_ty_1)).__futex as *const _ as usize },
+        4usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_cond_t__bindgen_ty_1),
+            "::",
+            stringify!(__futex)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_cond_t__bindgen_ty_1)).__total_seq as *const _ as usize },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_cond_t__bindgen_ty_1),
+            "::",
+            stringify!(__total_seq)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_cond_t__bindgen_ty_1)).__wakeup_seq as *const _ as usize },
+        16usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_cond_t__bindgen_ty_1),
+            "::",
+            stringify!(__wakeup_seq)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_cond_t__bindgen_ty_1)).__woken_seq as *const _ as usize },
+        24usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_cond_t__bindgen_ty_1),
+            "::",
+            stringify!(__woken_seq)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_cond_t__bindgen_ty_1)).__mutex as *const _ as usize },
+        32usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_cond_t__bindgen_ty_1),
+            "::",
+            stringify!(__mutex)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_cond_t__bindgen_ty_1)).__nwaiters as *const _ as usize },
+        40usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_cond_t__bindgen_ty_1),
+            "::",
+            stringify!(__nwaiters)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(0 as *const pthread_cond_t__bindgen_ty_1)).__broadcast_seq as *const _ as usize
+        },
+        44usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_cond_t__bindgen_ty_1),
+            "::",
+            stringify!(__broadcast_seq)
+        )
+    );
 }
 impl Clone for pthread_cond_t__bindgen_ty_1 {
     fn clone(&self) -> Self {
@@ -2317,30 +2471,46 @@ impl Clone for pthread_cond_t__bindgen_ty_1 {
 }
 #[test]
 fn bindgen_test_layout_pthread_cond_t() {
-    assert_eq!(::std::mem::size_of::<pthread_cond_t>(),
-               48usize,
-               concat!("Size of: ", stringify!(pthread_cond_t)));
-    assert_eq!(::std::mem::align_of::<pthread_cond_t>(),
-               8usize,
-               concat!("Alignment of ", stringify!(pthread_cond_t)));
-    assert_eq!(unsafe { &(*(0 as *const pthread_cond_t)).__data as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_cond_t),
-                       "::",
-                       stringify!(__data)));
-    assert_eq!(unsafe { &(*(0 as *const pthread_cond_t)).__size as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_cond_t),
-                       "::",
-                       stringify!(__size)));
-    assert_eq!(unsafe { &(*(0 as *const pthread_cond_t)).__align as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_cond_t),
-                       "::",
-                       stringify!(__align)));
+    assert_eq!(
+        ::std::mem::size_of::<pthread_cond_t>(),
+        48usize,
+        concat!("Size of: ", stringify!(pthread_cond_t))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<pthread_cond_t>(),
+        8usize,
+        concat!("Alignment of ", stringify!(pthread_cond_t))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_cond_t)).__data as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_cond_t),
+            "::",
+            stringify!(__data)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_cond_t)).__size as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_cond_t),
+            "::",
+            stringify!(__size)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_cond_t)).__align as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_cond_t),
+            "::",
+            stringify!(__align)
+        )
+    );
 }
 impl Clone for pthread_cond_t {
     fn clone(&self) -> Self {
@@ -2356,24 +2526,36 @@ pub union pthread_condattr_t {
 }
 #[test]
 fn bindgen_test_layout_pthread_condattr_t() {
-    assert_eq!(::std::mem::size_of::<pthread_condattr_t>(),
-               4usize,
-               concat!("Size of: ", stringify!(pthread_condattr_t)));
-    assert_eq!(::std::mem::align_of::<pthread_condattr_t>(),
-               4usize,
-               concat!("Alignment of ", stringify!(pthread_condattr_t)));
-    assert_eq!(unsafe { &(*(0 as *const pthread_condattr_t)).__size as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_condattr_t),
-                       "::",
-                       stringify!(__size)));
-    assert_eq!(unsafe { &(*(0 as *const pthread_condattr_t)).__align as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_condattr_t),
-                       "::",
-                       stringify!(__align)));
+    assert_eq!(
+        ::std::mem::size_of::<pthread_condattr_t>(),
+        4usize,
+        concat!("Size of: ", stringify!(pthread_condattr_t))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<pthread_condattr_t>(),
+        4usize,
+        concat!("Alignment of ", stringify!(pthread_condattr_t))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_condattr_t)).__size as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_condattr_t),
+            "::",
+            stringify!(__size)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_condattr_t)).__align as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_condattr_t),
+            "::",
+            stringify!(__align)
+        )
+    );
 }
 impl Clone for pthread_condattr_t {
     fn clone(&self) -> Self {
@@ -2408,113 +2590,150 @@ pub struct pthread_rwlock_t__bindgen_ty_1 {
 }
 #[test]
 fn bindgen_test_layout_pthread_rwlock_t__bindgen_ty_1() {
-    assert_eq!(::std::mem::size_of::<pthread_rwlock_t__bindgen_ty_1>(),
-               56usize,
-               concat!("Size of: ", stringify!(pthread_rwlock_t__bindgen_ty_1)));
-    assert_eq!(::std::mem::align_of::<pthread_rwlock_t__bindgen_ty_1>(),
-               8usize,
-               concat!("Alignment of ", stringify!(pthread_rwlock_t__bindgen_ty_1)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_rwlock_t__bindgen_ty_1)).__lock as *const _ as usize
-               },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_rwlock_t__bindgen_ty_1),
-                       "::",
-                       stringify!(__lock)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_rwlock_t__bindgen_ty_1)).__nr_readers as *const _ as
-                   usize
-               },
-               4usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_rwlock_t__bindgen_ty_1),
-                       "::",
-                       stringify!(__nr_readers)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_rwlock_t__bindgen_ty_1)).__readers_wakeup as *const _ as
-                   usize
-               },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_rwlock_t__bindgen_ty_1),
-                       "::",
-                       stringify!(__readers_wakeup)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_rwlock_t__bindgen_ty_1)).__writer_wakeup as *const _ as
-                   usize
-               },
-               12usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_rwlock_t__bindgen_ty_1),
-                       "::",
-                       stringify!(__writer_wakeup)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_rwlock_t__bindgen_ty_1)).__nr_readers_queued as
-                   *const _ as usize
-               },
-               16usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_rwlock_t__bindgen_ty_1),
-                       "::",
-                       stringify!(__nr_readers_queued)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_rwlock_t__bindgen_ty_1)).__nr_writers_queued as
-                   *const _ as usize
-               },
-               20usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_rwlock_t__bindgen_ty_1),
-                       "::",
-                       stringify!(__nr_writers_queued)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_rwlock_t__bindgen_ty_1)).__writer as *const _ as usize
-               },
-               24usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_rwlock_t__bindgen_ty_1),
-                       "::",
-                       stringify!(__writer)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_rwlock_t__bindgen_ty_1)).__shared as *const _ as usize
-               },
-               28usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_rwlock_t__bindgen_ty_1),
-                       "::",
-                       stringify!(__shared)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_rwlock_t__bindgen_ty_1)).__rwelision as *const _ as usize
-               },
-               32usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_rwlock_t__bindgen_ty_1),
-                       "::",
-                       stringify!(__rwelision)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_rwlock_t__bindgen_ty_1)).__pad1 as *const _ as usize
-               },
-               33usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_rwlock_t__bindgen_ty_1),
-                       "::",
-                       stringify!(__pad1)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_rwlock_t__bindgen_ty_1)).__pad2 as *const _ as usize
-               },
-               40usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_rwlock_t__bindgen_ty_1),
-                       "::",
-                       stringify!(__pad2)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const pthread_rwlock_t__bindgen_ty_1)).__flags as *const _ as usize
-               },
-               48usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_rwlock_t__bindgen_ty_1),
-                       "::",
-                       stringify!(__flags)));
+    assert_eq!(
+        ::std::mem::size_of::<pthread_rwlock_t__bindgen_ty_1>(),
+        56usize,
+        concat!("Size of: ", stringify!(pthread_rwlock_t__bindgen_ty_1))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<pthread_rwlock_t__bindgen_ty_1>(),
+        8usize,
+        concat!("Alignment of ", stringify!(pthread_rwlock_t__bindgen_ty_1))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_rwlock_t__bindgen_ty_1)).__lock as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_rwlock_t__bindgen_ty_1),
+            "::",
+            stringify!(__lock)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(0 as *const pthread_rwlock_t__bindgen_ty_1)).__nr_readers as *const _ as usize
+        },
+        4usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_rwlock_t__bindgen_ty_1),
+            "::",
+            stringify!(__nr_readers)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(0 as *const pthread_rwlock_t__bindgen_ty_1)).__readers_wakeup as *const _ as usize
+        },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_rwlock_t__bindgen_ty_1),
+            "::",
+            stringify!(__readers_wakeup)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(0 as *const pthread_rwlock_t__bindgen_ty_1)).__writer_wakeup as *const _ as usize
+        },
+        12usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_rwlock_t__bindgen_ty_1),
+            "::",
+            stringify!(__writer_wakeup)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(0 as *const pthread_rwlock_t__bindgen_ty_1)).__nr_readers_queued as *const _
+                as usize
+        },
+        16usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_rwlock_t__bindgen_ty_1),
+            "::",
+            stringify!(__nr_readers_queued)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(0 as *const pthread_rwlock_t__bindgen_ty_1)).__nr_writers_queued as *const _
+                as usize
+        },
+        20usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_rwlock_t__bindgen_ty_1),
+            "::",
+            stringify!(__nr_writers_queued)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_rwlock_t__bindgen_ty_1)).__writer as *const _ as usize },
+        24usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_rwlock_t__bindgen_ty_1),
+            "::",
+            stringify!(__writer)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_rwlock_t__bindgen_ty_1)).__shared as *const _ as usize },
+        28usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_rwlock_t__bindgen_ty_1),
+            "::",
+            stringify!(__shared)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(0 as *const pthread_rwlock_t__bindgen_ty_1)).__rwelision as *const _ as usize
+        },
+        32usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_rwlock_t__bindgen_ty_1),
+            "::",
+            stringify!(__rwelision)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_rwlock_t__bindgen_ty_1)).__pad1 as *const _ as usize },
+        33usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_rwlock_t__bindgen_ty_1),
+            "::",
+            stringify!(__pad1)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_rwlock_t__bindgen_ty_1)).__pad2 as *const _ as usize },
+        40usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_rwlock_t__bindgen_ty_1),
+            "::",
+            stringify!(__pad2)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_rwlock_t__bindgen_ty_1)).__flags as *const _ as usize },
+        48usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_rwlock_t__bindgen_ty_1),
+            "::",
+            stringify!(__flags)
+        )
+    );
 }
 impl Clone for pthread_rwlock_t__bindgen_ty_1 {
     fn clone(&self) -> Self {
@@ -2523,30 +2742,46 @@ impl Clone for pthread_rwlock_t__bindgen_ty_1 {
 }
 #[test]
 fn bindgen_test_layout_pthread_rwlock_t() {
-    assert_eq!(::std::mem::size_of::<pthread_rwlock_t>(),
-               56usize,
-               concat!("Size of: ", stringify!(pthread_rwlock_t)));
-    assert_eq!(::std::mem::align_of::<pthread_rwlock_t>(),
-               8usize,
-               concat!("Alignment of ", stringify!(pthread_rwlock_t)));
-    assert_eq!(unsafe { &(*(0 as *const pthread_rwlock_t)).__data as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_rwlock_t),
-                       "::",
-                       stringify!(__data)));
-    assert_eq!(unsafe { &(*(0 as *const pthread_rwlock_t)).__size as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_rwlock_t),
-                       "::",
-                       stringify!(__size)));
-    assert_eq!(unsafe { &(*(0 as *const pthread_rwlock_t)).__align as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_rwlock_t),
-                       "::",
-                       stringify!(__align)));
+    assert_eq!(
+        ::std::mem::size_of::<pthread_rwlock_t>(),
+        56usize,
+        concat!("Size of: ", stringify!(pthread_rwlock_t))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<pthread_rwlock_t>(),
+        8usize,
+        concat!("Alignment of ", stringify!(pthread_rwlock_t))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_rwlock_t)).__data as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_rwlock_t),
+            "::",
+            stringify!(__data)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_rwlock_t)).__size as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_rwlock_t),
+            "::",
+            stringify!(__size)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_rwlock_t)).__align as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_rwlock_t),
+            "::",
+            stringify!(__align)
+        )
+    );
 }
 impl Clone for pthread_rwlock_t {
     fn clone(&self) -> Self {
@@ -2562,24 +2797,36 @@ pub union pthread_rwlockattr_t {
 }
 #[test]
 fn bindgen_test_layout_pthread_rwlockattr_t() {
-    assert_eq!(::std::mem::size_of::<pthread_rwlockattr_t>(),
-               8usize,
-               concat!("Size of: ", stringify!(pthread_rwlockattr_t)));
-    assert_eq!(::std::mem::align_of::<pthread_rwlockattr_t>(),
-               8usize,
-               concat!("Alignment of ", stringify!(pthread_rwlockattr_t)));
-    assert_eq!(unsafe { &(*(0 as *const pthread_rwlockattr_t)).__size as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_rwlockattr_t),
-                       "::",
-                       stringify!(__size)));
-    assert_eq!(unsafe { &(*(0 as *const pthread_rwlockattr_t)).__align as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_rwlockattr_t),
-                       "::",
-                       stringify!(__align)));
+    assert_eq!(
+        ::std::mem::size_of::<pthread_rwlockattr_t>(),
+        8usize,
+        concat!("Size of: ", stringify!(pthread_rwlockattr_t))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<pthread_rwlockattr_t>(),
+        8usize,
+        concat!("Alignment of ", stringify!(pthread_rwlockattr_t))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_rwlockattr_t)).__size as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_rwlockattr_t),
+            "::",
+            stringify!(__size)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_rwlockattr_t)).__align as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_rwlockattr_t),
+            "::",
+            stringify!(__align)
+        )
+    );
 }
 impl Clone for pthread_rwlockattr_t {
     fn clone(&self) -> Self {
@@ -2596,24 +2843,36 @@ pub union pthread_barrier_t {
 }
 #[test]
 fn bindgen_test_layout_pthread_barrier_t() {
-    assert_eq!(::std::mem::size_of::<pthread_barrier_t>(),
-               32usize,
-               concat!("Size of: ", stringify!(pthread_barrier_t)));
-    assert_eq!(::std::mem::align_of::<pthread_barrier_t>(),
-               8usize,
-               concat!("Alignment of ", stringify!(pthread_barrier_t)));
-    assert_eq!(unsafe { &(*(0 as *const pthread_barrier_t)).__size as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_barrier_t),
-                       "::",
-                       stringify!(__size)));
-    assert_eq!(unsafe { &(*(0 as *const pthread_barrier_t)).__align as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_barrier_t),
-                       "::",
-                       stringify!(__align)));
+    assert_eq!(
+        ::std::mem::size_of::<pthread_barrier_t>(),
+        32usize,
+        concat!("Size of: ", stringify!(pthread_barrier_t))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<pthread_barrier_t>(),
+        8usize,
+        concat!("Alignment of ", stringify!(pthread_barrier_t))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_barrier_t)).__size as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_barrier_t),
+            "::",
+            stringify!(__size)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_barrier_t)).__align as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_barrier_t),
+            "::",
+            stringify!(__align)
+        )
+    );
 }
 impl Clone for pthread_barrier_t {
     fn clone(&self) -> Self {
@@ -2629,24 +2888,36 @@ pub union pthread_barrierattr_t {
 }
 #[test]
 fn bindgen_test_layout_pthread_barrierattr_t() {
-    assert_eq!(::std::mem::size_of::<pthread_barrierattr_t>(),
-               4usize,
-               concat!("Size of: ", stringify!(pthread_barrierattr_t)));
-    assert_eq!(::std::mem::align_of::<pthread_barrierattr_t>(),
-               4usize,
-               concat!("Alignment of ", stringify!(pthread_barrierattr_t)));
-    assert_eq!(unsafe { &(*(0 as *const pthread_barrierattr_t)).__size as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_barrierattr_t),
-                       "::",
-                       stringify!(__size)));
-    assert_eq!(unsafe { &(*(0 as *const pthread_barrierattr_t)).__align as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(pthread_barrierattr_t),
-                       "::",
-                       stringify!(__align)));
+    assert_eq!(
+        ::std::mem::size_of::<pthread_barrierattr_t>(),
+        4usize,
+        concat!("Size of: ", stringify!(pthread_barrierattr_t))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<pthread_barrierattr_t>(),
+        4usize,
+        concat!("Alignment of ", stringify!(pthread_barrierattr_t))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_barrierattr_t)).__size as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_barrierattr_t),
+            "::",
+            stringify!(__size)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const pthread_barrierattr_t)).__align as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(pthread_barrierattr_t),
+            "::",
+            stringify!(__align)
+        )
+    );
 }
 impl Clone for pthread_barrierattr_t {
     fn clone(&self) -> Self {
@@ -2687,38 +2958,52 @@ pub struct cda_head__bindgen_ty_1__bindgen_ty_1 {
 }
 #[test]
 fn bindgen_test_layout_cda_head__bindgen_ty_1__bindgen_ty_1() {
-    assert_eq!(::std::mem::size_of::<cda_head__bindgen_ty_1__bindgen_ty_1>(),
-               8usize,
-               concat!("Size of: ",
-                       stringify!(cda_head__bindgen_ty_1__bindgen_ty_1)));
-    assert_eq!(::std::mem::align_of::<cda_head__bindgen_ty_1__bindgen_ty_1>(),
-               4usize,
-               concat!("Alignment of ",
-                       stringify!(cda_head__bindgen_ty_1__bindgen_ty_1)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const cda_head__bindgen_ty_1__bindgen_ty_1)).rcs4 as *const _ as usize
-               },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_head__bindgen_ty_1__bindgen_ty_1),
-                       "::",
-                       stringify!(rcs4)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const cda_head__bindgen_ty_1__bindgen_ty_1)).rcs5 as *const _ as usize
-               },
-               4usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_head__bindgen_ty_1__bindgen_ty_1),
-                       "::",
-                       stringify!(rcs5)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const cda_head__bindgen_ty_1__bindgen_ty_1)).rcs6 as *const _ as usize
-               },
-               6usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_head__bindgen_ty_1__bindgen_ty_1),
-                       "::",
-                       stringify!(rcs6)));
+    assert_eq!(
+        ::std::mem::size_of::<cda_head__bindgen_ty_1__bindgen_ty_1>(),
+        8usize,
+        concat!(
+            "Size of: ",
+            stringify!(cda_head__bindgen_ty_1__bindgen_ty_1)
+        )
+    );
+    assert_eq!(
+        ::std::mem::align_of::<cda_head__bindgen_ty_1__bindgen_ty_1>(),
+        4usize,
+        concat!(
+            "Alignment of ",
+            stringify!(cda_head__bindgen_ty_1__bindgen_ty_1)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_head__bindgen_ty_1__bindgen_ty_1)).rcs4 as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_head__bindgen_ty_1__bindgen_ty_1),
+            "::",
+            stringify!(rcs4)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_head__bindgen_ty_1__bindgen_ty_1)).rcs5 as *const _ as usize },
+        4usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_head__bindgen_ty_1__bindgen_ty_1),
+            "::",
+            stringify!(rcs5)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_head__bindgen_ty_1__bindgen_ty_1)).rcs6 as *const _ as usize },
+        6usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_head__bindgen_ty_1__bindgen_ty_1),
+            "::",
+            stringify!(rcs6)
+        )
+    );
 }
 impl Clone for cda_head__bindgen_ty_1__bindgen_ty_1 {
     fn clone(&self) -> Self {
@@ -2727,30 +3012,46 @@ impl Clone for cda_head__bindgen_ty_1__bindgen_ty_1 {
 }
 #[test]
 fn bindgen_test_layout_cda_head__bindgen_ty_1() {
-    assert_eq!(::std::mem::size_of::<cda_head__bindgen_ty_1>(),
-               16usize,
-               concat!("Size of: ", stringify!(cda_head__bindgen_ty_1)));
-    assert_eq!(::std::mem::align_of::<cda_head__bindgen_ty_1>(),
-               4usize,
-               concat!("Alignment of ", stringify!(cda_head__bindgen_ty_1)));
-    assert_eq!(unsafe { &(*(0 as *const cda_head__bindgen_ty_1)).rd as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_head__bindgen_ty_1),
-                       "::",
-                       stringify!(rd)));
-    assert_eq!(unsafe { &(*(0 as *const cda_head__bindgen_ty_1)).rcs7 as *const _ as usize },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_head__bindgen_ty_1),
-                       "::",
-                       stringify!(rcs7)));
-    assert_eq!(unsafe { &(*(0 as *const cda_head__bindgen_ty_1)).rcs8 as *const _ as usize },
-               12usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_head__bindgen_ty_1),
-                       "::",
-                       stringify!(rcs8)));
+    assert_eq!(
+        ::std::mem::size_of::<cda_head__bindgen_ty_1>(),
+        16usize,
+        concat!("Size of: ", stringify!(cda_head__bindgen_ty_1))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<cda_head__bindgen_ty_1>(),
+        4usize,
+        concat!("Alignment of ", stringify!(cda_head__bindgen_ty_1))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_head__bindgen_ty_1)).rd as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_head__bindgen_ty_1),
+            "::",
+            stringify!(rd)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_head__bindgen_ty_1)).rcs7 as *const _ as usize },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_head__bindgen_ty_1),
+            "::",
+            stringify!(rcs7)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_head__bindgen_ty_1)).rcs8 as *const _ as usize },
+        12usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_head__bindgen_ty_1),
+            "::",
+            stringify!(rcs8)
+        )
+    );
 }
 impl Clone for cda_head__bindgen_ty_1 {
     fn clone(&self) -> Self {
@@ -2759,96 +3060,156 @@ impl Clone for cda_head__bindgen_ty_1 {
 }
 #[test]
 fn bindgen_test_layout_cda_head() {
-    assert_eq!(::std::mem::size_of::<cda_head>(),
-               56usize,
-               concat!("Size of: ", stringify!(cda_head)));
-    assert_eq!(::std::mem::align_of::<cda_head>(),
-               8usize,
-               concat!("Alignment of ", stringify!(cda_head)));
-    assert_eq!(unsafe { &(*(0 as *const cda_head)).v2_rc as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_head),
-                       "::",
-                       stringify!(v2_rc)));
-    assert_eq!(unsafe { &(*(0 as *const cda_head)).ft as *const _ as usize },
-               2usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_head),
-                       "::",
-                       stringify!(ft)));
-    assert_eq!(unsafe { &(*(0 as *const cda_head)).rpc as *const _ as usize },
-               4usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_head),
-                       "::",
-                       stringify!(rpc)));
-    assert_eq!(unsafe { &(*(0 as *const cda_head)).peo as *const _ as usize },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_head),
-                       "::",
-                       stringify!(peo)));
-    assert_eq!(unsafe { &(*(0 as *const cda_head)).fc as *const _ as usize },
-               10usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_head),
-                       "::",
-                       stringify!(fc)));
-    assert_eq!(unsafe { &(*(0 as *const cda_head)).rcs1 as *const _ as usize },
-               11usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_head),
-                       "::",
-                       stringify!(rcs1)));
-    assert_eq!(unsafe { &(*(0 as *const cda_head)).rc as *const _ as usize },
-               12usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_head),
-                       "::",
-                       stringify!(rc)));
-    assert_eq!(unsafe { &(*(0 as *const cda_head)).wrn as *const _ as usize },
-               14usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_head),
-                       "::",
-                       stringify!(wrn)));
-    assert_eq!(unsafe { &(*(0 as *const cda_head)).rcs2 as *const _ as usize },
-               15usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_head),
-                       "::",
-                       stringify!(rcs2)));
-    assert_eq!(unsafe { &(*(0 as *const cda_head)).rcs3 as *const _ as usize },
-               16usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_head),
-                       "::",
-                       stringify!(rcs3)));
-    assert_eq!(unsafe { &(*(0 as *const cda_head)).rid as *const _ as usize },
-               20usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_head),
-                       "::",
-                       stringify!(rid)));
-    assert_eq!(unsafe { &(*(0 as *const cda_head)).ose as *const _ as usize },
-               36usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_head),
-                       "::",
-                       stringify!(ose)));
-    assert_eq!(unsafe { &(*(0 as *const cda_head)).chk as *const _ as usize },
-               40usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_head),
-                       "::",
-                       stringify!(chk)));
-    assert_eq!(unsafe { &(*(0 as *const cda_head)).rcsp as *const _ as usize },
-               48usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_head),
-                       "::",
-                       stringify!(rcsp)));
+    assert_eq!(
+        ::std::mem::size_of::<cda_head>(),
+        56usize,
+        concat!("Size of: ", stringify!(cda_head))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<cda_head>(),
+        8usize,
+        concat!("Alignment of ", stringify!(cda_head))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_head)).v2_rc as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_head),
+            "::",
+            stringify!(v2_rc)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_head)).ft as *const _ as usize },
+        2usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_head),
+            "::",
+            stringify!(ft)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_head)).rpc as *const _ as usize },
+        4usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_head),
+            "::",
+            stringify!(rpc)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_head)).peo as *const _ as usize },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_head),
+            "::",
+            stringify!(peo)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_head)).fc as *const _ as usize },
+        10usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_head),
+            "::",
+            stringify!(fc)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_head)).rcs1 as *const _ as usize },
+        11usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_head),
+            "::",
+            stringify!(rcs1)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_head)).rc as *const _ as usize },
+        12usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_head),
+            "::",
+            stringify!(rc)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_head)).wrn as *const _ as usize },
+        14usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_head),
+            "::",
+            stringify!(wrn)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_head)).rcs2 as *const _ as usize },
+        15usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_head),
+            "::",
+            stringify!(rcs2)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_head)).rcs3 as *const _ as usize },
+        16usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_head),
+            "::",
+            stringify!(rcs3)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_head)).rid as *const _ as usize },
+        20usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_head),
+            "::",
+            stringify!(rid)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_head)).ose as *const _ as usize },
+        36usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_head),
+            "::",
+            stringify!(ose)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_head)).chk as *const _ as usize },
+        40usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_head),
+            "::",
+            stringify!(chk)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_head)).rcsp as *const _ as usize },
+        48usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_head),
+            "::",
+            stringify!(rcsp)
+        )
+    );
 }
 impl Clone for cda_head {
     fn clone(&self) -> Self {
@@ -2890,37 +3251,49 @@ pub struct cda_def__bindgen_ty_1__bindgen_ty_1 {
 }
 #[test]
 fn bindgen_test_layout_cda_def__bindgen_ty_1__bindgen_ty_1() {
-    assert_eq!(::std::mem::size_of::<cda_def__bindgen_ty_1__bindgen_ty_1>(),
-               8usize,
-               concat!("Size of: ", stringify!(cda_def__bindgen_ty_1__bindgen_ty_1)));
-    assert_eq!(::std::mem::align_of::<cda_def__bindgen_ty_1__bindgen_ty_1>(),
-               4usize,
-               concat!("Alignment of ",
-                       stringify!(cda_def__bindgen_ty_1__bindgen_ty_1)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const cda_def__bindgen_ty_1__bindgen_ty_1)).rcs4 as *const _ as usize
-               },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_def__bindgen_ty_1__bindgen_ty_1),
-                       "::",
-                       stringify!(rcs4)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const cda_def__bindgen_ty_1__bindgen_ty_1)).rcs5 as *const _ as usize
-               },
-               4usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_def__bindgen_ty_1__bindgen_ty_1),
-                       "::",
-                       stringify!(rcs5)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const cda_def__bindgen_ty_1__bindgen_ty_1)).rcs6 as *const _ as usize
-               },
-               6usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_def__bindgen_ty_1__bindgen_ty_1),
-                       "::",
-                       stringify!(rcs6)));
+    assert_eq!(
+        ::std::mem::size_of::<cda_def__bindgen_ty_1__bindgen_ty_1>(),
+        8usize,
+        concat!("Size of: ", stringify!(cda_def__bindgen_ty_1__bindgen_ty_1))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<cda_def__bindgen_ty_1__bindgen_ty_1>(),
+        4usize,
+        concat!(
+            "Alignment of ",
+            stringify!(cda_def__bindgen_ty_1__bindgen_ty_1)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_def__bindgen_ty_1__bindgen_ty_1)).rcs4 as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_def__bindgen_ty_1__bindgen_ty_1),
+            "::",
+            stringify!(rcs4)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_def__bindgen_ty_1__bindgen_ty_1)).rcs5 as *const _ as usize },
+        4usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_def__bindgen_ty_1__bindgen_ty_1),
+            "::",
+            stringify!(rcs5)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_def__bindgen_ty_1__bindgen_ty_1)).rcs6 as *const _ as usize },
+        6usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_def__bindgen_ty_1__bindgen_ty_1),
+            "::",
+            stringify!(rcs6)
+        )
+    );
 }
 impl Clone for cda_def__bindgen_ty_1__bindgen_ty_1 {
     fn clone(&self) -> Self {
@@ -2929,30 +3302,46 @@ impl Clone for cda_def__bindgen_ty_1__bindgen_ty_1 {
 }
 #[test]
 fn bindgen_test_layout_cda_def__bindgen_ty_1() {
-    assert_eq!(::std::mem::size_of::<cda_def__bindgen_ty_1>(),
-               16usize,
-               concat!("Size of: ", stringify!(cda_def__bindgen_ty_1)));
-    assert_eq!(::std::mem::align_of::<cda_def__bindgen_ty_1>(),
-               4usize,
-               concat!("Alignment of ", stringify!(cda_def__bindgen_ty_1)));
-    assert_eq!(unsafe { &(*(0 as *const cda_def__bindgen_ty_1)).rd as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_def__bindgen_ty_1),
-                       "::",
-                       stringify!(rd)));
-    assert_eq!(unsafe { &(*(0 as *const cda_def__bindgen_ty_1)).rcs7 as *const _ as usize },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_def__bindgen_ty_1),
-                       "::",
-                       stringify!(rcs7)));
-    assert_eq!(unsafe { &(*(0 as *const cda_def__bindgen_ty_1)).rcs8 as *const _ as usize },
-               12usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_def__bindgen_ty_1),
-                       "::",
-                       stringify!(rcs8)));
+    assert_eq!(
+        ::std::mem::size_of::<cda_def__bindgen_ty_1>(),
+        16usize,
+        concat!("Size of: ", stringify!(cda_def__bindgen_ty_1))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<cda_def__bindgen_ty_1>(),
+        4usize,
+        concat!("Alignment of ", stringify!(cda_def__bindgen_ty_1))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_def__bindgen_ty_1)).rd as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_def__bindgen_ty_1),
+            "::",
+            stringify!(rd)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_def__bindgen_ty_1)).rcs7 as *const _ as usize },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_def__bindgen_ty_1),
+            "::",
+            stringify!(rcs7)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_def__bindgen_ty_1)).rcs8 as *const _ as usize },
+        12usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_def__bindgen_ty_1),
+            "::",
+            stringify!(rcs8)
+        )
+    );
 }
 impl Clone for cda_def__bindgen_ty_1 {
     fn clone(&self) -> Self {
@@ -2961,102 +3350,166 @@ impl Clone for cda_def__bindgen_ty_1 {
 }
 #[test]
 fn bindgen_test_layout_cda_def() {
-    assert_eq!(::std::mem::size_of::<cda_def>(),
-               64usize,
-               concat!("Size of: ", stringify!(cda_def)));
-    assert_eq!(::std::mem::align_of::<cda_def>(),
-               8usize,
-               concat!("Alignment of ", stringify!(cda_def)));
-    assert_eq!(unsafe { &(*(0 as *const cda_def)).v2_rc as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_def),
-                       "::",
-                       stringify!(v2_rc)));
-    assert_eq!(unsafe { &(*(0 as *const cda_def)).ft as *const _ as usize },
-               2usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_def),
-                       "::",
-                       stringify!(ft)));
-    assert_eq!(unsafe { &(*(0 as *const cda_def)).rpc as *const _ as usize },
-               4usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_def),
-                       "::",
-                       stringify!(rpc)));
-    assert_eq!(unsafe { &(*(0 as *const cda_def)).peo as *const _ as usize },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_def),
-                       "::",
-                       stringify!(peo)));
-    assert_eq!(unsafe { &(*(0 as *const cda_def)).fc as *const _ as usize },
-               10usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_def),
-                       "::",
-                       stringify!(fc)));
-    assert_eq!(unsafe { &(*(0 as *const cda_def)).rcs1 as *const _ as usize },
-               11usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_def),
-                       "::",
-                       stringify!(rcs1)));
-    assert_eq!(unsafe { &(*(0 as *const cda_def)).rc as *const _ as usize },
-               12usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_def),
-                       "::",
-                       stringify!(rc)));
-    assert_eq!(unsafe { &(*(0 as *const cda_def)).wrn as *const _ as usize },
-               14usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_def),
-                       "::",
-                       stringify!(wrn)));
-    assert_eq!(unsafe { &(*(0 as *const cda_def)).rcs2 as *const _ as usize },
-               15usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_def),
-                       "::",
-                       stringify!(rcs2)));
-    assert_eq!(unsafe { &(*(0 as *const cda_def)).rcs3 as *const _ as usize },
-               16usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_def),
-                       "::",
-                       stringify!(rcs3)));
-    assert_eq!(unsafe { &(*(0 as *const cda_def)).rid as *const _ as usize },
-               20usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_def),
-                       "::",
-                       stringify!(rid)));
-    assert_eq!(unsafe { &(*(0 as *const cda_def)).ose as *const _ as usize },
-               36usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_def),
-                       "::",
-                       stringify!(ose)));
-    assert_eq!(unsafe { &(*(0 as *const cda_def)).chk as *const _ as usize },
-               40usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_def),
-                       "::",
-                       stringify!(chk)));
-    assert_eq!(unsafe { &(*(0 as *const cda_def)).rcsp as *const _ as usize },
-               48usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_def),
-                       "::",
-                       stringify!(rcsp)));
-    assert_eq!(unsafe { &(*(0 as *const cda_def)).rcs9 as *const _ as usize },
-               56usize,
-               concat!("Alignment of field: ",
-                       stringify!(cda_def),
-                       "::",
-                       stringify!(rcs9)));
+    assert_eq!(
+        ::std::mem::size_of::<cda_def>(),
+        64usize,
+        concat!("Size of: ", stringify!(cda_def))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<cda_def>(),
+        8usize,
+        concat!("Alignment of ", stringify!(cda_def))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_def)).v2_rc as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_def),
+            "::",
+            stringify!(v2_rc)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_def)).ft as *const _ as usize },
+        2usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_def),
+            "::",
+            stringify!(ft)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_def)).rpc as *const _ as usize },
+        4usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_def),
+            "::",
+            stringify!(rpc)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_def)).peo as *const _ as usize },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_def),
+            "::",
+            stringify!(peo)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_def)).fc as *const _ as usize },
+        10usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_def),
+            "::",
+            stringify!(fc)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_def)).rcs1 as *const _ as usize },
+        11usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_def),
+            "::",
+            stringify!(rcs1)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_def)).rc as *const _ as usize },
+        12usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_def),
+            "::",
+            stringify!(rc)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_def)).wrn as *const _ as usize },
+        14usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_def),
+            "::",
+            stringify!(wrn)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_def)).rcs2 as *const _ as usize },
+        15usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_def),
+            "::",
+            stringify!(rcs2)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_def)).rcs3 as *const _ as usize },
+        16usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_def),
+            "::",
+            stringify!(rcs3)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_def)).rid as *const _ as usize },
+        20usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_def),
+            "::",
+            stringify!(rid)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_def)).ose as *const _ as usize },
+        36usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_def),
+            "::",
+            stringify!(ose)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_def)).chk as *const _ as usize },
+        40usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_def),
+            "::",
+            stringify!(chk)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_def)).rcsp as *const _ as usize },
+        48usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_def),
+            "::",
+            stringify!(rcsp)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const cda_def)).rcs9 as *const _ as usize },
+        56usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(cda_def),
+            "::",
+            stringify!(rcs9)
+        )
+    );
 }
 impl Clone for cda_def {
     fn clone(&self) -> Self {
@@ -3318,24 +3771,36 @@ pub struct OCIIOV {
 }
 #[test]
 fn bindgen_test_layout_OCIIOV() {
-    assert_eq!(::std::mem::size_of::<OCIIOV>(),
-               16usize,
-               concat!("Size of: ", stringify!(OCIIOV)));
-    assert_eq!(::std::mem::align_of::<OCIIOV>(),
-               8usize,
-               concat!("Alignment of ", stringify!(OCIIOV)));
-    assert_eq!(unsafe { &(*(0 as *const OCIIOV)).bfp as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(OCIIOV),
-                       "::",
-                       stringify!(bfp)));
-    assert_eq!(unsafe { &(*(0 as *const OCIIOV)).bfl as *const _ as usize },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(OCIIOV),
-                       "::",
-                       stringify!(bfl)));
+    assert_eq!(
+        ::std::mem::size_of::<OCIIOV>(),
+        16usize,
+        concat!("Size of: ", stringify!(OCIIOV))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<OCIIOV>(),
+        8usize,
+        concat!("Alignment of ", stringify!(OCIIOV))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const OCIIOV)).bfp as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(OCIIOV),
+            "::",
+            stringify!(bfp)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const OCIIOV)).bfl as *const _ as usize },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(OCIIOV),
+            "::",
+            stringify!(bfl)
+        )
+    );
 }
 impl Clone for OCIIOV {
     fn clone(&self) -> Self {
@@ -3504,141 +3969,156 @@ pub struct OCITypeIter {
     _unused: [u8; 0],
 }
 extern "C" {
-    pub fn OCITypeIterNew(env: *mut OCIEnv,
-                          err: *mut OCIError,
-                          tdo: *mut OCIType,
-                          iterator_ort: *mut *mut OCITypeIter)
-                          -> sword;
+    pub fn OCITypeIterNew(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdo: *mut OCIType,
+        iterator_ort: *mut *mut OCITypeIter,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeIterSet(env: *mut OCIEnv,
-                          err: *mut OCIError,
-                          tdo: *mut OCIType,
-                          iterator_ort: *mut OCITypeIter)
-                          -> sword;
+    pub fn OCITypeIterSet(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdo: *mut OCIType,
+        iterator_ort: *mut OCITypeIter,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeIterFree(env: *mut OCIEnv,
-                           err: *mut OCIError,
-                           iterator_ort: *mut OCITypeIter)
-                           -> sword;
+    pub fn OCITypeIterFree(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        iterator_ort: *mut OCITypeIter,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeByName(env: *mut OCIEnv,
-                         err: *mut OCIError,
-                         svc: *const OCISvcCtx,
-                         schema_name: *const oratext,
-                         s_length: ub4,
-                         type_name: *const oratext,
-                         t_length: ub4,
-                         version_name: *const oratext,
-                         v_length: ub4,
-                         pin_duration: OCIDuration,
-                         get_option: OCITypeGetOpt,
-                         tdo: *mut *mut OCIType)
-                         -> sword;
+    pub fn OCITypeByName(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        svc: *const OCISvcCtx,
+        schema_name: *const oratext,
+        s_length: ub4,
+        type_name: *const oratext,
+        t_length: ub4,
+        version_name: *const oratext,
+        v_length: ub4,
+        pin_duration: OCIDuration,
+        get_option: OCITypeGetOpt,
+        tdo: *mut *mut OCIType,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeArrayByName(env: *mut OCIEnv,
-                              err: *mut OCIError,
-                              svc: *const OCISvcCtx,
-                              array_len: ub4,
-                              schema_name: *mut *const oratext,
-                              s_length: *mut ub4,
-                              type_name: *mut *const oratext,
-                              t_length: *mut ub4,
-                              version_name: *mut *const oratext,
-                              v_length: *mut ub4,
-                              pin_duration: OCIDuration,
-                              get_option: OCITypeGetOpt,
-                              tdo: *mut *mut OCIType)
-                              -> sword;
+    pub fn OCITypeArrayByName(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        svc: *const OCISvcCtx,
+        array_len: ub4,
+        schema_name: *mut *const oratext,
+        s_length: *mut ub4,
+        type_name: *mut *const oratext,
+        t_length: *mut ub4,
+        version_name: *mut *const oratext,
+        v_length: *mut ub4,
+        pin_duration: OCIDuration,
+        get_option: OCITypeGetOpt,
+        tdo: *mut *mut OCIType,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeByFullName(env: *mut OCIEnv,
-                             err: *mut OCIError,
-                             svc: *const OCISvcCtx,
-                             full_type_name: *const oratext,
-                             full_type_name_length: ub4,
-                             version_name: *const oratext,
-                             version_name_length: ub4,
-                             pin_duration: OCIDuration,
-                             get_option: OCITypeGetOpt,
-                             tdo: *mut *mut OCIType)
-                             -> sword;
+    pub fn OCITypeByFullName(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        svc: *const OCISvcCtx,
+        full_type_name: *const oratext,
+        full_type_name_length: ub4,
+        version_name: *const oratext,
+        version_name_length: ub4,
+        pin_duration: OCIDuration,
+        get_option: OCITypeGetOpt,
+        tdo: *mut *mut OCIType,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeArrayByFullName(env: *mut OCIEnv,
-                                  err: *mut OCIError,
-                                  svc: *const OCISvcCtx,
-                                  array_len: ub4,
-                                  full_type_name: *mut *const oratext,
-                                  full_type_name_length: *mut ub4,
-                                  version_name: *mut *const oratext,
-                                  version_name_length: *mut ub4,
-                                  pin_duration: OCIDuration,
-                                  get_option: OCITypeGetOpt,
-                                  tdo: *mut *mut OCIType)
-                                  -> sword;
+    pub fn OCITypeArrayByFullName(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        svc: *const OCISvcCtx,
+        array_len: ub4,
+        full_type_name: *mut *const oratext,
+        full_type_name_length: *mut ub4,
+        version_name: *mut *const oratext,
+        version_name_length: *mut ub4,
+        pin_duration: OCIDuration,
+        get_option: OCITypeGetOpt,
+        tdo: *mut *mut OCIType,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeByRef(env: *mut OCIEnv,
-                        err: *mut OCIError,
-                        type_ref: *const OCIRef,
-                        pin_duration: OCIDuration,
-                        get_option: OCITypeGetOpt,
-                        tdo: *mut *mut OCIType)
-                        -> sword;
+    pub fn OCITypeByRef(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        type_ref: *const OCIRef,
+        pin_duration: OCIDuration,
+        get_option: OCITypeGetOpt,
+        tdo: *mut *mut OCIType,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeArrayByRef(env: *mut OCIEnv,
-                             err: *mut OCIError,
-                             array_len: ub4,
-                             type_ref: *mut *const OCIRef,
-                             pin_duration: OCIDuration,
-                             get_option: OCITypeGetOpt,
-                             tdo: *mut *mut OCIType)
-                             -> sword;
+    pub fn OCITypeArrayByRef(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        array_len: ub4,
+        type_ref: *mut *const OCIRef,
+        pin_duration: OCIDuration,
+        get_option: OCITypeGetOpt,
+        tdo: *mut *mut OCIType,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeName(env: *mut OCIEnv,
-                       err: *mut OCIError,
-                       tdo: *const OCIType,
-                       n_length: *mut ub4)
-                       -> *mut oratext;
+    pub fn OCITypeName(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdo: *const OCIType,
+        n_length: *mut ub4,
+    ) -> *mut oratext;
 }
 extern "C" {
-    pub fn OCITypeSchema(env: *mut OCIEnv,
-                         err: *mut OCIError,
-                         tdo: *const OCIType,
-                         n_length: *mut ub4)
-                         -> *mut oratext;
+    pub fn OCITypeSchema(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdo: *const OCIType,
+        n_length: *mut ub4,
+    ) -> *mut oratext;
 }
 extern "C" {
-    pub fn OCITypePackage(env: *mut OCIEnv,
-                          err: *mut OCIError,
-                          tdo: *const OCIType,
-                          n_length: *mut ub4)
-                          -> *mut oratext;
+    pub fn OCITypePackage(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdo: *const OCIType,
+        n_length: *mut ub4,
+    ) -> *mut oratext;
 }
 extern "C" {
-    pub fn OCITypeTypeCode(env: *mut OCIEnv,
-                           err: *mut OCIError,
-                           tdo: *const OCIType)
-                           -> OCITypeCode;
+    pub fn OCITypeTypeCode(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdo: *const OCIType,
+    ) -> OCITypeCode;
 }
 extern "C" {
-    pub fn OCITypeCollTypeCode(env: *mut OCIEnv,
-                               err: *mut OCIError,
-                               tdo: *const OCIType)
-                               -> OCITypeCode;
+    pub fn OCITypeCollTypeCode(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdo: *const OCIType,
+    ) -> OCITypeCode;
 }
 extern "C" {
-    pub fn OCITypeVersion(env: *mut OCIEnv,
-                          err: *mut OCIError,
-                          tdo: *const OCIType,
-                          v_length: *mut ub4)
-                          -> *mut oratext;
+    pub fn OCITypeVersion(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdo: *const OCIType,
+        v_length: *mut ub4,
+    ) -> *mut oratext;
 }
 extern "C" {
     pub fn OCITypeAttrs(env: *mut OCIEnv, err: *mut OCIError, tdo: *const OCIType) -> ub4;
@@ -3647,512 +4127,576 @@ extern "C" {
     pub fn OCITypeMethods(env: *mut OCIEnv, err: *mut OCIError, tdo: *const OCIType) -> ub4;
 }
 extern "C" {
-    pub fn OCITypeElemName(env: *mut OCIEnv,
-                           err: *mut OCIError,
-                           elem: *const OCITypeElem,
-                           n_length: *mut ub4)
-                           -> *mut oratext;
+    pub fn OCITypeElemName(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        elem: *const OCITypeElem,
+        n_length: *mut ub4,
+    ) -> *mut oratext;
 }
 extern "C" {
-    pub fn OCITypeElemTypeCode(env: *mut OCIEnv,
-                               err: *mut OCIError,
-                               elem: *const OCITypeElem)
-                               -> OCITypeCode;
+    pub fn OCITypeElemTypeCode(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        elem: *const OCITypeElem,
+    ) -> OCITypeCode;
 }
 extern "C" {
-    pub fn OCITypeElemType(env: *mut OCIEnv,
-                           err: *mut OCIError,
-                           elem: *const OCITypeElem,
-                           elem_tdo: *mut *mut OCIType)
-                           -> sword;
+    pub fn OCITypeElemType(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        elem: *const OCITypeElem,
+        elem_tdo: *mut *mut OCIType,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCITypeElemFlags(env: *mut OCIEnv, err: *mut OCIError, elem: *const OCITypeElem) -> ub4;
 }
 extern "C" {
-    pub fn OCITypeElemNumPrec(env: *mut OCIEnv,
-                              err: *mut OCIError,
-                              elem: *const OCITypeElem)
-                              -> ub1;
+    pub fn OCITypeElemNumPrec(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        elem: *const OCITypeElem,
+    ) -> ub1;
 }
 extern "C" {
-    pub fn OCITypeElemNumScale(env: *mut OCIEnv,
-                               err: *mut OCIError,
-                               elem: *const OCITypeElem)
-                               -> sb1;
+    pub fn OCITypeElemNumScale(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        elem: *const OCITypeElem,
+    ) -> sb1;
 }
 extern "C" {
-    pub fn OCITypeElemLength(env: *mut OCIEnv,
-                             err: *mut OCIError,
-                             elem: *const OCITypeElem)
-                             -> ub4;
+    pub fn OCITypeElemLength(env: *mut OCIEnv, err: *mut OCIError, elem: *const OCITypeElem)
+        -> ub4;
 }
 extern "C" {
-    pub fn OCITypeElemCharSetID(env: *mut OCIEnv,
-                                err: *mut OCIError,
-                                elem: *const OCITypeElem)
-                                -> ub2;
+    pub fn OCITypeElemCharSetID(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        elem: *const OCITypeElem,
+    ) -> ub2;
 }
 extern "C" {
-    pub fn OCITypeElemCharSetForm(env: *mut OCIEnv,
-                                  err: *mut OCIError,
-                                  elem: *const OCITypeElem)
-                                  -> ub2;
+    pub fn OCITypeElemCharSetForm(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        elem: *const OCITypeElem,
+    ) -> ub2;
 }
 extern "C" {
-    pub fn OCITypeElemParameterizedType(env: *mut OCIEnv,
-                                        err: *mut OCIError,
-                                        elem: *const OCITypeElem,
-                                        type_stored: *mut *mut OCIType)
-                                        -> sword;
+    pub fn OCITypeElemParameterizedType(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        elem: *const OCITypeElem,
+        type_stored: *mut *mut OCIType,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeElemExtTypeCode(env: *mut OCIEnv,
-                                  err: *mut OCIError,
-                                  elem: *const OCITypeElem)
-                                  -> OCITypeCode;
+    pub fn OCITypeElemExtTypeCode(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        elem: *const OCITypeElem,
+    ) -> OCITypeCode;
 }
 extern "C" {
-    pub fn OCITypeAttrByName(env: *mut OCIEnv,
-                             err: *mut OCIError,
-                             tdo: *const OCIType,
-                             name: *const oratext,
-                             n_length: ub4,
-                             elem: *mut *mut OCITypeElem)
-                             -> sword;
+    pub fn OCITypeAttrByName(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdo: *const OCIType,
+        name: *const oratext,
+        n_length: ub4,
+        elem: *mut *mut OCITypeElem,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeAttrNext(env: *mut OCIEnv,
-                           err: *mut OCIError,
-                           iterator_ort: *mut OCITypeIter,
-                           elem: *mut *mut OCITypeElem)
-                           -> sword;
+    pub fn OCITypeAttrNext(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        iterator_ort: *mut OCITypeIter,
+        elem: *mut *mut OCITypeElem,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeCollElem(env: *mut OCIEnv,
-                           err: *mut OCIError,
-                           tdo: *const OCIType,
-                           element: *mut *mut OCITypeElem)
-                           -> sword;
+    pub fn OCITypeCollElem(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdo: *const OCIType,
+        element: *mut *mut OCITypeElem,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeCollSize(env: *mut OCIEnv,
-                           err: *mut OCIError,
-                           tdo: *const OCIType,
-                           num_elems: *mut ub4)
-                           -> sword;
+    pub fn OCITypeCollSize(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdo: *const OCIType,
+        num_elems: *mut ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeCollExtTypeCode(env: *mut OCIEnv,
-                                  err: *mut OCIError,
-                                  tdo: *const OCIType,
-                                  sqt_code: *mut OCITypeCode)
-                                  -> sword;
+    pub fn OCITypeCollExtTypeCode(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdo: *const OCIType,
+        sqt_code: *mut OCITypeCode,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeMethodOverload(env: *mut OCIEnv,
-                                 err: *mut OCIError,
-                                 tdo: *const OCIType,
-                                 method_name: *const oratext,
-                                 m_length: ub4)
-                                 -> ub4;
+    pub fn OCITypeMethodOverload(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdo: *const OCIType,
+        method_name: *const oratext,
+        m_length: ub4,
+    ) -> ub4;
 }
 extern "C" {
-    pub fn OCITypeMethodByName(env: *mut OCIEnv,
-                               err: *mut OCIError,
-                               tdo: *const OCIType,
-                               method_name: *const oratext,
-                               m_length: ub4,
-                               mdos: *mut *mut OCITypeMethod)
-                               -> sword;
+    pub fn OCITypeMethodByName(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdo: *const OCIType,
+        method_name: *const oratext,
+        m_length: ub4,
+        mdos: *mut *mut OCITypeMethod,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeMethodNext(env: *mut OCIEnv,
-                             err: *mut OCIError,
-                             iterator_ort: *mut OCITypeIter,
-                             mdo: *mut *mut OCITypeMethod)
-                             -> sword;
+    pub fn OCITypeMethodNext(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        iterator_ort: *mut OCITypeIter,
+        mdo: *mut *mut OCITypeMethod,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeMethodName(env: *mut OCIEnv,
-                             err: *mut OCIError,
-                             mdo: *const OCITypeMethod,
-                             n_length: *mut ub4)
-                             -> *mut oratext;
+    pub fn OCITypeMethodName(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        mdo: *const OCITypeMethod,
+        n_length: *mut ub4,
+    ) -> *mut oratext;
 }
 extern "C" {
-    pub fn OCITypeMethodEncap(env: *mut OCIEnv,
-                              err: *mut OCIError,
-                              mdo: *const OCITypeMethod)
-                              -> OCITypeEncap;
+    pub fn OCITypeMethodEncap(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        mdo: *const OCITypeMethod,
+    ) -> OCITypeEncap;
 }
 extern "C" {
-    pub fn OCITypeMethodFlags(env: *mut OCIEnv,
-                              err: *mut OCIError,
-                              mdo: *const OCITypeMethod)
-                              -> OCITypeMethodFlag;
+    pub fn OCITypeMethodFlags(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        mdo: *const OCITypeMethod,
+    ) -> OCITypeMethodFlag;
 }
 extern "C" {
-    pub fn OCITypeMethodMap(env: *mut OCIEnv,
-                            err: *mut OCIError,
-                            tdo: *const OCIType,
-                            mdo: *mut *mut OCITypeMethod)
-                            -> sword;
+    pub fn OCITypeMethodMap(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdo: *const OCIType,
+        mdo: *mut *mut OCITypeMethod,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeMethodOrder(env: *mut OCIEnv,
-                              err: *mut OCIError,
-                              tdo: *const OCIType,
-                              mdo: *mut *mut OCITypeMethod)
-                              -> sword;
+    pub fn OCITypeMethodOrder(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdo: *const OCIType,
+        mdo: *mut *mut OCITypeMethod,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeMethodParams(env: *mut OCIEnv,
-                               err: *mut OCIError,
-                               mdo: *const OCITypeMethod)
-                               -> ub4;
+    pub fn OCITypeMethodParams(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        mdo: *const OCITypeMethod,
+    ) -> ub4;
 }
 extern "C" {
-    pub fn OCITypeResult(env: *mut OCIEnv,
-                         err: *mut OCIError,
-                         mdo: *const OCITypeMethod,
-                         elem: *mut *mut OCITypeElem)
-                         -> sword;
+    pub fn OCITypeResult(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        mdo: *const OCITypeMethod,
+        elem: *mut *mut OCITypeElem,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeParamByPos(env: *mut OCIEnv,
-                             err: *mut OCIError,
-                             mdo: *const OCITypeMethod,
-                             position: ub4,
-                             elem: *mut *mut OCITypeElem)
-                             -> sword;
+    pub fn OCITypeParamByPos(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        mdo: *const OCITypeMethod,
+        position: ub4,
+        elem: *mut *mut OCITypeElem,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeParamByName(env: *mut OCIEnv,
-                              err: *mut OCIError,
-                              mdo: *const OCITypeMethod,
-                              name: *const oratext,
-                              n_length: ub4,
-                              elem: *mut *mut OCITypeElem)
-                              -> sword;
+    pub fn OCITypeParamByName(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        mdo: *const OCITypeMethod,
+        name: *const oratext,
+        n_length: ub4,
+        elem: *mut *mut OCITypeElem,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeParamPos(env: *mut OCIEnv,
-                           err: *mut OCIError,
-                           mdo: *const OCITypeMethod,
-                           name: *const oratext,
-                           n_length: ub4,
-                           position: *mut ub4,
-                           elem: *mut *mut OCITypeElem)
-                           -> sword;
+    pub fn OCITypeParamPos(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        mdo: *const OCITypeMethod,
+        name: *const oratext,
+        n_length: ub4,
+        position: *mut ub4,
+        elem: *mut *mut OCITypeElem,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeElemParamMode(env: *mut OCIEnv,
-                                err: *mut OCIError,
-                                elem: *const OCITypeElem)
-                                -> OCITypeParamMode;
+    pub fn OCITypeElemParamMode(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        elem: *const OCITypeElem,
+    ) -> OCITypeParamMode;
 }
 extern "C" {
-    pub fn OCITypeElemDefaultValue(env: *mut OCIEnv,
-                                   err: *mut OCIError,
-                                   elem: *const OCITypeElem,
-                                   d_v_length: *mut ub4)
-                                   -> *mut oratext;
+    pub fn OCITypeElemDefaultValue(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        elem: *const OCITypeElem,
+        d_v_length: *mut ub4,
+    ) -> *mut oratext;
 }
 extern "C" {
     pub fn OCITypeVTInit(env: *mut OCIEnv, err: *mut OCIError) -> sword;
 }
 extern "C" {
-    pub fn OCITypeVTInsert(env: *mut OCIEnv,
-                           err: *mut OCIError,
-                           schema_name: *const oratext,
-                           s_n_length: ub4,
-                           type_name: *const oratext,
-                           t_n_length: ub4,
-                           user_version: *const oratext,
-                           u_v_length: ub4)
-                           -> sword;
+    pub fn OCITypeVTInsert(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        schema_name: *const oratext,
+        s_n_length: ub4,
+        type_name: *const oratext,
+        t_n_length: ub4,
+        user_version: *const oratext,
+        u_v_length: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeVTSelect(env: *mut OCIEnv,
-                           err: *mut OCIError,
-                           schema_name: *const oratext,
-                           s_n_length: ub4,
-                           type_name: *const oratext,
-                           t_n_length: ub4,
-                           user_version: *mut *mut oratext,
-                           u_v_length: *mut ub4,
-                           version: *mut ub2)
-                           -> sword;
+    pub fn OCITypeVTSelect(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        schema_name: *const oratext,
+        s_n_length: ub4,
+        type_name: *const oratext,
+        t_n_length: ub4,
+        user_version: *mut *mut oratext,
+        u_v_length: *mut ub4,
+        version: *mut ub2,
+    ) -> sword;
 }
 extern "C" {
-    pub fn ortgcty(env: *mut OCIEnv,
-                   err: *mut OCIError,
-                   coll_tdo: *mut OCIType,
-                   collelem_tdo: *mut *mut OCIType)
-                   -> sword;
+    pub fn ortgcty(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        coll_tdo: *mut OCIType,
+        collelem_tdo: *mut *mut OCIType,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeBeginCreate(svchp: *mut OCISvcCtx,
-                              errhp: *mut OCIError,
-                              tc: OCITypeCode,
-                              dur: OCIDuration,
-                              type_: *mut *mut OCIType)
-                              -> sword;
+    pub fn OCITypeBeginCreate(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        tc: OCITypeCode,
+        dur: OCIDuration,
+        type_: *mut *mut OCIType,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeSetCollection(svchp: *mut OCISvcCtx,
-                                errhp: *mut OCIError,
-                                type_: *mut OCIType,
-                                collelem_info: *mut OCIParam,
-                                coll_count: ub4)
-                                -> sword;
+    pub fn OCITypeSetCollection(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        type_: *mut OCIType,
+        collelem_info: *mut OCIParam,
+        coll_count: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeSetBuiltin(svchp: *mut OCISvcCtx,
-                             errhp: *mut OCIError,
-                             type_: *mut OCIType,
-                             builtin_info: *mut OCIParam)
-                             -> sword;
+    pub fn OCITypeSetBuiltin(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        type_: *mut OCIType,
+        builtin_info: *mut OCIParam,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeAddAttr(svchp: *mut OCISvcCtx,
-                          errhp: *mut OCIError,
-                          type_: *mut OCIType,
-                          a_name: *const oratext,
-                          a_length: ub4,
-                          attr_info: *mut OCIParam)
-                          -> sword;
+    pub fn OCITypeAddAttr(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        type_: *mut OCIType,
+        a_name: *const oratext,
+        a_length: ub4,
+        attr_info: *mut OCIParam,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITypeEndCreate(svchp: *mut OCISvcCtx,
-                            errhp: *mut OCIError,
-                            type_: *mut OCIType)
-                            -> sword;
+    pub fn OCITypeEndCreate(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        type_: *mut OCIType,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectNew(env: *mut OCIEnv,
-                        err: *mut OCIError,
-                        svc: *const OCISvcCtx,
-                        typecode: OCITypeCode,
-                        tdo: *mut OCIType,
-                        table: *mut ::std::os::raw::c_void,
-                        duration: OCIDuration,
-                        value: boolean,
-                        instance: *mut *mut ::std::os::raw::c_void)
-                        -> sword;
+    pub fn OCIObjectNew(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        svc: *const OCISvcCtx,
+        typecode: OCITypeCode,
+        tdo: *mut OCIType,
+        table: *mut ::std::os::raw::c_void,
+        duration: OCIDuration,
+        value: boolean,
+        instance: *mut *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectPin(env: *mut OCIEnv,
-                        err: *mut OCIError,
-                        object_ref: *mut OCIRef,
-                        corhdl: *mut OCIComplexObject,
-                        pin_option: OCIPinOpt,
-                        pin_duration: OCIDuration,
-                        lock_option: OCILockOpt,
-                        object: *mut *mut ::std::os::raw::c_void)
-                        -> sword;
+    pub fn OCIObjectPin(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        object_ref: *mut OCIRef,
+        corhdl: *mut OCIComplexObject,
+        pin_option: OCIPinOpt,
+        pin_duration: OCIDuration,
+        lock_option: OCILockOpt,
+        object: *mut *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectUnpin(env: *mut OCIEnv,
-                          err: *mut OCIError,
-                          object: *mut ::std::os::raw::c_void)
-                          -> sword;
+    pub fn OCIObjectUnpin(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        object: *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectPinCountReset(env: *mut OCIEnv,
-                                  err: *mut OCIError,
-                                  object: *mut ::std::os::raw::c_void)
-                                  -> sword;
+    pub fn OCIObjectPinCountReset(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        object: *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectLock(env: *mut OCIEnv,
-                         err: *mut OCIError,
-                         object: *mut ::std::os::raw::c_void)
-                         -> sword;
+    pub fn OCIObjectLock(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        object: *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectLockNoWait(env: *mut OCIEnv,
-                               err: *mut OCIError,
-                               object: *mut ::std::os::raw::c_void)
-                               -> sword;
+    pub fn OCIObjectLockNoWait(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        object: *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectMarkUpdate(env: *mut OCIEnv,
-                               err: *mut OCIError,
-                               object: *mut ::std::os::raw::c_void)
-                               -> sword;
+    pub fn OCIObjectMarkUpdate(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        object: *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectUnmark(env: *mut OCIEnv,
-                           err: *mut OCIError,
-                           object: *mut ::std::os::raw::c_void)
-                           -> sword;
+    pub fn OCIObjectUnmark(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        object: *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCIObjectUnmarkByRef(env: *mut OCIEnv, err: *mut OCIError, ref_: *mut OCIRef) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectFree(env: *mut OCIEnv,
-                         err: *mut OCIError,
-                         instance: *mut ::std::os::raw::c_void,
-                         flags: ub2)
-                         -> sword;
+    pub fn OCIObjectFree(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        instance: *mut ::std::os::raw::c_void,
+        flags: ub2,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectMarkDeleteByRef(env: *mut OCIEnv,
-                                    err: *mut OCIError,
-                                    object_ref: *mut OCIRef)
-                                    -> sword;
+    pub fn OCIObjectMarkDeleteByRef(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        object_ref: *mut OCIRef,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectMarkDelete(env: *mut OCIEnv,
-                               err: *mut OCIError,
-                               instance: *mut ::std::os::raw::c_void)
-                               -> sword;
+    pub fn OCIObjectMarkDelete(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        instance: *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectFlush(env: *mut OCIEnv,
-                          err: *mut OCIError,
-                          object: *mut ::std::os::raw::c_void)
-                          -> sword;
+    pub fn OCIObjectFlush(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        object: *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectRefresh(env: *mut OCIEnv,
-                            err: *mut OCIError,
-                            object: *mut ::std::os::raw::c_void)
-                            -> sword;
+    pub fn OCIObjectRefresh(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        object: *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectCopy(env: *mut OCIEnv,
-                         err: *mut OCIError,
-                         svc: *const OCISvcCtx,
-                         source: *mut ::std::os::raw::c_void,
-                         null_source: *mut ::std::os::raw::c_void,
-                         target: *mut ::std::os::raw::c_void,
-                         null_target: *mut ::std::os::raw::c_void,
-                         tdo: *mut OCIType,
-                         duration: OCIDuration,
-                         option: ub1)
-                         -> sword;
+    pub fn OCIObjectCopy(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        svc: *const OCISvcCtx,
+        source: *mut ::std::os::raw::c_void,
+        null_source: *mut ::std::os::raw::c_void,
+        target: *mut ::std::os::raw::c_void,
+        null_target: *mut ::std::os::raw::c_void,
+        tdo: *mut OCIType,
+        duration: OCIDuration,
+        option: ub1,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectGetTypeRef(env: *mut OCIEnv,
-                               err: *mut OCIError,
-                               instance: *mut ::std::os::raw::c_void,
-                               type_ref: *mut OCIRef)
-                               -> sword;
+    pub fn OCIObjectGetTypeRef(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        instance: *mut ::std::os::raw::c_void,
+        type_ref: *mut OCIRef,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectGetObjectRef(env: *mut OCIEnv,
-                                 err: *mut OCIError,
-                                 object: *mut ::std::os::raw::c_void,
-                                 object_ref: *mut OCIRef)
-                                 -> sword;
+    pub fn OCIObjectGetObjectRef(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        object: *mut ::std::os::raw::c_void,
+        object_ref: *mut OCIRef,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectMakeObjectRef(env: *mut OCIEnv,
-                                  err: *mut OCIError,
-                                  svc: *const OCISvcCtx,
-                                  table: *mut ::std::os::raw::c_void,
-                                  values: *mut *mut ::std::os::raw::c_void,
-                                  array_len: ub4,
-                                  object_ref: *mut OCIRef)
-                                  -> sword;
+    pub fn OCIObjectMakeObjectRef(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        svc: *const OCISvcCtx,
+        table: *mut ::std::os::raw::c_void,
+        values: *mut *mut ::std::os::raw::c_void,
+        array_len: ub4,
+        object_ref: *mut OCIRef,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectGetPrimaryKeyTypeRef(env: *mut OCIEnv,
-                                         err: *mut OCIError,
-                                         svc: *const OCISvcCtx,
-                                         table: *mut ::std::os::raw::c_void,
-                                         type_ref: *mut OCIRef)
-                                         -> sword;
+    pub fn OCIObjectGetPrimaryKeyTypeRef(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        svc: *const OCISvcCtx,
+        table: *mut ::std::os::raw::c_void,
+        type_ref: *mut OCIRef,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectGetInd(env: *mut OCIEnv,
-                           err: *mut OCIError,
-                           instance: *mut ::std::os::raw::c_void,
-                           null_struct: *mut *mut ::std::os::raw::c_void)
-                           -> sword;
+    pub fn OCIObjectGetInd(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        instance: *mut ::std::os::raw::c_void,
+        null_struct: *mut *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectExists(env: *mut OCIEnv,
-                           err: *mut OCIError,
-                           ins: *mut ::std::os::raw::c_void,
-                           exist: *mut boolean)
-                           -> sword;
+    pub fn OCIObjectExists(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        ins: *mut ::std::os::raw::c_void,
+        exist: *mut boolean,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectGetProperty(envh: *mut OCIEnv,
-                                errh: *mut OCIError,
-                                obj: *const ::std::os::raw::c_void,
-                                propertyId: OCIObjectPropId,
-                                property: *mut ::std::os::raw::c_void,
-                                size: *mut ub4)
-                                -> sword;
+    pub fn OCIObjectGetProperty(
+        envh: *mut OCIEnv,
+        errh: *mut OCIError,
+        obj: *const ::std::os::raw::c_void,
+        propertyId: OCIObjectPropId,
+        property: *mut ::std::os::raw::c_void,
+        size: *mut ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectIsLocked(env: *mut OCIEnv,
-                             err: *mut OCIError,
-                             ins: *mut ::std::os::raw::c_void,
-                             lock: *mut boolean)
-                             -> sword;
+    pub fn OCIObjectIsLocked(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        ins: *mut ::std::os::raw::c_void,
+        lock: *mut boolean,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectIsDirty(env: *mut OCIEnv,
-                            err: *mut OCIError,
-                            ins: *mut ::std::os::raw::c_void,
-                            dirty: *mut boolean)
-                            -> sword;
+    pub fn OCIObjectIsDirty(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        ins: *mut ::std::os::raw::c_void,
+        dirty: *mut boolean,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectPinTable(env: *mut OCIEnv,
-                             err: *mut OCIError,
-                             svc: *const OCISvcCtx,
-                             schema_name: *const oratext,
-                             s_n_length: ub4,
-                             object_name: *const oratext,
-                             o_n_length: ub4,
-                             scope_obj_ref: *const OCIRef,
-                             pin_duration: OCIDuration,
-                             object: *mut *mut ::std::os::raw::c_void)
-                             -> sword;
+    pub fn OCIObjectPinTable(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        svc: *const OCISvcCtx,
+        schema_name: *const oratext,
+        s_n_length: ub4,
+        object_name: *const oratext,
+        o_n_length: ub4,
+        scope_obj_ref: *const OCIRef,
+        pin_duration: OCIDuration,
+        object: *mut *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectArrayPin(env: *mut OCIEnv,
-                             err: *mut OCIError,
-                             ref_array: *mut *mut OCIRef,
-                             array_size: ub4,
-                             cor_array: *mut *mut OCIComplexObject,
-                             cor_array_size: ub4,
-                             pin_option: OCIPinOpt,
-                             pin_duration: OCIDuration,
-                             lock: OCILockOpt,
-                             obj_array: *mut *mut ::std::os::raw::c_void,
-                             pos: *mut ub4)
-                             -> sword;
+    pub fn OCIObjectArrayPin(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        ref_array: *mut *mut OCIRef,
+        array_size: ub4,
+        cor_array: *mut *mut OCIComplexObject,
+        cor_array_size: ub4,
+        pin_option: OCIPinOpt,
+        pin_duration: OCIDuration,
+        lock: OCILockOpt,
+        obj_array: *mut *mut ::std::os::raw::c_void,
+        pos: *mut ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCICacheFlush(env: *mut OCIEnv, err: *mut OCIError,
-                         svc: *const OCISvcCtx,
-                         context: *mut ::std::os::raw::c_void,
-                         get:
-                             ::std::option::Option<unsafe extern "C" fn(context:
-                                                                            *mut ::std::os::raw::c_void,
-                                                                        last:
-                                                                            *mut ub1)
-                                                       -> *mut OCIRef>,
-ref_: *mut *mut OCIRef) -> sword;
+    pub fn OCICacheFlush(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        svc: *const OCISvcCtx,
+        context: *mut ::std::os::raw::c_void,
+        get: ::std::option::Option<
+            unsafe extern "C" fn(context: *mut ::std::os::raw::c_void, last: *mut ub1)
+                -> *mut OCIRef,
+        >,
+        ref_: *mut *mut OCIRef,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCICacheRefresh(env: *mut OCIEnv, err: *mut OCIError,
-                           svc: *const OCISvcCtx, option: OCIRefreshOpt,
-                           context: *mut ::std::os::raw::c_void,
-                           get:
-                               ::std::option::Option<unsafe extern "C" fn(context:
-                                                                              *mut ::std::os::raw::c_void)
-                                                         -> *mut OCIRef>,
-ref_: *mut *mut OCIRef) -> sword;
+    pub fn OCICacheRefresh(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        svc: *const OCISvcCtx,
+        option: OCIRefreshOpt,
+        context: *mut ::std::os::raw::c_void,
+        get: ::std::option::Option<
+            unsafe extern "C" fn(context: *mut ::std::os::raw::c_void) -> *mut OCIRef,
+        >,
+        ref_: *mut *mut OCIRef,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCICacheUnpin(env: *mut OCIEnv, err: *mut OCIError, svc: *const OCISvcCtx) -> sword;
@@ -4164,112 +4708,128 @@ extern "C" {
     pub fn OCICacheUnmark(env: *mut OCIEnv, err: *mut OCIError, svc: *const OCISvcCtx) -> sword;
 }
 extern "C" {
-    pub fn OCIDurationBegin(env: *mut OCIEnv,
-                            err: *mut OCIError,
-                            svc: *const OCISvcCtx,
-                            parent: OCIDuration,
-                            dur: *mut OCIDuration)
-                            -> sword;
+    pub fn OCIDurationBegin(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        svc: *const OCISvcCtx,
+        parent: OCIDuration,
+        dur: *mut OCIDuration,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDurationEnd(env: *mut OCIEnv,
-                          err: *mut OCIError,
-                          svc: *const OCISvcCtx,
-                          duration: OCIDuration)
-                          -> sword;
+    pub fn OCIDurationEnd(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        svc: *const OCISvcCtx,
+        duration: OCIDuration,
+    ) -> sword;
 }
 extern "C" {
     /// DO  NOT  USE  THE  FUNCTIONS  BELOW!                             **
     /// UNSUPPORTED INTERFACE                                            **
     /// WILL BE REMOVED/CHANGED IN A FUTURE RELEASE                      **
-    pub fn OCIDurationGetParent(env: *mut OCIEnv,
-                                err: *mut OCIError,
-                                duration: OCIDuration,
-                                parent: *mut OCIDuration)
-                                -> sword;
+    pub fn OCIDurationGetParent(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        duration: OCIDuration,
+        parent: *mut OCIDuration,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectAlwaysLatest(env: *mut OCIEnv,
-                                 err: *mut OCIError,
-                                 object: *mut ::std::os::raw::c_void)
-                                 -> sword;
+    pub fn OCIObjectAlwaysLatest(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        object: *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectNotAlwaysLatest(env: *mut OCIEnv,
-                                    err: *mut OCIError,
-                                    object: *mut ::std::os::raw::c_void)
-                                    -> sword;
+    pub fn OCIObjectNotAlwaysLatest(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        object: *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectFlushRefresh(env: *mut OCIEnv,
-                                 err: *mut OCIError,
-                                 object: *mut ::std::os::raw::c_void)
-                                 -> sword;
+    pub fn OCIObjectFlushRefresh(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        object: *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectIsLoaded(env: *mut OCIEnv,
-                             err: *mut OCIError,
-                             ins: *mut ::std::os::raw::c_void,
-                             load: *mut boolean)
-                             -> sword;
+    pub fn OCIObjectIsLoaded(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        ins: *mut ::std::os::raw::c_void,
+        load: *mut boolean,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectIsDirtied(env: *mut OCIEnv,
-                              err: *mut OCIError,
-                              ins: *mut ::std::os::raw::c_void,
-                              dirty: *mut boolean)
-                              -> sword;
+    pub fn OCIObjectIsDirtied(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        ins: *mut ::std::os::raw::c_void,
+        dirty: *mut boolean,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCICacheGetObjects(env: *mut OCIEnv, err: *mut OCIError,
-                              svc: *const OCISvcCtx,
-                              property: OCIObjectProperty,
-                              client_context: *mut ::std::os::raw::c_void,
-                              client_callback:
-                                  ::std::option::Option<unsafe extern "C" fn(client_context:
-                                                                                 *mut ::std::os::raw::c_void,
-                                                                             object:
-                                                                                 *mut ::std::os::raw::c_void)>)
--> sword;
+    pub fn OCICacheGetObjects(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        svc: *const OCISvcCtx,
+        property: OCIObjectProperty,
+        client_context: *mut ::std::os::raw::c_void,
+        client_callback: ::std::option::Option<
+            unsafe extern "C" fn(
+                client_context: *mut ::std::os::raw::c_void,
+                object: *mut ::std::os::raw::c_void,
+            ),
+        >,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCICacheRegister(env: *mut OCIEnv, err: *mut OCIError,
-                            event: OCIObjectEvent,
-                            client_context: *mut ::std::os::raw::c_void,
-                            client_callback:
-                                ::std::option::Option<unsafe extern "C" fn(client_context:
-                                                                               *mut ::std::os::raw::c_void,
-                                                                           event:
-                                                                               OCIObjectEvent,
-                                                                           object:
-                                                                               *mut ::std::os::raw::c_void)>)
--> sword;
+    pub fn OCICacheRegister(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        event: OCIObjectEvent,
+        client_context: *mut ::std::os::raw::c_void,
+        client_callback: ::std::option::Option<
+            unsafe extern "C" fn(
+                client_context: *mut ::std::os::raw::c_void,
+                event: OCIObjectEvent,
+                object: *mut ::std::os::raw::c_void,
+            ),
+        >,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCICacheFlushRefresh(env: *mut OCIEnv, err: *mut OCIError,
-                                svc: *const OCISvcCtx,
-                                context: *mut ::std::os::raw::c_void,
-                                get:
-                                    ::std::option::Option<unsafe extern "C" fn(context:
-                                                                                   *mut ::std::os::raw::c_void,
-                                                                               last:
-                                                                                   *mut ub1)
-                                                              -> *mut OCIRef>,
-ref_: *mut *mut OCIRef) -> sword;
+    pub fn OCICacheFlushRefresh(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        svc: *const OCISvcCtx,
+        context: *mut ::std::os::raw::c_void,
+        get: ::std::option::Option<
+            unsafe extern "C" fn(context: *mut ::std::os::raw::c_void, last: *mut ub1)
+                -> *mut OCIRef,
+        >,
+        ref_: *mut *mut OCIRef,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectSetData(env: *mut OCIEnv,
-                            err: *mut OCIError,
-                            obj_hdr: *mut ::std::os::raw::c_void,
-                            data: *mut ::std::os::raw::c_void)
-                            -> sword;
+    pub fn OCIObjectSetData(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        obj_hdr: *mut ::std::os::raw::c_void,
+        data: *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIObjectGetNewOID(env: *mut OCIEnv,
-                              err: *mut OCIError,
-                              svc: *mut OCISvcCtx,
-                              oid: *mut ub1)
-                              -> sword;
+    pub fn OCIObjectGetNewOID(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        svc: *mut OCISvcCtx,
+        oid: *mut ub1,
+    ) -> sword;
 }
 #[repr(C)]
 #[derive(Debug, Copy)]
@@ -4278,18 +4838,26 @@ pub struct OCINumber {
 }
 #[test]
 fn bindgen_test_layout_OCINumber() {
-    assert_eq!(::std::mem::size_of::<OCINumber>(),
-               22usize,
-               concat!("Size of: ", stringify!(OCINumber)));
-    assert_eq!(::std::mem::align_of::<OCINumber>(),
-               1usize,
-               concat!("Alignment of ", stringify!(OCINumber)));
-    assert_eq!(unsafe { &(*(0 as *const OCINumber)).OCINumberPart as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(OCINumber),
-                       "::",
-                       stringify!(OCINumberPart)));
+    assert_eq!(
+        ::std::mem::size_of::<OCINumber>(),
+        22usize,
+        concat!("Size of: ", stringify!(OCINumber))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<OCINumber>(),
+        1usize,
+        concat!("Alignment of ", stringify!(OCINumber))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const OCINumber)).OCINumberPart as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(OCINumber),
+            "::",
+            stringify!(OCINumberPart)
+        )
+    );
 }
 impl Clone for OCINumber {
     fn clone(&self) -> Self {
@@ -4309,282 +4877,317 @@ extern "C" {
     pub fn OCINumberSetPi(err: *mut OCIError, num: *mut OCINumber);
 }
 extern "C" {
-    pub fn OCINumberAdd(err: *mut OCIError,
-                        number1: *const OCINumber,
-                        number2: *const OCINumber,
-                        result: *mut OCINumber)
-                        -> sword;
+    pub fn OCINumberAdd(
+        err: *mut OCIError,
+        number1: *const OCINumber,
+        number2: *const OCINumber,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberSub(err: *mut OCIError,
-                        number1: *const OCINumber,
-                        number2: *const OCINumber,
-                        result: *mut OCINumber)
-                        -> sword;
+    pub fn OCINumberSub(
+        err: *mut OCIError,
+        number1: *const OCINumber,
+        number2: *const OCINumber,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberMul(err: *mut OCIError,
-                        number1: *const OCINumber,
-                        number2: *const OCINumber,
-                        result: *mut OCINumber)
-                        -> sword;
+    pub fn OCINumberMul(
+        err: *mut OCIError,
+        number1: *const OCINumber,
+        number2: *const OCINumber,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberDiv(err: *mut OCIError,
-                        number1: *const OCINumber,
-                        number2: *const OCINumber,
-                        result: *mut OCINumber)
-                        -> sword;
+    pub fn OCINumberDiv(
+        err: *mut OCIError,
+        number1: *const OCINumber,
+        number2: *const OCINumber,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberMod(err: *mut OCIError,
-                        number1: *const OCINumber,
-                        number2: *const OCINumber,
-                        result: *mut OCINumber)
-                        -> sword;
+    pub fn OCINumberMod(
+        err: *mut OCIError,
+        number1: *const OCINumber,
+        number2: *const OCINumber,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberIntPower(err: *mut OCIError,
-                             base: *const OCINumber,
-                             exp: sword,
-                             result: *mut OCINumber)
-                             -> sword;
+    pub fn OCINumberIntPower(
+        err: *mut OCIError,
+        base: *const OCINumber,
+        exp: sword,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberShift(err: *mut OCIError,
-                          number: *const OCINumber,
-                          nDig: sword,
-                          result: *mut OCINumber)
-                          -> sword;
+    pub fn OCINumberShift(
+        err: *mut OCIError,
+        number: *const OCINumber,
+        nDig: sword,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberNeg(err: *mut OCIError,
-                        number: *const OCINumber,
-                        result: *mut OCINumber)
-                        -> sword;
+    pub fn OCINumberNeg(
+        err: *mut OCIError,
+        number: *const OCINumber,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberToText(err: *mut OCIError,
-                           number: *const OCINumber,
-                           fmt: *const oratext,
-                           fmt_length: ub4,
-                           nls_params: *const oratext,
-                           nls_p_length: ub4,
-                           buf_size: *mut ub4,
-                           buf: *mut oratext)
-                           -> sword;
+    pub fn OCINumberToText(
+        err: *mut OCIError,
+        number: *const OCINumber,
+        fmt: *const oratext,
+        fmt_length: ub4,
+        nls_params: *const oratext,
+        nls_p_length: ub4,
+        buf_size: *mut ub4,
+        buf: *mut oratext,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberFromText(err: *mut OCIError,
-                             str: *const oratext,
-                             str_length: ub4,
-                             fmt: *const oratext,
-                             fmt_length: ub4,
-                             nls_params: *const oratext,
-                             nls_p_length: ub4,
-                             number: *mut OCINumber)
-                             -> sword;
+    pub fn OCINumberFromText(
+        err: *mut OCIError,
+        str: *const oratext,
+        str_length: ub4,
+        fmt: *const oratext,
+        fmt_length: ub4,
+        nls_params: *const oratext,
+        nls_p_length: ub4,
+        number: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberToInt(err: *mut OCIError,
-                          number: *const OCINumber,
-                          rsl_length: uword,
-                          rsl_flag: uword,
-                          rsl: *mut ::std::os::raw::c_void)
-                          -> sword;
+    pub fn OCINumberToInt(
+        err: *mut OCIError,
+        number: *const OCINumber,
+        rsl_length: uword,
+        rsl_flag: uword,
+        rsl: *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberFromInt(err: *mut OCIError,
-                            inum: *const ::std::os::raw::c_void,
-                            inum_length: uword,
-                            inum_s_flag: uword,
-                            number: *mut OCINumber)
-                            -> sword;
+    pub fn OCINumberFromInt(
+        err: *mut OCIError,
+        inum: *const ::std::os::raw::c_void,
+        inum_length: uword,
+        inum_s_flag: uword,
+        number: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberToReal(err: *mut OCIError,
-                           number: *const OCINumber,
-                           rsl_length: uword,
-                           rsl: *mut ::std::os::raw::c_void)
-                           -> sword;
+    pub fn OCINumberToReal(
+        err: *mut OCIError,
+        number: *const OCINumber,
+        rsl_length: uword,
+        rsl: *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberToRealArray(err: *mut OCIError,
-                                number: *mut *const OCINumber,
-                                elems: uword,
-                                rsl_length: uword,
-                                rsl: *mut ::std::os::raw::c_void)
-                                -> sword;
+    pub fn OCINumberToRealArray(
+        err: *mut OCIError,
+        number: *mut *const OCINumber,
+        elems: uword,
+        rsl_length: uword,
+        rsl: *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberFromReal(err: *mut OCIError,
-                             rnum: *const ::std::os::raw::c_void,
-                             rnum_length: uword,
-                             number: *mut OCINumber)
-                             -> sword;
+    pub fn OCINumberFromReal(
+        err: *mut OCIError,
+        rnum: *const ::std::os::raw::c_void,
+        rnum_length: uword,
+        number: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberCmp(err: *mut OCIError,
-                        number1: *const OCINumber,
-                        number2: *const OCINumber,
-                        result: *mut sword)
-                        -> sword;
+    pub fn OCINumberCmp(
+        err: *mut OCIError,
+        number1: *const OCINumber,
+        number2: *const OCINumber,
+        result: *mut sword,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberSign(err: *mut OCIError,
-                         number: *const OCINumber,
-                         result: *mut sword)
-                         -> sword;
+    pub fn OCINumberSign(err: *mut OCIError, number: *const OCINumber, result: *mut sword)
+        -> sword;
 }
 extern "C" {
-    pub fn OCINumberIsZero(err: *mut OCIError,
-                           number: *const OCINumber,
-                           result: *mut boolean)
-                           -> sword;
+    pub fn OCINumberIsZero(
+        err: *mut OCIError,
+        number: *const OCINumber,
+        result: *mut boolean,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberIsInt(err: *mut OCIError,
-                          number: *const OCINumber,
-                          result: *mut boolean)
-                          -> sword;
+    pub fn OCINumberIsInt(
+        err: *mut OCIError,
+        number: *const OCINumber,
+        result: *mut boolean,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberAssign(err: *mut OCIError,
-                           from: *const OCINumber,
-                           to: *mut OCINumber)
-                           -> sword;
+    pub fn OCINumberAssign(err: *mut OCIError, from: *const OCINumber, to: *mut OCINumber)
+        -> sword;
 }
 extern "C" {
-    pub fn OCINumberAbs(err: *mut OCIError,
-                        number: *const OCINumber,
-                        result: *mut OCINumber)
-                        -> sword;
+    pub fn OCINumberAbs(
+        err: *mut OCIError,
+        number: *const OCINumber,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberCeil(err: *mut OCIError,
-                         number: *const OCINumber,
-                         result: *mut OCINumber)
-                         -> sword;
+    pub fn OCINumberCeil(
+        err: *mut OCIError,
+        number: *const OCINumber,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberFloor(err: *mut OCIError,
-                          number: *const OCINumber,
-                          result: *mut OCINumber)
-                          -> sword;
+    pub fn OCINumberFloor(
+        err: *mut OCIError,
+        number: *const OCINumber,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberSqrt(err: *mut OCIError,
-                         number: *const OCINumber,
-                         result: *mut OCINumber)
-                         -> sword;
+    pub fn OCINumberSqrt(
+        err: *mut OCIError,
+        number: *const OCINumber,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberTrunc(err: *mut OCIError,
-                          number: *const OCINumber,
-                          decplace: sword,
-                          result: *mut OCINumber)
-                          -> sword;
+    pub fn OCINumberTrunc(
+        err: *mut OCIError,
+        number: *const OCINumber,
+        decplace: sword,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberPower(err: *mut OCIError,
-                          base: *const OCINumber,
-                          number: *const OCINumber,
-                          result: *mut OCINumber)
-                          -> sword;
+    pub fn OCINumberPower(
+        err: *mut OCIError,
+        base: *const OCINumber,
+        number: *const OCINumber,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberRound(err: *mut OCIError,
-                          number: *const OCINumber,
-                          decplace: sword,
-                          result: *mut OCINumber)
-                          -> sword;
+    pub fn OCINumberRound(
+        err: *mut OCIError,
+        number: *const OCINumber,
+        decplace: sword,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberPrec(err: *mut OCIError,
-                         number: *const OCINumber,
-                         nDigs: sword,
-                         result: *mut OCINumber)
-                         -> sword;
+    pub fn OCINumberPrec(
+        err: *mut OCIError,
+        number: *const OCINumber,
+        nDigs: sword,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberSin(err: *mut OCIError,
-                        number: *const OCINumber,
-                        result: *mut OCINumber)
-                        -> sword;
+    pub fn OCINumberSin(
+        err: *mut OCIError,
+        number: *const OCINumber,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberArcSin(err: *mut OCIError,
-                           number: *const OCINumber,
-                           result: *mut OCINumber)
-                           -> sword;
+    pub fn OCINumberArcSin(
+        err: *mut OCIError,
+        number: *const OCINumber,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberHypSin(err: *mut OCIError,
-                           number: *const OCINumber,
-                           result: *mut OCINumber)
-                           -> sword;
+    pub fn OCINumberHypSin(
+        err: *mut OCIError,
+        number: *const OCINumber,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberCos(err: *mut OCIError,
-                        number: *const OCINumber,
-                        result: *mut OCINumber)
-                        -> sword;
+    pub fn OCINumberCos(
+        err: *mut OCIError,
+        number: *const OCINumber,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberArcCos(err: *mut OCIError,
-                           number: *const OCINumber,
-                           result: *mut OCINumber)
-                           -> sword;
+    pub fn OCINumberArcCos(
+        err: *mut OCIError,
+        number: *const OCINumber,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberHypCos(err: *mut OCIError,
-                           number: *const OCINumber,
-                           result: *mut OCINumber)
-                           -> sword;
+    pub fn OCINumberHypCos(
+        err: *mut OCIError,
+        number: *const OCINumber,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberTan(err: *mut OCIError,
-                        number: *const OCINumber,
-                        result: *mut OCINumber)
-                        -> sword;
+    pub fn OCINumberTan(
+        err: *mut OCIError,
+        number: *const OCINumber,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberArcTan(err: *mut OCIError,
-                           number: *const OCINumber,
-                           result: *mut OCINumber)
-                           -> sword;
+    pub fn OCINumberArcTan(
+        err: *mut OCIError,
+        number: *const OCINumber,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberArcTan2(err: *mut OCIError,
-                            number1: *const OCINumber,
-                            number2: *const OCINumber,
-                            result: *mut OCINumber)
-                            -> sword;
+    pub fn OCINumberArcTan2(
+        err: *mut OCIError,
+        number1: *const OCINumber,
+        number2: *const OCINumber,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberHypTan(err: *mut OCIError,
-                           number: *const OCINumber,
-                           result: *mut OCINumber)
-                           -> sword;
+    pub fn OCINumberHypTan(
+        err: *mut OCIError,
+        number: *const OCINumber,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberExp(err: *mut OCIError,
-                        number: *const OCINumber,
-                        result: *mut OCINumber)
-                        -> sword;
+    pub fn OCINumberExp(
+        err: *mut OCIError,
+        number: *const OCINumber,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberLn(err: *mut OCIError,
-                       number: *const OCINumber,
-                       result: *mut OCINumber)
-                       -> sword;
+    pub fn OCINumberLn(
+        err: *mut OCIError,
+        number: *const OCINumber,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINumberLog(err: *mut OCIError,
-                        base: *const OCINumber,
-                        number: *const OCINumber,
-                        result: *mut OCINumber)
-                        -> sword;
+    pub fn OCINumberLog(
+        err: *mut OCIError,
+        base: *const OCINumber,
+        number: *const OCINumber,
+        result: *mut OCINumber,
+    ) -> sword;
 }
 
 #[repr(C)]
@@ -4596,30 +5199,46 @@ pub struct OCITime {
 }
 #[test]
 fn bindgen_test_layout_OCITime() {
-    assert_eq!(::std::mem::size_of::<OCITime>(),
-               3usize,
-               concat!("Size of: ", stringify!(OCITime)));
-    assert_eq!(::std::mem::align_of::<OCITime>(),
-               1usize,
-               concat!("Alignment of ", stringify!(OCITime)));
-    assert_eq!(unsafe { &(*(0 as *const OCITime)).OCITimeHH as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(OCITime),
-                       "::",
-                       stringify!(OCITimeHH)));
-    assert_eq!(unsafe { &(*(0 as *const OCITime)).OCITimeMI as *const _ as usize },
-               1usize,
-               concat!("Alignment of field: ",
-                       stringify!(OCITime),
-                       "::",
-                       stringify!(OCITimeMI)));
-    assert_eq!(unsafe { &(*(0 as *const OCITime)).OCITimeSS as *const _ as usize },
-               2usize,
-               concat!("Alignment of field: ",
-                       stringify!(OCITime),
-                       "::",
-                       stringify!(OCITimeSS)));
+    assert_eq!(
+        ::std::mem::size_of::<OCITime>(),
+        3usize,
+        concat!("Size of: ", stringify!(OCITime))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<OCITime>(),
+        1usize,
+        concat!("Alignment of ", stringify!(OCITime))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const OCITime)).OCITimeHH as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(OCITime),
+            "::",
+            stringify!(OCITimeHH)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const OCITime)).OCITimeMI as *const _ as usize },
+        1usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(OCITime),
+            "::",
+            stringify!(OCITimeMI)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const OCITime)).OCITimeSS as *const _ as usize },
+        2usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(OCITime),
+            "::",
+            stringify!(OCITimeSS)
+        )
+    );
 }
 impl Clone for OCITime {
     fn clone(&self) -> Self {
@@ -4636,36 +5255,56 @@ pub struct OCIDate {
 }
 #[test]
 fn bindgen_test_layout_OCIDate() {
-    assert_eq!(::std::mem::size_of::<OCIDate>(),
-               8usize,
-               concat!("Size of: ", stringify!(OCIDate)));
-    assert_eq!(::std::mem::align_of::<OCIDate>(),
-               2usize,
-               concat!("Alignment of ", stringify!(OCIDate)));
-    assert_eq!(unsafe { &(*(0 as *const OCIDate)).OCIDateYYYY as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(OCIDate),
-                       "::",
-                       stringify!(OCIDateYYYY)));
-    assert_eq!(unsafe { &(*(0 as *const OCIDate)).OCIDateMM as *const _ as usize },
-               2usize,
-               concat!("Alignment of field: ",
-                       stringify!(OCIDate),
-                       "::",
-                       stringify!(OCIDateMM)));
-    assert_eq!(unsafe { &(*(0 as *const OCIDate)).OCIDateDD as *const _ as usize },
-               3usize,
-               concat!("Alignment of field: ",
-                       stringify!(OCIDate),
-                       "::",
-                       stringify!(OCIDateDD)));
-    assert_eq!(unsafe { &(*(0 as *const OCIDate)).OCIDateTime as *const _ as usize },
-               4usize,
-               concat!("Alignment of field: ",
-                       stringify!(OCIDate),
-                       "::",
-                       stringify!(OCIDateTime)));
+    assert_eq!(
+        ::std::mem::size_of::<OCIDate>(),
+        8usize,
+        concat!("Size of: ", stringify!(OCIDate))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<OCIDate>(),
+        2usize,
+        concat!("Alignment of ", stringify!(OCIDate))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const OCIDate)).OCIDateYYYY as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(OCIDate),
+            "::",
+            stringify!(OCIDateYYYY)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const OCIDate)).OCIDateMM as *const _ as usize },
+        2usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(OCIDate),
+            "::",
+            stringify!(OCIDateMM)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const OCIDate)).OCIDateDD as *const _ as usize },
+        3usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(OCIDate),
+            "::",
+            stringify!(OCIDateDD)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const OCIDate)).OCIDateTime as *const _ as usize },
+        4usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(OCIDate),
+            "::",
+            stringify!(OCIDateTime)
+        )
+    );
 }
 impl Clone for OCIDate {
     fn clone(&self) -> Self {
@@ -4676,78 +5315,87 @@ extern "C" {
     pub fn OCIDateAssign(err: *mut OCIError, from: *const OCIDate, to: *mut OCIDate) -> sword;
 }
 extern "C" {
-    pub fn OCIDateToText(err: *mut OCIError,
-                         date: *const OCIDate,
-                         fmt: *const oratext,
-                         fmt_length: ub1,
-                         lang_name: *const oratext,
-                         lang_length: ub4,
-                         buf_size: *mut ub4,
-                         buf: *mut oratext)
-                         -> sword;
+    pub fn OCIDateToText(
+        err: *mut OCIError,
+        date: *const OCIDate,
+        fmt: *const oratext,
+        fmt_length: ub1,
+        lang_name: *const oratext,
+        lang_length: ub4,
+        buf_size: *mut ub4,
+        buf: *mut oratext,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDateFromText(err: *mut OCIError,
-                           date_str: *const oratext,
-                           d_str_length: ub4,
-                           fmt: *const oratext,
-                           fmt_length: ub1,
-                           lang_name: *const oratext,
-                           lang_length: ub4,
-                           date: *mut OCIDate)
-                           -> sword;
+    pub fn OCIDateFromText(
+        err: *mut OCIError,
+        date_str: *const oratext,
+        d_str_length: ub4,
+        fmt: *const oratext,
+        fmt_length: ub1,
+        lang_name: *const oratext,
+        lang_length: ub4,
+        date: *mut OCIDate,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDateCompare(err: *mut OCIError,
-                          date1: *const OCIDate,
-                          date2: *const OCIDate,
-                          result: *mut sword)
-                          -> sword;
+    pub fn OCIDateCompare(
+        err: *mut OCIError,
+        date1: *const OCIDate,
+        date2: *const OCIDate,
+        result: *mut sword,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDateAddMonths(err: *mut OCIError,
-                            date: *const OCIDate,
-                            num_months: sb4,
-                            result: *mut OCIDate)
-                            -> sword;
+    pub fn OCIDateAddMonths(
+        err: *mut OCIError,
+        date: *const OCIDate,
+        num_months: sb4,
+        result: *mut OCIDate,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDateAddDays(err: *mut OCIError,
-                          date: *const OCIDate,
-                          num_days: sb4,
-                          result: *mut OCIDate)
-                          -> sword;
+    pub fn OCIDateAddDays(
+        err: *mut OCIError,
+        date: *const OCIDate,
+        num_days: sb4,
+        result: *mut OCIDate,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDateLastDay(err: *mut OCIError,
-                          date: *const OCIDate,
-                          last_day: *mut OCIDate)
-                          -> sword;
+    pub fn OCIDateLastDay(
+        err: *mut OCIError,
+        date: *const OCIDate,
+        last_day: *mut OCIDate,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDateDaysBetween(err: *mut OCIError,
-                              date1: *const OCIDate,
-                              date2: *const OCIDate,
-                              num_days: *mut sb4)
-                              -> sword;
+    pub fn OCIDateDaysBetween(
+        err: *mut OCIError,
+        date1: *const OCIDate,
+        date2: *const OCIDate,
+        num_days: *mut sb4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDateZoneToZone(err: *mut OCIError,
-                             date1: *const OCIDate,
-                             zon1: *const oratext,
-                             zon1_length: ub4,
-                             zon2: *const oratext,
-                             zon2_length: ub4,
-                             date2: *mut OCIDate)
-                             -> sword;
+    pub fn OCIDateZoneToZone(
+        err: *mut OCIError,
+        date1: *const OCIDate,
+        zon1: *const oratext,
+        zon1_length: ub4,
+        zon2: *const oratext,
+        zon2_length: ub4,
+        date2: *mut OCIDate,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDateNextDay(err: *mut OCIError,
-                          date: *const OCIDate,
-                          day_p: *const oratext,
-                          day_length: ub4,
-                          next_day: *mut OCIDate)
-                          -> sword;
+    pub fn OCIDateNextDay(
+        err: *mut OCIError,
+        date: *const OCIDate,
+        day_p: *const oratext,
+        day_length: ub4,
+        next_day: *mut OCIDate,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCIDateCheck(err: *mut OCIError, date: *const OCIDate, valid: *mut uword) -> sword;
@@ -4761,26 +5409,29 @@ pub struct OCIString {
     _unused: [u8; 0],
 }
 extern "C" {
-    pub fn OCIStringAssign(env: *mut OCIEnv,
-                           err: *mut OCIError,
-                           rhs: *const OCIString,
-                           lhs: *mut *mut OCIString)
-                           -> sword;
+    pub fn OCIStringAssign(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        rhs: *const OCIString,
+        lhs: *mut *mut OCIString,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIStringAssignText(env: *mut OCIEnv,
-                               err: *mut OCIError,
-                               rhs: *const oratext,
-                               rhs_len: ub4,
-                               lhs: *mut *mut OCIString)
-                               -> sword;
+    pub fn OCIStringAssignText(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        rhs: *const oratext,
+        rhs_len: ub4,
+        lhs: *mut *mut OCIString,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIStringResize(env: *mut OCIEnv,
-                           err: *mut OCIError,
-                           new_size: ub4,
-                           str: *mut *mut OCIString)
-                           -> sword;
+    pub fn OCIStringResize(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        new_size: ub4,
+        str: *mut *mut OCIString,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCIStringSize(env: *mut OCIEnv, vs: *const OCIString) -> ub4;
@@ -4789,11 +5440,12 @@ extern "C" {
     pub fn OCIStringPtr(env: *mut OCIEnv, vs: *const OCIString) -> *mut oratext;
 }
 extern "C" {
-    pub fn OCIStringAllocSize(env: *mut OCIEnv,
-                              err: *mut OCIError,
-                              vs: *const OCIString,
-                              allocsize: *mut ub4)
-                              -> sword;
+    pub fn OCIStringAllocSize(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        vs: *const OCIString,
+        allocsize: *mut ub4,
+    ) -> sword;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -4801,26 +5453,29 @@ pub struct OCIRaw {
     _unused: [u8; 0],
 }
 extern "C" {
-    pub fn OCIRawAssignRaw(env: *mut OCIEnv,
-                           err: *mut OCIError,
-                           rhs: *const OCIRaw,
-                           lhs: *mut *mut OCIRaw)
-                           -> sword;
+    pub fn OCIRawAssignRaw(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        rhs: *const OCIRaw,
+        lhs: *mut *mut OCIRaw,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIRawAssignBytes(env: *mut OCIEnv,
-                             err: *mut OCIError,
-                             rhs: *const ub1,
-                             rhs_len: ub4,
-                             lhs: *mut *mut OCIRaw)
-                             -> sword;
+    pub fn OCIRawAssignBytes(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        rhs: *const ub1,
+        rhs_len: ub4,
+        lhs: *mut *mut OCIRaw,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIRawResize(env: *mut OCIEnv,
-                        err: *mut OCIError,
-                        new_size: ub4,
-                        raw: *mut *mut OCIRaw)
-                        -> sword;
+    pub fn OCIRawResize(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        new_size: ub4,
+        raw: *mut *mut OCIRaw,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCIRawSize(env: *mut OCIEnv, raw: *const OCIRaw) -> ub4;
@@ -4829,22 +5484,24 @@ extern "C" {
     pub fn OCIRawPtr(env: *mut OCIEnv, raw: *const OCIRaw) -> *mut ub1;
 }
 extern "C" {
-    pub fn OCIRawAllocSize(env: *mut OCIEnv,
-                           err: *mut OCIError,
-                           raw: *const OCIRaw,
-                           allocsize: *mut ub4)
-                           -> sword;
+    pub fn OCIRawAllocSize(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        raw: *const OCIRaw,
+        allocsize: *mut ub4,
+    ) -> sword;
 }
 extern "C" {
 
     pub fn OCIRefClear(env: *mut OCIEnv, ref_: *mut OCIRef);
 }
 extern "C" {
-    pub fn OCIRefAssign(env: *mut OCIEnv,
-                        err: *mut OCIError,
-                        source: *const OCIRef,
-                        target: *mut *mut OCIRef)
-                        -> sword;
+    pub fn OCIRefAssign(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        source: *const OCIRef,
+        target: *mut *mut OCIRef,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCIRefIsEqual(env: *mut OCIEnv, x: *const OCIRef, y: *const OCIRef) -> boolean;
@@ -4856,21 +5513,23 @@ extern "C" {
     pub fn OCIRefHexSize(env: *mut OCIEnv, ref_: *const OCIRef) -> ub4;
 }
 extern "C" {
-    pub fn OCIRefFromHex(env: *mut OCIEnv,
-                         err: *mut OCIError,
-                         svc: *const OCISvcCtx,
-                         hex: *const oratext,
-                         length: ub4,
-                         ref_: *mut *mut OCIRef)
-                         -> sword;
+    pub fn OCIRefFromHex(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        svc: *const OCISvcCtx,
+        hex: *const oratext,
+        length: ub4,
+        ref_: *mut *mut OCIRef,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIRefToHex(env: *mut OCIEnv,
-                       err: *mut OCIError,
-                       ref_: *const OCIRef,
-                       hex: *mut oratext,
-                       hex_length: *mut ub4)
-                       -> sword;
+    pub fn OCIRefToHex(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        ref_: *const OCIRef,
+        hex: *mut oratext,
+        hex_length: *mut ub4,
+    ) -> sword;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -4885,171 +5544,191 @@ pub struct OCIIter {
     _unused: [u8; 0],
 }
 extern "C" {
-    pub fn OCICollSize(env: *mut OCIEnv,
-                       err: *mut OCIError,
-                       coll: *const OCIColl,
-                       size: *mut sb4)
-                       -> sword;
+    pub fn OCICollSize(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        coll: *const OCIColl,
+        size: *mut sb4,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCICollMax(env: *mut OCIEnv, coll: *const OCIColl) -> sb4;
 }
 extern "C" {
-    pub fn OCICollGetElem(env: *mut OCIEnv,
-                          err: *mut OCIError,
-                          coll: *const OCIColl,
-                          index: sb4,
-                          exists: *mut boolean,
-                          elem: *mut *mut ::std::os::raw::c_void,
-                          elemind: *mut *mut ::std::os::raw::c_void)
-                          -> sword;
+    pub fn OCICollGetElem(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        coll: *const OCIColl,
+        index: sb4,
+        exists: *mut boolean,
+        elem: *mut *mut ::std::os::raw::c_void,
+        elemind: *mut *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCICollGetElemArray(env: *mut OCIEnv,
-                               err: *mut OCIError,
-                               coll: *const OCIColl,
-                               index: sb4,
-                               exists: *mut boolean,
-                               elem: *mut *mut ::std::os::raw::c_void,
-                               elemind: *mut *mut ::std::os::raw::c_void,
-                               nelems: *mut uword)
-                               -> sword;
+    pub fn OCICollGetElemArray(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        coll: *const OCIColl,
+        index: sb4,
+        exists: *mut boolean,
+        elem: *mut *mut ::std::os::raw::c_void,
+        elemind: *mut *mut ::std::os::raw::c_void,
+        nelems: *mut uword,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCICollAssignElem(env: *mut OCIEnv,
-                             err: *mut OCIError,
-                             index: sb4,
-                             elem: *const ::std::os::raw::c_void,
-                             elemind: *const ::std::os::raw::c_void,
-                             coll: *mut OCIColl)
-                             -> sword;
+    pub fn OCICollAssignElem(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        index: sb4,
+        elem: *const ::std::os::raw::c_void,
+        elemind: *const ::std::os::raw::c_void,
+        coll: *mut OCIColl,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCICollAssign(env: *mut OCIEnv,
-                         err: *mut OCIError,
-                         rhs: *const OCIColl,
-                         lhs: *mut OCIColl)
-                         -> sword;
+    pub fn OCICollAssign(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        rhs: *const OCIColl,
+        lhs: *mut OCIColl,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCICollAppend(env: *mut OCIEnv,
-                         err: *mut OCIError,
-                         elem: *const ::std::os::raw::c_void,
-                         elemind: *const ::std::os::raw::c_void,
-                         coll: *mut OCIColl)
-                         -> sword;
+    pub fn OCICollAppend(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        elem: *const ::std::os::raw::c_void,
+        elemind: *const ::std::os::raw::c_void,
+        coll: *mut OCIColl,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCICollTrim(env: *mut OCIEnv,
-                       err: *mut OCIError,
-                       trim_num: sb4,
-                       coll: *mut OCIColl)
-                       -> sword;
+    pub fn OCICollTrim(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        trim_num: sb4,
+        coll: *mut OCIColl,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCICollIsLocator(env: *mut OCIEnv,
-                            err: *mut OCIError,
-                            coll: *const OCIColl,
-                            result: *mut boolean)
-                            -> sword;
+    pub fn OCICollIsLocator(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        coll: *const OCIColl,
+        result: *mut boolean,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIIterCreate(env: *mut OCIEnv,
-                         err: *mut OCIError,
-                         coll: *const OCIColl,
-                         itr: *mut *mut OCIIter)
-                         -> sword;
+    pub fn OCIIterCreate(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        coll: *const OCIColl,
+        itr: *mut *mut OCIIter,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCIIterDelete(env: *mut OCIEnv, err: *mut OCIError, itr: *mut *mut OCIIter) -> sword;
 }
 extern "C" {
-    pub fn OCIIterInit(env: *mut OCIEnv,
-                       err: *mut OCIError,
-                       coll: *const OCIColl,
-                       itr: *mut OCIIter)
-                       -> sword;
+    pub fn OCIIterInit(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        coll: *const OCIColl,
+        itr: *mut OCIIter,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIIterGetCurrent(env: *mut OCIEnv,
-                             err: *mut OCIError,
-                             itr: *const OCIIter,
-                             elem: *mut *mut ::std::os::raw::c_void,
-                             elemind: *mut *mut ::std::os::raw::c_void)
-                             -> sword;
+    pub fn OCIIterGetCurrent(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        itr: *const OCIIter,
+        elem: *mut *mut ::std::os::raw::c_void,
+        elemind: *mut *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIIterNext(env: *mut OCIEnv,
-                       err: *mut OCIError,
-                       itr: *mut OCIIter,
-                       elem: *mut *mut ::std::os::raw::c_void,
-                       elemind: *mut *mut ::std::os::raw::c_void,
-                       eoc: *mut boolean)
-                       -> sword;
+    pub fn OCIIterNext(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        itr: *mut OCIIter,
+        elem: *mut *mut ::std::os::raw::c_void,
+        elemind: *mut *mut ::std::os::raw::c_void,
+        eoc: *mut boolean,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIIterPrev(env: *mut OCIEnv,
-                       err: *mut OCIError,
-                       itr: *mut OCIIter,
-                       elem: *mut *mut ::std::os::raw::c_void,
-                       elemind: *mut *mut ::std::os::raw::c_void,
-                       boc: *mut boolean)
-                       -> sword;
+    pub fn OCIIterPrev(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        itr: *mut OCIIter,
+        elem: *mut *mut ::std::os::raw::c_void,
+        elemind: *mut *mut ::std::os::raw::c_void,
+        boc: *mut boolean,
+    ) -> sword;
 }
 extern "C" {
 
-    pub fn OCITableSize(env: *mut OCIEnv,
-                        err: *mut OCIError,
-                        tbl: *const OCITable,
-                        size: *mut sb4)
-                        -> sword;
+    pub fn OCITableSize(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tbl: *const OCITable,
+        size: *mut sb4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITableExists(env: *mut OCIEnv,
-                          err: *mut OCIError,
-                          tbl: *const OCITable,
-                          index: sb4,
-                          exists: *mut boolean)
-                          -> sword;
+    pub fn OCITableExists(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tbl: *const OCITable,
+        index: sb4,
+        exists: *mut boolean,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITableDelete(env: *mut OCIEnv,
-                          err: *mut OCIError,
-                          index: sb4,
-                          tbl: *mut OCITable)
-                          -> sword;
+    pub fn OCITableDelete(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        index: sb4,
+        tbl: *mut OCITable,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITableFirst(env: *mut OCIEnv,
-                         err: *mut OCIError,
-                         tbl: *const OCITable,
-                         index: *mut sb4)
-                         -> sword;
+    pub fn OCITableFirst(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tbl: *const OCITable,
+        index: *mut sb4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITableLast(env: *mut OCIEnv,
-                        err: *mut OCIError,
-                        tbl: *const OCITable,
-                        index: *mut sb4)
-                        -> sword;
+    pub fn OCITableLast(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tbl: *const OCITable,
+        index: *mut sb4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITableNext(env: *mut OCIEnv,
-                        err: *mut OCIError,
-                        index: sb4,
-                        tbl: *const OCITable,
-                        next_index: *mut sb4,
-                        exists: *mut boolean)
-                        -> sword;
+    pub fn OCITableNext(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        index: sb4,
+        tbl: *const OCITable,
+        next_index: *mut sb4,
+        exists: *mut boolean,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITablePrev(env: *mut OCIEnv,
-                        err: *mut OCIError,
-                        index: sb4,
-                        tbl: *const OCITable,
-                        prev_index: *mut sb4,
-                        exists: *mut boolean)
-                        -> sword;
+    pub fn OCITablePrev(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        index: sb4,
+        tbl: *const OCITable,
+        prev_index: *mut sb4,
+        exists: *mut boolean,
+    ) -> sword;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -5072,51 +5751,56 @@ pub struct OCIExtProcContext {
     _unused: [u8; 0],
 }
 extern "C" {
-    pub fn ociepacm(with_context: *mut OCIExtProcContext,
-                    amount: usize)
-                    -> *mut ::std::os::raw::c_void;
+    pub fn ociepacm(
+        with_context: *mut OCIExtProcContext,
+        amount: usize,
+    ) -> *mut ::std::os::raw::c_void;
 }
 extern "C" {
-    pub fn ocieperr(with_context: *mut OCIExtProcContext,
-                    error_number: ::std::os::raw::c_int)
-                    -> usize;
+    pub fn ocieperr(
+        with_context: *mut OCIExtProcContext,
+        error_number: ::std::os::raw::c_int,
+    ) -> usize;
 }
 extern "C" {
-    pub fn ociepmsg(with_context: *mut OCIExtProcContext,
-                    error_number: ::std::os::raw::c_int,
-                    error_message: *mut oratext,
-                    len: usize)
-                    -> usize;
+    pub fn ociepmsg(
+        with_context: *mut OCIExtProcContext,
+        error_number: ::std::os::raw::c_int,
+        error_message: *mut oratext,
+        len: usize,
+    ) -> usize;
 }
 extern "C" {
-    pub fn ociepgoe(with_context: *mut OCIExtProcContext,
-                    envh: *mut *mut OCIEnv,
-                    svch: *mut *mut OCISvcCtx,
-                    errh: *mut *mut OCIError)
-                    -> sword;
+    pub fn ociepgoe(
+        with_context: *mut OCIExtProcContext,
+        envh: *mut *mut OCIEnv,
+        svch: *mut *mut OCISvcCtx,
+        errh: *mut *mut OCIError,
+    ) -> sword;
 }
 extern "C" {
-    pub fn obindps(cursor: *mut cda_def,
-                   opcode: ub1,
-                   sqlvar: *mut OraText,
-                   sqlvl: sb4,
-                   pvctx: *mut ub1,
-                   progvl: sb4,
-                   ftype: sword,
-                   scale: sword,
-                   indp: *mut sb2,
-                   alen: *mut ub2,
-                   arcode: *mut ub2,
-                   pv_skip: sb4,
-                   ind_skip: sb4,
-                   alen_skip: sb4,
-                   rc_skip: sb4,
-                   maxsiz: ub4,
-                   cursiz: *mut ub4,
-                   fmt: *mut OraText,
-                   fmtl: sb4,
-                   fmtt: sword)
-                   -> sword;
+    pub fn obindps(
+        cursor: *mut cda_def,
+        opcode: ub1,
+        sqlvar: *mut OraText,
+        sqlvl: sb4,
+        pvctx: *mut ub1,
+        progvl: sb4,
+        ftype: sword,
+        scale: sword,
+        indp: *mut sb2,
+        alen: *mut ub2,
+        arcode: *mut ub2,
+        pv_skip: sb4,
+        ind_skip: sb4,
+        alen_skip: sb4,
+        rc_skip: sb4,
+        maxsiz: ub4,
+        cursiz: *mut ub4,
+        fmt: *mut OraText,
+        fmtl: sb4,
+        fmtt: sword,
+    ) -> sword;
 }
 extern "C" {
     pub fn obreak(lda: *mut cda_def) -> sword;
@@ -5137,61 +5821,64 @@ extern "C" {
     pub fn ocon(lda: *mut cda_def) -> sword;
 }
 extern "C" {
-    pub fn odefinps(cursor: *mut cda_def,
-                    opcode: ub1,
-                    pos: sword,
-                    bufctx: *mut ub1,
-                    bufl: sb4,
-                    ftype: sword,
-                    scale: sword,
-                    indp: *mut sb2,
-                    fmt: *mut OraText,
-                    fmtl: sb4,
-                    fmtt: sword,
-                    rlen: *mut ub2,
-                    rcode: *mut ub2,
-                    pv_skip: sb4,
-                    ind_skip: sb4,
-                    alen_skip: sb4,
-                    rc_skip: sb4)
-                    -> sword;
+    pub fn odefinps(
+        cursor: *mut cda_def,
+        opcode: ub1,
+        pos: sword,
+        bufctx: *mut ub1,
+        bufl: sb4,
+        ftype: sword,
+        scale: sword,
+        indp: *mut sb2,
+        fmt: *mut OraText,
+        fmtl: sb4,
+        fmtt: sword,
+        rlen: *mut ub2,
+        rcode: *mut ub2,
+        pv_skip: sb4,
+        ind_skip: sb4,
+        alen_skip: sb4,
+        rc_skip: sb4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn odessp(cursor: *mut cda_def,
-                  objnam: *mut OraText,
-                  onlen: usize,
-                  rsv1: *mut ub1,
-                  rsv1ln: usize,
-                  rsv2: *mut ub1,
-                  rsv2ln: usize,
-                  ovrld: *mut ub2,
-                  pos: *mut ub2,
-                  level: *mut ub2,
-                  argnam: *mut *mut OraText,
-                  arnlen: *mut ub2,
-                  dtype: *mut ub2,
-                  defsup: *mut ub1,
-                  mode: *mut ub1,
-                  dtsiz: *mut ub4,
-                  prec: *mut sb2,
-                  scale: *mut sb2,
-                  radix: *mut ub1,
-                  spare: *mut ub4,
-                  arrsiz: *mut ub4)
-                  -> sword;
+    pub fn odessp(
+        cursor: *mut cda_def,
+        objnam: *mut OraText,
+        onlen: usize,
+        rsv1: *mut ub1,
+        rsv1ln: usize,
+        rsv2: *mut ub1,
+        rsv2ln: usize,
+        ovrld: *mut ub2,
+        pos: *mut ub2,
+        level: *mut ub2,
+        argnam: *mut *mut OraText,
+        arnlen: *mut ub2,
+        dtype: *mut ub2,
+        defsup: *mut ub1,
+        mode: *mut ub1,
+        dtsiz: *mut ub4,
+        prec: *mut sb2,
+        scale: *mut sb2,
+        radix: *mut ub1,
+        spare: *mut ub4,
+        arrsiz: *mut ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn odescr(cursor: *mut cda_def,
-                  pos: sword,
-                  dbsize: *mut sb4,
-                  dbtype: *mut sb2,
-                  cbuf: *mut sb1,
-                  cbufl: *mut sb4,
-                  dsize: *mut sb4,
-                  prec: *mut sb2,
-                  scale: *mut sb2,
-                  nullok: *mut sb2)
-                  -> sword;
+    pub fn odescr(
+        cursor: *mut cda_def,
+        pos: sword,
+        dbsize: *mut sb4,
+        dbtype: *mut sb2,
+        cbuf: *mut sb1,
+        cbufl: *mut sb4,
+        dsize: *mut sb4,
+        prec: *mut sb2,
+        scale: *mut sb2,
+        nullok: *mut sb2,
+    ) -> sword;
 }
 extern "C" {
     pub fn oerhms(lda: *mut cda_def, rcode: sb2, buf: *mut OraText, bufsiz: sword) -> sword;
@@ -5215,22 +5902,24 @@ extern "C" {
     pub fn ofetch(cursor: *mut cda_def) -> sword;
 }
 extern "C" {
-    pub fn oflng(cursor: *mut cda_def,
-                 pos: sword,
-                 buf: *mut ub1,
-                 bufl: sb4,
-                 dtype: sword,
-                 retl: *mut ub4,
-                 offset: sb4)
-                 -> sword;
+    pub fn oflng(
+        cursor: *mut cda_def,
+        pos: sword,
+        buf: *mut ub1,
+        bufl: sb4,
+        dtype: sword,
+        retl: *mut ub4,
+        offset: sb4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn ogetpi(cursor: *mut cda_def,
-                  piecep: *mut ub1,
-                  ctxpp: *mut *mut ::std::os::raw::c_void,
-                  iterp: *mut ub4,
-                  indexp: *mut ub4)
-                  -> sword;
+    pub fn ogetpi(
+        cursor: *mut cda_def,
+        piecep: *mut ub1,
+        ctxpp: *mut *mut ::std::os::raw::c_void,
+        iterp: *mut ub4,
+        indexp: *mut ub4,
+    ) -> sword;
 }
 extern "C" {
     pub fn oopt(cursor: *mut cda_def, rbopt: sword, waitopt: sword) -> sword;
@@ -5239,47 +5928,51 @@ extern "C" {
     pub fn opinit(mode: ub4) -> sword;
 }
 extern "C" {
-    pub fn olog(lda: *mut cda_def,
-                hda: *mut ub1,
-                uid: *mut OraText,
-                uidl: sword,
-                pswd: *mut OraText,
-                pswdl: sword,
-                conn: *mut OraText,
-                connl: sword,
-                mode: ub4)
-                -> sword;
+    pub fn olog(
+        lda: *mut cda_def,
+        hda: *mut ub1,
+        uid: *mut OraText,
+        uidl: sword,
+        pswd: *mut OraText,
+        pswdl: sword,
+        conn: *mut OraText,
+        connl: sword,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
     pub fn ologof(lda: *mut cda_def) -> sword;
 }
 extern "C" {
-    pub fn oopen(cursor: *mut cda_def,
-                 lda: *mut cda_def,
-                 dbn: *mut OraText,
-                 dbnl: sword,
-                 arsize: sword,
-                 uid: *mut OraText,
-                 uidl: sword)
-                 -> sword;
+    pub fn oopen(
+        cursor: *mut cda_def,
+        lda: *mut cda_def,
+        dbn: *mut OraText,
+        dbnl: sword,
+        arsize: sword,
+        uid: *mut OraText,
+        uidl: sword,
+    ) -> sword;
 }
 extern "C" {
-    pub fn oparse(cursor: *mut cda_def,
-                  sqlstm: *mut OraText,
-                  sqllen: sb4,
-                  defflg: sword,
-                  lngflg: ub4)
-                  -> sword;
+    pub fn oparse(
+        cursor: *mut cda_def,
+        sqlstm: *mut OraText,
+        sqllen: sb4,
+        defflg: sword,
+        lngflg: ub4,
+    ) -> sword;
 }
 extern "C" {
     pub fn orol(lda: *mut cda_def) -> sword;
 }
 extern "C" {
-    pub fn osetpi(cursor: *mut cda_def,
-                  piece: ub1,
-                  bufp: *mut ::std::os::raw::c_void,
-                  lenp: *mut ub4)
-                  -> sword;
+    pub fn osetpi(
+        cursor: *mut cda_def,
+        piece: ub1,
+        bufp: *mut ::std::os::raw::c_void,
+        lenp: *mut ub4,
+    ) -> sword;
 }
 extern "C" {
     pub fn sqlld2(lda: *mut cda_def, cname: *mut OraText, cnlen: *mut sb4);
@@ -5300,107 +5993,115 @@ extern "C" {
     pub fn ognfd(lda: *mut cda_def, fdp: *mut ::std::os::raw::c_void) -> sword;
 }
 extern "C" {
-    pub fn obndra(cursor: *mut cda_def,
-                  sqlvar: *mut OraText,
-                  sqlvl: sword,
-                  progv: *mut ub1,
-                  progvl: sword,
-                  ftype: sword,
-                  scale: sword,
-                  indp: *mut sb2,
-                  alen: *mut ub2,
-                  arcode: *mut ub2,
-                  maxsiz: ub4,
-                  cursiz: *mut ub4,
-                  fmt: *mut OraText,
-                  fmtl: sword,
-                  fmtt: sword)
-                  -> sword;
+    pub fn obndra(
+        cursor: *mut cda_def,
+        sqlvar: *mut OraText,
+        sqlvl: sword,
+        progv: *mut ub1,
+        progvl: sword,
+        ftype: sword,
+        scale: sword,
+        indp: *mut sb2,
+        alen: *mut ub2,
+        arcode: *mut ub2,
+        maxsiz: ub4,
+        cursiz: *mut ub4,
+        fmt: *mut OraText,
+        fmtl: sword,
+        fmtt: sword,
+    ) -> sword;
 }
 extern "C" {
-    pub fn obndrn(cursor: *mut cda_def,
-                  sqlvn: sword,
-                  progv: *mut ub1,
-                  progvl: sword,
-                  ftype: sword,
-                  scale: sword,
-                  indp: *mut sb2,
-                  fmt: *mut OraText,
-                  fmtl: sword,
-                  fmtt: sword)
-                  -> sword;
+    pub fn obndrn(
+        cursor: *mut cda_def,
+        sqlvn: sword,
+        progv: *mut ub1,
+        progvl: sword,
+        ftype: sword,
+        scale: sword,
+        indp: *mut sb2,
+        fmt: *mut OraText,
+        fmtl: sword,
+        fmtt: sword,
+    ) -> sword;
 }
 extern "C" {
-    pub fn obndrv(cursor: *mut cda_def,
-                  sqlvar: *mut OraText,
-                  sqlvl: sword,
-                  progv: *mut ub1,
-                  progvl: sword,
-                  ftype: sword,
-                  scale: sword,
-                  indp: *mut sb2,
-                  fmt: *mut OraText,
-                  fmtl: sword,
-                  fmtt: sword)
-                  -> sword;
+    pub fn obndrv(
+        cursor: *mut cda_def,
+        sqlvar: *mut OraText,
+        sqlvl: sword,
+        progv: *mut ub1,
+        progvl: sword,
+        ftype: sword,
+        scale: sword,
+        indp: *mut sb2,
+        fmt: *mut OraText,
+        fmtl: sword,
+        fmtt: sword,
+    ) -> sword;
 }
 extern "C" {
-    pub fn odefin(cursor: *mut cda_def,
-                  pos: sword,
-                  buf: *mut ub1,
-                  bufl: sword,
-                  ftype: sword,
-                  scale: sword,
-                  indp: *mut sb2,
-                  fmt: *mut OraText,
-                  fmtl: sword,
-                  fmtt: sword,
-                  rlen: *mut ub2,
-                  rcode: *mut ub2)
-                  -> sword;
+    pub fn odefin(
+        cursor: *mut cda_def,
+        pos: sword,
+        buf: *mut ub1,
+        bufl: sword,
+        ftype: sword,
+        scale: sword,
+        indp: *mut sb2,
+        fmt: *mut OraText,
+        fmtl: sword,
+        fmtt: sword,
+        rlen: *mut ub2,
+        rcode: *mut ub2,
+    ) -> sword;
 }
 extern "C" {
-    pub fn oname(cursor: *mut cda_def,
-                 pos: sword,
-                 tbuf: *mut sb1,
-                 tbufl: *mut sb2,
-                 buf: *mut sb1,
-                 bufl: *mut sb2)
-                 -> sword;
+    pub fn oname(
+        cursor: *mut cda_def,
+        pos: sword,
+        tbuf: *mut sb1,
+        tbufl: *mut sb2,
+        buf: *mut sb1,
+        bufl: *mut sb2,
+    ) -> sword;
 }
 extern "C" {
-    pub fn orlon(lda: *mut cda_def,
-                 hda: *mut ub1,
-                 uid: *mut OraText,
-                 uidl: sword,
-                 pswd: *mut OraText,
-                 pswdl: sword,
-                 audit: sword)
-                 -> sword;
+    pub fn orlon(
+        lda: *mut cda_def,
+        hda: *mut ub1,
+        uid: *mut OraText,
+        uidl: sword,
+        pswd: *mut OraText,
+        pswdl: sword,
+        audit: sword,
+    ) -> sword;
 }
 extern "C" {
-    pub fn olon(lda: *mut cda_def,
-                uid: *mut OraText,
-                uidl: sword,
-                pswd: *mut OraText,
-                pswdl: sword,
-                audit: sword)
-                -> sword;
+    pub fn olon(
+        lda: *mut cda_def,
+        uid: *mut OraText,
+        uidl: sword,
+        pswd: *mut OraText,
+        pswdl: sword,
+        audit: sword,
+    ) -> sword;
 }
 extern "C" {
     pub fn osql3(cda: *mut cda_def, sqlstm: *mut OraText, sqllen: sword) -> sword;
 }
 extern "C" {
-    pub fn odsc(cursor: *mut cda_def,
-                pos: sword,
-                dbsize: *mut sb2,
-                fsize: *mut sb2,
-                rcode: *mut sb2,
-                dtype: *mut sb2,
-                buf: *mut sb1,
-                bufl: *mut sb2,
-                dsize: *mut sb2)
-                -> sword;
+    pub fn odsc(
+        cursor: *mut cda_def,
+        pos: sword,
+        dbsize: *mut sb2,
+        fsize: *mut sb2,
+        rcode: *mut sb2,
+        dtype: *mut sb2,
+        buf: *mut sb1,
+        bufl: *mut sb2,
+        dsize: *mut sb2,
+    ) -> sword;
 }
 pub type va_list = __builtin_va_list;
 pub type __gnuc_va_list = __builtin_va_list;
@@ -5867,50 +6568,76 @@ pub struct nzttIdentity {
 }
 #[test]
 fn bindgen_test_layout_nzttIdentity() {
-    assert_eq!(::std::mem::size_of::<nzttIdentity>(),
-               48usize,
-               concat!("Size of: ", stringify!(nzttIdentity)));
-    assert_eq!(::std::mem::align_of::<nzttIdentity>(),
-               8usize,
-               concat!("Alignment of ", stringify!(nzttIdentity)));
-    assert_eq!(unsafe { &(*(0 as *const nzttIdentity)).dn_nzttIdentity as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttIdentity),
-                       "::",
-                       stringify!(dn_nzttIdentity)));
-    assert_eq!(unsafe { &(*(0 as *const nzttIdentity)).dnlen_nzttIdentity as *const _ as usize },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttIdentity),
-                       "::",
-                       stringify!(dnlen_nzttIdentity)));
-    assert_eq!(unsafe { &(*(0 as *const nzttIdentity)).comment_nzttIdentity as *const _ as usize },
-               16usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttIdentity),
-                       "::",
-                       stringify!(comment_nzttIdentity)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttIdentity)).commentlen_nzttIdentity as *const _ as usize
-               },
-               24usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttIdentity),
-                       "::",
-                       stringify!(commentlen_nzttIdentity)));
-    assert_eq!(unsafe { &(*(0 as *const nzttIdentity)).private_nzttIdentity as *const _ as usize },
-               32usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttIdentity),
-                       "::",
-                       stringify!(private_nzttIdentity)));
-    assert_eq!(unsafe { &(*(0 as *const nzttIdentity)).next_nzttIdentity as *const _ as usize },
-               40usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttIdentity),
-                       "::",
-                       stringify!(next_nzttIdentity)));
+    assert_eq!(
+        ::std::mem::size_of::<nzttIdentity>(),
+        48usize,
+        concat!("Size of: ", stringify!(nzttIdentity))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<nzttIdentity>(),
+        8usize,
+        concat!("Alignment of ", stringify!(nzttIdentity))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttIdentity)).dn_nzttIdentity as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttIdentity),
+            "::",
+            stringify!(dn_nzttIdentity)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttIdentity)).dnlen_nzttIdentity as *const _ as usize },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttIdentity),
+            "::",
+            stringify!(dnlen_nzttIdentity)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttIdentity)).comment_nzttIdentity as *const _ as usize },
+        16usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttIdentity),
+            "::",
+            stringify!(comment_nzttIdentity)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttIdentity)).commentlen_nzttIdentity as *const _ as usize },
+        24usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttIdentity),
+            "::",
+            stringify!(commentlen_nzttIdentity)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttIdentity)).private_nzttIdentity as *const _ as usize },
+        32usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttIdentity),
+            "::",
+            stringify!(private_nzttIdentity)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttIdentity)).next_nzttIdentity as *const _ as usize },
+        40usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttIdentity),
+            "::",
+            stringify!(next_nzttIdentity)
+        )
+    );
 }
 impl Clone for nzttIdentity {
     fn clone(&self) -> Self {
@@ -5938,80 +6665,116 @@ pub struct nzttPersona {
 }
 #[test]
 fn bindgen_test_layout_nzttPersona() {
-    assert_eq!(::std::mem::size_of::<nzttPersona>(),
-               80usize,
-               concat!("Size of: ", stringify!(nzttPersona)));
-    assert_eq!(::std::mem::align_of::<nzttPersona>(),
-               8usize,
-               concat!("Alignment of ", stringify!(nzttPersona)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttPersona)).genericName_nzttPersona as *const _ as usize
-               },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttPersona),
-                       "::",
-                       stringify!(genericName_nzttPersona)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttPersona)).genericNamelen_nzttPersona as *const _ as usize
-               },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttPersona),
-                       "::",
-                       stringify!(genericNamelen_nzttPersona)));
-    assert_eq!(unsafe { &(*(0 as *const nzttPersona)).private_nzttPersona as *const _ as usize },
-               16usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttPersona),
-                       "::",
-                       stringify!(private_nzttPersona)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttPersona)).mycertreqs_nzttPersona as *const _ as usize
-               },
-               24usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttPersona),
-                       "::",
-                       stringify!(mycertreqs_nzttPersona)));
-    assert_eq!(unsafe { &(*(0 as *const nzttPersona)).mycerts_nzttPersona as *const _ as usize },
-               32usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttPersona),
-                       "::",
-                       stringify!(mycerts_nzttPersona)));
-    assert_eq!(unsafe { &(*(0 as *const nzttPersona)).mytps_nzttPersona as *const _ as usize },
-               40usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttPersona),
-                       "::",
-                       stringify!(mytps_nzttPersona)));
-    assert_eq!(unsafe { &(*(0 as *const nzttPersona)).mystore_nzttPersona as *const _ as usize },
-               48usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttPersona),
-                       "::",
-                       stringify!(mystore_nzttPersona)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttPersona)).mypkcs11Info_nzttPersona as *const _ as usize
-               },
-               56usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttPersona),
-                       "::",
-                       stringify!(mypkcs11Info_nzttPersona)));
-    assert_eq!(unsafe { &(*(0 as *const nzttPersona)).next_nzttPersona as *const _ as usize },
-               64usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttPersona),
-                       "::",
-                       stringify!(next_nzttPersona)));
-    assert_eq!(unsafe { &(*(0 as *const nzttPersona)).p12Info_nzttPersona as *const _ as usize },
-               72usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttPersona),
-                       "::",
-                       stringify!(p12Info_nzttPersona)));
+    assert_eq!(
+        ::std::mem::size_of::<nzttPersona>(),
+        80usize,
+        concat!("Size of: ", stringify!(nzttPersona))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<nzttPersona>(),
+        8usize,
+        concat!("Alignment of ", stringify!(nzttPersona))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttPersona)).genericName_nzttPersona as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttPersona),
+            "::",
+            stringify!(genericName_nzttPersona)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttPersona)).genericNamelen_nzttPersona as *const _ as usize },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttPersona),
+            "::",
+            stringify!(genericNamelen_nzttPersona)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttPersona)).private_nzttPersona as *const _ as usize },
+        16usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttPersona),
+            "::",
+            stringify!(private_nzttPersona)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttPersona)).mycertreqs_nzttPersona as *const _ as usize },
+        24usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttPersona),
+            "::",
+            stringify!(mycertreqs_nzttPersona)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttPersona)).mycerts_nzttPersona as *const _ as usize },
+        32usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttPersona),
+            "::",
+            stringify!(mycerts_nzttPersona)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttPersona)).mytps_nzttPersona as *const _ as usize },
+        40usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttPersona),
+            "::",
+            stringify!(mytps_nzttPersona)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttPersona)).mystore_nzttPersona as *const _ as usize },
+        48usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttPersona),
+            "::",
+            stringify!(mystore_nzttPersona)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttPersona)).mypkcs11Info_nzttPersona as *const _ as usize },
+        56usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttPersona),
+            "::",
+            stringify!(mypkcs11Info_nzttPersona)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttPersona)).next_nzttPersona as *const _ as usize },
+        64usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttPersona),
+            "::",
+            stringify!(next_nzttPersona)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttPersona)).p12Info_nzttPersona as *const _ as usize },
+        72usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttPersona),
+            "::",
+            stringify!(p12Info_nzttPersona)
+        )
+    );
 }
 impl Clone for nzttPersona {
     fn clone(&self) -> Self {
@@ -6035,50 +6798,76 @@ pub struct nzttWallet {
 }
 #[test]
 fn bindgen_test_layout_nzttWallet() {
-    assert_eq!(::std::mem::size_of::<nzttWallet>(),
-               40usize,
-               concat!("Size of: ", stringify!(nzttWallet)));
-    assert_eq!(::std::mem::align_of::<nzttWallet>(),
-               8usize,
-               concat!("Alignment of ", stringify!(nzttWallet)));
-    assert_eq!(unsafe { &(*(0 as *const nzttWallet)).ldapName_nzttWallet as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttWallet),
-                       "::",
-                       stringify!(ldapName_nzttWallet)));
-    assert_eq!(unsafe { &(*(0 as *const nzttWallet)).ldapNamelen_nzttWallet as *const _ as usize },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttWallet),
-                       "::",
-                       stringify!(ldapNamelen_nzttWallet)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttWallet)).securePolicy_nzttWallet as *const _ as usize
-               },
-               12usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttWallet),
-                       "::",
-                       stringify!(securePolicy_nzttWallet)));
-    assert_eq!(unsafe { &(*(0 as *const nzttWallet)).openPolicy_nzttWallet as *const _ as usize },
-               16usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttWallet),
-                       "::",
-                       stringify!(openPolicy_nzttWallet)));
-    assert_eq!(unsafe { &(*(0 as *const nzttWallet)).persona_nzttWallet as *const _ as usize },
-               24usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttWallet),
-                       "::",
-                       stringify!(persona_nzttWallet)));
-    assert_eq!(unsafe { &(*(0 as *const nzttWallet)).private_nzttWallet as *const _ as usize },
-               32usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttWallet),
-                       "::",
-                       stringify!(private_nzttWallet)));
+    assert_eq!(
+        ::std::mem::size_of::<nzttWallet>(),
+        40usize,
+        concat!("Size of: ", stringify!(nzttWallet))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<nzttWallet>(),
+        8usize,
+        concat!("Alignment of ", stringify!(nzttWallet))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttWallet)).ldapName_nzttWallet as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttWallet),
+            "::",
+            stringify!(ldapName_nzttWallet)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttWallet)).ldapNamelen_nzttWallet as *const _ as usize },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttWallet),
+            "::",
+            stringify!(ldapNamelen_nzttWallet)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttWallet)).securePolicy_nzttWallet as *const _ as usize },
+        12usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttWallet),
+            "::",
+            stringify!(securePolicy_nzttWallet)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttWallet)).openPolicy_nzttWallet as *const _ as usize },
+        16usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttWallet),
+            "::",
+            stringify!(openPolicy_nzttWallet)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttWallet)).persona_nzttWallet as *const _ as usize },
+        24usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttWallet),
+            "::",
+            stringify!(persona_nzttWallet)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttWallet)).private_nzttWallet as *const _ as usize },
+        32usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttWallet),
+            "::",
+            stringify!(private_nzttWallet)
+        )
+    );
 }
 impl Clone for nzttWallet {
     fn clone(&self) -> Self {
@@ -6206,44 +6995,56 @@ pub struct nzttBufferBlock {
 }
 #[test]
 fn bindgen_test_layout_nzttBufferBlock() {
-    assert_eq!(::std::mem::size_of::<nzttBufferBlock>(),
-               24usize,
-               concat!("Size of: ", stringify!(nzttBufferBlock)));
-    assert_eq!(::std::mem::align_of::<nzttBufferBlock>(),
-               8usize,
-               concat!("Alignment of ", stringify!(nzttBufferBlock)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttBufferBlock)).flags_nzttBufferBlock as *const _ as usize
-               },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttBufferBlock),
-                       "::",
-                       stringify!(flags_nzttBufferBlock)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttBufferBlock)).buflen_nzttBufferBlock as *const _ as usize
-               },
-               4usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttBufferBlock),
-                       "::",
-                       stringify!(buflen_nzttBufferBlock)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttBufferBlock)).usedlen_nzttBufferBlock as *const _ as usize
-               },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttBufferBlock),
-                       "::",
-                       stringify!(usedlen_nzttBufferBlock)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttBufferBlock)).buffer_nzttBufferBlock as *const _ as usize
-               },
-               16usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttBufferBlock),
-                       "::",
-                       stringify!(buffer_nzttBufferBlock)));
+    assert_eq!(
+        ::std::mem::size_of::<nzttBufferBlock>(),
+        24usize,
+        concat!("Size of: ", stringify!(nzttBufferBlock))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<nzttBufferBlock>(),
+        8usize,
+        concat!("Alignment of ", stringify!(nzttBufferBlock))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttBufferBlock)).flags_nzttBufferBlock as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttBufferBlock),
+            "::",
+            stringify!(flags_nzttBufferBlock)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttBufferBlock)).buflen_nzttBufferBlock as *const _ as usize },
+        4usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttBufferBlock),
+            "::",
+            stringify!(buflen_nzttBufferBlock)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttBufferBlock)).usedlen_nzttBufferBlock as *const _ as usize },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttBufferBlock),
+            "::",
+            stringify!(usedlen_nzttBufferBlock)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttBufferBlock)).buffer_nzttBufferBlock as *const _ as usize },
+        16usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttBufferBlock),
+            "::",
+            stringify!(buffer_nzttBufferBlock)
+        )
+    );
 }
 impl Clone for nzttBufferBlock {
     fn clone(&self) -> Self {
@@ -6259,32 +7060,46 @@ pub struct nzttB64Cert {
 }
 #[test]
 fn bindgen_test_layout_nzttB64Cert() {
-    assert_eq!(::std::mem::size_of::<nzttB64Cert>(),
-               24usize,
-               concat!("Size of: ", stringify!(nzttB64Cert)));
-    assert_eq!(::std::mem::align_of::<nzttB64Cert>(),
-               8usize,
-               concat!("Alignment of ", stringify!(nzttB64Cert)));
-    assert_eq!(unsafe { &(*(0 as *const nzttB64Cert)).b64Cert_nzttB64Cert as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttB64Cert),
-                       "::",
-                       stringify!(b64Cert_nzttB64Cert)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttB64Cert)).b64Certlen_nzttB64Cert as *const _ as usize
-               },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttB64Cert),
-                       "::",
-                       stringify!(b64Certlen_nzttB64Cert)));
-    assert_eq!(unsafe { &(*(0 as *const nzttB64Cert)).next_nzttB64Cert as *const _ as usize },
-               16usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttB64Cert),
-                       "::",
-                       stringify!(next_nzttB64Cert)));
+    assert_eq!(
+        ::std::mem::size_of::<nzttB64Cert>(),
+        24usize,
+        concat!("Size of: ", stringify!(nzttB64Cert))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<nzttB64Cert>(),
+        8usize,
+        concat!("Alignment of ", stringify!(nzttB64Cert))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttB64Cert)).b64Cert_nzttB64Cert as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttB64Cert),
+            "::",
+            stringify!(b64Cert_nzttB64Cert)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttB64Cert)).b64Certlen_nzttB64Cert as *const _ as usize },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttB64Cert),
+            "::",
+            stringify!(b64Certlen_nzttB64Cert)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttB64Cert)).next_nzttB64Cert as *const _ as usize },
+        16usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttB64Cert),
+            "::",
+            stringify!(next_nzttB64Cert)
+        )
+    );
 }
 impl Clone for nzttB64Cert {
     fn clone(&self) -> Self {
@@ -6300,38 +7115,52 @@ pub struct nzttPKCS7ProtInfo {
 }
 #[test]
 fn bindgen_test_layout_nzttPKCS7ProtInfo() {
-    assert_eq!(::std::mem::size_of::<nzttPKCS7ProtInfo>(),
-               12usize,
-               concat!("Size of: ", stringify!(nzttPKCS7ProtInfo)));
-    assert_eq!(::std::mem::align_of::<nzttPKCS7ProtInfo>(),
-               4usize,
-               concat!("Alignment of ", stringify!(nzttPKCS7ProtInfo)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttPKCS7ProtInfo)).mictype_nzttPKCS7ProtInfo as *const _ as
-                   usize
-               },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttPKCS7ProtInfo),
-                       "::",
-                       stringify!(mictype_nzttPKCS7ProtInfo)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttPKCS7ProtInfo)).symmtype_nzttPKCS7ProtInfo as *const _ as
-                   usize
-               },
-               4usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttPKCS7ProtInfo),
-                       "::",
-                       stringify!(symmtype_nzttPKCS7ProtInfo)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttPKCS7ProtInfo)).keylen_nzttPKCS7ProtInfo as *const _ as usize
-               },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttPKCS7ProtInfo),
-                       "::",
-                       stringify!(keylen_nzttPKCS7ProtInfo)));
+    assert_eq!(
+        ::std::mem::size_of::<nzttPKCS7ProtInfo>(),
+        12usize,
+        concat!("Size of: ", stringify!(nzttPKCS7ProtInfo))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<nzttPKCS7ProtInfo>(),
+        4usize,
+        concat!("Alignment of ", stringify!(nzttPKCS7ProtInfo))
+    );
+    assert_eq!(
+        unsafe {
+            &(*(0 as *const nzttPKCS7ProtInfo)).mictype_nzttPKCS7ProtInfo as *const _ as usize
+        },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttPKCS7ProtInfo),
+            "::",
+            stringify!(mictype_nzttPKCS7ProtInfo)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(0 as *const nzttPKCS7ProtInfo)).symmtype_nzttPKCS7ProtInfo as *const _ as usize
+        },
+        4usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttPKCS7ProtInfo),
+            "::",
+            stringify!(symmtype_nzttPKCS7ProtInfo)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(0 as *const nzttPKCS7ProtInfo)).keylen_nzttPKCS7ProtInfo as *const _ as usize
+        },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttPKCS7ProtInfo),
+            "::",
+            stringify!(keylen_nzttPKCS7ProtInfo)
+        )
+    );
 }
 impl Clone for nzttPKCS7ProtInfo {
     fn clone(&self) -> Self {
@@ -6346,18 +7175,26 @@ pub union nzttProtInfo {
 }
 #[test]
 fn bindgen_test_layout_nzttProtInfo() {
-    assert_eq!(::std::mem::size_of::<nzttProtInfo>(),
-               12usize,
-               concat!("Size of: ", stringify!(nzttProtInfo)));
-    assert_eq!(::std::mem::align_of::<nzttProtInfo>(),
-               4usize,
-               concat!("Alignment of ", stringify!(nzttProtInfo)));
-    assert_eq!(unsafe { &(*(0 as *const nzttProtInfo)).pkcs7_nzttProtInfo as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttProtInfo),
-                       "::",
-                       stringify!(pkcs7_nzttProtInfo)));
+    assert_eq!(
+        ::std::mem::size_of::<nzttProtInfo>(),
+        12usize,
+        concat!("Size of: ", stringify!(nzttProtInfo))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<nzttProtInfo>(),
+        4usize,
+        concat!("Alignment of ", stringify!(nzttProtInfo))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttProtInfo)).pkcs7_nzttProtInfo as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttProtInfo),
+            "::",
+            stringify!(pkcs7_nzttProtInfo)
+        )
+    );
 }
 impl Clone for nzttProtInfo {
     fn clone(&self) -> Self {
@@ -6378,76 +7215,96 @@ pub struct nzttPersonaDesc {
 }
 #[test]
 fn bindgen_test_layout_nzttPersonaDesc() {
-    assert_eq!(::std::mem::size_of::<nzttPersonaDesc>(),
-               64usize,
-               concat!("Size of: ", stringify!(nzttPersonaDesc)));
-    assert_eq!(::std::mem::align_of::<nzttPersonaDesc>(),
-               8usize,
-               concat!("Alignment of ", stringify!(nzttPersonaDesc)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttPersonaDesc)).privlen_nzttPersonaDesc as *const _ as usize
-               },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttPersonaDesc),
-                       "::",
-                       stringify!(privlen_nzttPersonaDesc)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttPersonaDesc)).priv_nzttPersonaDesc as *const _ as usize
-               },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttPersonaDesc),
-                       "::",
-                       stringify!(priv_nzttPersonaDesc)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttPersonaDesc)).prllen_nzttPersonaDesc as *const _ as usize
-               },
-               16usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttPersonaDesc),
-                       "::",
-                       stringify!(prllen_nzttPersonaDesc)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttPersonaDesc)).prl_nzttPersonaDesc as *const _ as usize
-               },
-               24usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttPersonaDesc),
-                       "::",
-                       stringify!(prl_nzttPersonaDesc)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttPersonaDesc)).aliaslen_nzttPersonaDesc as *const _ as usize
-               },
-               32usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttPersonaDesc),
-                       "::",
-                       stringify!(aliaslen_nzttPersonaDesc)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttPersonaDesc)).alias_nzttPersonaDesc as *const _ as usize
-               },
-               40usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttPersonaDesc),
-                       "::",
-                       stringify!(alias_nzttPersonaDesc)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttPersonaDesc)).longlen_nzttPersonaDesc as *const _ as usize
-               },
-               48usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttPersonaDesc),
-                       "::",
-                       stringify!(longlen_nzttPersonaDesc)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttPersonaDesc)).long_nzttPersonaDesc as *const _ as usize
-               },
-               56usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttPersonaDesc),
-                       "::",
-                       stringify!(long_nzttPersonaDesc)));
+    assert_eq!(
+        ::std::mem::size_of::<nzttPersonaDesc>(),
+        64usize,
+        concat!("Size of: ", stringify!(nzttPersonaDesc))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<nzttPersonaDesc>(),
+        8usize,
+        concat!("Alignment of ", stringify!(nzttPersonaDesc))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttPersonaDesc)).privlen_nzttPersonaDesc as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttPersonaDesc),
+            "::",
+            stringify!(privlen_nzttPersonaDesc)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttPersonaDesc)).priv_nzttPersonaDesc as *const _ as usize },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttPersonaDesc),
+            "::",
+            stringify!(priv_nzttPersonaDesc)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttPersonaDesc)).prllen_nzttPersonaDesc as *const _ as usize },
+        16usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttPersonaDesc),
+            "::",
+            stringify!(prllen_nzttPersonaDesc)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttPersonaDesc)).prl_nzttPersonaDesc as *const _ as usize },
+        24usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttPersonaDesc),
+            "::",
+            stringify!(prl_nzttPersonaDesc)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttPersonaDesc)).aliaslen_nzttPersonaDesc as *const _ as usize },
+        32usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttPersonaDesc),
+            "::",
+            stringify!(aliaslen_nzttPersonaDesc)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttPersonaDesc)).alias_nzttPersonaDesc as *const _ as usize },
+        40usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttPersonaDesc),
+            "::",
+            stringify!(alias_nzttPersonaDesc)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttPersonaDesc)).longlen_nzttPersonaDesc as *const _ as usize },
+        48usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttPersonaDesc),
+            "::",
+            stringify!(longlen_nzttPersonaDesc)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttPersonaDesc)).long_nzttPersonaDesc as *const _ as usize },
+        56usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttPersonaDesc),
+            "::",
+            stringify!(long_nzttPersonaDesc)
+        )
+    );
 }
 impl Clone for nzttPersonaDesc {
     fn clone(&self) -> Self {
@@ -6468,77 +7325,98 @@ pub struct nzttIdentityDesc {
 }
 #[test]
 fn bindgen_test_layout_nzttIdentityDesc() {
-    assert_eq!(::std::mem::size_of::<nzttIdentityDesc>(),
-               64usize,
-               concat!("Size of: ", stringify!(nzttIdentityDesc)));
-    assert_eq!(::std::mem::align_of::<nzttIdentityDesc>(),
-               8usize,
-               concat!("Alignment of ", stringify!(nzttIdentityDesc)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttIdentityDesc)).publen_nzttIdentityDesc as *const _ as usize
-               },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttIdentityDesc),
-                       "::",
-                       stringify!(publen_nzttIdentityDesc)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttIdentityDesc)).pub_nzttIdentityDesc as *const _ as usize
-               },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttIdentityDesc),
-                       "::",
-                       stringify!(pub_nzttIdentityDesc)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttIdentityDesc)).dnlen_nzttIdentityDesc as *const _ as usize
-               },
-               16usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttIdentityDesc),
-                       "::",
-                       stringify!(dnlen_nzttIdentityDesc)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttIdentityDesc)).dn_nzttIdentityDesc as *const _ as usize
-               },
-               24usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttIdentityDesc),
-                       "::",
-                       stringify!(dn_nzttIdentityDesc)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttIdentityDesc)).longlen_nzttIdentityDesc as *const _ as usize
-               },
-               32usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttIdentityDesc),
-                       "::",
-                       stringify!(longlen_nzttIdentityDesc)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttIdentityDesc)).long_nzttIdentityDesc as *const _ as usize
-               },
-               40usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttIdentityDesc),
-                       "::",
-                       stringify!(long_nzttIdentityDesc)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttIdentityDesc)).quallen_nzttIdentityDesc as *const _ as usize
-               },
-               48usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttIdentityDesc),
-                       "::",
-                       stringify!(quallen_nzttIdentityDesc)));
-    assert_eq!(unsafe {
-                   &(*(0 as *const nzttIdentityDesc)).trustqual_nzttIdentityDesc as *const _ as
-                   usize
-               },
-               56usize,
-               concat!("Alignment of field: ",
-                       stringify!(nzttIdentityDesc),
-                       "::",
-                       stringify!(trustqual_nzttIdentityDesc)));
+    assert_eq!(
+        ::std::mem::size_of::<nzttIdentityDesc>(),
+        64usize,
+        concat!("Size of: ", stringify!(nzttIdentityDesc))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<nzttIdentityDesc>(),
+        8usize,
+        concat!("Alignment of ", stringify!(nzttIdentityDesc))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttIdentityDesc)).publen_nzttIdentityDesc as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttIdentityDesc),
+            "::",
+            stringify!(publen_nzttIdentityDesc)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttIdentityDesc)).pub_nzttIdentityDesc as *const _ as usize },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttIdentityDesc),
+            "::",
+            stringify!(pub_nzttIdentityDesc)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttIdentityDesc)).dnlen_nzttIdentityDesc as *const _ as usize },
+        16usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttIdentityDesc),
+            "::",
+            stringify!(dnlen_nzttIdentityDesc)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttIdentityDesc)).dn_nzttIdentityDesc as *const _ as usize },
+        24usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttIdentityDesc),
+            "::",
+            stringify!(dn_nzttIdentityDesc)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttIdentityDesc)).longlen_nzttIdentityDesc as *const _ as usize },
+        32usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttIdentityDesc),
+            "::",
+            stringify!(longlen_nzttIdentityDesc)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttIdentityDesc)).long_nzttIdentityDesc as *const _ as usize },
+        40usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttIdentityDesc),
+            "::",
+            stringify!(long_nzttIdentityDesc)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const nzttIdentityDesc)).quallen_nzttIdentityDesc as *const _ as usize },
+        48usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttIdentityDesc),
+            "::",
+            stringify!(quallen_nzttIdentityDesc)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(0 as *const nzttIdentityDesc)).trustqual_nzttIdentityDesc as *const _ as usize
+        },
+        56usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(nzttIdentityDesc),
+            "::",
+            stringify!(trustqual_nzttIdentityDesc)
+        )
+    );
 }
 impl Clone for nzttIdentityDesc {
     fn clone(&self) -> Self {
@@ -6546,13 +7424,14 @@ impl Clone for nzttIdentityDesc {
     }
 }
 extern "C" {
-    pub fn nztwOpenWallet(arg1: *mut nzctx,
-                          arg2: ub4,
-                          arg3: *mut text,
-                          arg4: ub4,
-                          arg5: *mut text,
-                          arg6: *mut nzttWallet)
-                          -> nzerror;
+    pub fn nztwOpenWallet(
+        arg1: *mut nzctx,
+        arg2: ub4,
+        arg3: *mut text,
+        arg4: ub4,
+        arg5: *mut text,
+        arg6: *mut nzttWallet,
+    ) -> nzerror;
 }
 extern "C" {
     pub fn nztwCloseWallet(arg1: *mut nzctx, arg2: *mut nzttWallet) -> nzerror;
@@ -6560,25 +7439,28 @@ extern "C" {
 extern "C" {
     /// NOTE: This function is a temporary hack.****/
     /// /****DO NOT CALL.  It will soon disappear.
-    pub fn nztwGetCertInfo(nz_context: *mut nzctx,
-                           nzosCtx: *mut nzosContext,
-                           walletRef: *mut nzttWallet,
-                           peerCert: *mut ::std::os::raw::c_void)
-                           -> nzerror;
+    pub fn nztwGetCertInfo(
+        nz_context: *mut nzctx,
+        nzosCtx: *mut nzosContext,
+        walletRef: *mut nzttWallet,
+        peerCert: *mut ::std::os::raw::c_void,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztwRetrievePersonaCopy(arg1: *mut nzctx,
-                                   arg2: *mut nzttWallet,
-                                   arg3: ub4,
-                                   arg4: *mut *mut nzttPersona)
-                                   -> nzerror;
+    pub fn nztwRetrievePersonaCopy(
+        arg1: *mut nzctx,
+        arg2: *mut nzttWallet,
+        arg3: ub4,
+        arg4: *mut *mut nzttPersona,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztwRetrievePersonaCopyByName(arg1: *mut nzctx,
-                                         arg2: *mut nzttWallet,
-                                         arg3: *mut ::std::os::raw::c_char,
-                                         arg4: *mut *mut nzttPersona)
-                                         -> nzerror;
+    pub fn nztwRetrievePersonaCopyByName(
+        arg1: *mut nzctx,
+        arg2: *mut nzttWallet,
+        arg3: *mut ::std::os::raw::c_char,
+        arg4: *mut *mut nzttPersona,
+    ) -> nzerror;
 }
 extern "C" {
     pub fn nzteOpenPersona(arg1: *mut nzctx, arg2: *mut nzttPersona) -> nzerror;
@@ -6590,39 +7472,44 @@ extern "C" {
     pub fn nzteDestroyPersona(arg1: *mut nzctx, arg2: *mut *mut nzttPersona) -> nzerror;
 }
 extern "C" {
-    pub fn nzteRetrieveTrustedIdentCopy(arg1: *mut nzctx,
-                                        arg2: *mut nzttPersona,
-                                        arg3: ub4,
-                                        arg4: *mut *mut nzttIdentity)
-                                        -> nzerror;
+    pub fn nzteRetrieveTrustedIdentCopy(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: ub4,
+        arg4: *mut *mut nzttIdentity,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztePriKey(arg1: *mut nzctx,
-                      arg2: *mut nzttPersona,
-                      arg3: *mut *mut ub1,
-                      arg4: *mut ub4)
-                      -> nzerror;
+    pub fn nztePriKey(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: *mut *mut ub1,
+        arg4: *mut ub4,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nzteMyCert(arg1: *mut nzctx,
-                      arg2: *mut nzttPersona,
-                      arg3: *mut *mut ub1,
-                      arg4: *mut ub4)
-                      -> nzerror;
+    pub fn nzteMyCert(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: *mut *mut ub1,
+        arg4: *mut ub4,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nzteX509CreatePersona(arg1: *mut nzctx,
-                                 arg2: *mut ub1,
-                                 arg3: ub4,
-                                 arg4: *mut *mut nzttPersona)
-                                 -> nzerror;
+    pub fn nzteX509CreatePersona(
+        arg1: *mut nzctx,
+        arg2: *mut ub1,
+        arg3: ub4,
+        arg4: *mut *mut nzttPersona,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztiCreateIdentity(arg1: *mut nzctx,
-                              arg2: nzttVersion,
-                              arg3: *mut nzttIdentityDesc,
-                              arg4: *mut *mut nzttIdentity)
-                              -> nzerror;
+    pub fn nztiCreateIdentity(
+        arg1: *mut nzctx,
+        arg2: nzttVersion,
+        arg3: *mut nzttIdentityDesc,
+        arg4: *mut *mut nzttIdentity,
+    ) -> nzerror;
 }
 extern "C" {
     pub fn nztiAbortIdentity(arg1: *mut nzctx, arg2: *mut *mut nzttIdentity) -> nzerror;
@@ -6631,111 +7518,123 @@ extern "C" {
     pub fn nztific_FreeIdentityContent(ossctx: *mut nzctx, identity: *mut nzttIdentity) -> nzerror;
 }
 extern "C" {
-    pub fn nztSign(arg1: *mut nzctx,
-                   arg2: *mut nzttPersona,
-                   arg3: nzttces,
-                   arg4: ub4,
-                   arg5: *mut ub1,
-                   arg6: *mut nzttBufferBlock)
-                   -> nzerror;
+    pub fn nztSign(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: nzttces,
+        arg4: ub4,
+        arg5: *mut ub1,
+        arg6: *mut nzttBufferBlock,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztVerify(arg1: *mut nzctx,
-                     arg2: *mut nzttPersona,
-                     arg3: nzttces,
-                     arg4: ub4,
-                     arg5: *mut ub1,
-                     arg6: *mut nzttBufferBlock,
-                     arg7: *mut boolean,
-                     arg8: *mut boolean,
-                     arg9: *mut *mut nzttIdentity)
-                     -> nzerror;
+    pub fn nztVerify(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: nzttces,
+        arg4: ub4,
+        arg5: *mut ub1,
+        arg6: *mut nzttBufferBlock,
+        arg7: *mut boolean,
+        arg8: *mut boolean,
+        arg9: *mut *mut nzttIdentity,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztValidate(arg1: *mut nzctx,
-                       arg2: *mut nzttPersona,
-                       arg3: *mut nzttIdentity,
-                       arg4: *mut boolean)
-                       -> nzerror;
+    pub fn nztValidate(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: *mut nzttIdentity,
+        arg4: *mut boolean,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztsd_SignDetached(arg1: *mut nzctx,
-                              arg2: *mut nzttPersona,
-                              arg3: nzttces,
-                              arg4: ub4,
-                              arg5: *mut ub1,
-                              arg6: *mut nzttBufferBlock)
-                              -> nzerror;
+    pub fn nztsd_SignDetached(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: nzttces,
+        arg4: ub4,
+        arg5: *mut ub1,
+        arg6: *mut nzttBufferBlock,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztved_VerifyDetached(arg1: *mut nzctx,
-                                 arg2: *mut nzttPersona,
-                                 arg3: nzttces,
-                                 arg4: ub4,
-                                 arg5: *mut ub1,
-                                 arg6: ub4,
-                                 arg7: *mut ub1,
-                                 arg8: *mut boolean,
-                                 arg9: *mut boolean,
-                                 arg10: *mut *mut nzttIdentity)
-                                 -> nzerror;
+    pub fn nztved_VerifyDetached(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: nzttces,
+        arg4: ub4,
+        arg5: *mut ub1,
+        arg6: ub4,
+        arg7: *mut ub1,
+        arg8: *mut boolean,
+        arg9: *mut boolean,
+        arg10: *mut *mut nzttIdentity,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztkec_PKEncrypt(arg1: *mut nzctx,
-                            arg2: *mut nzttPersona,
-                            arg3: ub4,
-                            arg4: *mut nzttIdentity,
-                            arg5: nzttces,
-                            arg6: ub4,
-                            arg7: *mut ub1,
-                            arg8: *mut nzttBufferBlock)
-                            -> nzerror;
+    pub fn nztkec_PKEncrypt(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: ub4,
+        arg4: *mut nzttIdentity,
+        arg5: nzttces,
+        arg6: ub4,
+        arg7: *mut ub1,
+        arg8: *mut nzttBufferBlock,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztxkec_PKEncryptExpansion(arg1: *mut nzctx,
-                                      arg2: *mut nzttPersona,
-                                      arg3: ub4,
-                                      arg4: ub4,
-                                      arg5: *mut ub4)
-                                      -> nzerror;
+    pub fn nztxkec_PKEncryptExpansion(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: ub4,
+        arg4: ub4,
+        arg5: *mut ub4,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztkdc_PKDecrypt(arg1: *mut nzctx,
-                            arg2: *mut nzttPersona,
-                            arg3: nzttces,
-                            arg4: ub4,
-                            arg5: *mut ub1,
-                            arg6: *mut nzttBufferBlock)
-                            -> nzerror;
+    pub fn nztkdc_PKDecrypt(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: nzttces,
+        arg4: ub4,
+        arg5: *mut ub1,
+        arg6: *mut nzttBufferBlock,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztHash(arg1: *mut nzctx,
-                   arg2: *mut nzttPersona,
-                   arg3: nzttces,
-                   arg4: ub4,
-                   arg5: *mut ub1,
-                   arg6: *mut nzttBufferBlock)
-                   -> nzerror;
+    pub fn nztHash(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: nzttces,
+        arg4: ub4,
+        arg5: *mut ub1,
+        arg6: *mut nzttBufferBlock,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztSeedRandom(arg1: *mut nzctx,
-                         arg2: *mut nzttPersona,
-                         arg3: ub4,
-                         arg4: *mut ub1)
-                         -> nzerror;
+    pub fn nztSeedRandom(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: ub4,
+        arg4: *mut ub1,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztrb_RandomBytes(arg1: *mut nzctx,
-                             arg2: *mut nzttPersona,
-                             arg3: ub4,
-                             arg4: *mut nzttBufferBlock)
-                             -> nzerror;
+    pub fn nztrb_RandomBytes(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: ub4,
+        arg4: *mut nzttBufferBlock,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztrn_RandomNumber(arg1: *mut nzctx,
-                              arg2: *mut nzttPersona,
-                              arg3: *mut uword)
-                              -> nzerror;
+    pub fn nztrn_RandomNumber(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: *mut uword,
+    ) -> nzerror;
 }
 extern "C" {
     pub fn nztbbInitBlock(arg1: *mut nzctx, arg2: *mut nzttBufferBlock) -> nzerror;
@@ -6753,45 +7652,50 @@ extern "C" {
     pub fn nztbbPurgeBlock(arg1: *mut nzctx, arg2: *mut nzttBufferBlock) -> nzerror;
 }
 extern "C" {
-    pub fn nztbbSetBlock(arg1: *mut nzctx,
-                         arg2: uword,
-                         arg3: ub4,
-                         arg4: ub4,
-                         arg5: *mut ub1,
-                         arg6: *mut nzttBufferBlock)
-                         -> nzerror;
+    pub fn nztbbSetBlock(
+        arg1: *mut nzctx,
+        arg2: uword,
+        arg3: ub4,
+        arg4: ub4,
+        arg5: *mut ub1,
+        arg6: *mut nzttBufferBlock,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztiGetSecInfo(arg1: *mut nzctx,
-                          arg2: *mut nzttPersona,
-                          arg3: *mut *mut text,
-                          arg4: *mut ub4,
-                          arg5: *mut *mut text,
-                          arg6: *mut ub4,
-                          arg7: *mut *mut ub1,
-                          arg8: *mut ub4)
-                          -> nzerror;
+    pub fn nztiGetSecInfo(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: *mut *mut text,
+        arg4: *mut ub4,
+        arg5: *mut *mut text,
+        arg6: *mut ub4,
+        arg7: *mut *mut ub1,
+        arg8: *mut ub4,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztiGetDName(arg1: *mut nzctx,
-                        arg2: *mut nzttIdentity,
-                        arg3: *mut *mut text,
-                        arg4: *mut ub4)
-                        -> nzerror;
+    pub fn nztiGetDName(
+        arg1: *mut nzctx,
+        arg2: *mut nzttIdentity,
+        arg3: *mut *mut text,
+        arg4: *mut ub4,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztiGetIssuerName(arg1: *mut nzctx,
-                             arg2: *mut nzttIdentity,
-                             arg3: *mut *mut text,
-                             arg4: *mut ub4)
-                             -> nzerror;
+    pub fn nztiGetIssuerName(
+        arg1: *mut nzctx,
+        arg2: *mut nzttIdentity,
+        arg3: *mut *mut text,
+        arg4: *mut ub4,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztgch_GetCertHash(arg1: *mut nzctx,
-                              arg2: *mut nzttIdentity,
-                              arg3: *mut *mut ub1,
-                              arg4: *mut ub4)
-                              -> nzerror;
+    pub fn nztgch_GetCertHash(
+        arg1: *mut nzctx,
+        arg2: *mut nzttIdentity,
+        arg3: *mut *mut ub1,
+        arg4: *mut ub4,
+    ) -> nzerror;
 }
 extern "C" {
     pub fn nztdbuf_DestroyBuf(arg1: *mut nzctx, arg2: *mut *mut ::std::os::raw::c_void) -> nzerror;
@@ -6800,233 +7704,262 @@ extern "C" {
     pub fn nztGetCertChain(arg1: *mut nzctx, arg2: *mut nzttWallet) -> nzerror;
 }
 extern "C" {
-    pub fn nztCompareDN(arg1: *mut nzctx,
-                        arg2: *mut ub1,
-                        arg3: ub4,
-                        arg4: *mut ub1,
-                        arg5: ub4,
-                        arg6: *mut boolean)
-                        -> nzerror;
+    pub fn nztCompareDN(
+        arg1: *mut nzctx,
+        arg2: *mut ub1,
+        arg3: ub4,
+        arg4: *mut ub1,
+        arg5: ub4,
+        arg6: *mut boolean,
+    ) -> nzerror;
 }
 extern "C" {
     pub fn nztCheckValidity(arg1: *mut nzctx, arg2: ub4, arg3: ub4) -> nzerror;
 }
 extern "C" {
-    pub fn nztwCreateWallet(arg1: *mut nzctx,
-                            arg2: ub4,
-                            arg3: *mut text,
-                            arg4: ub4,
-                            arg5: *mut text,
-                            arg6: *mut nzttWallet)
-                            -> nzerror;
+    pub fn nztwCreateWallet(
+        arg1: *mut nzctx,
+        arg2: ub4,
+        arg3: *mut text,
+        arg4: ub4,
+        arg5: *mut text,
+        arg6: *mut nzttWallet,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztwDestroyWallet(arg1: *mut nzctx,
-                             arg2: ub4,
-                             arg3: *mut text,
-                             arg4: ub4,
-                             arg5: *mut text)
-                             -> nzerror;
+    pub fn nztwDestroyWallet(
+        arg1: *mut nzctx,
+        arg2: ub4,
+        arg3: *mut text,
+        arg4: ub4,
+        arg5: *mut text,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nzteStorePersona(arg1: *mut nzctx,
-                            arg2: *mut *mut nzttPersona,
-                            arg3: *mut nzttWallet)
-                            -> nzerror;
+    pub fn nzteStorePersona(
+        arg1: *mut nzctx,
+        arg2: *mut *mut nzttPersona,
+        arg3: *mut nzttWallet,
+    ) -> nzerror;
 }
 extern "C" {
     pub fn nzteRemovePersona(arg1: *mut nzctx, arg2: *mut *mut nzttPersona) -> nzerror;
 }
 extern "C" {
-    pub fn nzteCreatePersona(arg1: *mut nzctx,
-                             arg2: nzttVersion,
-                             arg3: nzttCipherType,
-                             arg4: *mut nzttPersonaDesc,
-                             arg5: *mut *mut nzttPersona)
-                             -> nzerror;
+    pub fn nzteCreatePersona(
+        arg1: *mut nzctx,
+        arg2: nzttVersion,
+        arg3: nzttCipherType,
+        arg4: *mut nzttPersonaDesc,
+        arg5: *mut *mut nzttPersona,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztiStoreTrustedIdentity(arg1: *mut nzctx,
-                                    arg2: *mut *mut nzttIdentity,
-                                    arg3: *mut nzttPersona)
-                                    -> nzerror;
+    pub fn nztiStoreTrustedIdentity(
+        arg1: *mut nzctx,
+        arg2: *mut *mut nzttIdentity,
+        arg3: *mut nzttPersona,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nzteSetProtection(arg1: *mut nzctx,
-                             arg2: *mut nzttPersona,
-                             arg3: nzttcef,
-                             arg4: nztttdufmt,
-                             arg5: *mut nzttProtInfo)
-                             -> nzerror;
+    pub fn nzteSetProtection(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: nzttcef,
+        arg4: nztttdufmt,
+        arg5: *mut nzttProtInfo,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nzteGetProtection(arg1: *mut nzctx,
-                             arg2: *mut nzttPersona,
-                             arg3: nzttcef,
-                             arg4: *mut nztttdufmt,
-                             arg5: *mut nzttProtInfo)
-                             -> nzerror;
+    pub fn nzteGetProtection(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: nzttcef,
+        arg4: *mut nztttdufmt,
+        arg5: *mut nzttProtInfo,
+    ) -> nzerror;
 }
 extern "C" {
     pub fn nztiRemoveIdentity(arg1: *mut nzctx, arg2: *mut *mut nzttIdentity) -> nzerror;
 }
 extern "C" {
-    pub fn nztifdn(ossctx: *mut nzctx,
-                   length: ub4,
-                   distinguished_name: *mut text,
-                   ppidentity: *mut *mut nzttIdentity)
-                   -> nzerror;
+    pub fn nztifdn(
+        ossctx: *mut nzctx,
+        length: ub4,
+        distinguished_name: *mut text,
+        ppidentity: *mut *mut nzttIdentity,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztxSignExpansion(arg1: *mut nzctx,
-                             arg2: *mut nzttPersona,
-                             arg3: ub4,
-                             arg4: *mut ub4)
-                             -> nzerror;
+    pub fn nztxSignExpansion(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: ub4,
+        arg4: *mut ub4,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztxsd_SignDetachedExpansion(arg1: *mut nzctx,
-                                        arg2: *mut nzttPersona,
-                                        arg3: ub4,
-                                        arg4: *mut ub4)
-                                        -> nzerror;
+    pub fn nztxsd_SignDetachedExpansion(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: ub4,
+        arg4: *mut ub4,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztEncrypt(arg1: *mut nzctx,
-                      arg2: *mut nzttPersona,
-                      arg3: nzttces,
-                      arg4: ub4,
-                      arg5: *mut ub1,
-                      arg6: *mut nzttBufferBlock)
-                      -> nzerror;
+    pub fn nztEncrypt(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: nzttces,
+        arg4: ub4,
+        arg5: *mut ub1,
+        arg6: *mut nzttBufferBlock,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztxEncryptExpansion(arg1: *mut nzctx,
-                                arg2: *mut nzttPersona,
-                                arg3: ub4,
-                                arg4: *mut ub4)
-                                -> nzerror;
+    pub fn nztxEncryptExpansion(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: ub4,
+        arg4: *mut ub4,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztDecrypt(arg1: *mut nzctx,
-                      arg2: *mut nzttPersona,
-                      arg3: nzttces,
-                      arg4: ub4,
-                      arg5: *mut ub1,
-                      arg6: *mut nzttBufferBlock)
-                      -> nzerror;
+    pub fn nztDecrypt(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: nzttces,
+        arg4: ub4,
+        arg5: *mut ub1,
+        arg6: *mut nzttBufferBlock,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztEnvelope(arg1: *mut nzctx,
-                       arg2: *mut nzttPersona,
-                       arg3: ub4,
-                       arg4: *mut nzttIdentity,
-                       arg5: nzttces,
-                       arg6: ub4,
-                       arg7: *mut ub1,
-                       arg8: *mut nzttBufferBlock)
-                       -> nzerror;
+    pub fn nztEnvelope(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: ub4,
+        arg4: *mut nzttIdentity,
+        arg5: nzttces,
+        arg6: ub4,
+        arg7: *mut ub1,
+        arg8: *mut nzttBufferBlock,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztDeEnvelope(arg1: *mut nzctx,
-                         arg2: *mut nzttPersona,
-                         arg3: nzttces,
-                         arg4: ub4,
-                         arg5: *mut ub1,
-                         arg6: *mut nzttBufferBlock,
-                         arg7: *mut boolean,
-                         arg8: *mut boolean,
-                         arg9: *mut *mut nzttIdentity)
-                         -> nzerror;
+    pub fn nztDeEnvelope(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: nzttces,
+        arg4: ub4,
+        arg5: *mut ub1,
+        arg6: *mut nzttBufferBlock,
+        arg7: *mut boolean,
+        arg8: *mut boolean,
+        arg9: *mut *mut nzttIdentity,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztKeyedHash(arg1: *mut nzctx,
-                        arg2: *mut nzttPersona,
-                        arg3: nzttces,
-                        arg4: ub4,
-                        arg5: *mut ub1,
-                        arg6: *mut nzttBufferBlock)
-                        -> nzerror;
+    pub fn nztKeyedHash(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: nzttces,
+        arg4: ub4,
+        arg5: *mut ub1,
+        arg6: *mut nzttBufferBlock,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztxKeyedHashExpansion(arg1: *mut nzctx,
-                                  arg2: *mut nzttPersona,
-                                  arg3: ub4,
-                                  arg4: *mut ub4)
-                                  -> nzerror;
+    pub fn nztxKeyedHashExpansion(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: ub4,
+        arg4: *mut ub4,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztxHashExpansion(arg1: *mut nzctx,
-                             arg2: *mut nzttPersona,
-                             arg3: ub4,
-                             arg4: *mut ub4)
-                             -> nzerror;
+    pub fn nztxHashExpansion(
+        arg1: *mut nzctx,
+        arg2: *mut nzttPersona,
+        arg3: ub4,
+        arg4: *mut ub4,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztiae_IsAuthEnabled(ctx: *mut nzctx,
-                                ncipher: ub2,
-                                authEnabled: *mut boolean)
-                                -> nzerror;
+    pub fn nztiae_IsAuthEnabled(
+        ctx: *mut nzctx,
+        ncipher: ub2,
+        authEnabled: *mut boolean,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztiee_IsEncrEnabled(ctx: *mut nzctx,
-                                ncipher: ub2,
-                                EncrEnabled: *mut boolean)
-                                -> nzerror;
+    pub fn nztiee_IsEncrEnabled(
+        ctx: *mut nzctx,
+        ncipher: ub2,
+        EncrEnabled: *mut boolean,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztihe_IsHashEnabled(ctx: *mut nzctx,
-                                ncipher: ub2,
-                                hashEnabled: *mut boolean)
-                                -> nzerror;
+    pub fn nztihe_IsHashEnabled(
+        ctx: *mut nzctx,
+        ncipher: ub2,
+        hashEnabled: *mut boolean,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztGetIssuerName(ctx: *mut nzctx,
-                            identity: *mut nzttIdentity,
-                            issuername: *mut *mut ub1,
-                            issuernamelen: *mut ub4)
-                            -> nzerror;
+    pub fn nztGetIssuerName(
+        ctx: *mut nzctx,
+        identity: *mut nzttIdentity,
+        issuername: *mut *mut ub1,
+        issuernamelen: *mut ub4,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztGetSubjectName(ctx: *mut nzctx,
-                             identity: *mut nzttIdentity,
-                             subjectname: *mut *mut ub1,
-                             subjectnamelen: *mut ub4)
-                             -> nzerror;
+    pub fn nztGetSubjectName(
+        ctx: *mut nzctx,
+        identity: *mut nzttIdentity,
+        subjectname: *mut *mut ub1,
+        subjectnamelen: *mut ub4,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztGetBase64Cert(ctx: *mut nzctx,
-                            identity: *mut nzttIdentity,
-                            b64cert: *mut *mut ub1,
-                            b64certlen: *mut ub4)
-                            -> nzerror;
+    pub fn nztGetBase64Cert(
+        ctx: *mut nzctx,
+        identity: *mut nzttIdentity,
+        b64cert: *mut *mut ub1,
+        b64certlen: *mut ub4,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztGetSerialNumber(ctx: *mut nzctx,
-                              identity: *mut nzttIdentity,
-                              serialnum: *mut *mut ub1,
-                              serialnumlen: *mut ub4)
-                              -> nzerror;
+    pub fn nztGetSerialNumber(
+        ctx: *mut nzctx,
+        identity: *mut nzttIdentity,
+        serialnum: *mut *mut ub1,
+        serialnumlen: *mut ub4,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztGetValidDate(ctx: *mut nzctx,
-                           identity: *mut nzttIdentity,
-                           startdate: *mut ub4,
-                           enddate: *mut ub4)
-                           -> nzerror;
+    pub fn nztGetValidDate(
+        ctx: *mut nzctx,
+        identity: *mut nzttIdentity,
+        startdate: *mut ub4,
+        enddate: *mut ub4,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztGetVersion(ctx: *mut nzctx,
-                         identity: *mut nzttIdentity,
-                         pVerStr: *mut nzstrc)
-                         -> nzerror;
+    pub fn nztGetVersion(
+        ctx: *mut nzctx,
+        identity: *mut nzttIdentity,
+        pVerStr: *mut nzstrc,
+    ) -> nzerror;
 }
 extern "C" {
-    pub fn nztGetPublicKey(ctx: *mut nzctx,
-                           identity: *mut nzttIdentity,
-                           pubKey: *mut *mut ub1,
-                           pubKeylen: *mut ub4)
-                           -> nzerror;
+    pub fn nztGetPublicKey(
+        ctx: *mut nzctx,
+        identity: *mut nzttIdentity,
+        pubKey: *mut *mut ub1,
+        pubKeylen: *mut ub4,
+    ) -> nzerror;
 }
 extern "C" {
     pub fn nztGenericDestroy(ctx: *mut nzctx, var: *mut *mut ub1) -> nzerror;
@@ -13292,132 +14225,164 @@ extern "C" {
 /// OCI_TRANS_SERIALIZABLE - start a serializable transaction
 /// Related Functions
 /// OCITransDetach()
-pub type OCICallbackInBind =
-    ::std::option::Option<unsafe extern "C" fn(ictxp: *mut ::std::os::raw::c_void,
-                                               bindp: *mut OCIBind,
-                                               iter: ub4,
-                                               index: ub4,
-                                               bufpp: *mut *mut ::std::os::raw::c_void,
-                                               alenp: *mut ub4,
-                                               piecep: *mut ub1,
-                                               indp: *mut *mut ::std::os::raw::c_void)
-                                               -> sb4>;
-pub type OCICallbackOutBind =
-    ::std::option::Option<unsafe extern "C" fn(octxp: *mut ::std::os::raw::c_void,
-                                               bindp: *mut OCIBind,
-                                               iter: ub4,
-                                               index: ub4,
-                                               bufpp: *mut *mut ::std::os::raw::c_void,
-                                               alenp: *mut *mut ub4,
-                                               piecep: *mut ub1,
-                                               indp: *mut *mut ::std::os::raw::c_void,
-                                               rcodep: *mut *mut ub2)
-                                               -> sb4>;
-pub type OCICallbackDefine =
-    ::std::option::Option<unsafe extern "C" fn(octxp: *mut ::std::os::raw::c_void,
-                                               defnp: *mut OCIDefine,
-                                               iter: ub4,
-                                               bufpp: *mut *mut ::std::os::raw::c_void,
-                                               alenp: *mut *mut ub4,
-                                               piecep: *mut ub1,
-                                               indp: *mut *mut ::std::os::raw::c_void,
-                                               rcodep: *mut *mut ub2)
-                                               -> sb4>;
-pub type OCIUserCallback =
-    ::std::option::Option<unsafe extern "C" fn(ctxp: *mut ::std::os::raw::c_void,
-                                               hndlp: *mut ::std::os::raw::c_void,
-                                               type_: ub4,
-                                               fcode: ub4,
-                                               when: ub4,
-                                               returnCode: sword,
-                                               errnop: *mut sb4,
-                                               arglist: *mut __va_list_tag)
-                                               -> sword>;
-pub type OCIEnvCallbackType =
-    ::std::option::Option<unsafe extern "C" fn(env: *mut OCIEnv,
-                                               mode: ub4,
-                                               xtramem_sz: usize,
-                                               usrmemp: *mut ::std::os::raw::c_void,
-                                               ucbDesc: *mut OCIUcb)
-                                               -> sword>;
-pub type OCICallbackLobRead =
-    ::std::option::Option<unsafe extern "C" fn(ctxp: *mut ::std::os::raw::c_void,
-                                               bufp: *const ::std::os::raw::c_void,
-                                               len: ub4,
-                                               piece: ub1)
-                                               -> sb4>;
-pub type OCICallbackLobWrite =
-    ::std::option::Option<unsafe extern "C" fn(ctxp: *mut ::std::os::raw::c_void,
-                                               bufp: *mut ::std::os::raw::c_void,
-                                               lenp: *mut ub4,
-                                               piece: *mut ub1)
-                                               -> sb4>;
-pub type OCICallbackLobRead2 =
-    ::std::option::Option<unsafe extern "C" fn(ctxp: *mut ::std::os::raw::c_void,
-                                               bufp: *const ::std::os::raw::c_void,
-                                               len: oraub8,
-                                               piece: ub1,
-                                               changed_bufpp: *mut *mut ::std::os::raw::c_void,
-                                               changed_lenp: *mut oraub8)
-                                               -> sb4>;
-pub type OCICallbackLobWrite2 =
-    ::std::option::Option<unsafe extern "C" fn(ctxp: *mut ::std::os::raw::c_void,
-                                               bufp: *mut ::std::os::raw::c_void,
-                                               lenp: *mut oraub8,
-                                               piece: *mut ub1,
-                                               changed_bufpp: *mut *mut ::std::os::raw::c_void,
-                                               changed_lenp: *mut oraub8)
-                                               -> sb4>;
-pub type OCICallbackLobArrayRead =
-    ::std::option::Option<unsafe extern "C" fn(ctxp: *mut ::std::os::raw::c_void,
-                                               array_iter: ub4,
-                                               bufp: *const ::std::os::raw::c_void,
-                                               len: oraub8,
-                                               piece: ub1,
-                                               changed_bufpp: *mut *mut ::std::os::raw::c_void,
-                                               changed_lenp: *mut oraub8)
-                                               -> sb4>;
-pub type OCICallbackLobArrayWrite =
-    ::std::option::Option<unsafe extern "C" fn(ctxp: *mut ::std::os::raw::c_void,
-                                               array_iter: ub4,
-                                               bufp: *mut ::std::os::raw::c_void,
-                                               lenp: *mut oraub8,
-                                               piece: *mut ub1,
-                                               changed_bufpp: *mut *mut ::std::os::raw::c_void,
-                                               changed_lenp: *mut oraub8)
-                                               -> sb4>;
-pub type OCICallbackLobGetDeduplicateRegions =
-    ::std::option::Option<unsafe extern "C" fn(ctxp: *mut ::std::os::raw::c_void,
-                                               regions: *mut OCILobRegion,
-                                               count: ub4,
-                                               piece: ub1,
-                                               changed_reg: *mut *mut OCILobRegion,
-                                               changed_count: *mut ub4)
-                                               -> sb4>;
-pub type OCICallbackAQEnq =
-    ::std::option::Option<unsafe extern "C" fn(ctxp: *mut ::std::os::raw::c_void,
-                                               payload: *mut *mut ::std::os::raw::c_void,
-                                               payload_ind: *mut *mut ::std::os::raw::c_void)
-                                               -> sb4>;
-pub type OCICallbackAQEnqStreaming =
-    ::std::option::Option<unsafe extern "C" fn(ctxp: *mut ::std::os::raw::c_void,
-                                               payload: *mut *mut ::std::os::raw::c_void,
-                                               payload_ind: *mut *mut ::std::os::raw::c_void,
-                                               msgprop: *mut *mut OCIAQMsgProperties,
-                                               tdo: *mut *mut OCIType)
-                                               -> sb4>;
-pub type OCICallbackAQDeq =
-    ::std::option::Option<unsafe extern "C" fn(ctxp: *mut ::std::os::raw::c_void,
-                                               payload: *mut *mut ::std::os::raw::c_void,
-                                               payload_ind: *mut *mut ::std::os::raw::c_void)
-                                               -> sb4>;
-pub type OCICallbackFailover =
-    ::std::option::Option<unsafe extern "C" fn(svcctx: *mut ::std::os::raw::c_void,
-                                               envctx: *mut ::std::os::raw::c_void,
-                                               fo_ctx: *mut ::std::os::raw::c_void,
-                                               fo_type: ub4,
-                                               fo_event: ub4)
-                                               -> sb4>;
+pub type OCICallbackInBind = ::std::option::Option<
+    unsafe extern "C" fn(
+        ictxp: *mut ::std::os::raw::c_void,
+        bindp: *mut OCIBind,
+        iter: ub4,
+        index: ub4,
+        bufpp: *mut *mut ::std::os::raw::c_void,
+        alenp: *mut ub4,
+        piecep: *mut ub1,
+        indp: *mut *mut ::std::os::raw::c_void,
+    ) -> sb4,
+>;
+pub type OCICallbackOutBind = ::std::option::Option<
+    unsafe extern "C" fn(
+        octxp: *mut ::std::os::raw::c_void,
+        bindp: *mut OCIBind,
+        iter: ub4,
+        index: ub4,
+        bufpp: *mut *mut ::std::os::raw::c_void,
+        alenp: *mut *mut ub4,
+        piecep: *mut ub1,
+        indp: *mut *mut ::std::os::raw::c_void,
+        rcodep: *mut *mut ub2,
+    ) -> sb4,
+>;
+pub type OCICallbackDefine = ::std::option::Option<
+    unsafe extern "C" fn(
+        octxp: *mut ::std::os::raw::c_void,
+        defnp: *mut OCIDefine,
+        iter: ub4,
+        bufpp: *mut *mut ::std::os::raw::c_void,
+        alenp: *mut *mut ub4,
+        piecep: *mut ub1,
+        indp: *mut *mut ::std::os::raw::c_void,
+        rcodep: *mut *mut ub2,
+    ) -> sb4,
+>;
+pub type OCIUserCallback = ::std::option::Option<
+    unsafe extern "C" fn(
+        ctxp: *mut ::std::os::raw::c_void,
+        hndlp: *mut ::std::os::raw::c_void,
+        type_: ub4,
+        fcode: ub4,
+        when: ub4,
+        returnCode: sword,
+        errnop: *mut sb4,
+        arglist: *mut __va_list_tag,
+    ) -> sword,
+>;
+pub type OCIEnvCallbackType = ::std::option::Option<
+    unsafe extern "C" fn(
+        env: *mut OCIEnv,
+        mode: ub4,
+        xtramem_sz: usize,
+        usrmemp: *mut ::std::os::raw::c_void,
+        ucbDesc: *mut OCIUcb,
+    ) -> sword,
+>;
+pub type OCICallbackLobRead = ::std::option::Option<
+    unsafe extern "C" fn(
+        ctxp: *mut ::std::os::raw::c_void,
+        bufp: *const ::std::os::raw::c_void,
+        len: ub4,
+        piece: ub1,
+    ) -> sb4,
+>;
+pub type OCICallbackLobWrite = ::std::option::Option<
+    unsafe extern "C" fn(
+        ctxp: *mut ::std::os::raw::c_void,
+        bufp: *mut ::std::os::raw::c_void,
+        lenp: *mut ub4,
+        piece: *mut ub1,
+    ) -> sb4,
+>;
+pub type OCICallbackLobRead2 = ::std::option::Option<
+    unsafe extern "C" fn(
+        ctxp: *mut ::std::os::raw::c_void,
+        bufp: *const ::std::os::raw::c_void,
+        len: oraub8,
+        piece: ub1,
+        changed_bufpp: *mut *mut ::std::os::raw::c_void,
+        changed_lenp: *mut oraub8,
+    ) -> sb4,
+>;
+pub type OCICallbackLobWrite2 = ::std::option::Option<
+    unsafe extern "C" fn(
+        ctxp: *mut ::std::os::raw::c_void,
+        bufp: *mut ::std::os::raw::c_void,
+        lenp: *mut oraub8,
+        piece: *mut ub1,
+        changed_bufpp: *mut *mut ::std::os::raw::c_void,
+        changed_lenp: *mut oraub8,
+    ) -> sb4,
+>;
+pub type OCICallbackLobArrayRead = ::std::option::Option<
+    unsafe extern "C" fn(
+        ctxp: *mut ::std::os::raw::c_void,
+        array_iter: ub4,
+        bufp: *const ::std::os::raw::c_void,
+        len: oraub8,
+        piece: ub1,
+        changed_bufpp: *mut *mut ::std::os::raw::c_void,
+        changed_lenp: *mut oraub8,
+    ) -> sb4,
+>;
+pub type OCICallbackLobArrayWrite = ::std::option::Option<
+    unsafe extern "C" fn(
+        ctxp: *mut ::std::os::raw::c_void,
+        array_iter: ub4,
+        bufp: *mut ::std::os::raw::c_void,
+        lenp: *mut oraub8,
+        piece: *mut ub1,
+        changed_bufpp: *mut *mut ::std::os::raw::c_void,
+        changed_lenp: *mut oraub8,
+    ) -> sb4,
+>;
+pub type OCICallbackLobGetDeduplicateRegions = ::std::option::Option<
+    unsafe extern "C" fn(
+        ctxp: *mut ::std::os::raw::c_void,
+        regions: *mut OCILobRegion,
+        count: ub4,
+        piece: ub1,
+        changed_reg: *mut *mut OCILobRegion,
+        changed_count: *mut ub4,
+    ) -> sb4,
+>;
+pub type OCICallbackAQEnq = ::std::option::Option<
+    unsafe extern "C" fn(
+        ctxp: *mut ::std::os::raw::c_void,
+        payload: *mut *mut ::std::os::raw::c_void,
+        payload_ind: *mut *mut ::std::os::raw::c_void,
+    ) -> sb4,
+>;
+pub type OCICallbackAQEnqStreaming = ::std::option::Option<
+    unsafe extern "C" fn(
+        ctxp: *mut ::std::os::raw::c_void,
+        payload: *mut *mut ::std::os::raw::c_void,
+        payload_ind: *mut *mut ::std::os::raw::c_void,
+        msgprop: *mut *mut OCIAQMsgProperties,
+        tdo: *mut *mut OCIType,
+    ) -> sb4,
+>;
+pub type OCICallbackAQDeq = ::std::option::Option<
+    unsafe extern "C" fn(
+        ctxp: *mut ::std::os::raw::c_void,
+        payload: *mut *mut ::std::os::raw::c_void,
+        payload_ind: *mut *mut ::std::os::raw::c_void,
+    ) -> sb4,
+>;
+pub type OCICallbackFailover = ::std::option::Option<
+    unsafe extern "C" fn(
+        svcctx: *mut ::std::os::raw::c_void,
+        envctx: *mut ::std::os::raw::c_void,
+        fo_ctx: *mut ::std::os::raw::c_void,
+        fo_type: ub4,
+        fo_event: ub4,
+    ) -> sb4,
+>;
 #[repr(C)]
 #[derive(Debug, Copy)]
 pub struct OCIFocbkStruct {
@@ -13426,182 +14391,193 @@ pub struct OCIFocbkStruct {
 }
 #[test]
 fn bindgen_test_layout_OCIFocbkStruct() {
-    assert_eq!(::std::mem::size_of::<OCIFocbkStruct>(),
-               16usize,
-               concat!("Size of: ", stringify!(OCIFocbkStruct)));
-    assert_eq!(::std::mem::align_of::<OCIFocbkStruct>(),
-               8usize,
-               concat!("Alignment of ", stringify!(OCIFocbkStruct)));
-    assert_eq!(unsafe { &(*(0 as *const OCIFocbkStruct)).callback_function as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(OCIFocbkStruct),
-                       "::",
-                       stringify!(callback_function)));
-    assert_eq!(unsafe { &(*(0 as *const OCIFocbkStruct)).fo_ctx as *const _ as usize },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(OCIFocbkStruct),
-                       "::",
-                       stringify!(fo_ctx)));
+    assert_eq!(
+        ::std::mem::size_of::<OCIFocbkStruct>(),
+        16usize,
+        concat!("Size of: ", stringify!(OCIFocbkStruct))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<OCIFocbkStruct>(),
+        8usize,
+        concat!("Alignment of ", stringify!(OCIFocbkStruct))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const OCIFocbkStruct)).callback_function as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(OCIFocbkStruct),
+            "::",
+            stringify!(callback_function)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const OCIFocbkStruct)).fo_ctx as *const _ as usize },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(OCIFocbkStruct),
+            "::",
+            stringify!(fo_ctx)
+        )
+    );
 }
 impl Clone for OCIFocbkStruct {
     fn clone(&self) -> Self {
         *self
     }
 }
-pub type OCICallbackStmtCache =
-    ::std::option::Option<unsafe extern "C" fn(ctx: *mut ::std::os::raw::c_void,
-                                               stmt: *mut OCIStmt,
-                                               mode: ub4)
-                                               -> sword>;
-pub type OCIEventCallback =
-    ::std::option::Option<unsafe extern "C" fn(evtctx: *mut ::std::os::raw::c_void,
-                                               eventhp: *mut OCIEvent)>;
-pub type OCIRoundTripCallback =
-    ::std::option::Option<unsafe extern "C" fn(rtctx: *mut ::std::os::raw::c_void,
-                                               svch: *mut OCISvcCtx,
-                                               userh: *mut OCISession)
-                                               -> sword>;
+pub type OCICallbackStmtCache = ::std::option::Option<
+    unsafe extern "C" fn(ctx: *mut ::std::os::raw::c_void, stmt: *mut OCIStmt, mode: ub4) -> sword,
+>;
+pub type OCIEventCallback = ::std::option::Option<
+    unsafe extern "C" fn(evtctx: *mut ::std::os::raw::c_void, eventhp: *mut OCIEvent),
+>;
+pub type OCIRoundTripCallback = ::std::option::Option<
+    unsafe extern "C" fn(
+        rtctx: *mut ::std::os::raw::c_void,
+        svch: *mut OCISvcCtx,
+        userh: *mut OCISession,
+    ) -> sword,
+>;
 extern "C" {
     /// ACTUAL PROTOTYPE DECLARATIONS
-    pub fn OCIInitialize(mode: ub4, ctxp: *mut ::std::os::raw::c_void,
-                         malocfp:
-                             ::std::option::Option<unsafe extern "C" fn(ctxp:
-                                                                            *mut ::std::os::raw::c_void,
-                                                                        size:
-                                                                            usize)
-                                                       ->
-                                                           *mut ::std::os::raw::c_void>,
-                         ralocfp:
-                             ::std::option::Option<unsafe extern "C" fn(ctxp:
-                                                                            *mut ::std::os::raw::c_void,
-                                                                        memptr:
-                                                                            *mut ::std::os::raw::c_void,
-                                                                        newsize:
-                                                                            usize)
-                                                       ->
-                                                           *mut ::std::os::raw::c_void>,
-                         mfreefp:
-                             ::std::option::Option<unsafe extern "C" fn(ctxp:
-                                                                            *mut ::std::os::raw::c_void,
-                                                                        memptr:
-                                                                            *mut ::std::os::raw::c_void)>)
--> sword;
+    pub fn OCIInitialize(
+        mode: ub4,
+        ctxp: *mut ::std::os::raw::c_void,
+        malocfp: ::std::option::Option<
+            unsafe extern "C" fn(ctxp: *mut ::std::os::raw::c_void, size: usize)
+                -> *mut ::std::os::raw::c_void,
+        >,
+        ralocfp: ::std::option::Option<
+            unsafe extern "C" fn(
+                ctxp: *mut ::std::os::raw::c_void,
+                memptr: *mut ::std::os::raw::c_void,
+                newsize: usize,
+            ) -> *mut ::std::os::raw::c_void,
+        >,
+        mfreefp: ::std::option::Option<
+            unsafe extern "C" fn(
+                ctxp: *mut ::std::os::raw::c_void,
+                memptr: *mut ::std::os::raw::c_void,
+            ),
+        >,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCITerminate(mode: ub4) -> sword;
 }
 extern "C" {
-    pub fn OCIEnvCreate(envp: *mut *mut OCIEnv, mode: ub4,
-                        ctxp: *mut ::std::os::raw::c_void,
-                        malocfp:
-                            ::std::option::Option<unsafe extern "C" fn(ctxp:
-                                                                           *mut ::std::os::raw::c_void,
-                                                                       size:
-                                                                           usize)
-                                                      ->
-                                                          *mut ::std::os::raw::c_void>,
-                        ralocfp:
-                            ::std::option::Option<unsafe extern "C" fn(ctxp:
-                                                                           *mut ::std::os::raw::c_void,
-                                                                       memptr:
-                                                                           *mut ::std::os::raw::c_void,
-                                                                       newsize:
-                                                                           usize)
-                                                      ->
-                                                          *mut ::std::os::raw::c_void>,
-                        mfreefp:
-                            ::std::option::Option<unsafe extern "C" fn(ctxp:
-                                                                           *mut ::std::os::raw::c_void,
-                                                                       memptr:
-                                                                           *mut ::std::os::raw::c_void)>,
-                        xtramem_sz: usize,
-usrmempp: *mut *mut ::std::os::raw::c_void) -> sword;
+    pub fn OCIEnvCreate(
+        envp: *mut *mut OCIEnv,
+        mode: ub4,
+        ctxp: *mut ::std::os::raw::c_void,
+        malocfp: ::std::option::Option<
+            unsafe extern "C" fn(ctxp: *mut ::std::os::raw::c_void, size: usize)
+                -> *mut ::std::os::raw::c_void,
+        >,
+        ralocfp: ::std::option::Option<
+            unsafe extern "C" fn(
+                ctxp: *mut ::std::os::raw::c_void,
+                memptr: *mut ::std::os::raw::c_void,
+                newsize: usize,
+            ) -> *mut ::std::os::raw::c_void,
+        >,
+        mfreefp: ::std::option::Option<
+            unsafe extern "C" fn(
+                ctxp: *mut ::std::os::raw::c_void,
+                memptr: *mut ::std::os::raw::c_void,
+            ),
+        >,
+        xtramem_sz: usize,
+        usrmempp: *mut *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIEnvNlsCreate(envp: *mut *mut OCIEnv, mode: ub4,
-                           ctxp: *mut ::std::os::raw::c_void,
-                           malocfp:
-                               ::std::option::Option<unsafe extern "C" fn(ctxp:
-                                                                              *mut ::std::os::raw::c_void,
-                                                                          size:
-                                                                              usize)
-                                                         ->
-                                                             *mut ::std::os::raw::c_void>,
-                           ralocfp:
-                               ::std::option::Option<unsafe extern "C" fn(ctxp:
-                                                                              *mut ::std::os::raw::c_void,
-                                                                          memptr:
-                                                                              *mut ::std::os::raw::c_void,
-                                                                          newsize:
-                                                                              usize)
-                                                         ->
-                                                             *mut ::std::os::raw::c_void>,
-                           mfreefp:
-                               ::std::option::Option<unsafe extern "C" fn(ctxp:
-                                                                              *mut ::std::os::raw::c_void,
-                                                                          memptr:
-                                                                              *mut ::std::os::raw::c_void)>,
-                           xtramem_sz: usize,
-                           usrmempp: *mut *mut ::std::os::raw::c_void,
-charset: ub2, ncharset: ub2) -> sword;
+    pub fn OCIEnvNlsCreate(
+        envp: *mut *mut OCIEnv,
+        mode: ub4,
+        ctxp: *mut ::std::os::raw::c_void,
+        malocfp: ::std::option::Option<
+            unsafe extern "C" fn(ctxp: *mut ::std::os::raw::c_void, size: usize)
+                -> *mut ::std::os::raw::c_void,
+        >,
+        ralocfp: ::std::option::Option<
+            unsafe extern "C" fn(
+                ctxp: *mut ::std::os::raw::c_void,
+                memptr: *mut ::std::os::raw::c_void,
+                newsize: usize,
+            ) -> *mut ::std::os::raw::c_void,
+        >,
+        mfreefp: ::std::option::Option<
+            unsafe extern "C" fn(
+                ctxp: *mut ::std::os::raw::c_void,
+                memptr: *mut ::std::os::raw::c_void,
+            ),
+        >,
+        xtramem_sz: usize,
+        usrmempp: *mut *mut ::std::os::raw::c_void,
+        charset: ub2,
+        ncharset: ub2,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIFEnvCreate(envp: *mut *mut OCIEnv, mode: ub4,
-                         ctxp: *mut ::std::os::raw::c_void,
-                         malocfp:
-                             ::std::option::Option<unsafe extern "C" fn(ctxp:
-                                                                            *mut ::std::os::raw::c_void,
-                                                                        size:
-                                                                            usize)
-                                                       ->
-                                                           *mut ::std::os::raw::c_void>,
-                         ralocfp:
-                             ::std::option::Option<unsafe extern "C" fn(ctxp:
-                                                                            *mut ::std::os::raw::c_void,
-                                                                        memptr:
-                                                                            *mut ::std::os::raw::c_void,
-                                                                        newsize:
-                                                                            usize)
-                                                       ->
-                                                           *mut ::std::os::raw::c_void>,
-                         mfreefp:
-                             ::std::option::Option<unsafe extern "C" fn(ctxp:
-                                                                            *mut ::std::os::raw::c_void,
-                                                                        memptr:
-                                                                            *mut ::std::os::raw::c_void)>,
-                         xtramem_sz: usize,
-                         usrmempp: *mut *mut ::std::os::raw::c_void,
-fupg: *mut ::std::os::raw::c_void) -> sword;
+    pub fn OCIFEnvCreate(
+        envp: *mut *mut OCIEnv,
+        mode: ub4,
+        ctxp: *mut ::std::os::raw::c_void,
+        malocfp: ::std::option::Option<
+            unsafe extern "C" fn(ctxp: *mut ::std::os::raw::c_void, size: usize)
+                -> *mut ::std::os::raw::c_void,
+        >,
+        ralocfp: ::std::option::Option<
+            unsafe extern "C" fn(
+                ctxp: *mut ::std::os::raw::c_void,
+                memptr: *mut ::std::os::raw::c_void,
+                newsize: usize,
+            ) -> *mut ::std::os::raw::c_void,
+        >,
+        mfreefp: ::std::option::Option<
+            unsafe extern "C" fn(
+                ctxp: *mut ::std::os::raw::c_void,
+                memptr: *mut ::std::os::raw::c_void,
+            ),
+        >,
+        xtramem_sz: usize,
+        usrmempp: *mut *mut ::std::os::raw::c_void,
+        fupg: *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIHandleAlloc(parenth: *const ::std::os::raw::c_void,
-                          hndlpp: *mut *mut ::std::os::raw::c_void,
-                          type_: ub4,
-                          xtramem_sz: usize,
-                          usrmempp: *mut *mut ::std::os::raw::c_void)
-                          -> sword;
+    pub fn OCIHandleAlloc(
+        parenth: *const ::std::os::raw::c_void,
+        hndlpp: *mut *mut ::std::os::raw::c_void,
+        type_: ub4,
+        xtramem_sz: usize,
+        usrmempp: *mut *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCIHandleFree(hndlp: *mut ::std::os::raw::c_void, type_: ub4) -> sword;
 }
 extern "C" {
-    pub fn OCIDescriptorAlloc(parenth: *const ::std::os::raw::c_void,
-                              descpp: *mut *mut ::std::os::raw::c_void,
-                              type_: ub4,
-                              xtramem_sz: usize,
-                              usrmempp: *mut *mut ::std::os::raw::c_void)
-                              -> sword;
+    pub fn OCIDescriptorAlloc(
+        parenth: *const ::std::os::raw::c_void,
+        descpp: *mut *mut ::std::os::raw::c_void,
+        type_: ub4,
+        xtramem_sz: usize,
+        usrmempp: *mut *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIArrayDescriptorAlloc(parenth: *const ::std::os::raw::c_void,
-                                   descpp: *mut *mut ::std::os::raw::c_void,
-                                   type_: ub4,
-                                   array_size: ub4,
-                                   xtramem_sz: usize,
-                                   usrmempp: *mut *mut ::std::os::raw::c_void)
-                                   -> sword;
+    pub fn OCIArrayDescriptorAlloc(
+        parenth: *const ::std::os::raw::c_void,
+        descpp: *mut *mut ::std::os::raw::c_void,
+        type_: ub4,
+        array_size: ub4,
+        xtramem_sz: usize,
+        usrmempp: *mut *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCIDescriptorFree(descp: *mut ::std::os::raw::c_void, type_: ub4) -> sword;
@@ -13610,368 +14586,402 @@ extern "C" {
     pub fn OCIArrayDescriptorFree(descp: *mut *mut ::std::os::raw::c_void, type_: ub4) -> sword;
 }
 extern "C" {
-    pub fn OCIEnvInit(envp: *mut *mut OCIEnv,
-                      mode: ub4,
-                      xtramem_sz: usize,
-                      usrmempp: *mut *mut ::std::os::raw::c_void)
-                      -> sword;
+    pub fn OCIEnvInit(
+        envp: *mut *mut OCIEnv,
+        mode: ub4,
+        xtramem_sz: usize,
+        usrmempp: *mut *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIServerAttach(srvhp: *mut OCIServer,
-                           errhp: *mut OCIError,
-                           dblink: *const OraText,
-                           dblink_len: sb4,
-                           mode: ub4)
-                           -> sword;
+    pub fn OCIServerAttach(
+        srvhp: *mut OCIServer,
+        errhp: *mut OCIError,
+        dblink: *const OraText,
+        dblink_len: sb4,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCIServerDetach(srvhp: *mut OCIServer, errhp: *mut OCIError, mode: ub4) -> sword;
 }
 extern "C" {
-    pub fn OCISessionBegin(svchp: *mut OCISvcCtx,
-                           errhp: *mut OCIError,
-                           usrhp: *mut OCISession,
-                           credt: ub4,
-                           mode: ub4)
-                           -> sword;
+    pub fn OCISessionBegin(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        usrhp: *mut OCISession,
+        credt: ub4,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISessionEnd(svchp: *mut OCISvcCtx,
-                         errhp: *mut OCIError,
-                         usrhp: *mut OCISession,
-                         mode: ub4)
-                         -> sword;
+    pub fn OCISessionEnd(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        usrhp: *mut OCISession,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILogon(envhp: *mut OCIEnv,
-                    errhp: *mut OCIError,
-                    svchp: *mut *mut OCISvcCtx,
-                    username: *const OraText,
-                    uname_len: ub4,
-                    password: *const OraText,
-                    passwd_len: ub4,
-                    dbname: *const OraText,
-                    dbname_len: ub4)
-                    -> sword;
+    pub fn OCILogon(
+        envhp: *mut OCIEnv,
+        errhp: *mut OCIError,
+        svchp: *mut *mut OCISvcCtx,
+        username: *const OraText,
+        uname_len: ub4,
+        password: *const OraText,
+        passwd_len: ub4,
+        dbname: *const OraText,
+        dbname_len: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILogon2(envhp: *mut OCIEnv,
-                     errhp: *mut OCIError,
-                     svchp: *mut *mut OCISvcCtx,
-                     username: *const OraText,
-                     uname_len: ub4,
-                     password: *const OraText,
-                     passwd_len: ub4,
-                     dbname: *const OraText,
-                     dbname_len: ub4,
-                     mode: ub4)
-                     -> sword;
+    pub fn OCILogon2(
+        envhp: *mut OCIEnv,
+        errhp: *mut OCIError,
+        svchp: *mut *mut OCISvcCtx,
+        username: *const OraText,
+        uname_len: ub4,
+        password: *const OraText,
+        passwd_len: ub4,
+        dbname: *const OraText,
+        dbname_len: ub4,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCILogoff(svchp: *mut OCISvcCtx, errhp: *mut OCIError) -> sword;
 }
 extern "C" {
-    pub fn OCIPasswordChange(svchp: *mut OCISvcCtx,
-                             errhp: *mut OCIError,
-                             user_name: *const OraText,
-                             usernm_len: ub4,
-                             opasswd: *const OraText,
-                             opasswd_len: ub4,
-                             npasswd: *const OraText,
-                             npasswd_len: ub4,
-                             mode: ub4)
-                             -> sword;
+    pub fn OCIPasswordChange(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        user_name: *const OraText,
+        usernm_len: ub4,
+        opasswd: *const OraText,
+        opasswd_len: ub4,
+        npasswd: *const OraText,
+        npasswd_len: ub4,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIStmtPrepare(stmtp: *mut OCIStmt,
-                          errhp: *mut OCIError,
-                          stmt: *const OraText,
-                          stmt_len: ub4,
-                          language: ub4,
-                          mode: ub4)
-                          -> sword;
+    pub fn OCIStmtPrepare(
+        stmtp: *mut OCIStmt,
+        errhp: *mut OCIError,
+        stmt: *const OraText,
+        stmt_len: ub4,
+        language: ub4,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIStmtPrepare2(svchp: *mut OCISvcCtx,
-                           stmtp: *mut *mut OCIStmt,
-                           errhp: *mut OCIError,
-                           stmt: *const OraText,
-                           stmt_len: ub4,
-                           key: *const OraText,
-                           key_len: ub4,
-                           language: ub4,
-                           mode: ub4)
-                           -> sword;
+    pub fn OCIStmtPrepare2(
+        svchp: *mut OCISvcCtx,
+        stmtp: *mut *mut OCIStmt,
+        errhp: *mut OCIError,
+        stmt: *const OraText,
+        stmt_len: ub4,
+        key: *const OraText,
+        key_len: ub4,
+        language: ub4,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIStmtRelease(stmtp: *mut OCIStmt,
-                          errhp: *mut OCIError,
-                          key: *const OraText,
-                          key_len: ub4,
-                          mode: ub4)
-                          -> sword;
+    pub fn OCIStmtRelease(
+        stmtp: *mut OCIStmt,
+        errhp: *mut OCIError,
+        key: *const OraText,
+        key_len: ub4,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIBindByPos(stmtp: *mut OCIStmt,
-                        bindp: *mut *mut OCIBind,
-                        errhp: *mut OCIError,
-                        position: ub4,
-                        valuep: *mut ::std::os::raw::c_void,
-                        value_sz: sb4,
-                        dty: ub2,
-                        indp: *mut ::std::os::raw::c_void,
-                        alenp: *mut ub2,
-                        rcodep: *mut ub2,
-                        maxarr_len: ub4,
-                        curelep: *mut ub4,
-                        mode: ub4)
-                        -> sword;
+    pub fn OCIBindByPos(
+        stmtp: *mut OCIStmt,
+        bindp: *mut *mut OCIBind,
+        errhp: *mut OCIError,
+        position: ub4,
+        valuep: *mut ::std::os::raw::c_void,
+        value_sz: sb4,
+        dty: ub2,
+        indp: *mut ::std::os::raw::c_void,
+        alenp: *mut ub2,
+        rcodep: *mut ub2,
+        maxarr_len: ub4,
+        curelep: *mut ub4,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIBindByPos2(stmtp: *mut OCIStmt,
-                         bindp: *mut *mut OCIBind,
-                         errhp: *mut OCIError,
-                         position: ub4,
-                         valuep: *mut ::std::os::raw::c_void,
-                         value_sz: sb8,
-                         dty: ub2,
-                         indp: *mut ::std::os::raw::c_void,
-                         alenp: *mut ub4,
-                         rcodep: *mut ub2,
-                         maxarr_len: ub4,
-                         curelep: *mut ub4,
-                         mode: ub4)
-                         -> sword;
+    pub fn OCIBindByPos2(
+        stmtp: *mut OCIStmt,
+        bindp: *mut *mut OCIBind,
+        errhp: *mut OCIError,
+        position: ub4,
+        valuep: *mut ::std::os::raw::c_void,
+        value_sz: sb8,
+        dty: ub2,
+        indp: *mut ::std::os::raw::c_void,
+        alenp: *mut ub4,
+        rcodep: *mut ub2,
+        maxarr_len: ub4,
+        curelep: *mut ub4,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIBindByName(stmtp: *mut OCIStmt,
-                         bindp: *mut *mut OCIBind,
-                         errhp: *mut OCIError,
-                         placeholder: *const OraText,
-                         placeh_len: sb4,
-                         valuep: *mut ::std::os::raw::c_void,
-                         value_sz: sb4,
-                         dty: ub2,
-                         indp: *mut ::std::os::raw::c_void,
-                         alenp: *mut ub2,
-                         rcodep: *mut ub2,
-                         maxarr_len: ub4,
-                         curelep: *mut ub4,
-                         mode: ub4)
-                         -> sword;
+    pub fn OCIBindByName(
+        stmtp: *mut OCIStmt,
+        bindp: *mut *mut OCIBind,
+        errhp: *mut OCIError,
+        placeholder: *const OraText,
+        placeh_len: sb4,
+        valuep: *mut ::std::os::raw::c_void,
+        value_sz: sb4,
+        dty: ub2,
+        indp: *mut ::std::os::raw::c_void,
+        alenp: *mut ub2,
+        rcodep: *mut ub2,
+        maxarr_len: ub4,
+        curelep: *mut ub4,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIBindByName2(stmtp: *mut OCIStmt,
-                          bindp: *mut *mut OCIBind,
-                          errhp: *mut OCIError,
-                          placeholder: *const OraText,
-                          placeh_len: sb4,
-                          valuep: *mut ::std::os::raw::c_void,
-                          value_sz: sb8,
-                          dty: ub2,
-                          indp: *mut ::std::os::raw::c_void,
-                          alenp: *mut ub4,
-                          rcodep: *mut ub2,
-                          maxarr_len: ub4,
-                          curelep: *mut ub4,
-                          mode: ub4)
-                          -> sword;
+    pub fn OCIBindByName2(
+        stmtp: *mut OCIStmt,
+        bindp: *mut *mut OCIBind,
+        errhp: *mut OCIError,
+        placeholder: *const OraText,
+        placeh_len: sb4,
+        valuep: *mut ::std::os::raw::c_void,
+        value_sz: sb8,
+        dty: ub2,
+        indp: *mut ::std::os::raw::c_void,
+        alenp: *mut ub4,
+        rcodep: *mut ub2,
+        maxarr_len: ub4,
+        curelep: *mut ub4,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIBindObject(bindp: *mut OCIBind,
-                         errhp: *mut OCIError,
-                         type_: *const OCIType,
-                         pgvpp: *mut *mut ::std::os::raw::c_void,
-                         pvszsp: *mut ub4,
-                         indpp: *mut *mut ::std::os::raw::c_void,
-                         indszp: *mut ub4)
-                         -> sword;
+    pub fn OCIBindObject(
+        bindp: *mut OCIBind,
+        errhp: *mut OCIError,
+        type_: *const OCIType,
+        pgvpp: *mut *mut ::std::os::raw::c_void,
+        pvszsp: *mut ub4,
+        indpp: *mut *mut ::std::os::raw::c_void,
+        indszp: *mut ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIBindDynamic(bindp: *mut OCIBind,
-                          errhp: *mut OCIError,
-                          ictxp: *mut ::std::os::raw::c_void,
-                          icbfp: OCICallbackInBind,
-                          octxp: *mut ::std::os::raw::c_void,
-                          ocbfp: OCICallbackOutBind)
-                          -> sword;
+    pub fn OCIBindDynamic(
+        bindp: *mut OCIBind,
+        errhp: *mut OCIError,
+        ictxp: *mut ::std::os::raw::c_void,
+        icbfp: OCICallbackInBind,
+        octxp: *mut ::std::os::raw::c_void,
+        ocbfp: OCICallbackOutBind,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIBindArrayOfStruct(bindp: *mut OCIBind,
-                                errhp: *mut OCIError,
-                                pvskip: ub4,
-                                indskip: ub4,
-                                alskip: ub4,
-                                rcskip: ub4)
-                                -> sword;
+    pub fn OCIBindArrayOfStruct(
+        bindp: *mut OCIBind,
+        errhp: *mut OCIError,
+        pvskip: ub4,
+        indskip: ub4,
+        alskip: ub4,
+        rcskip: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIStmtGetPieceInfo(stmtp: *mut OCIStmt,
-                               errhp: *mut OCIError,
-                               hndlpp: *mut *mut ::std::os::raw::c_void,
-                               typep: *mut ub4,
-                               in_outp: *mut ub1,
-                               iterp: *mut ub4,
-                               idxp: *mut ub4,
-                               piecep: *mut ub1)
-                               -> sword;
+    pub fn OCIStmtGetPieceInfo(
+        stmtp: *mut OCIStmt,
+        errhp: *mut OCIError,
+        hndlpp: *mut *mut ::std::os::raw::c_void,
+        typep: *mut ub4,
+        in_outp: *mut ub1,
+        iterp: *mut ub4,
+        idxp: *mut ub4,
+        piecep: *mut ub1,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIStmtSetPieceInfo(hndlp: *mut ::std::os::raw::c_void,
-                               type_: ub4,
-                               errhp: *mut OCIError,
-                               bufp: *const ::std::os::raw::c_void,
-                               alenp: *mut ub4,
-                               piece: ub1,
-                               indp: *const ::std::os::raw::c_void,
-                               rcodep: *mut ub2)
-                               -> sword;
+    pub fn OCIStmtSetPieceInfo(
+        hndlp: *mut ::std::os::raw::c_void,
+        type_: ub4,
+        errhp: *mut OCIError,
+        bufp: *const ::std::os::raw::c_void,
+        alenp: *mut ub4,
+        piece: ub1,
+        indp: *const ::std::os::raw::c_void,
+        rcodep: *mut ub2,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIStmtExecute(svchp: *mut OCISvcCtx,
-                          stmtp: *mut OCIStmt,
-                          errhp: *mut OCIError,
-                          iters: ub4,
-                          rowoff: ub4,
-                          snap_in: *const OCISnapshot,
-                          snap_out: *mut OCISnapshot,
-                          mode: ub4)
-                          -> sword;
+    pub fn OCIStmtExecute(
+        svchp: *mut OCISvcCtx,
+        stmtp: *mut OCIStmt,
+        errhp: *mut OCIError,
+        iters: ub4,
+        rowoff: ub4,
+        snap_in: *const OCISnapshot,
+        snap_out: *mut OCISnapshot,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIStmtGetNextResult(stmthp: *mut OCIStmt,
-                                errhp: *mut OCIError,
-                                result: *mut *mut ::std::os::raw::c_void,
-                                rtype: *mut ub4,
-                                mode: ub4)
-                                -> sword;
+    pub fn OCIStmtGetNextResult(
+        stmthp: *mut OCIStmt,
+        errhp: *mut OCIError,
+        result: *mut *mut ::std::os::raw::c_void,
+        rtype: *mut ub4,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDefineByPos(stmtp: *mut OCIStmt,
-                          defnp: *mut *mut OCIDefine,
-                          errhp: *mut OCIError,
-                          position: ub4,
-                          valuep: *mut ::std::os::raw::c_void,
-                          value_sz: sb4,
-                          dty: ub2,
-                          indp: *mut ::std::os::raw::c_void,
-                          rlenp: *mut ub2,
-                          rcodep: *mut ub2,
-                          mode: ub4)
-                          -> sword;
+    pub fn OCIDefineByPos(
+        stmtp: *mut OCIStmt,
+        defnp: *mut *mut OCIDefine,
+        errhp: *mut OCIError,
+        position: ub4,
+        valuep: *mut ::std::os::raw::c_void,
+        value_sz: sb4,
+        dty: ub2,
+        indp: *mut ::std::os::raw::c_void,
+        rlenp: *mut ub2,
+        rcodep: *mut ub2,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDefineByPos2(stmtp: *mut OCIStmt,
-                           defnp: *mut *mut OCIDefine,
-                           errhp: *mut OCIError,
-                           position: ub4,
-                           valuep: *mut ::std::os::raw::c_void,
-                           value_sz: sb8,
-                           dty: ub2,
-                           indp: *mut ::std::os::raw::c_void,
-                           rlenp: *mut ub4,
-                           rcodep: *mut ub2,
-                           mode: ub4)
-                           -> sword;
+    pub fn OCIDefineByPos2(
+        stmtp: *mut OCIStmt,
+        defnp: *mut *mut OCIDefine,
+        errhp: *mut OCIError,
+        position: ub4,
+        valuep: *mut ::std::os::raw::c_void,
+        value_sz: sb8,
+        dty: ub2,
+        indp: *mut ::std::os::raw::c_void,
+        rlenp: *mut ub4,
+        rcodep: *mut ub2,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDefineObject(defnp: *mut OCIDefine,
-                           errhp: *mut OCIError,
-                           type_: *const OCIType,
-                           pgvpp: *mut *mut ::std::os::raw::c_void,
-                           pvszsp: *mut ub4,
-                           indpp: *mut *mut ::std::os::raw::c_void,
-                           indszp: *mut ub4)
-                           -> sword;
+    pub fn OCIDefineObject(
+        defnp: *mut OCIDefine,
+        errhp: *mut OCIError,
+        type_: *const OCIType,
+        pgvpp: *mut *mut ::std::os::raw::c_void,
+        pvszsp: *mut ub4,
+        indpp: *mut *mut ::std::os::raw::c_void,
+        indszp: *mut ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDefineDynamic(defnp: *mut OCIDefine,
-                            errhp: *mut OCIError,
-                            octxp: *mut ::std::os::raw::c_void,
-                            ocbfp: OCICallbackDefine)
-                            -> sword;
+    pub fn OCIDefineDynamic(
+        defnp: *mut OCIDefine,
+        errhp: *mut OCIError,
+        octxp: *mut ::std::os::raw::c_void,
+        ocbfp: OCICallbackDefine,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIRowidToChar(rowidDesc: *mut OCIRowid,
-                          outbfp: *mut OraText,
-                          outbflp: *mut ub2,
-                          errhp: *mut OCIError)
-                          -> sword;
+    pub fn OCIRowidToChar(
+        rowidDesc: *mut OCIRowid,
+        outbfp: *mut OraText,
+        outbflp: *mut ub2,
+        errhp: *mut OCIError,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDefineArrayOfStruct(defnp: *mut OCIDefine,
-                                  errhp: *mut OCIError,
-                                  pvskip: ub4,
-                                  indskip: ub4,
-                                  rlskip: ub4,
-                                  rcskip: ub4)
-                                  -> sword;
+    pub fn OCIDefineArrayOfStruct(
+        defnp: *mut OCIDefine,
+        errhp: *mut OCIError,
+        pvskip: ub4,
+        indskip: ub4,
+        rlskip: ub4,
+        rcskip: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIStmtFetch(stmtp: *mut OCIStmt,
-                        errhp: *mut OCIError,
-                        nrows: ub4,
-                        orientation: ub2,
-                        mode: ub4)
-                        -> sword;
+    pub fn OCIStmtFetch(
+        stmtp: *mut OCIStmt,
+        errhp: *mut OCIError,
+        nrows: ub4,
+        orientation: ub2,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIStmtFetch2(stmtp: *mut OCIStmt,
-                         errhp: *mut OCIError,
-                         nrows: ub4,
-                         orientation: ub2,
-                         scrollOffset: sb4,
-                         mode: ub4)
-                         -> sword;
+    pub fn OCIStmtFetch2(
+        stmtp: *mut OCIStmt,
+        errhp: *mut OCIError,
+        nrows: ub4,
+        orientation: ub2,
+        scrollOffset: sb4,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIStmtGetBindInfo(stmtp: *mut OCIStmt,
-                              errhp: *mut OCIError,
-                              size: ub4,
-                              startloc: ub4,
-                              found: *mut sb4,
-                              bvnp: *mut *mut OraText,
-                              bvnl: *mut ub1,
-                              invp: *mut *mut OraText,
-                              inpl: *mut ub1,
-                              dupl: *mut ub1,
-                              hndl: *mut *mut OCIBind)
-                              -> sword;
+    pub fn OCIStmtGetBindInfo(
+        stmtp: *mut OCIStmt,
+        errhp: *mut OCIError,
+        size: ub4,
+        startloc: ub4,
+        found: *mut sb4,
+        bvnp: *mut *mut OraText,
+        bvnl: *mut ub1,
+        invp: *mut *mut OraText,
+        inpl: *mut ub1,
+        dupl: *mut ub1,
+        hndl: *mut *mut OCIBind,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDescribeAny(svchp: *mut OCISvcCtx,
-                          errhp: *mut OCIError,
-                          objptr: *mut ::std::os::raw::c_void,
-                          objnm_len: ub4,
-                          objptr_typ: ub1,
-                          info_level: ub1,
-                          objtyp: ub1,
-                          dschp: *mut OCIDescribe)
-                          -> sword;
+    pub fn OCIDescribeAny(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        objptr: *mut ::std::os::raw::c_void,
+        objnm_len: ub4,
+        objptr_typ: ub1,
+        info_level: ub1,
+        objtyp: ub1,
+        dschp: *mut OCIDescribe,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIParamGet(hndlp: *const ::std::os::raw::c_void,
-                       htype: ub4,
-                       errhp: *mut OCIError,
-                       parmdpp: *mut *mut ::std::os::raw::c_void,
-                       pos: ub4)
-                       -> sword;
+    pub fn OCIParamGet(
+        hndlp: *const ::std::os::raw::c_void,
+        htype: ub4,
+        errhp: *mut OCIError,
+        parmdpp: *mut *mut ::std::os::raw::c_void,
+        pos: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIParamSet(hdlp: *mut ::std::os::raw::c_void,
-                       htyp: ub4,
-                       errhp: *mut OCIError,
-                       dscp: *const ::std::os::raw::c_void,
-                       dtyp: ub4,
-                       pos: ub4)
-                       -> sword;
+    pub fn OCIParamSet(
+        hdlp: *mut ::std::os::raw::c_void,
+        htyp: ub4,
+        errhp: *mut OCIError,
+        dscp: *const ::std::os::raw::c_void,
+        dtyp: ub4,
+        pos: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITransStart(svchp: *mut OCISvcCtx,
-                         errhp: *mut OCIError,
-                         timeout: uword,
-                         flags: ub4)
-                         -> sword;
+    pub fn OCITransStart(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        timeout: uword,
+        flags: ub4,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCITransDetach(svchp: *mut OCISvcCtx, errhp: *mut OCIError, flags: ub4) -> sword;
@@ -13986,289 +14996,323 @@ extern "C" {
     pub fn OCITransPrepare(svchp: *mut OCISvcCtx, errhp: *mut OCIError, flags: ub4) -> sword;
 }
 extern "C" {
-    pub fn OCITransMultiPrepare(svchp: *mut OCISvcCtx,
-                                numBranches: ub4,
-                                txns: *mut *mut OCITrans,
-                                errhp: *mut *mut OCIError)
-                                -> sword;
+    pub fn OCITransMultiPrepare(
+        svchp: *mut OCISvcCtx,
+        numBranches: ub4,
+        txns: *mut *mut OCITrans,
+        errhp: *mut *mut OCIError,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCITransForget(svchp: *mut OCISvcCtx, errhp: *mut OCIError, flags: ub4) -> sword;
 }
 extern "C" {
-    pub fn OCIErrorGet(hndlp: *mut ::std::os::raw::c_void,
-                       recordno: ub4,
-                       sqlstate: *mut OraText,
-                       errcodep: *mut sb4,
-                       bufp: *mut OraText,
-                       bufsiz: ub4,
-                       type_: ub4)
-                       -> sword;
+    pub fn OCIErrorGet(
+        hndlp: *mut ::std::os::raw::c_void,
+        recordno: ub4,
+        sqlstate: *mut OraText,
+        errcodep: *mut sb4,
+        bufp: *mut OraText,
+        bufsiz: ub4,
+        type_: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobAppend(svchp: *mut OCISvcCtx,
-                        errhp: *mut OCIError,
-                        dst_locp: *mut OCILobLocator,
-                        src_locp: *mut OCILobLocator)
-                        -> sword;
+    pub fn OCILobAppend(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        dst_locp: *mut OCILobLocator,
+        src_locp: *mut OCILobLocator,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobAssign(envhp: *mut OCIEnv,
-                        errhp: *mut OCIError,
-                        src_locp: *const OCILobLocator,
-                        dst_locpp: *mut *mut OCILobLocator)
-                        -> sword;
+    pub fn OCILobAssign(
+        envhp: *mut OCIEnv,
+        errhp: *mut OCIError,
+        src_locp: *const OCILobLocator,
+        dst_locpp: *mut *mut OCILobLocator,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobCharSetForm(envhp: *mut OCIEnv,
-                             errhp: *mut OCIError,
-                             locp: *const OCILobLocator,
-                             csfrm: *mut ub1)
-                             -> sword;
+    pub fn OCILobCharSetForm(
+        envhp: *mut OCIEnv,
+        errhp: *mut OCIError,
+        locp: *const OCILobLocator,
+        csfrm: *mut ub1,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobCharSetId(envhp: *mut OCIEnv,
-                           errhp: *mut OCIError,
-                           locp: *const OCILobLocator,
-                           csid: *mut ub2)
-                           -> sword;
+    pub fn OCILobCharSetId(
+        envhp: *mut OCIEnv,
+        errhp: *mut OCIError,
+        locp: *const OCILobLocator,
+        csid: *mut ub2,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobCopy(svchp: *mut OCISvcCtx,
-                      errhp: *mut OCIError,
-                      dst_locp: *mut OCILobLocator,
-                      src_locp: *mut OCILobLocator,
-                      amount: ub4,
-                      dst_offset: ub4,
-                      src_offset: ub4)
-                      -> sword;
+    pub fn OCILobCopy(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        dst_locp: *mut OCILobLocator,
+        src_locp: *mut OCILobLocator,
+        amount: ub4,
+        dst_offset: ub4,
+        src_offset: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobCreateTemporary(svchp: *mut OCISvcCtx,
-                                 errhp: *mut OCIError,
-                                 locp: *mut OCILobLocator,
-                                 csid: ub2,
-                                 csfrm: ub1,
-                                 lobtype: ub1,
-                                 cache: boolean,
-                                 duration: OCIDuration)
-                                 -> sword;
+    pub fn OCILobCreateTemporary(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        locp: *mut OCILobLocator,
+        csid: ub2,
+        csfrm: ub1,
+        lobtype: ub1,
+        cache: boolean,
+        duration: OCIDuration,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobClose(svchp: *mut OCISvcCtx,
-                       errhp: *mut OCIError,
-                       locp: *mut OCILobLocator)
-                       -> sword;
+    pub fn OCILobClose(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        locp: *mut OCILobLocator,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobDisableBuffering(svchp: *mut OCISvcCtx,
-                                  errhp: *mut OCIError,
-                                  locp: *mut OCILobLocator)
-                                  -> sword;
+    pub fn OCILobDisableBuffering(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        locp: *mut OCILobLocator,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobEnableBuffering(svchp: *mut OCISvcCtx,
-                                 errhp: *mut OCIError,
-                                 locp: *mut OCILobLocator)
-                                 -> sword;
+    pub fn OCILobEnableBuffering(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        locp: *mut OCILobLocator,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobErase(svchp: *mut OCISvcCtx,
-                       errhp: *mut OCIError,
-                       locp: *mut OCILobLocator,
-                       amount: *mut ub4,
-                       offset: ub4)
-                       -> sword;
+    pub fn OCILobErase(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        locp: *mut OCILobLocator,
+        amount: *mut ub4,
+        offset: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobFileClose(svchp: *mut OCISvcCtx,
-                           errhp: *mut OCIError,
-                           filep: *mut OCILobLocator)
-                           -> sword;
+    pub fn OCILobFileClose(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        filep: *mut OCILobLocator,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCILobFileCloseAll(svchp: *mut OCISvcCtx, errhp: *mut OCIError) -> sword;
 }
 extern "C" {
-    pub fn OCILobFileExists(svchp: *mut OCISvcCtx,
-                            errhp: *mut OCIError,
-                            filep: *mut OCILobLocator,
-                            flag: *mut boolean)
-                            -> sword;
+    pub fn OCILobFileExists(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        filep: *mut OCILobLocator,
+        flag: *mut boolean,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobFileGetName(envhp: *mut OCIEnv,
-                             errhp: *mut OCIError,
-                             filep: *const OCILobLocator,
-                             dir_alias: *mut OraText,
-                             d_length: *mut ub2,
-                             filename: *mut OraText,
-                             f_length: *mut ub2)
-                             -> sword;
+    pub fn OCILobFileGetName(
+        envhp: *mut OCIEnv,
+        errhp: *mut OCIError,
+        filep: *const OCILobLocator,
+        dir_alias: *mut OraText,
+        d_length: *mut ub2,
+        filename: *mut OraText,
+        f_length: *mut ub2,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobFileIsOpen(svchp: *mut OCISvcCtx,
-                            errhp: *mut OCIError,
-                            filep: *mut OCILobLocator,
-                            flag: *mut boolean)
-                            -> sword;
+    pub fn OCILobFileIsOpen(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        filep: *mut OCILobLocator,
+        flag: *mut boolean,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobFileOpen(svchp: *mut OCISvcCtx,
-                          errhp: *mut OCIError,
-                          filep: *mut OCILobLocator,
-                          mode: ub1)
-                          -> sword;
+    pub fn OCILobFileOpen(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        filep: *mut OCILobLocator,
+        mode: ub1,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobFileSetName(envhp: *mut OCIEnv,
-                             errhp: *mut OCIError,
-                             filepp: *mut *mut OCILobLocator,
-                             dir_alias: *const OraText,
-                             d_length: ub2,
-                             filename: *const OraText,
-                             f_length: ub2)
-                             -> sword;
+    pub fn OCILobFileSetName(
+        envhp: *mut OCIEnv,
+        errhp: *mut OCIError,
+        filepp: *mut *mut OCILobLocator,
+        dir_alias: *const OraText,
+        d_length: ub2,
+        filename: *const OraText,
+        f_length: ub2,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobFlushBuffer(svchp: *mut OCISvcCtx,
-                             errhp: *mut OCIError,
-                             locp: *mut OCILobLocator,
-                             flag: ub4)
-                             -> sword;
+    pub fn OCILobFlushBuffer(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        locp: *mut OCILobLocator,
+        flag: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobFreeTemporary(svchp: *mut OCISvcCtx,
-                               errhp: *mut OCIError,
-                               locp: *mut OCILobLocator)
-                               -> sword;
+    pub fn OCILobFreeTemporary(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        locp: *mut OCILobLocator,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobGetChunkSize(svchp: *mut OCISvcCtx,
-                              errhp: *mut OCIError,
-                              locp: *mut OCILobLocator,
-                              chunksizep: *mut ub4)
-                              -> sword;
+    pub fn OCILobGetChunkSize(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        locp: *mut OCILobLocator,
+        chunksizep: *mut ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobGetLength(svchp: *mut OCISvcCtx,
-                           errhp: *mut OCIError,
-                           locp: *mut OCILobLocator,
-                           lenp: *mut ub4)
-                           -> sword;
+    pub fn OCILobGetLength(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        locp: *mut OCILobLocator,
+        lenp: *mut ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobIsEqual(envhp: *mut OCIEnv,
-                         x: *const OCILobLocator,
-                         y: *const OCILobLocator,
-                         is_equal: *mut boolean)
-                         -> sword;
+    pub fn OCILobIsEqual(
+        envhp: *mut OCIEnv,
+        x: *const OCILobLocator,
+        y: *const OCILobLocator,
+        is_equal: *mut boolean,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobIsOpen(svchp: *mut OCISvcCtx,
-                        errhp: *mut OCIError,
-                        locp: *mut OCILobLocator,
-                        flag: *mut boolean)
-                        -> sword;
+    pub fn OCILobIsOpen(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        locp: *mut OCILobLocator,
+        flag: *mut boolean,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobIsTemporary(envp: *mut OCIEnv,
-                             errhp: *mut OCIError,
-                             locp: *mut OCILobLocator,
-                             is_temporary: *mut boolean)
-                             -> sword;
+    pub fn OCILobIsTemporary(
+        envp: *mut OCIEnv,
+        errhp: *mut OCIError,
+        locp: *mut OCILobLocator,
+        is_temporary: *mut boolean,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobLoadFromFile(svchp: *mut OCISvcCtx,
-                              errhp: *mut OCIError,
-                              dst_locp: *mut OCILobLocator,
-                              src_filep: *mut OCILobLocator,
-                              amount: ub4,
-                              dst_offset: ub4,
-                              src_offset: ub4)
-                              -> sword;
+    pub fn OCILobLoadFromFile(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        dst_locp: *mut OCILobLocator,
+        src_filep: *mut OCILobLocator,
+        amount: ub4,
+        dst_offset: ub4,
+        src_offset: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobLocatorAssign(svchp: *mut OCISvcCtx,
-                               errhp: *mut OCIError,
-                               src_locp: *const OCILobLocator,
-                               dst_locpp: *mut *mut OCILobLocator)
-                               -> sword;
+    pub fn OCILobLocatorAssign(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        src_locp: *const OCILobLocator,
+        dst_locpp: *mut *mut OCILobLocator,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobLocatorIsInit(envhp: *mut OCIEnv,
-                               errhp: *mut OCIError,
-                               locp: *const OCILobLocator,
-                               is_initialized: *mut boolean)
-                               -> sword;
+    pub fn OCILobLocatorIsInit(
+        envhp: *mut OCIEnv,
+        errhp: *mut OCIError,
+        locp: *const OCILobLocator,
+        is_initialized: *mut boolean,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobOpen(svchp: *mut OCISvcCtx,
-                      errhp: *mut OCIError,
-                      locp: *mut OCILobLocator,
-                      mode: ub1)
-                      -> sword;
+    pub fn OCILobOpen(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        locp: *mut OCILobLocator,
+        mode: ub1,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobRead(svchp: *mut OCISvcCtx,
-                      errhp: *mut OCIError,
-                      locp: *mut OCILobLocator,
-                      amtp: *mut ub4,
-                      offset: ub4,
-                      bufp: *mut ::std::os::raw::c_void,
-                      bufl: ub4,
-                      ctxp: *mut ::std::os::raw::c_void,
-                      cbfp: OCICallbackLobRead,
-                      csid: ub2,
-                      csfrm: ub1)
-                      -> sword;
+    pub fn OCILobRead(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        locp: *mut OCILobLocator,
+        amtp: *mut ub4,
+        offset: ub4,
+        bufp: *mut ::std::os::raw::c_void,
+        bufl: ub4,
+        ctxp: *mut ::std::os::raw::c_void,
+        cbfp: OCICallbackLobRead,
+        csid: ub2,
+        csfrm: ub1,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobTrim(svchp: *mut OCISvcCtx,
-                      errhp: *mut OCIError,
-                      locp: *mut OCILobLocator,
-                      newlen: ub4)
-                      -> sword;
+    pub fn OCILobTrim(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        locp: *mut OCILobLocator,
+        newlen: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobWrite(svchp: *mut OCISvcCtx,
-                       errhp: *mut OCIError,
-                       locp: *mut OCILobLocator,
-                       amtp: *mut ub4,
-                       offset: ub4,
-                       bufp: *mut ::std::os::raw::c_void,
-                       buflen: ub4,
-                       piece: ub1,
-                       ctxp: *mut ::std::os::raw::c_void,
-                       cbfp: OCICallbackLobWrite,
-                       csid: ub2,
-                       csfrm: ub1)
-                       -> sword;
+    pub fn OCILobWrite(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        locp: *mut OCILobLocator,
+        amtp: *mut ub4,
+        offset: ub4,
+        bufp: *mut ::std::os::raw::c_void,
+        buflen: ub4,
+        piece: ub1,
+        ctxp: *mut ::std::os::raw::c_void,
+        cbfp: OCICallbackLobWrite,
+        csid: ub2,
+        csfrm: ub1,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobGetDeduplicateRegions(svchp: *mut OCISvcCtx,
-                                       errhp: *mut OCIError,
-                                       locp: *mut OCILobLocator,
-                                       regp: *mut OCILobRegion,
-                                       count: *mut ub4,
-                                       piece: ub1,
-                                       ctxp: *mut ::std::os::raw::c_void,
-                                       cbfp: OCICallbackLobGetDeduplicateRegions)
-                                       -> sword;
+    pub fn OCILobGetDeduplicateRegions(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        locp: *mut OCILobLocator,
+        regp: *mut OCILobRegion,
+        count: *mut ub4,
+        piece: ub1,
+        ctxp: *mut ::std::os::raw::c_void,
+        cbfp: OCICallbackLobGetDeduplicateRegions,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobWriteAppend(svchp: *mut OCISvcCtx,
-                             errhp: *mut OCIError,
-                             lobp: *mut OCILobLocator,
-                             amtp: *mut ub4,
-                             bufp: *mut ::std::os::raw::c_void,
-                             bufl: ub4,
-                             piece: ub1,
-                             ctxp: *mut ::std::os::raw::c_void,
-                             cbfp: OCICallbackLobWrite,
-                             csid: ub2,
-                             csfrm: ub1)
-                             -> sword;
+    pub fn OCILobWriteAppend(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        lobp: *mut OCILobLocator,
+        amtp: *mut ub4,
+        bufp: *mut ::std::os::raw::c_void,
+        bufl: ub4,
+        piece: ub1,
+        ctxp: *mut ::std::os::raw::c_void,
+        cbfp: OCICallbackLobWrite,
+        csid: ub2,
+        csfrm: ub1,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCIBreak(hndlp: *mut ::std::os::raw::c_void, errhp: *mut OCIError) -> sword;
@@ -14277,811 +15321,891 @@ extern "C" {
     pub fn OCIReset(hndlp: *mut ::std::os::raw::c_void, errhp: *mut OCIError) -> sword;
 }
 extern "C" {
-    pub fn OCIServerVersion(hndlp: *mut ::std::os::raw::c_void,
-                            errhp: *mut OCIError,
-                            bufp: *mut OraText,
-                            bufsz: ub4,
-                            hndltype: ub1)
-                            -> sword;
+    pub fn OCIServerVersion(
+        hndlp: *mut ::std::os::raw::c_void,
+        errhp: *mut OCIError,
+        bufp: *mut OraText,
+        bufsz: ub4,
+        hndltype: ub1,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIServerRelease(hndlp: *mut ::std::os::raw::c_void,
-                            errhp: *mut OCIError,
-                            bufp: *mut OraText,
-                            bufsz: ub4,
-                            hndltype: ub1,
-                            version: *mut ub4)
-                            -> sword;
+    pub fn OCIServerRelease(
+        hndlp: *mut ::std::os::raw::c_void,
+        errhp: *mut OCIError,
+        bufp: *mut OraText,
+        bufsz: ub4,
+        hndltype: ub1,
+        version: *mut ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAttrGet(trgthndlp: *const ::std::os::raw::c_void,
-                      trghndltyp: ub4,
-                      attributep: *mut ::std::os::raw::c_void,
-                      sizep: *mut ub4,
-                      attrtype: ub4,
-                      errhp: *mut OCIError)
-                      -> sword;
+    pub fn OCIAttrGet(
+        trgthndlp: *const ::std::os::raw::c_void,
+        trghndltyp: ub4,
+        attributep: *mut ::std::os::raw::c_void,
+        sizep: *mut ub4,
+        attrtype: ub4,
+        errhp: *mut OCIError,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAttrSet(trgthndlp: *mut ::std::os::raw::c_void,
-                      trghndltyp: ub4,
-                      attributep: *mut ::std::os::raw::c_void,
-                      size: ub4,
-                      attrtype: ub4,
-                      errhp: *mut OCIError)
-                      -> sword;
+    pub fn OCIAttrSet(
+        trgthndlp: *mut ::std::os::raw::c_void,
+        trghndltyp: ub4,
+        attributep: *mut ::std::os::raw::c_void,
+        size: ub4,
+        attrtype: ub4,
+        errhp: *mut OCIError,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISvcCtxToLda(svchp: *mut OCISvcCtx,
-                          errhp: *mut OCIError,
-                          ldap: *mut Lda_Def)
-                          -> sword;
+    pub fn OCISvcCtxToLda(svchp: *mut OCISvcCtx, errhp: *mut OCIError, ldap: *mut Lda_Def)
+        -> sword;
 }
 extern "C" {
-    pub fn OCILdaToSvcCtx(svchpp: *mut *mut OCISvcCtx,
-                          errhp: *mut OCIError,
-                          ldap: *mut Lda_Def)
-                          -> sword;
+    pub fn OCILdaToSvcCtx(
+        svchpp: *mut *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        ldap: *mut Lda_Def,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCIResultSetToStmt(rsetdp: *mut OCIResult, errhp: *mut OCIError) -> sword;
 }
 extern "C" {
-    pub fn OCIFileClose(hndl: *mut ::std::os::raw::c_void,
-                        err: *mut OCIError,
-                        filep: *mut OCIFileObject)
-                        -> sword;
+    pub fn OCIFileClose(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        filep: *mut OCIFileObject,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIUserCallbackRegister(hndlp: *mut ::std::os::raw::c_void,
-                                   type_: ub4,
-                                   ehndlp: *mut ::std::os::raw::c_void,
-                                   callback: OCIUserCallback,
-                                   ctxp: *mut ::std::os::raw::c_void,
-                                   fcode: ub4,
-                                   when: ub4,
-                                   ucbDesc: *mut OCIUcb)
-                                   -> sword;
+    pub fn OCIUserCallbackRegister(
+        hndlp: *mut ::std::os::raw::c_void,
+        type_: ub4,
+        ehndlp: *mut ::std::os::raw::c_void,
+        callback: OCIUserCallback,
+        ctxp: *mut ::std::os::raw::c_void,
+        fcode: ub4,
+        when: ub4,
+        ucbDesc: *mut OCIUcb,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIUserCallbackGet(hndlp: *mut ::std::os::raw::c_void,
-                              type_: ub4,
-                              ehndlp: *mut ::std::os::raw::c_void,
-                              fcode: ub4,
-                              when: ub4,
-                              callbackp: *mut OCIUserCallback,
-                              ctxpp: *mut *mut ::std::os::raw::c_void,
-                              ucbDesc: *mut OCIUcb)
-                              -> sword;
+    pub fn OCIUserCallbackGet(
+        hndlp: *mut ::std::os::raw::c_void,
+        type_: ub4,
+        ehndlp: *mut ::std::os::raw::c_void,
+        fcode: ub4,
+        when: ub4,
+        callbackp: *mut OCIUserCallback,
+        ctxpp: *mut *mut ::std::os::raw::c_void,
+        ucbDesc: *mut OCIUcb,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISharedLibInit(metaCtx: *mut ::std::os::raw::c_void,
-                            libCtx: *mut ::std::os::raw::c_void,
-                            argfmt: ub4,
-                            argc: sword,
-                            argv: *mut *mut ::std::os::raw::c_void,
-                            envCallback: OCIEnvCallbackType)
-                            -> sword;
+    pub fn OCISharedLibInit(
+        metaCtx: *mut ::std::os::raw::c_void,
+        libCtx: *mut ::std::os::raw::c_void,
+        argfmt: ub4,
+        argc: sword,
+        argv: *mut *mut ::std::os::raw::c_void,
+        envCallback: OCIEnvCallbackType,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIFileExists(hndl: *mut ::std::os::raw::c_void,
-                         err: *mut OCIError,
-                         filename: *mut OraText,
-                         path: *mut OraText,
-                         flag: *mut ub1)
-                         -> sword;
+    pub fn OCIFileExists(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        filename: *mut OraText,
+        path: *mut OraText,
+        flag: *mut ub1,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIFileFlush(hndl: *mut ::std::os::raw::c_void,
-                        err: *mut OCIError,
-                        filep: *mut OCIFileObject)
-                        -> sword;
+    pub fn OCIFileFlush(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        filep: *mut OCIFileObject,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIFileGetLength(hndl: *mut ::std::os::raw::c_void,
-                            err: *mut OCIError,
-                            filename: *mut OraText,
-                            path: *mut OraText,
-                            lenp: *mut ubig_ora)
-                            -> sword;
+    pub fn OCIFileGetLength(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        filename: *mut OraText,
+        path: *mut OraText,
+        lenp: *mut ubig_ora,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCIFileInit(hndl: *mut ::std::os::raw::c_void, err: *mut OCIError) -> sword;
 }
 extern "C" {
-    pub fn OCIFileOpen(hndl: *mut ::std::os::raw::c_void,
-                       err: *mut OCIError,
-                       filep: *mut *mut OCIFileObject,
-                       filename: *mut OraText,
-                       path: *mut OraText,
-                       mode: ub4,
-                       create: ub4,
-                       type_: ub4)
-                       -> sword;
+    pub fn OCIFileOpen(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        filep: *mut *mut OCIFileObject,
+        filename: *mut OraText,
+        path: *mut OraText,
+        mode: ub4,
+        create: ub4,
+        type_: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIFileRead(hndl: *mut ::std::os::raw::c_void,
-                       err: *mut OCIError,
-                       filep: *mut OCIFileObject,
-                       bufp: *mut ::std::os::raw::c_void,
-                       bufl: ub4,
-                       bytesread: *mut ub4)
-                       -> sword;
+    pub fn OCIFileRead(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        filep: *mut OCIFileObject,
+        bufp: *mut ::std::os::raw::c_void,
+        bufl: ub4,
+        bytesread: *mut ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIFileSeek(hndl: *mut ::std::os::raw::c_void,
-                       err: *mut OCIError,
-                       filep: *mut OCIFileObject,
-                       origin: uword,
-                       offset: ubig_ora,
-                       dir: sb1)
-                       -> sword;
+    pub fn OCIFileSeek(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        filep: *mut OCIFileObject,
+        origin: uword,
+        offset: ubig_ora,
+        dir: sb1,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCIFileTerm(hndl: *mut ::std::os::raw::c_void, err: *mut OCIError) -> sword;
 }
 extern "C" {
-    pub fn OCIFileWrite(hndl: *mut ::std::os::raw::c_void,
-                        err: *mut OCIError,
-                        filep: *mut OCIFileObject,
-                        bufp: *mut ::std::os::raw::c_void,
-                        buflen: ub4,
-                        byteswritten: *mut ub4)
-                        -> sword;
+    pub fn OCIFileWrite(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        filep: *mut OCIFileObject,
+        bufp: *mut ::std::os::raw::c_void,
+        buflen: ub4,
+        byteswritten: *mut ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobCopy2(svchp: *mut OCISvcCtx,
-                       errhp: *mut OCIError,
-                       dst_locp: *mut OCILobLocator,
-                       src_locp: *mut OCILobLocator,
-                       amount: oraub8,
-                       dst_offset: oraub8,
-                       src_offset: oraub8)
-                       -> sword;
+    pub fn OCILobCopy2(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        dst_locp: *mut OCILobLocator,
+        src_locp: *mut OCILobLocator,
+        amount: oraub8,
+        dst_offset: oraub8,
+        src_offset: oraub8,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobErase2(svchp: *mut OCISvcCtx,
-                        errhp: *mut OCIError,
-                        locp: *mut OCILobLocator,
-                        amount: *mut oraub8,
-                        offset: oraub8)
-                        -> sword;
+    pub fn OCILobErase2(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        locp: *mut OCILobLocator,
+        amount: *mut oraub8,
+        offset: oraub8,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobGetLength2(svchp: *mut OCISvcCtx,
-                            errhp: *mut OCIError,
-                            locp: *mut OCILobLocator,
-                            lenp: *mut oraub8)
-                            -> sword;
+    pub fn OCILobGetLength2(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        locp: *mut OCILobLocator,
+        lenp: *mut oraub8,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobLoadFromFile2(svchp: *mut OCISvcCtx,
-                               errhp: *mut OCIError,
-                               dst_locp: *mut OCILobLocator,
-                               src_filep: *mut OCILobLocator,
-                               amount: oraub8,
-                               dst_offset: oraub8,
-                               src_offset: oraub8)
-                               -> sword;
+    pub fn OCILobLoadFromFile2(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        dst_locp: *mut OCILobLocator,
+        src_filep: *mut OCILobLocator,
+        amount: oraub8,
+        dst_offset: oraub8,
+        src_offset: oraub8,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobRead2(svchp: *mut OCISvcCtx,
-                       errhp: *mut OCIError,
-                       locp: *mut OCILobLocator,
-                       byte_amtp: *mut oraub8,
-                       char_amtp: *mut oraub8,
-                       offset: oraub8,
-                       bufp: *mut ::std::os::raw::c_void,
-                       bufl: oraub8,
-                       piece: ub1,
-                       ctxp: *mut ::std::os::raw::c_void,
-                       cbfp: OCICallbackLobRead2,
-                       csid: ub2,
-                       csfrm: ub1)
-                       -> sword;
+    pub fn OCILobRead2(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        locp: *mut OCILobLocator,
+        byte_amtp: *mut oraub8,
+        char_amtp: *mut oraub8,
+        offset: oraub8,
+        bufp: *mut ::std::os::raw::c_void,
+        bufl: oraub8,
+        piece: ub1,
+        ctxp: *mut ::std::os::raw::c_void,
+        cbfp: OCICallbackLobRead2,
+        csid: ub2,
+        csfrm: ub1,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobArrayRead(svchp: *mut OCISvcCtx,
-                           errhp: *mut OCIError,
-                           array_iter: *mut ub4,
-                           lobp_arr: *mut *mut OCILobLocator,
-                           byte_amt_arr: *mut oraub8,
-                           char_amt_arr: *mut oraub8,
-                           offset_arr: *mut oraub8,
-                           bufp_arr: *mut *mut ::std::os::raw::c_void,
-                           bufl_arr: *mut oraub8,
-                           piece: ub1,
-                           ctxp: *mut ::std::os::raw::c_void,
-                           cbfp: OCICallbackLobArrayRead,
-                           csid: ub2,
-                           csfrm: ub1)
-                           -> sword;
+    pub fn OCILobArrayRead(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        array_iter: *mut ub4,
+        lobp_arr: *mut *mut OCILobLocator,
+        byte_amt_arr: *mut oraub8,
+        char_amt_arr: *mut oraub8,
+        offset_arr: *mut oraub8,
+        bufp_arr: *mut *mut ::std::os::raw::c_void,
+        bufl_arr: *mut oraub8,
+        piece: ub1,
+        ctxp: *mut ::std::os::raw::c_void,
+        cbfp: OCICallbackLobArrayRead,
+        csid: ub2,
+        csfrm: ub1,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobTrim2(svchp: *mut OCISvcCtx,
-                       errhp: *mut OCIError,
-                       locp: *mut OCILobLocator,
-                       newlen: oraub8)
-                       -> sword;
+    pub fn OCILobTrim2(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        locp: *mut OCILobLocator,
+        newlen: oraub8,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobWrite2(svchp: *mut OCISvcCtx,
-                        errhp: *mut OCIError,
-                        locp: *mut OCILobLocator,
-                        byte_amtp: *mut oraub8,
-                        char_amtp: *mut oraub8,
-                        offset: oraub8,
-                        bufp: *mut ::std::os::raw::c_void,
-                        buflen: oraub8,
-                        piece: ub1,
-                        ctxp: *mut ::std::os::raw::c_void,
-                        cbfp: OCICallbackLobWrite2,
-                        csid: ub2,
-                        csfrm: ub1)
-                        -> sword;
+    pub fn OCILobWrite2(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        locp: *mut OCILobLocator,
+        byte_amtp: *mut oraub8,
+        char_amtp: *mut oraub8,
+        offset: oraub8,
+        bufp: *mut ::std::os::raw::c_void,
+        buflen: oraub8,
+        piece: ub1,
+        ctxp: *mut ::std::os::raw::c_void,
+        cbfp: OCICallbackLobWrite2,
+        csid: ub2,
+        csfrm: ub1,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobArrayWrite(svchp: *mut OCISvcCtx,
-                            errhp: *mut OCIError,
-                            array_iter: *mut ub4,
-                            lobp_arr: *mut *mut OCILobLocator,
-                            byte_amt_arr: *mut oraub8,
-                            char_amt_arr: *mut oraub8,
-                            offset_arr: *mut oraub8,
-                            bufp_arr: *mut *mut ::std::os::raw::c_void,
-                            bufl_arr: *mut oraub8,
-                            piece: ub1,
-                            ctxp: *mut ::std::os::raw::c_void,
-                            cbfp: OCICallbackLobArrayWrite,
-                            csid: ub2,
-                            csfrm: ub1)
-                            -> sword;
+    pub fn OCILobArrayWrite(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        array_iter: *mut ub4,
+        lobp_arr: *mut *mut OCILobLocator,
+        byte_amt_arr: *mut oraub8,
+        char_amt_arr: *mut oraub8,
+        offset_arr: *mut oraub8,
+        bufp_arr: *mut *mut ::std::os::raw::c_void,
+        bufl_arr: *mut oraub8,
+        piece: ub1,
+        ctxp: *mut ::std::os::raw::c_void,
+        cbfp: OCICallbackLobArrayWrite,
+        csid: ub2,
+        csfrm: ub1,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobWriteAppend2(svchp: *mut OCISvcCtx,
-                              errhp: *mut OCIError,
-                              lobp: *mut OCILobLocator,
-                              byte_amtp: *mut oraub8,
-                              char_amtp: *mut oraub8,
-                              bufp: *mut ::std::os::raw::c_void,
-                              bufl: oraub8,
-                              piece: ub1,
-                              ctxp: *mut ::std::os::raw::c_void,
-                              cbfp: OCICallbackLobWrite2,
-                              csid: ub2,
-                              csfrm: ub1)
-                              -> sword;
+    pub fn OCILobWriteAppend2(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        lobp: *mut OCILobLocator,
+        byte_amtp: *mut oraub8,
+        char_amtp: *mut oraub8,
+        bufp: *mut ::std::os::raw::c_void,
+        bufl: oraub8,
+        piece: ub1,
+        ctxp: *mut ::std::os::raw::c_void,
+        cbfp: OCICallbackLobWrite2,
+        csid: ub2,
+        csfrm: ub1,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobGetStorageLimit(svchp: *mut OCISvcCtx,
-                                 errhp: *mut OCIError,
-                                 lobp: *mut OCILobLocator,
-                                 limitp: *mut oraub8)
-                                 -> sword;
+    pub fn OCILobGetStorageLimit(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        lobp: *mut OCILobLocator,
+        limitp: *mut oraub8,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobGetOptions(svchp: *mut OCISvcCtx,
-                            errhp: *mut OCIError,
-                            lobp: *mut OCILobLocator,
-                            optypes: ub4,
-                            optionsp: *mut ::std::os::raw::c_void,
-                            optionslenp: *mut ub4,
-                            mode: ub4)
-                            -> sword;
+    pub fn OCILobGetOptions(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        lobp: *mut OCILobLocator,
+        optypes: ub4,
+        optionsp: *mut ::std::os::raw::c_void,
+        optionslenp: *mut ub4,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobSetOptions(svchp: *mut OCISvcCtx,
-                            errhp: *mut OCIError,
-                            lobp: *mut OCILobLocator,
-                            optypes: ub4,
-                            optionsp: *mut ::std::os::raw::c_void,
-                            optionslen: ub4,
-                            mode: ub4)
-                            -> sword;
+    pub fn OCILobSetOptions(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        lobp: *mut OCILobLocator,
+        optypes: ub4,
+        optionsp: *mut ::std::os::raw::c_void,
+        optionslen: ub4,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobGetContentType(svchp: *mut OCISvcCtx,
-                                errhp: *mut OCIError,
-                                lobp: *mut OCILobLocator,
-                                contenttypep: *mut oratext,
-                                contenttypelenp: *mut ub4,
-                                mode: ub4)
-                                -> sword;
+    pub fn OCILobGetContentType(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        lobp: *mut OCILobLocator,
+        contenttypep: *mut oratext,
+        contenttypelenp: *mut ub4,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILobSetContentType(svchp: *mut OCISvcCtx,
-                                errhp: *mut OCIError,
-                                lobp: *mut OCILobLocator,
-                                contenttypep: *const oratext,
-                                contenttypelen: ub4,
-                                mode: ub4)
-                                -> sword;
+    pub fn OCILobSetContentType(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        lobp: *mut OCILobLocator,
+        contenttypep: *const oratext,
+        contenttypelen: ub4,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityInitialize(sechandle: *mut OCISecurity,
-                                 error_handle: *mut OCIError)
-                                 -> sword;
+    pub fn OCISecurityInitialize(sechandle: *mut OCISecurity, error_handle: *mut OCIError)
+        -> sword;
 }
 extern "C" {
     pub fn OCISecurityTerminate(sechandle: *mut OCISecurity, error_handle: *mut OCIError) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityOpenWallet(osshandle: *mut OCISecurity,
-                                 error_handle: *mut OCIError,
-                                 wrllen: usize,
-                                 wallet_resource_locator: *mut OraText,
-                                 pwdlen: usize,
-                                 password: *mut OraText,
-                                 wallet: *mut nzttWallet)
-                                 -> sword;
+    pub fn OCISecurityOpenWallet(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        wrllen: usize,
+        wallet_resource_locator: *mut OraText,
+        pwdlen: usize,
+        password: *mut OraText,
+        wallet: *mut nzttWallet,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityCloseWallet(osshandle: *mut OCISecurity,
-                                  error_handle: *mut OCIError,
-                                  wallet: *mut nzttWallet)
-                                  -> sword;
+    pub fn OCISecurityCloseWallet(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        wallet: *mut nzttWallet,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityCreateWallet(osshandle: *mut OCISecurity,
-                                   error_handle: *mut OCIError,
-                                   wrllen: usize,
-                                   wallet_resource_locator: *mut OraText,
-                                   pwdlen: usize,
-                                   password: *mut OraText,
-                                   wallet: *mut nzttWallet)
-                                   -> sword;
+    pub fn OCISecurityCreateWallet(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        wrllen: usize,
+        wallet_resource_locator: *mut OraText,
+        pwdlen: usize,
+        password: *mut OraText,
+        wallet: *mut nzttWallet,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityDestroyWallet(osshandle: *mut OCISecurity,
-                                    error_handle: *mut OCIError,
-                                    wrllen: usize,
-                                    wallet_resource_locator: *mut OraText,
-                                    pwdlen: usize,
-                                    password: *mut OraText)
-                                    -> sword;
+    pub fn OCISecurityDestroyWallet(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        wrllen: usize,
+        wallet_resource_locator: *mut OraText,
+        pwdlen: usize,
+        password: *mut OraText,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityStorePersona(osshandle: *mut OCISecurity,
-                                   error_handle: *mut OCIError,
-                                   persona: *mut *mut nzttPersona,
-                                   wallet: *mut nzttWallet)
-                                   -> sword;
+    pub fn OCISecurityStorePersona(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut *mut nzttPersona,
+        wallet: *mut nzttWallet,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityOpenPersona(osshandle: *mut OCISecurity,
-                                  error_handle: *mut OCIError,
-                                  persona: *mut nzttPersona)
-                                  -> sword;
+    pub fn OCISecurityOpenPersona(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityClosePersona(osshandle: *mut OCISecurity,
-                                   error_handle: *mut OCIError,
-                                   persona: *mut nzttPersona)
-                                   -> sword;
+    pub fn OCISecurityClosePersona(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityRemovePersona(osshandle: *mut OCISecurity,
-                                    error_handle: *mut OCIError,
-                                    persona: *mut *mut nzttPersona)
-                                    -> sword;
+    pub fn OCISecurityRemovePersona(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut *mut nzttPersona,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityCreatePersona(osshandle: *mut OCISecurity,
-                                    error_handle: *mut OCIError,
-                                    identity_type: nzttIdentType,
-                                    cipher_type: nzttCipherType,
-                                    desc: *mut nzttPersonaDesc,
-                                    persona: *mut *mut nzttPersona)
-                                    -> sword;
+    pub fn OCISecurityCreatePersona(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        identity_type: nzttIdentType,
+        cipher_type: nzttCipherType,
+        desc: *mut nzttPersonaDesc,
+        persona: *mut *mut nzttPersona,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecuritySetProtection(osshandle: *mut OCISecurity,
-                                    error_handle: *mut OCIError,
-                                    persona: *mut nzttPersona,
-                                    crypto_engine_function: nzttcef,
-                                    data_unit_format: nztttdufmt,
-                                    protection_info: *mut nzttProtInfo)
-                                    -> sword;
+    pub fn OCISecuritySetProtection(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+        crypto_engine_function: nzttcef,
+        data_unit_format: nztttdufmt,
+        protection_info: *mut nzttProtInfo,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityGetProtection(osshandle: *mut OCISecurity,
-                                    error_handle: *mut OCIError,
-                                    persona: *mut nzttPersona,
-                                    crypto_engine_function: nzttcef,
-                                    data_unit_format_ptr: *mut nztttdufmt,
-                                    protection_info: *mut nzttProtInfo)
-                                    -> sword;
+    pub fn OCISecurityGetProtection(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+        crypto_engine_function: nzttcef,
+        data_unit_format_ptr: *mut nztttdufmt,
+        protection_info: *mut nzttProtInfo,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityRemoveIdentity(osshandle: *mut OCISecurity,
-                                     error_handle: *mut OCIError,
-                                     identity_ptr: *mut *mut nzttIdentity)
-                                     -> sword;
+    pub fn OCISecurityRemoveIdentity(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        identity_ptr: *mut *mut nzttIdentity,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityCreateIdentity(osshandle: *mut OCISecurity,
-                                     error_handle: *mut OCIError,
-                                     type_: nzttIdentType,
-                                     desc: *mut nzttIdentityDesc,
-                                     identity_ptr: *mut *mut nzttIdentity)
-                                     -> sword;
+    pub fn OCISecurityCreateIdentity(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        type_: nzttIdentType,
+        desc: *mut nzttIdentityDesc,
+        identity_ptr: *mut *mut nzttIdentity,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityAbortIdentity(osshandle: *mut OCISecurity,
-                                    error_handle: *mut OCIError,
-                                    identity_ptr: *mut *mut nzttIdentity)
-                                    -> sword;
+    pub fn OCISecurityAbortIdentity(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        identity_ptr: *mut *mut nzttIdentity,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityFreeIdentity(osshandle: *mut OCISecurity,
-                                   error_handle: *mut OCIError,
-                                   identity_ptr: *mut *mut nzttIdentity)
-                                   -> sword;
+    pub fn OCISecurityFreeIdentity(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        identity_ptr: *mut *mut nzttIdentity,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityStoreTrustedIdentity(osshandle: *mut OCISecurity,
-                                           error_handle: *mut OCIError,
-                                           identity_ptr: *mut *mut nzttIdentity,
-                                           persona: *mut nzttPersona)
-                                           -> sword;
+    pub fn OCISecurityStoreTrustedIdentity(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        identity_ptr: *mut *mut nzttIdentity,
+        persona: *mut nzttPersona,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecuritySign(osshandle: *mut OCISecurity,
-                           error_handle: *mut OCIError,
-                           persona: *mut nzttPersona,
-                           signature_state: nzttces,
-                           input_length: usize,
-                           input: *mut ub1,
-                           buffer_block: *mut nzttBufferBlock)
-                           -> sword;
+    pub fn OCISecuritySign(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+        signature_state: nzttces,
+        input_length: usize,
+        input: *mut ub1,
+        buffer_block: *mut nzttBufferBlock,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecuritySignExpansion(osshandle: *mut OCISecurity,
-                                    error_handle: *mut OCIError,
-                                    persona: *mut nzttPersona,
-                                    inputlen: usize,
-                                    signature_length: *mut usize)
-                                    -> sword;
+    pub fn OCISecuritySignExpansion(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+        inputlen: usize,
+        signature_length: *mut usize,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityVerify(osshandle: *mut OCISecurity,
-                             error_handle: *mut OCIError,
-                             persona: *mut nzttPersona,
-                             signature_state: nzttces,
-                             siglen: usize,
-                             signature: *mut ub1,
-                             extracted_message: *mut nzttBufferBlock,
-                             verified: *mut boolean,
-                             validated: *mut boolean,
-                             signing_party_identity: *mut *mut nzttIdentity)
-                             -> sword;
+    pub fn OCISecurityVerify(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+        signature_state: nzttces,
+        siglen: usize,
+        signature: *mut ub1,
+        extracted_message: *mut nzttBufferBlock,
+        verified: *mut boolean,
+        validated: *mut boolean,
+        signing_party_identity: *mut *mut nzttIdentity,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityValidate(osshandle: *mut OCISecurity,
-                               error_handle: *mut OCIError,
-                               persona: *mut nzttPersona,
-                               identity: *mut nzttIdentity,
-                               validated: *mut boolean)
-                               -> sword;
+    pub fn OCISecurityValidate(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+        identity: *mut nzttIdentity,
+        validated: *mut boolean,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecuritySignDetached(osshandle: *mut OCISecurity,
-                                   error_handle: *mut OCIError,
-                                   persona: *mut nzttPersona,
-                                   signature_state: nzttces,
-                                   input_length: usize,
-                                   input: *mut ub1,
-                                   signature: *mut nzttBufferBlock)
-                                   -> sword;
+    pub fn OCISecuritySignDetached(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+        signature_state: nzttces,
+        input_length: usize,
+        input: *mut ub1,
+        signature: *mut nzttBufferBlock,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecuritySignDetExpansion(osshandle: *mut OCISecurity,
-                                       error_handle: *mut OCIError,
-                                       persona: *mut nzttPersona,
-                                       input_length: usize,
-                                       required_buffer_length: *mut usize)
-                                       -> sword;
+    pub fn OCISecuritySignDetExpansion(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+        input_length: usize,
+        required_buffer_length: *mut usize,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityVerifyDetached(osshandle: *mut OCISecurity,
-                                     error_handle: *mut OCIError,
-                                     persona: *mut nzttPersona,
-                                     signature_state: nzttces,
-                                     data_length: usize,
-                                     data: *mut ub1,
-                                     siglen: usize,
-                                     signature: *mut ub1,
-                                     verified: *mut boolean,
-                                     validated: *mut boolean,
-                                     signing_party_identity: *mut *mut nzttIdentity)
-                                     -> sword;
+    pub fn OCISecurityVerifyDetached(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+        signature_state: nzttces,
+        data_length: usize,
+        data: *mut ub1,
+        siglen: usize,
+        signature: *mut ub1,
+        verified: *mut boolean,
+        validated: *mut boolean,
+        signing_party_identity: *mut *mut nzttIdentity,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurity_PKEncrypt(osshandle: *mut OCISecurity,
-                                 error_handle: *mut OCIError,
-                                 persona: *mut nzttPersona,
-                                 number_of_recipients: usize,
-                                 recipient_list: *mut nzttIdentity,
-                                 encryption_state: nzttces,
-                                 input_length: usize,
-                                 input: *mut ub1,
-                                 encrypted_data: *mut nzttBufferBlock)
-                                 -> sword;
+    pub fn OCISecurity_PKEncrypt(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+        number_of_recipients: usize,
+        recipient_list: *mut nzttIdentity,
+        encryption_state: nzttces,
+        input_length: usize,
+        input: *mut ub1,
+        encrypted_data: *mut nzttBufferBlock,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityPKEncryptExpansion(osshandle: *mut OCISecurity,
-                                         error_handle: *mut OCIError,
-                                         persona: *mut nzttPersona,
-                                         number_recipients: usize,
-                                         input_length: usize,
-                                         buffer_length_required: *mut usize)
-                                         -> sword;
+    pub fn OCISecurityPKEncryptExpansion(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+        number_recipients: usize,
+        input_length: usize,
+        buffer_length_required: *mut usize,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityPKDecrypt(osshandle: *mut OCISecurity,
-                                error_handle: *mut OCIError,
-                                persona: *mut nzttPersona,
-                                encryption_state: nzttces,
-                                input_length: usize,
-                                input: *mut ub1,
-                                encrypted_data: *mut nzttBufferBlock)
-                                -> sword;
+    pub fn OCISecurityPKDecrypt(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+        encryption_state: nzttces,
+        input_length: usize,
+        input: *mut ub1,
+        encrypted_data: *mut nzttBufferBlock,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityEncrypt(osshandle: *mut OCISecurity,
-                              error_handle: *mut OCIError,
-                              persona: *mut nzttPersona,
-                              encryption_state: nzttces,
-                              input_length: usize,
-                              input: *mut ub1,
-                              encrypted_data: *mut nzttBufferBlock)
-                              -> sword;
+    pub fn OCISecurityEncrypt(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+        encryption_state: nzttces,
+        input_length: usize,
+        input: *mut ub1,
+        encrypted_data: *mut nzttBufferBlock,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityEncryptExpansion(osshandle: *mut OCISecurity,
-                                       error_handle: *mut OCIError,
-                                       persona: *mut nzttPersona,
-                                       input_length: usize,
-                                       encrypted_data_length: *mut usize)
-                                       -> sword;
+    pub fn OCISecurityEncryptExpansion(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+        input_length: usize,
+        encrypted_data_length: *mut usize,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityDecrypt(osshandle: *mut OCISecurity,
-                              error_handle: *mut OCIError,
-                              persona: *mut nzttPersona,
-                              decryption_state: nzttces,
-                              input_length: usize,
-                              input: *mut ub1,
-                              decrypted_data: *mut nzttBufferBlock)
-                              -> sword;
+    pub fn OCISecurityDecrypt(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+        decryption_state: nzttces,
+        input_length: usize,
+        input: *mut ub1,
+        decrypted_data: *mut nzttBufferBlock,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityEnvelope(osshandle: *mut OCISecurity,
-                               error_handle: *mut OCIError,
-                               persona: *mut nzttPersona,
-                               number_of_recipients: usize,
-                               identity: *mut nzttIdentity,
-                               encryption_state: nzttces,
-                               input_length: usize,
-                               input: *mut ub1,
-                               enveloped_data: *mut nzttBufferBlock)
-                               -> sword;
+    pub fn OCISecurityEnvelope(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+        number_of_recipients: usize,
+        identity: *mut nzttIdentity,
+        encryption_state: nzttces,
+        input_length: usize,
+        input: *mut ub1,
+        enveloped_data: *mut nzttBufferBlock,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityDeEnvelope(osshandle: *mut OCISecurity,
-                                 error_handle: *mut OCIError,
-                                 persona: *mut nzttPersona,
-                                 decryption_state: nzttces,
-                                 input_length: usize,
-                                 input: *mut ub1,
-                                 output_message: *mut nzttBufferBlock,
-                                 verified: *mut boolean,
-                                 validated: *mut boolean,
-                                 sender_identity: *mut *mut nzttIdentity)
-                                 -> sword;
+    pub fn OCISecurityDeEnvelope(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+        decryption_state: nzttces,
+        input_length: usize,
+        input: *mut ub1,
+        output_message: *mut nzttBufferBlock,
+        verified: *mut boolean,
+        validated: *mut boolean,
+        sender_identity: *mut *mut nzttIdentity,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityKeyedHash(osshandle: *mut OCISecurity,
-                                error_handle: *mut OCIError,
-                                persona: *mut nzttPersona,
-                                hash_state: nzttces,
-                                input_length: usize,
-                                input: *mut ub1,
-                                keyed_hash: *mut nzttBufferBlock)
-                                -> sword;
+    pub fn OCISecurityKeyedHash(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+        hash_state: nzttces,
+        input_length: usize,
+        input: *mut ub1,
+        keyed_hash: *mut nzttBufferBlock,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityKeyedHashExpansion(osshandle: *mut OCISecurity,
-                                         error_handle: *mut OCIError,
-                                         persona: *mut nzttPersona,
-                                         input_length: usize,
-                                         required_buffer_length: *mut usize)
-                                         -> sword;
+    pub fn OCISecurityKeyedHashExpansion(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+        input_length: usize,
+        required_buffer_length: *mut usize,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityHash(osshandle: *mut OCISecurity,
-                           error_handle: *mut OCIError,
-                           persona: *mut nzttPersona,
-                           hash_state: nzttces,
-                           input: usize,
-                           input_length: *mut ub1,
-                           hash: *mut nzttBufferBlock)
-                           -> sword;
+    pub fn OCISecurityHash(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+        hash_state: nzttces,
+        input: usize,
+        input_length: *mut ub1,
+        hash: *mut nzttBufferBlock,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityHashExpansion(osshandle: *mut OCISecurity,
-                                    error_handle: *mut OCIError,
-                                    persona: *mut nzttPersona,
-                                    input_length: usize,
-                                    required_buffer_length: *mut usize)
-                                    -> sword;
+    pub fn OCISecurityHashExpansion(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+        input_length: usize,
+        required_buffer_length: *mut usize,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecuritySeedRandom(osshandle: *mut OCISecurity,
-                                 error_handle: *mut OCIError,
-                                 persona: *mut nzttPersona,
-                                 seed_length: usize,
-                                 seed: *mut ub1)
-                                 -> sword;
+    pub fn OCISecuritySeedRandom(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+        seed_length: usize,
+        seed: *mut ub1,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityRandomBytes(osshandle: *mut OCISecurity,
-                                  error_handle: *mut OCIError,
-                                  persona: *mut nzttPersona,
-                                  number_of_bytes_desired: usize,
-                                  random_bytes: *mut nzttBufferBlock)
-                                  -> sword;
+    pub fn OCISecurityRandomBytes(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+        number_of_bytes_desired: usize,
+        random_bytes: *mut nzttBufferBlock,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityRandomNumber(osshandle: *mut OCISecurity,
-                                   error_handle: *mut OCIError,
-                                   persona: *mut nzttPersona,
-                                   random_number_ptr: *mut uword)
-                                   -> sword;
+    pub fn OCISecurityRandomNumber(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        persona: *mut nzttPersona,
+        random_number_ptr: *mut uword,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityInitBlock(osshandle: *mut OCISecurity,
-                                error_handle: *mut OCIError,
-                                buffer_block: *mut nzttBufferBlock)
-                                -> sword;
+    pub fn OCISecurityInitBlock(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        buffer_block: *mut nzttBufferBlock,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityReuseBlock(osshandle: *mut OCISecurity,
-                                 error_handle: *mut OCIError,
-                                 buffer_block: *mut nzttBufferBlock)
-                                 -> sword;
+    pub fn OCISecurityReuseBlock(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        buffer_block: *mut nzttBufferBlock,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityPurgeBlock(osshandle: *mut OCISecurity,
-                                 error_handle: *mut OCIError,
-                                 buffer_block: *mut nzttBufferBlock)
-                                 -> sword;
+    pub fn OCISecurityPurgeBlock(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        buffer_block: *mut nzttBufferBlock,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecuritySetBlock(osshandle: *mut OCISecurity,
-                               error_handle: *mut OCIError,
-                               flags_to_set: uword,
-                               buffer_length: usize,
-                               used_buffer_length: usize,
-                               buffer: *mut ub1,
-                               buffer_block: *mut nzttBufferBlock)
-                               -> sword;
+    pub fn OCISecuritySetBlock(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        flags_to_set: uword,
+        buffer_length: usize,
+        used_buffer_length: usize,
+        buffer: *mut ub1,
+        buffer_block: *mut nzttBufferBlock,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISecurityGetIdentity(osshandle: *mut OCISecurity,
-                                  error_handle: *mut OCIError,
-                                  namelen: usize,
-                                  distinguished_name: *mut OraText,
-                                  identity: *mut *mut nzttIdentity)
-                                  -> sword;
+    pub fn OCISecurityGetIdentity(
+        osshandle: *mut OCISecurity,
+        error_handle: *mut OCIError,
+        namelen: usize,
+        distinguished_name: *mut OraText,
+        identity: *mut *mut nzttIdentity,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAQEnq(svchp: *mut OCISvcCtx,
-                    errhp: *mut OCIError,
-                    queue_name: *mut OraText,
-                    enqopt: *mut OCIAQEnqOptions,
-                    msgprop: *mut OCIAQMsgProperties,
-                    payload_tdo: *mut OCIType,
-                    payload: *mut *mut ::std::os::raw::c_void,
-                    payload_ind: *mut *mut ::std::os::raw::c_void,
-                    msgid: *mut *mut OCIRaw,
-                    flags: ub4)
-                    -> sword;
+    pub fn OCIAQEnq(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        queue_name: *mut OraText,
+        enqopt: *mut OCIAQEnqOptions,
+        msgprop: *mut OCIAQMsgProperties,
+        payload_tdo: *mut OCIType,
+        payload: *mut *mut ::std::os::raw::c_void,
+        payload_ind: *mut *mut ::std::os::raw::c_void,
+        msgid: *mut *mut OCIRaw,
+        flags: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAQDeq(svchp: *mut OCISvcCtx,
-                    errhp: *mut OCIError,
-                    queue_name: *mut OraText,
-                    deqopt: *mut OCIAQDeqOptions,
-                    msgprop: *mut OCIAQMsgProperties,
-                    payload_tdo: *mut OCIType,
-                    payload: *mut *mut ::std::os::raw::c_void,
-                    payload_ind: *mut *mut ::std::os::raw::c_void,
-                    msgid: *mut *mut OCIRaw,
-                    flags: ub4)
-                    -> sword;
+    pub fn OCIAQDeq(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        queue_name: *mut OraText,
+        deqopt: *mut OCIAQDeqOptions,
+        msgprop: *mut OCIAQMsgProperties,
+        payload_tdo: *mut OCIType,
+        payload: *mut *mut ::std::os::raw::c_void,
+        payload_ind: *mut *mut ::std::os::raw::c_void,
+        msgid: *mut *mut OCIRaw,
+        flags: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAQEnqArray(svchp: *mut OCISvcCtx,
-                         errhp: *mut OCIError,
-                         queue_name: *mut OraText,
-                         enqopt: *mut OCIAQEnqOptions,
-                         iters: *mut ub4,
-                         msgprop: *mut *mut OCIAQMsgProperties,
-                         payload_tdo: *mut OCIType,
-                         payload: *mut *mut ::std::os::raw::c_void,
-                         payload_ind: *mut *mut ::std::os::raw::c_void,
-                         msgid: *mut *mut OCIRaw,
-                         ctxp: *mut ::std::os::raw::c_void,
-                         enqcbfp: OCICallbackAQEnq,
-                         flags: ub4)
-                         -> sword;
+    pub fn OCIAQEnqArray(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        queue_name: *mut OraText,
+        enqopt: *mut OCIAQEnqOptions,
+        iters: *mut ub4,
+        msgprop: *mut *mut OCIAQMsgProperties,
+        payload_tdo: *mut OCIType,
+        payload: *mut *mut ::std::os::raw::c_void,
+        payload_ind: *mut *mut ::std::os::raw::c_void,
+        msgid: *mut *mut OCIRaw,
+        ctxp: *mut ::std::os::raw::c_void,
+        enqcbfp: OCICallbackAQEnq,
+        flags: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAQEnqStreaming(svchp: *mut OCISvcCtx,
-                             errhp: *mut OCIError,
-                             queue_name: *mut OraText,
-                             enqopt: *mut OCIAQEnqOptions,
-                             payload_tdo: *mut OCIType,
-                             ctxp: *mut ::std::os::raw::c_void,
-                             enqcbfp: OCICallbackAQEnqStreaming,
-                             flags: ub4)
-                             -> sword;
+    pub fn OCIAQEnqStreaming(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        queue_name: *mut OraText,
+        enqopt: *mut OCIAQEnqOptions,
+        payload_tdo: *mut OCIType,
+        ctxp: *mut ::std::os::raw::c_void,
+        enqcbfp: OCICallbackAQEnqStreaming,
+        flags: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAQDeqArray(svchp: *mut OCISvcCtx,
-                         errhp: *mut OCIError,
-                         queue_name: *mut OraText,
-                         deqopt: *mut OCIAQDeqOptions,
-                         iters: *mut ub4,
-                         msgprop: *mut *mut OCIAQMsgProperties,
-                         payload_tdo: *mut OCIType,
-                         payload: *mut *mut ::std::os::raw::c_void,
-                         payload_ind: *mut *mut ::std::os::raw::c_void,
-                         msgid: *mut *mut OCIRaw,
-                         ctxp: *mut ::std::os::raw::c_void,
-                         deqcbfp: OCICallbackAQDeq,
-                         flags: ub4)
-                         -> sword;
+    pub fn OCIAQDeqArray(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        queue_name: *mut OraText,
+        deqopt: *mut OCIAQDeqOptions,
+        iters: *mut ub4,
+        msgprop: *mut *mut OCIAQMsgProperties,
+        payload_tdo: *mut OCIType,
+        payload: *mut *mut ::std::os::raw::c_void,
+        payload_ind: *mut *mut ::std::os::raw::c_void,
+        msgid: *mut *mut OCIRaw,
+        ctxp: *mut ::std::os::raw::c_void,
+        deqcbfp: OCICallbackAQDeq,
+        flags: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAQListen(svchp: *mut OCISvcCtx,
-                       errhp: *mut OCIError,
-                       agent_list: *mut *mut OCIAQAgent,
-                       num_agents: ub4,
-                       wait: sb4,
-                       agent: *mut *mut OCIAQAgent,
-                       flags: ub4)
-                       -> sword;
+    pub fn OCIAQListen(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        agent_list: *mut *mut OCIAQAgent,
+        num_agents: ub4,
+        wait: sb4,
+        agent: *mut *mut OCIAQAgent,
+        flags: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAQListen2(svchp: *mut OCISvcCtx,
-                        errhp: *mut OCIError,
-                        agent_list: *mut *mut OCIAQAgent,
-                        num_agents: ub4,
-                        lopts: *mut OCIAQListenOpts,
-                        agent: *mut *mut OCIAQAgent,
-                        lmops: *mut OCIAQLisMsgProps,
-                        flags: ub4)
-                        -> sword;
+    pub fn OCIAQListen2(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        agent_list: *mut *mut OCIAQAgent,
+        num_agents: ub4,
+        lopts: *mut OCIAQListenOpts,
+        agent: *mut *mut OCIAQAgent,
+        lmops: *mut OCIAQLisMsgProps,
+        flags: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAQGetReplayInfo(svchp: *mut OCISvcCtx,
-                              errhp: *mut OCIError,
-                              queue_name: *mut OraText,
-                              sender: *mut OCIAQAgent,
-                              replay_attribute: ub4,
-                              correlation: *mut OraText,
-                              corr_len: *mut ub2)
-                              -> sword;
+    pub fn OCIAQGetReplayInfo(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        queue_name: *mut OraText,
+        sender: *mut OCIAQAgent,
+        replay_attribute: ub4,
+        correlation: *mut OraText,
+        corr_len: *mut ub2,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAQResetReplayInfo(svchp: *mut OCISvcCtx,
-                                errhp: *mut OCIError,
-                                queue_name: *mut OraText,
-                                sender: *mut OCIAQAgent,
-                                replay_attribute: ub4)
-                                -> sword;
+    pub fn OCIAQResetReplayInfo(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        queue_name: *mut OraText,
+        sender: *mut OCIAQAgent,
+        replay_attribute: ub4,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCIExtractInit(hndl: *mut ::std::os::raw::c_void, err: *mut OCIError) -> sword;
@@ -15093,523 +16217,588 @@ extern "C" {
     pub fn OCIExtractReset(hndl: *mut ::std::os::raw::c_void, err: *mut OCIError) -> sword;
 }
 extern "C" {
-    pub fn OCIExtractSetNumKeys(hndl: *mut ::std::os::raw::c_void,
-                                err: *mut OCIError,
-                                numkeys: uword)
-                                -> sword;
+    pub fn OCIExtractSetNumKeys(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        numkeys: uword,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIExtractSetKey(hndl: *mut ::std::os::raw::c_void,
-                            err: *mut OCIError,
-                            name: *const OraText,
-                            type_: ub1,
-                            flag: ub4,
-                            defval: *const ::std::os::raw::c_void,
-                            intrange: *const sb4,
-                            strlist: *const *const OraText)
-                            -> sword;
+    pub fn OCIExtractSetKey(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        name: *const OraText,
+        type_: ub1,
+        flag: ub4,
+        defval: *const ::std::os::raw::c_void,
+        intrange: *const sb4,
+        strlist: *const *const OraText,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIExtractFromFile(hndl: *mut ::std::os::raw::c_void,
-                              err: *mut OCIError,
-                              flag: ub4,
-                              filename: *mut OraText)
-                              -> sword;
+    pub fn OCIExtractFromFile(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        flag: ub4,
+        filename: *mut OraText,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIExtractFromStr(hndl: *mut ::std::os::raw::c_void,
-                             err: *mut OCIError,
-                             flag: ub4,
-                             input: *mut OraText)
-                             -> sword;
+    pub fn OCIExtractFromStr(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        flag: ub4,
+        input: *mut OraText,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIExtractToInt(hndl: *mut ::std::os::raw::c_void,
-                           err: *mut OCIError,
-                           keyname: *mut OraText,
-                           valno: uword,
-                           retval: *mut sb4)
-                           -> sword;
+    pub fn OCIExtractToInt(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        keyname: *mut OraText,
+        valno: uword,
+        retval: *mut sb4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIExtractToBool(hndl: *mut ::std::os::raw::c_void,
-                            err: *mut OCIError,
-                            keyname: *mut OraText,
-                            valno: uword,
-                            retval: *mut ub1)
-                            -> sword;
+    pub fn OCIExtractToBool(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        keyname: *mut OraText,
+        valno: uword,
+        retval: *mut ub1,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIExtractToStr(hndl: *mut ::std::os::raw::c_void,
-                           err: *mut OCIError,
-                           keyname: *mut OraText,
-                           valno: uword,
-                           retval: *mut OraText,
-                           buflen: uword)
-                           -> sword;
+    pub fn OCIExtractToStr(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        keyname: *mut OraText,
+        valno: uword,
+        retval: *mut OraText,
+        buflen: uword,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIExtractToOCINum(hndl: *mut ::std::os::raw::c_void,
-                              err: *mut OCIError,
-                              keyname: *mut OraText,
-                              valno: uword,
-                              retval: *mut OCINumber)
-                              -> sword;
+    pub fn OCIExtractToOCINum(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        keyname: *mut OraText,
+        valno: uword,
+        retval: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIExtractToList(hndl: *mut ::std::os::raw::c_void,
-                            err: *mut OCIError,
-                            numkeys: *mut uword)
-                            -> sword;
+    pub fn OCIExtractToList(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        numkeys: *mut uword,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIExtractFromList(hndl: *mut ::std::os::raw::c_void,
-                              err: *mut OCIError,
-                              index: uword,
-                              name: *mut *mut OraText,
-                              type_: *mut ub1,
-                              numvals: *mut uword,
-                              values: *mut *mut *mut ::std::os::raw::c_void)
-                              -> sword;
+    pub fn OCIExtractFromList(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        index: uword,
+        name: *mut *mut OraText,
+        type_: *mut ub1,
+        numvals: *mut uword,
+        values: *mut *mut *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIMemoryAlloc(hdl: *mut ::std::os::raw::c_void,
-                          err: *mut OCIError,
-                          mem: *mut *mut ::std::os::raw::c_void,
-                          dur: OCIDuration,
-                          size: ub4,
-                          flags: ub4)
-                          -> sword;
+    pub fn OCIMemoryAlloc(
+        hdl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        mem: *mut *mut ::std::os::raw::c_void,
+        dur: OCIDuration,
+        size: ub4,
+        flags: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIMemoryResize(hdl: *mut ::std::os::raw::c_void,
-                           err: *mut OCIError,
-                           mem: *mut *mut ::std::os::raw::c_void,
-                           newsize: ub4,
-                           flags: ub4)
-                           -> sword;
+    pub fn OCIMemoryResize(
+        hdl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        mem: *mut *mut ::std::os::raw::c_void,
+        newsize: ub4,
+        flags: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIMemoryFree(hdl: *mut ::std::os::raw::c_void,
-                         err: *mut OCIError,
-                         mem: *mut ::std::os::raw::c_void)
-                         -> sword;
+    pub fn OCIMemoryFree(
+        hdl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        mem: *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIContextSetValue(hdl: *mut ::std::os::raw::c_void,
-                              err: *mut OCIError,
-                              duration: OCIDuration,
-                              key: *mut ub1,
-                              keylen: ub1,
-                              ctx_value: *mut ::std::os::raw::c_void)
-                              -> sword;
+    pub fn OCIContextSetValue(
+        hdl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        duration: OCIDuration,
+        key: *mut ub1,
+        keylen: ub1,
+        ctx_value: *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIContextGetValue(hdl: *mut ::std::os::raw::c_void,
-                              err: *mut OCIError,
-                              key: *mut ub1,
-                              keylen: ub1,
-                              ctx_value: *mut *mut ::std::os::raw::c_void)
-                              -> sword;
+    pub fn OCIContextGetValue(
+        hdl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        key: *mut ub1,
+        keylen: ub1,
+        ctx_value: *mut *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIContextClearValue(hdl: *mut ::std::os::raw::c_void,
-                                err: *mut OCIError,
-                                key: *mut ub1,
-                                keylen: ub1)
-                                -> sword;
+    pub fn OCIContextClearValue(
+        hdl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        key: *mut ub1,
+        keylen: ub1,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIContextGenerateKey(hdl: *mut ::std::os::raw::c_void,
-                                 err: *mut OCIError,
-                                 key: *mut ub4)
-                                 -> sword;
+    pub fn OCIContextGenerateKey(
+        hdl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        key: *mut ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIMemorySetCurrentIDs(hdl: *mut ::std::os::raw::c_void,
-                                  err: *mut OCIError,
-                                  curr_session_id: ub4,
-                                  curr_trans_id: ub4,
-                                  curr_stmt_id: ub4)
-                                  -> sword;
+    pub fn OCIMemorySetCurrentIDs(
+        hdl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        curr_session_id: ub4,
+        curr_trans_id: ub4,
+        curr_stmt_id: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerTdsCtxInit(env: *mut OCIEnv,
-                                err: *mut OCIError,
-                                tdsc: *mut *mut OCIPicklerTdsCtx)
-                                -> sword;
+    pub fn OCIPicklerTdsCtxInit(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdsc: *mut *mut OCIPicklerTdsCtx,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerTdsCtxFree(env: *mut OCIEnv,
-                                err: *mut OCIError,
-                                tdsc: *mut OCIPicklerTdsCtx)
-                                -> sword;
+    pub fn OCIPicklerTdsCtxFree(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdsc: *mut OCIPicklerTdsCtx,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerTdsInit(env: *mut OCIEnv,
-                             err: *mut OCIError,
-                             tdsc: *mut OCIPicklerTdsCtx,
-                             tdsh: *mut *mut OCIPicklerTds)
-                             -> sword;
+    pub fn OCIPicklerTdsInit(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdsc: *mut OCIPicklerTdsCtx,
+        tdsh: *mut *mut OCIPicklerTds,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerTdsFree(env: *mut OCIEnv,
-                             err: *mut OCIError,
-                             tdsh: *mut OCIPicklerTds)
-                             -> sword;
+    pub fn OCIPicklerTdsFree(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdsh: *mut OCIPicklerTds,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerTdsCreateElementNumber(env: *mut OCIEnv,
-                                            err: *mut OCIError,
-                                            tdsh: *mut OCIPicklerTds,
-                                            prec: ub1,
-                                            scale: sb1,
-                                            elt: *mut OCIPicklerTdsElement)
-                                            -> sword;
+    pub fn OCIPicklerTdsCreateElementNumber(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdsh: *mut OCIPicklerTds,
+        prec: ub1,
+        scale: sb1,
+        elt: *mut OCIPicklerTdsElement,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerTdsCreateElementChar(env: *mut OCIEnv,
-                                          err: *mut OCIError,
-                                          tdsh: *mut OCIPicklerTds,
-                                          len: ub2,
-                                          elt: *mut OCIPicklerTdsElement)
-                                          -> sword;
+    pub fn OCIPicklerTdsCreateElementChar(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdsh: *mut OCIPicklerTds,
+        len: ub2,
+        elt: *mut OCIPicklerTdsElement,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerTdsCreateElementVarchar(env: *mut OCIEnv,
-                                             err: *mut OCIError,
-                                             tdsh: *mut OCIPicklerTds,
-                                             len: ub2,
-                                             elt: *mut OCIPicklerTdsElement)
-                                             -> sword;
+    pub fn OCIPicklerTdsCreateElementVarchar(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdsh: *mut OCIPicklerTds,
+        len: ub2,
+        elt: *mut OCIPicklerTdsElement,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerTdsCreateElementRaw(env: *mut OCIEnv,
-                                         err: *mut OCIError,
-                                         tdsh: *mut OCIPicklerTds,
-                                         len: ub2,
-                                         elt: *mut OCIPicklerTdsElement)
-                                         -> sword;
+    pub fn OCIPicklerTdsCreateElementRaw(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdsh: *mut OCIPicklerTds,
+        len: ub2,
+        elt: *mut OCIPicklerTdsElement,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerTdsCreateElement(env: *mut OCIEnv,
-                                      err: *mut OCIError,
-                                      tdsh: *mut OCIPicklerTds,
-                                      dty: OCITypeCode,
-                                      elt: *mut OCIPicklerTdsElement)
-                                      -> sword;
+    pub fn OCIPicklerTdsCreateElement(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdsh: *mut OCIPicklerTds,
+        dty: OCITypeCode,
+        elt: *mut OCIPicklerTdsElement,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerTdsAddAttr(env: *mut OCIEnv,
-                                err: *mut OCIError,
-                                tdsh: *mut OCIPicklerTds,
-                                elt: OCIPicklerTdsElement)
-                                -> sword;
+    pub fn OCIPicklerTdsAddAttr(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdsh: *mut OCIPicklerTds,
+        elt: OCIPicklerTdsElement,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerTdsGenerate(env: *mut OCIEnv,
-                                 err: *mut OCIError,
-                                 tdsh: *mut OCIPicklerTds)
-                                 -> sword;
+    pub fn OCIPicklerTdsGenerate(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdsh: *mut OCIPicklerTds,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerTdsGetAttr(env: *mut OCIEnv,
-                                err: *mut OCIError,
-                                tdsh: *const OCIPicklerTds,
-                                attrno: ub1,
-                                typ: *mut OCITypeCode,
-                                len: *mut ub2)
-                                -> sword;
+    pub fn OCIPicklerTdsGetAttr(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        tdsh: *const OCIPicklerTds,
+        attrno: ub1,
+        typ: *mut OCITypeCode,
+        len: *mut ub2,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerFdoInit(env: *mut OCIEnv,
-                             err: *mut OCIError,
-                             fdoh: *mut *mut OCIPicklerFdo)
-                             -> sword;
+    pub fn OCIPicklerFdoInit(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        fdoh: *mut *mut OCIPicklerFdo,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerFdoFree(env: *mut OCIEnv,
-                             err: *mut OCIError,
-                             fdoh: *mut OCIPicklerFdo)
-                             -> sword;
+    pub fn OCIPicklerFdoFree(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        fdoh: *mut OCIPicklerFdo,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerImageInit(env: *mut OCIEnv,
-                               err: *mut OCIError,
-                               fdoh: *mut OCIPicklerFdo,
-                               tdsh: *mut OCIPicklerTds,
-                               imgh: *mut *mut OCIPicklerImage)
-                               -> sword;
+    pub fn OCIPicklerImageInit(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        fdoh: *mut OCIPicklerFdo,
+        tdsh: *mut OCIPicklerTds,
+        imgh: *mut *mut OCIPicklerImage,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerImageFree(env: *mut OCIEnv,
-                               err: *mut OCIError,
-                               imgh: *mut OCIPicklerImage)
-                               -> sword;
+    pub fn OCIPicklerImageFree(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        imgh: *mut OCIPicklerImage,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerImageAddScalar(env: *mut OCIEnv,
-                                    err: *mut OCIError,
-                                    imgh: *mut OCIPicklerImage,
-                                    scalar: *mut ::std::os::raw::c_void,
-                                    len: ub4)
-                                    -> sword;
+    pub fn OCIPicklerImageAddScalar(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        imgh: *mut OCIPicklerImage,
+        scalar: *mut ::std::os::raw::c_void,
+        len: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerImageAddNullScalar(env: *mut OCIEnv,
-                                        err: *mut OCIError,
-                                        imgh: *mut OCIPicklerImage)
-                                        -> sword;
+    pub fn OCIPicklerImageAddNullScalar(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        imgh: *mut OCIPicklerImage,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerImageGenerate(env: *mut OCIEnv,
-                                   err: *mut OCIError,
-                                   imgh: *mut OCIPicklerImage)
-                                   -> sword;
+    pub fn OCIPicklerImageGenerate(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        imgh: *mut OCIPicklerImage,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerImageGetScalarSize(env: *mut OCIEnv,
-                                        err: *mut OCIError,
-                                        imgh: *mut OCIPicklerImage,
-                                        attrno: ub4,
-                                        size: *mut ub4)
-                                        -> sword;
+    pub fn OCIPicklerImageGetScalarSize(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        imgh: *mut OCIPicklerImage,
+        attrno: ub4,
+        size: *mut ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerImageGetScalar(env: *mut OCIEnv,
-                                    err: *mut OCIError,
-                                    imgh: *mut OCIPicklerImage,
-                                    attrno: ub4,
-                                    buf: *mut ::std::os::raw::c_void,
-                                    len: *mut ub4,
-                                    ind: *mut OCIInd)
-                                    -> sword;
+    pub fn OCIPicklerImageGetScalar(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        imgh: *mut OCIPicklerImage,
+        attrno: ub4,
+        buf: *mut ::std::os::raw::c_void,
+        len: *mut ub4,
+        ind: *mut OCIInd,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerImageCollBegin(env: *mut OCIEnv,
-                                    err: *mut OCIError,
-                                    imgh: *mut OCIPicklerImage,
-                                    colltdsh: *const OCIPicklerTds)
-                                    -> sword;
+    pub fn OCIPicklerImageCollBegin(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        imgh: *mut OCIPicklerImage,
+        colltdsh: *const OCIPicklerTds,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerImageCollAddScalar(env: *mut OCIEnv,
-                                        err: *mut OCIError,
-                                        imgh: *mut OCIPicklerImage,
-                                        scalar: *mut ::std::os::raw::c_void,
-                                        buflen: ub4,
-                                        ind: OCIInd)
-                                        -> sword;
+    pub fn OCIPicklerImageCollAddScalar(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        imgh: *mut OCIPicklerImage,
+        scalar: *mut ::std::os::raw::c_void,
+        buflen: ub4,
+        ind: OCIInd,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerImageCollEnd(env: *mut OCIEnv,
-                                  err: *mut OCIError,
-                                  imgh: *mut OCIPicklerImage)
-                                  -> sword;
+    pub fn OCIPicklerImageCollEnd(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        imgh: *mut OCIPicklerImage,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerImageCollBeginScan(env: *mut OCIEnv,
-                                        err: *mut OCIError,
-                                        imgh: *mut OCIPicklerImage,
-                                        coll_tdsh: *const OCIPicklerTds,
-                                        attrnum: ub4,
-                                        startidx: ub4,
-                                        ind: *mut OCIInd)
-                                        -> sword;
+    pub fn OCIPicklerImageCollBeginScan(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        imgh: *mut OCIPicklerImage,
+        coll_tdsh: *const OCIPicklerTds,
+        attrnum: ub4,
+        startidx: ub4,
+        ind: *mut OCIInd,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerImageCollGetScalarSize(env: *mut OCIEnv,
-                                            err: *mut OCIError,
-                                            coll_tdsh: *const OCIPicklerTds,
-                                            size: *mut ub4)
-                                            -> sword;
+    pub fn OCIPicklerImageCollGetScalarSize(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        coll_tdsh: *const OCIPicklerTds,
+        size: *mut ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIPicklerImageCollGetScalar(env: *mut OCIEnv,
-                                        err: *mut OCIError,
-                                        imgh: *mut OCIPicklerImage,
-                                        buf: *mut ::std::os::raw::c_void,
-                                        buflen: *mut ub4,
-                                        ind: *mut OCIInd)
-                                        -> sword;
+    pub fn OCIPicklerImageCollGetScalar(
+        env: *mut OCIEnv,
+        err: *mut OCIError,
+        imgh: *mut OCIPicklerImage,
+        buf: *mut ::std::os::raw::c_void,
+        buflen: *mut ub4,
+        ind: *mut OCIInd,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAnyDataGetType(svchp: *mut OCISvcCtx,
-                             errhp: *mut OCIError,
-                             sdata: *mut OCIAnyData,
-                             tc: *mut OCITypeCode,
-                             type_: *mut *mut OCIType)
-                             -> sword;
+    pub fn OCIAnyDataGetType(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        sdata: *mut OCIAnyData,
+        tc: *mut OCITypeCode,
+        type_: *mut *mut OCIType,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAnyDataIsNull(svchp: *mut OCISvcCtx,
-                            errhp: *mut OCIError,
-                            sdata: *mut OCIAnyData,
-                            isnull: *mut boolean)
-                            -> sword;
+    pub fn OCIAnyDataIsNull(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        sdata: *mut OCIAnyData,
+        isnull: *mut boolean,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAnyDataConvert(svchp: *mut OCISvcCtx,
-                             errhp: *mut OCIError,
-                             tc: OCITypeCode,
-                             type_: *mut OCIType,
-                             dur: OCIDuration,
-                             ind: *mut ::std::os::raw::c_void,
-                             data_val: *mut ::std::os::raw::c_void,
-                             len: ub4,
-                             sdata: *mut *mut OCIAnyData)
-                             -> sword;
+    pub fn OCIAnyDataConvert(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        tc: OCITypeCode,
+        type_: *mut OCIType,
+        dur: OCIDuration,
+        ind: *mut ::std::os::raw::c_void,
+        data_val: *mut ::std::os::raw::c_void,
+        len: ub4,
+        sdata: *mut *mut OCIAnyData,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAnyDataBeginCreate(svchp: *mut OCISvcCtx,
-                                 errhp: *mut OCIError,
-                                 tc: OCITypeCode,
-                                 type_: *mut OCIType,
-                                 dur: OCIDuration,
-                                 sdata: *mut *mut OCIAnyData)
-                                 -> sword;
+    pub fn OCIAnyDataBeginCreate(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        tc: OCITypeCode,
+        type_: *mut OCIType,
+        dur: OCIDuration,
+        sdata: *mut *mut OCIAnyData,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAnyDataDestroy(svchp: *mut OCISvcCtx,
-                             errhp: *mut OCIError,
-                             sdata: *mut OCIAnyData)
-                             -> sword;
+    pub fn OCIAnyDataDestroy(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        sdata: *mut OCIAnyData,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAnyDataAttrSet(svchp: *mut OCISvcCtx,
-                             errhp: *mut OCIError,
-                             sdata: *mut OCIAnyData,
-                             tc: OCITypeCode,
-                             type_: *mut OCIType,
-                             ind: *mut ::std::os::raw::c_void,
-                             attr_val: *mut ::std::os::raw::c_void,
-                             length: ub4,
-                             is_any: boolean)
-                             -> sword;
+    pub fn OCIAnyDataAttrSet(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        sdata: *mut OCIAnyData,
+        tc: OCITypeCode,
+        type_: *mut OCIType,
+        ind: *mut ::std::os::raw::c_void,
+        attr_val: *mut ::std::os::raw::c_void,
+        length: ub4,
+        is_any: boolean,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAnyDataCollAddElem(svchp: *mut OCISvcCtx,
-                                 errhp: *mut OCIError,
-                                 sdata: *mut OCIAnyData,
-                                 tc: OCITypeCode,
-                                 type_: *mut OCIType,
-                                 ind: *mut ::std::os::raw::c_void,
-                                 attr_val: *mut ::std::os::raw::c_void,
-                                 length: ub4,
-                                 is_any: boolean,
-                                 last_elem: boolean)
-                                 -> sword;
+    pub fn OCIAnyDataCollAddElem(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        sdata: *mut OCIAnyData,
+        tc: OCITypeCode,
+        type_: *mut OCIType,
+        ind: *mut ::std::os::raw::c_void,
+        attr_val: *mut ::std::os::raw::c_void,
+        length: ub4,
+        is_any: boolean,
+        last_elem: boolean,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAnyDataEndCreate(svchp: *mut OCISvcCtx,
-                               errhp: *mut OCIError,
-                               sdata: *mut OCIAnyData)
-                               -> sword;
+    pub fn OCIAnyDataEndCreate(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        sdata: *mut OCIAnyData,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAnyDataAccess(svchp: *mut OCISvcCtx,
-                            errhp: *mut OCIError,
-                            sdata: *mut OCIAnyData,
-                            tc: OCITypeCode,
-                            type_: *mut OCIType,
-                            ind: *mut ::std::os::raw::c_void,
-                            attr_val: *mut ::std::os::raw::c_void,
-                            length: *mut ub4)
-                            -> sword;
+    pub fn OCIAnyDataAccess(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        sdata: *mut OCIAnyData,
+        tc: OCITypeCode,
+        type_: *mut OCIType,
+        ind: *mut ::std::os::raw::c_void,
+        attr_val: *mut ::std::os::raw::c_void,
+        length: *mut ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAnyDataGetCurrAttrNum(svchp: *mut OCISvcCtx,
-                                    errhp: *mut OCIError,
-                                    sdata: *mut OCIAnyData,
-                                    attrnum: *mut ub4)
-                                    -> sword;
+    pub fn OCIAnyDataGetCurrAttrNum(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        sdata: *mut OCIAnyData,
+        attrnum: *mut ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAnyDataAttrGet(svchp: *mut OCISvcCtx,
-                             errhp: *mut OCIError,
-                             sdata: *mut OCIAnyData,
-                             tc: OCITypeCode,
-                             type_: *mut OCIType,
-                             ind: *mut ::std::os::raw::c_void,
-                             attr_val: *mut ::std::os::raw::c_void,
-                             length: *mut ub4,
-                             is_any: boolean)
-                             -> sword;
+    pub fn OCIAnyDataAttrGet(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        sdata: *mut OCIAnyData,
+        tc: OCITypeCode,
+        type_: *mut OCIType,
+        ind: *mut ::std::os::raw::c_void,
+        attr_val: *mut ::std::os::raw::c_void,
+        length: *mut ub4,
+        is_any: boolean,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAnyDataCollGetElem(svchp: *mut OCISvcCtx,
-                                 errhp: *mut OCIError,
-                                 sdata: *mut OCIAnyData,
-                                 tc: OCITypeCode,
-                                 type_: *mut OCIType,
-                                 ind: *mut ::std::os::raw::c_void,
-                                 celem_val: *mut ::std::os::raw::c_void,
-                                 length: *mut ub4,
-                                 is_any: boolean)
-                                 -> sword;
+    pub fn OCIAnyDataCollGetElem(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        sdata: *mut OCIAnyData,
+        tc: OCITypeCode,
+        type_: *mut OCIType,
+        ind: *mut ::std::os::raw::c_void,
+        celem_val: *mut ::std::os::raw::c_void,
+        length: *mut ub4,
+        is_any: boolean,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAnyDataSetBeginCreate(svchp: *mut OCISvcCtx,
-                                    errhp: *mut OCIError,
-                                    typecode: OCITypeCode,
-                                    type_: *const OCIType,
-                                    dur: OCIDuration,
-                                    data_set: *mut *mut OCIAnyDataSet)
-                                    -> sword;
+    pub fn OCIAnyDataSetBeginCreate(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        typecode: OCITypeCode,
+        type_: *const OCIType,
+        dur: OCIDuration,
+        data_set: *mut *mut OCIAnyDataSet,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAnyDataSetDestroy(svchp: *mut OCISvcCtx,
-                                errhp: *mut OCIError,
-                                data_set: *mut OCIAnyDataSet)
-                                -> sword;
+    pub fn OCIAnyDataSetDestroy(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        data_set: *mut OCIAnyDataSet,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAnyDataSetAddInstance(svchp: *mut OCISvcCtx,
-                                    errhp: *mut OCIError,
-                                    data_set: *mut OCIAnyDataSet,
-                                    data: *mut *mut OCIAnyData)
-                                    -> sword;
+    pub fn OCIAnyDataSetAddInstance(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        data_set: *mut OCIAnyDataSet,
+        data: *mut *mut OCIAnyData,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAnyDataSetEndCreate(svchp: *mut OCISvcCtx,
-                                  errhp: *mut OCIError,
-                                  data_set: *mut OCIAnyDataSet)
-                                  -> sword;
+    pub fn OCIAnyDataSetEndCreate(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        data_set: *mut OCIAnyDataSet,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAnyDataSetGetType(svchp: *mut OCISvcCtx,
-                                errhp: *mut OCIError,
-                                data_set: *mut OCIAnyDataSet,
-                                tc: *mut OCITypeCode,
-                                type_: *mut *mut OCIType)
-                                -> sword;
+    pub fn OCIAnyDataSetGetType(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        data_set: *mut OCIAnyDataSet,
+        tc: *mut OCITypeCode,
+        type_: *mut *mut OCIType,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAnyDataSetGetCount(svchp: *mut OCISvcCtx,
-                                 errhp: *mut OCIError,
-                                 data_set: *mut OCIAnyDataSet,
-                                 count: *mut ub4)
-                                 -> sword;
+    pub fn OCIAnyDataSetGetCount(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        data_set: *mut OCIAnyDataSet,
+        count: *mut ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAnyDataSetGetInstance(svchp: *mut OCISvcCtx,
-                                    errhp: *mut OCIError,
-                                    data_set: *mut OCIAnyDataSet,
-                                    data: *mut *mut OCIAnyData)
-                                    -> sword;
+    pub fn OCIAnyDataSetGetInstance(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        data_set: *mut OCIAnyDataSet,
+        data: *mut *mut OCIAnyData,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCIFormatInit(hndl: *mut ::std::os::raw::c_void, err: *mut OCIError) -> sword;
 }
 extern "C" {
-    pub fn OCIFormatString(hndl: *mut ::std::os::raw::c_void,
-                           err: *mut OCIError,
-                           buffer: *mut OraText,
-                           bufferLength: sbig_ora,
-                           returnLength: *mut sbig_ora,
-                           formatString: *const OraText,
-                           ...)
-                           -> sword;
+    pub fn OCIFormatString(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        buffer: *mut OraText,
+        bufferLength: sbig_ora,
+        returnLength: *mut sbig_ora,
+        formatString: *const OraText,
+        ...
+    ) -> sword;
 }
 extern "C" {
     pub fn OCIFormatTerm(hndl: *mut ::std::os::raw::c_void, err: *mut OCIError) -> sword;
@@ -15684,69 +16873,77 @@ extern "C" {
     pub fn xaosterr(svch: *mut OCISvcCtx, error: sb4) -> ::std::os::raw::c_int;
 }
 extern "C" {
-    pub fn OCINlsGetInfo(envhp: *mut ::std::os::raw::c_void,
-                         errhp: *mut OCIError,
-                         buf: *mut OraText,
-                         buflen: usize,
-                         item: ub2)
-                         -> sword;
+    pub fn OCINlsGetInfo(
+        envhp: *mut ::std::os::raw::c_void,
+        errhp: *mut OCIError,
+        buf: *mut OraText,
+        buflen: usize,
+        item: ub2,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINlsNumericInfoGet(envhp: *mut ::std::os::raw::c_void,
-                                errhp: *mut OCIError,
-                                val: *mut sb4,
-                                item: ub2)
-                                -> sword;
+    pub fn OCINlsNumericInfoGet(
+        envhp: *mut ::std::os::raw::c_void,
+        errhp: *mut OCIError,
+        val: *mut sb4,
+        item: ub2,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCINlsCharSetNameToId(envhp: *mut ::std::os::raw::c_void, name: *const oratext) -> ub2;
 }
 extern "C" {
-    pub fn OCINlsCharSetIdToName(envhp: *mut ::std::os::raw::c_void,
-                                 buf: *mut oratext,
-                                 buflen: usize,
-                                 id: ub2)
-                                 -> sword;
+    pub fn OCINlsCharSetIdToName(
+        envhp: *mut ::std::os::raw::c_void,
+        buf: *mut oratext,
+        buflen: usize,
+        id: ub2,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINlsNameMap(envhp: *mut ::std::os::raw::c_void,
-                         buf: *mut oratext,
-                         buflen: usize,
-                         srcbuf: *const oratext,
-                         flag: ub4)
-                         -> sword;
+    pub fn OCINlsNameMap(
+        envhp: *mut ::std::os::raw::c_void,
+        buf: *mut oratext,
+        buflen: usize,
+        srcbuf: *const oratext,
+        flag: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIMultiByteToWideChar(envhp: *mut ::std::os::raw::c_void,
-                                  dst: *mut OCIWchar,
-                                  src: *const OraText,
-                                  rsize: *mut usize)
-                                  -> sword;
+    pub fn OCIMultiByteToWideChar(
+        envhp: *mut ::std::os::raw::c_void,
+        dst: *mut OCIWchar,
+        src: *const OraText,
+        rsize: *mut usize,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIMultiByteInSizeToWideChar(envhp: *mut ::std::os::raw::c_void,
-                                        dst: *mut OCIWchar,
-                                        dstsz: usize,
-                                        src: *const OraText,
-                                        srcsz: usize,
-                                        rsize: *mut usize)
-                                        -> sword;
+    pub fn OCIMultiByteInSizeToWideChar(
+        envhp: *mut ::std::os::raw::c_void,
+        dst: *mut OCIWchar,
+        dstsz: usize,
+        src: *const OraText,
+        srcsz: usize,
+        rsize: *mut usize,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIWideCharToMultiByte(envhp: *mut ::std::os::raw::c_void,
-                                  dst: *mut OraText,
-                                  src: *const OCIWchar,
-                                  rsize: *mut usize)
-                                  -> sword;
+    pub fn OCIWideCharToMultiByte(
+        envhp: *mut ::std::os::raw::c_void,
+        dst: *mut OraText,
+        src: *const OCIWchar,
+        rsize: *mut usize,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIWideCharInSizeToMultiByte(envhp: *mut ::std::os::raw::c_void,
-                                        dst: *mut OraText,
-                                        dstsz: usize,
-                                        src: *const OCIWchar,
-                                        srcsz: usize,
-                                        rsize: *mut usize)
-                                        -> sword;
+    pub fn OCIWideCharInSizeToMultiByte(
+        envhp: *mut ::std::os::raw::c_void,
+        dst: *mut OraText,
+        dstsz: usize,
+        src: *const OCIWchar,
+        srcsz: usize,
+        rsize: *mut usize,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCIWideCharIsAlnum(envhp: *mut ::std::os::raw::c_void, wc: OCIWchar) -> boolean;
@@ -15791,68 +16988,77 @@ extern "C" {
     pub fn OCIWideCharToUpper(envhp: *mut ::std::os::raw::c_void, wc: OCIWchar) -> OCIWchar;
 }
 extern "C" {
-    pub fn OCIWideCharStrcmp(envhp: *mut ::std::os::raw::c_void,
-                             wstr1: *const OCIWchar,
-                             wstr2: *const OCIWchar,
-                             flag: ::std::os::raw::c_int)
-                             -> ::std::os::raw::c_int;
+    pub fn OCIWideCharStrcmp(
+        envhp: *mut ::std::os::raw::c_void,
+        wstr1: *const OCIWchar,
+        wstr2: *const OCIWchar,
+        flag: ::std::os::raw::c_int,
+    ) -> ::std::os::raw::c_int;
 }
 extern "C" {
-    pub fn OCIWideCharStrncmp(envhp: *mut ::std::os::raw::c_void,
-                              wstr1: *const OCIWchar,
-                              len1: usize,
-                              wstr2: *const OCIWchar,
-                              len2: usize,
-                              flag: ::std::os::raw::c_int)
-                              -> ::std::os::raw::c_int;
+    pub fn OCIWideCharStrncmp(
+        envhp: *mut ::std::os::raw::c_void,
+        wstr1: *const OCIWchar,
+        len1: usize,
+        wstr2: *const OCIWchar,
+        len2: usize,
+        flag: ::std::os::raw::c_int,
+    ) -> ::std::os::raw::c_int;
 }
 extern "C" {
-    pub fn OCIWideCharStrcat(envhp: *mut ::std::os::raw::c_void,
-                             wdststr: *mut OCIWchar,
-                             wsrcstr: *const OCIWchar)
-                             -> usize;
+    pub fn OCIWideCharStrcat(
+        envhp: *mut ::std::os::raw::c_void,
+        wdststr: *mut OCIWchar,
+        wsrcstr: *const OCIWchar,
+    ) -> usize;
 }
 extern "C" {
-    pub fn OCIWideCharStrchr(envhp: *mut ::std::os::raw::c_void,
-                             wstr: *const OCIWchar,
-                             wc: OCIWchar)
-                             -> *mut OCIWchar;
+    pub fn OCIWideCharStrchr(
+        envhp: *mut ::std::os::raw::c_void,
+        wstr: *const OCIWchar,
+        wc: OCIWchar,
+    ) -> *mut OCIWchar;
 }
 extern "C" {
-    pub fn OCIWideCharStrcpy(envhp: *mut ::std::os::raw::c_void,
-                             wdststr: *mut OCIWchar,
-                             wsrcstr: *const OCIWchar)
-                             -> usize;
+    pub fn OCIWideCharStrcpy(
+        envhp: *mut ::std::os::raw::c_void,
+        wdststr: *mut OCIWchar,
+        wsrcstr: *const OCIWchar,
+    ) -> usize;
 }
 extern "C" {
     pub fn OCIWideCharStrlen(envhp: *mut ::std::os::raw::c_void, wstr: *const OCIWchar) -> usize;
 }
 extern "C" {
-    pub fn OCIWideCharStrncat(envhp: *mut ::std::os::raw::c_void,
-                              wdststr: *mut OCIWchar,
-                              wsrcstr: *const OCIWchar,
-                              n: usize)
-                              -> usize;
+    pub fn OCIWideCharStrncat(
+        envhp: *mut ::std::os::raw::c_void,
+        wdststr: *mut OCIWchar,
+        wsrcstr: *const OCIWchar,
+        n: usize,
+    ) -> usize;
 }
 extern "C" {
-    pub fn OCIWideCharStrncpy(envhp: *mut ::std::os::raw::c_void,
-                              wdststr: *mut OCIWchar,
-                              wsrcstr: *const OCIWchar,
-                              n: usize)
-                              -> usize;
+    pub fn OCIWideCharStrncpy(
+        envhp: *mut ::std::os::raw::c_void,
+        wdststr: *mut OCIWchar,
+        wsrcstr: *const OCIWchar,
+        n: usize,
+    ) -> usize;
 }
 extern "C" {
-    pub fn OCIWideCharStrrchr(envhp: *mut ::std::os::raw::c_void,
-                              wstr: *const OCIWchar,
-                              wc: OCIWchar)
-                              -> *mut OCIWchar;
+    pub fn OCIWideCharStrrchr(
+        envhp: *mut ::std::os::raw::c_void,
+        wstr: *const OCIWchar,
+        wc: OCIWchar,
+    ) -> *mut OCIWchar;
 }
 extern "C" {
-    pub fn OCIWideCharStrCaseConversion(envhp: *mut ::std::os::raw::c_void,
-                                        wdststr: *mut OCIWchar,
-                                        wsrcstr: *const OCIWchar,
-                                        flag: ub4)
-                                        -> usize;
+    pub fn OCIWideCharStrCaseConversion(
+        envhp: *mut ::std::os::raw::c_void,
+        wdststr: *mut OCIWchar,
+        wsrcstr: *const OCIWchar,
+        flag: ub4,
+    ) -> usize;
 }
 extern "C" {
     pub fn OCIWideCharDisplayLength(envhp: *mut ::std::os::raw::c_void, wc: OCIWchar) -> usize;
@@ -15861,125 +17067,140 @@ extern "C" {
     pub fn OCIWideCharMultiByteLength(envhp: *mut ::std::os::raw::c_void, wc: OCIWchar) -> usize;
 }
 extern "C" {
-    pub fn OCIMultiByteStrcmp(envhp: *mut ::std::os::raw::c_void,
-                              str1: *const OraText,
-                              str2: *const OraText,
-                              flag: ::std::os::raw::c_int)
-                              -> ::std::os::raw::c_int;
+    pub fn OCIMultiByteStrcmp(
+        envhp: *mut ::std::os::raw::c_void,
+        str1: *const OraText,
+        str2: *const OraText,
+        flag: ::std::os::raw::c_int,
+    ) -> ::std::os::raw::c_int;
 }
 extern "C" {
-    pub fn OCIMultiByteStrncmp(envhp: *mut ::std::os::raw::c_void,
-                               str1: *const OraText,
-                               len1: usize,
-                               str2: *mut OraText,
-                               len2: usize,
-                               flag: ::std::os::raw::c_int)
-                               -> ::std::os::raw::c_int;
+    pub fn OCIMultiByteStrncmp(
+        envhp: *mut ::std::os::raw::c_void,
+        str1: *const OraText,
+        len1: usize,
+        str2: *mut OraText,
+        len2: usize,
+        flag: ::std::os::raw::c_int,
+    ) -> ::std::os::raw::c_int;
 }
 extern "C" {
-    pub fn OCIMultiByteStrcat(envhp: *mut ::std::os::raw::c_void,
-                              dststr: *mut OraText,
-                              srcstr: *const OraText)
-                              -> usize;
+    pub fn OCIMultiByteStrcat(
+        envhp: *mut ::std::os::raw::c_void,
+        dststr: *mut OraText,
+        srcstr: *const OraText,
+    ) -> usize;
 }
 extern "C" {
-    pub fn OCIMultiByteStrcpy(envhp: *mut ::std::os::raw::c_void,
-                              dststr: *mut OraText,
-                              srcstr: *const OraText)
-                              -> usize;
+    pub fn OCIMultiByteStrcpy(
+        envhp: *mut ::std::os::raw::c_void,
+        dststr: *mut OraText,
+        srcstr: *const OraText,
+    ) -> usize;
 }
 extern "C" {
     pub fn OCIMultiByteStrlen(envhp: *mut ::std::os::raw::c_void, str: *const OraText) -> usize;
 }
 extern "C" {
-    pub fn OCIMultiByteStrncat(envhp: *mut ::std::os::raw::c_void,
-                               dststr: *mut OraText,
-                               srcstr: *const OraText,
-                               n: usize)
-                               -> usize;
+    pub fn OCIMultiByteStrncat(
+        envhp: *mut ::std::os::raw::c_void,
+        dststr: *mut OraText,
+        srcstr: *const OraText,
+        n: usize,
+    ) -> usize;
 }
 extern "C" {
-    pub fn OCIMultiByteStrncpy(envhp: *mut ::std::os::raw::c_void,
-                               dststr: *mut OraText,
-                               srcstr: *const OraText,
-                               n: usize)
-                               -> usize;
+    pub fn OCIMultiByteStrncpy(
+        envhp: *mut ::std::os::raw::c_void,
+        dststr: *mut OraText,
+        srcstr: *const OraText,
+        n: usize,
+    ) -> usize;
 }
 extern "C" {
-    pub fn OCIMultiByteStrnDisplayLength(envhp: *mut ::std::os::raw::c_void,
-                                         str1: *const OraText,
-                                         n: usize)
-                                         -> usize;
+    pub fn OCIMultiByteStrnDisplayLength(
+        envhp: *mut ::std::os::raw::c_void,
+        str1: *const OraText,
+        n: usize,
+    ) -> usize;
 }
 extern "C" {
-    pub fn OCIMultiByteStrCaseConversion(envhp: *mut ::std::os::raw::c_void,
-                                         dststr: *mut OraText,
-                                         srcstr: *const OraText,
-                                         flag: ub4)
-                                         -> usize;
+    pub fn OCIMultiByteStrCaseConversion(
+        envhp: *mut ::std::os::raw::c_void,
+        dststr: *mut OraText,
+        srcstr: *const OraText,
+        flag: ub4,
+    ) -> usize;
 }
 extern "C" {
-    pub fn OCICharSetToUnicode(envhp: *mut ::std::os::raw::c_void,
-                               dst: *mut ub2,
-                               dstlen: usize,
-                               src: *const OraText,
-                               srclen: usize,
-                               rsize: *mut usize)
-                               -> sword;
+    pub fn OCICharSetToUnicode(
+        envhp: *mut ::std::os::raw::c_void,
+        dst: *mut ub2,
+        dstlen: usize,
+        src: *const OraText,
+        srclen: usize,
+        rsize: *mut usize,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIUnicodeToCharSet(envhp: *mut ::std::os::raw::c_void,
-                               dst: *mut OraText,
-                               dstlen: usize,
-                               src: *const ub2,
-                               srclen: usize,
-                               rsize: *mut usize)
-                               -> sword;
+    pub fn OCIUnicodeToCharSet(
+        envhp: *mut ::std::os::raw::c_void,
+        dst: *mut OraText,
+        dstlen: usize,
+        src: *const ub2,
+        srclen: usize,
+        rsize: *mut usize,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCINlsCharSetConvert(envhp: *mut ::std::os::raw::c_void,
-                                errhp: *mut OCIError,
-                                dstid: ub2,
-                                dstp: *mut ::std::os::raw::c_void,
-                                dstlen: usize,
-                                srcid: ub2,
-                                srcp: *const ::std::os::raw::c_void,
-                                srclen: usize,
-                                rsize: *mut usize)
-                                -> sword;
+    pub fn OCINlsCharSetConvert(
+        envhp: *mut ::std::os::raw::c_void,
+        errhp: *mut OCIError,
+        dstid: ub2,
+        dstp: *mut ::std::os::raw::c_void,
+        dstlen: usize,
+        srcid: ub2,
+        srcp: *const ::std::os::raw::c_void,
+        srclen: usize,
+        rsize: *mut usize,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCICharSetConversionIsReplacementUsed(envhp: *mut ::std::os::raw::c_void) -> boolean;
 }
 extern "C" {
-    pub fn OCINlsEnvironmentVariableGet(valp: *mut ::std::os::raw::c_void,
-                                        size: usize,
-                                        item: ub2,
-                                        charset: ub2,
-                                        rsize: *mut usize)
-                                        -> sword;
+    pub fn OCINlsEnvironmentVariableGet(
+        valp: *mut ::std::os::raw::c_void,
+        size: usize,
+        item: ub2,
+        charset: ub2,
+        rsize: *mut usize,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIMessageOpen(envhp: *mut ::std::os::raw::c_void,
-                          errhp: *mut OCIError,
-                          msghp: *mut *mut OCIMsg,
-                          product: *const OraText,
-                          facility: *const OraText,
-                          dur: OCIDuration)
-                          -> sword;
+    pub fn OCIMessageOpen(
+        envhp: *mut ::std::os::raw::c_void,
+        errhp: *mut OCIError,
+        msghp: *mut *mut OCIMsg,
+        product: *const OraText,
+        facility: *const OraText,
+        dur: OCIDuration,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIMessageGet(msgh: *mut OCIMsg,
-                         msgno: ub4,
-                         msgbuf: *mut OraText,
-                         buflen: usize)
-                         -> *mut OraText;
+    pub fn OCIMessageGet(
+        msgh: *mut OCIMsg,
+        msgno: ub4,
+        msgbuf: *mut OraText,
+        buflen: usize,
+    ) -> *mut OraText;
 }
 extern "C" {
-    pub fn OCIMessageClose(envhp: *mut ::std::os::raw::c_void,
-                           errhp: *mut OCIError,
-                           msghp: *mut OCIMsg)
-                           -> sword;
+    pub fn OCIMessageClose(
+        envhp: *mut ::std::os::raw::c_void,
+        errhp: *mut OCIError,
+        msghp: *mut OCIMsg,
+    ) -> sword;
 }
 extern "C" {
     /// ACTUAL PROTOTYPE DECLARATIONS
@@ -15995,641 +17216,718 @@ extern "C" {
     pub fn OCIThreadIsMulti() -> boolean;
 }
 extern "C" {
-    pub fn OCIThreadMutexInit(hndl: *mut ::std::os::raw::c_void,
-                              err: *mut OCIError,
-                              mutex: *mut *mut OCIThreadMutex)
-                              -> sword;
+    pub fn OCIThreadMutexInit(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        mutex: *mut *mut OCIThreadMutex,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIThreadMutexDestroy(hndl: *mut ::std::os::raw::c_void,
-                                 err: *mut OCIError,
-                                 mutex: *mut *mut OCIThreadMutex)
-                                 -> sword;
+    pub fn OCIThreadMutexDestroy(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        mutex: *mut *mut OCIThreadMutex,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIThreadMutexAcquire(hndl: *mut ::std::os::raw::c_void,
-                                 err: *mut OCIError,
-                                 mutex: *mut OCIThreadMutex)
-                                 -> sword;
+    pub fn OCIThreadMutexAcquire(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        mutex: *mut OCIThreadMutex,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIThreadMutexRelease(hndl: *mut ::std::os::raw::c_void,
-                                 err: *mut OCIError,
-                                 mutex: *mut OCIThreadMutex)
-                                 -> sword;
+    pub fn OCIThreadMutexRelease(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        mutex: *mut OCIThreadMutex,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIThreadKeyInit(hndl: *mut ::std::os::raw::c_void,
-                            err: *mut OCIError,
-                            key: *mut *mut OCIThreadKey,
-                            destFn: OCIThreadKeyDestFunc)
-                            -> sword;
+    pub fn OCIThreadKeyInit(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        key: *mut *mut OCIThreadKey,
+        destFn: OCIThreadKeyDestFunc,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIThreadKeyDestroy(hndl: *mut ::std::os::raw::c_void,
-                               err: *mut OCIError,
-                               key: *mut *mut OCIThreadKey)
-                               -> sword;
+    pub fn OCIThreadKeyDestroy(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        key: *mut *mut OCIThreadKey,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIThreadKeyGet(hndl: *mut ::std::os::raw::c_void,
-                           err: *mut OCIError,
-                           key: *mut OCIThreadKey,
-                           pValue: *mut *mut ::std::os::raw::c_void)
-                           -> sword;
+    pub fn OCIThreadKeyGet(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        key: *mut OCIThreadKey,
+        pValue: *mut *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIThreadKeySet(hndl: *mut ::std::os::raw::c_void,
-                           err: *mut OCIError,
-                           key: *mut OCIThreadKey,
-                           value: *mut ::std::os::raw::c_void)
-                           -> sword;
+    pub fn OCIThreadKeySet(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        key: *mut OCIThreadKey,
+        value: *mut ::std::os::raw::c_void,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIThreadIdInit(hndl: *mut ::std::os::raw::c_void,
-                           err: *mut OCIError,
-                           tid: *mut *mut OCIThreadId)
-                           -> sword;
+    pub fn OCIThreadIdInit(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        tid: *mut *mut OCIThreadId,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIThreadIdDestroy(hndl: *mut ::std::os::raw::c_void,
-                              err: *mut OCIError,
-                              tid: *mut *mut OCIThreadId)
-                              -> sword;
+    pub fn OCIThreadIdDestroy(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        tid: *mut *mut OCIThreadId,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIThreadIdSet(hndl: *mut ::std::os::raw::c_void,
-                          err: *mut OCIError,
-                          tidDest: *mut OCIThreadId,
-                          tidSrc: *mut OCIThreadId)
-                          -> sword;
+    pub fn OCIThreadIdSet(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        tidDest: *mut OCIThreadId,
+        tidSrc: *mut OCIThreadId,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIThreadIdSetNull(hndl: *mut ::std::os::raw::c_void,
-                              err: *mut OCIError,
-                              tid: *mut OCIThreadId)
-                              -> sword;
+    pub fn OCIThreadIdSetNull(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        tid: *mut OCIThreadId,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIThreadIdGet(hndl: *mut ::std::os::raw::c_void,
-                          err: *mut OCIError,
-                          tid: *mut OCIThreadId)
-                          -> sword;
+    pub fn OCIThreadIdGet(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        tid: *mut OCIThreadId,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIThreadIdSame(hndl: *mut ::std::os::raw::c_void,
-                           err: *mut OCIError,
-                           tid1: *mut OCIThreadId,
-                           tid2: *mut OCIThreadId,
-                           result: *mut boolean)
-                           -> sword;
+    pub fn OCIThreadIdSame(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        tid1: *mut OCIThreadId,
+        tid2: *mut OCIThreadId,
+        result: *mut boolean,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIThreadIdNull(hndl: *mut ::std::os::raw::c_void,
-                           err: *mut OCIError,
-                           tid: *mut OCIThreadId,
-                           result: *mut boolean)
-                           -> sword;
+    pub fn OCIThreadIdNull(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        tid: *mut OCIThreadId,
+        result: *mut boolean,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIThreadHndInit(hndl: *mut ::std::os::raw::c_void,
-                            err: *mut OCIError,
-                            thnd: *mut *mut OCIThreadHandle)
-                            -> sword;
+    pub fn OCIThreadHndInit(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        thnd: *mut *mut OCIThreadHandle,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIThreadHndDestroy(hndl: *mut ::std::os::raw::c_void,
-                               err: *mut OCIError,
-                               thnd: *mut *mut OCIThreadHandle)
-                               -> sword;
+    pub fn OCIThreadHndDestroy(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        thnd: *mut *mut OCIThreadHandle,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIThreadCreate(hndl: *mut ::std::os::raw::c_void,
-                           err: *mut OCIError,
-                           start:
-                               ::std::option::Option<unsafe extern "C" fn(arg1:
-                                                                              *mut ::std::os::raw::c_void)>,
-                           arg: *mut ::std::os::raw::c_void,
-                           tid: *mut OCIThreadId, tHnd: *mut OCIThreadHandle)
--> sword;
+    pub fn OCIThreadCreate(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        start: ::std::option::Option<unsafe extern "C" fn(arg1: *mut ::std::os::raw::c_void)>,
+        arg: *mut ::std::os::raw::c_void,
+        tid: *mut OCIThreadId,
+        tHnd: *mut OCIThreadHandle,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIThreadJoin(hndl: *mut ::std::os::raw::c_void,
-                         err: *mut OCIError,
-                         tHnd: *mut OCIThreadHandle)
-                         -> sword;
+    pub fn OCIThreadJoin(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        tHnd: *mut OCIThreadHandle,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIThreadClose(hndl: *mut ::std::os::raw::c_void,
-                          err: *mut OCIError,
-                          tHnd: *mut OCIThreadHandle)
-                          -> sword;
+    pub fn OCIThreadClose(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        tHnd: *mut OCIThreadHandle,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIThreadHandleGet(hndl: *mut ::std::os::raw::c_void,
-                              err: *mut OCIError,
-                              tHnd: *mut OCIThreadHandle)
-                              -> sword;
+    pub fn OCIThreadHandleGet(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        tHnd: *mut OCIThreadHandle,
+    ) -> sword;
 }
 pub type OCIBindRowCallback =
     ::std::option::Option<unsafe extern "C" fn(ctx: *mut ::std::os::raw::c_void) -> sword>;
 pub type OCIFetchRowCallback =
     ::std::option::Option<unsafe extern "C" fn(ctx: *mut ::std::os::raw::c_void) -> sword>;
-pub type OCISubscriptionNotify =
-    ::std::option::Option<unsafe extern "C" fn(ctx: *mut ::std::os::raw::c_void,
-                                               subscrhp: *mut OCISubscription,
-                                               pay: *mut ::std::os::raw::c_void,
-                                               payl: ub4,
-                                               desc: *mut ::std::os::raw::c_void,
-                                               mode: ub4)
-                                               -> ub4>;
-pub type OCISubscriptionFailure =
-    ::std::option::Option<unsafe extern "C" fn(ctx: *mut ::std::os::raw::c_void,
-                                               subscrhp: *mut OCISubscription,
-                                               desc: *mut ::std::os::raw::c_void,
-                                               errhp: *mut OCIError)
-                                               -> ub4>;
+pub type OCISubscriptionNotify = ::std::option::Option<
+    unsafe extern "C" fn(
+        ctx: *mut ::std::os::raw::c_void,
+        subscrhp: *mut OCISubscription,
+        pay: *mut ::std::os::raw::c_void,
+        payl: ub4,
+        desc: *mut ::std::os::raw::c_void,
+        mode: ub4,
+    ) -> ub4,
+>;
+pub type OCISubscriptionFailure = ::std::option::Option<
+    unsafe extern "C" fn(
+        ctx: *mut ::std::os::raw::c_void,
+        subscrhp: *mut OCISubscription,
+        desc: *mut ::std::os::raw::c_void,
+        errhp: *mut OCIError,
+    ) -> ub4,
+>;
 extern "C" {
-    pub fn OCISubscriptionRegister(svchp: *mut OCISvcCtx,
-                                   subscrhpp: *mut *mut OCISubscription,
-                                   count: ub2,
-                                   errhp: *mut OCIError,
-                                   mode: ub4)
-                                   -> sword;
+    pub fn OCISubscriptionRegister(
+        svchp: *mut OCISvcCtx,
+        subscrhpp: *mut *mut OCISubscription,
+        count: ub2,
+        errhp: *mut OCIError,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISubscriptionPost(svchp: *mut OCISvcCtx,
-                               subscrhpp: *mut *mut OCISubscription,
-                               count: ub2,
-                               errhp: *mut OCIError,
-                               mode: ub4)
-                               -> sword;
+    pub fn OCISubscriptionPost(
+        svchp: *mut OCISvcCtx,
+        subscrhpp: *mut *mut OCISubscription,
+        count: ub2,
+        errhp: *mut OCIError,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISubscriptionUnRegister(svchp: *mut OCISvcCtx,
-                                     subscrhp: *mut OCISubscription,
-                                     errhp: *mut OCIError,
-                                     mode: ub4)
-                                     -> sword;
+    pub fn OCISubscriptionUnRegister(
+        svchp: *mut OCISvcCtx,
+        subscrhp: *mut OCISubscription,
+        errhp: *mut OCIError,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISubscriptionDisable(subscrhp: *mut OCISubscription,
-                                  errhp: *mut OCIError,
-                                  mode: ub4)
-                                  -> sword;
+    pub fn OCISubscriptionDisable(
+        subscrhp: *mut OCISubscription,
+        errhp: *mut OCIError,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISubscriptionEnable(subscrhp: *mut OCISubscription,
-                                 errhp: *mut OCIError,
-                                 mode: ub4)
-                                 -> sword;
+    pub fn OCISubscriptionEnable(
+        subscrhp: *mut OCISubscription,
+        errhp: *mut OCIError,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDateTimeGetTime(hndl: *mut ::std::os::raw::c_void,
-                              err: *mut OCIError,
-                              datetime: *mut OCIDateTime,
-                              hr: *mut ub1,
-                              mm: *mut ub1,
-                              ss: *mut ub1,
-                              fsec: *mut ub4)
-                              -> sword;
+    pub fn OCIDateTimeGetTime(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        datetime: *mut OCIDateTime,
+        hr: *mut ub1,
+        mm: *mut ub1,
+        ss: *mut ub1,
+        fsec: *mut ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDateTimeGetDate(hndl: *mut ::std::os::raw::c_void,
-                              err: *mut OCIError,
-                              date: *const OCIDateTime,
-                              yr: *mut sb2,
-                              mnth: *mut ub1,
-                              dy: *mut ub1)
-                              -> sword;
+    pub fn OCIDateTimeGetDate(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        date: *const OCIDateTime,
+        yr: *mut sb2,
+        mnth: *mut ub1,
+        dy: *mut ub1,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDateTimeGetTimeZoneOffset(hndl: *mut ::std::os::raw::c_void,
-                                        err: *mut OCIError,
-                                        datetime: *const OCIDateTime,
-                                        hr: *mut sb1,
-                                        mm: *mut sb1)
-                                        -> sword;
+    pub fn OCIDateTimeGetTimeZoneOffset(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        datetime: *const OCIDateTime,
+        hr: *mut sb1,
+        mm: *mut sb1,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDateTimeConstruct(hndl: *mut ::std::os::raw::c_void,
-                                err: *mut OCIError,
-                                datetime: *mut OCIDateTime,
-                                yr: sb2,
-                                mnth: ub1,
-                                dy: ub1,
-                                hr: ub1,
-                                mm: ub1,
-                                ss: ub1,
-                                fsec: ub4,
-                                timezone: *mut OraText,
-                                timezone_length: usize)
-                                -> sword;
+    pub fn OCIDateTimeConstruct(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        datetime: *mut OCIDateTime,
+        yr: sb2,
+        mnth: ub1,
+        dy: ub1,
+        hr: ub1,
+        mm: ub1,
+        ss: ub1,
+        fsec: ub4,
+        timezone: *mut OraText,
+        timezone_length: usize,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDateTimeSysTimeStamp(hndl: *mut ::std::os::raw::c_void,
-                                   err: *mut OCIError,
-                                   sys_date: *mut OCIDateTime)
-                                   -> sword;
+    pub fn OCIDateTimeSysTimeStamp(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        sys_date: *mut OCIDateTime,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDateTimeAssign(hndl: *mut ::std::os::raw::c_void,
-                             err: *mut OCIError,
-                             from: *const OCIDateTime,
-                             to: *mut OCIDateTime)
-                             -> sword;
+    pub fn OCIDateTimeAssign(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        from: *const OCIDateTime,
+        to: *mut OCIDateTime,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDateTimeToText(hndl: *mut ::std::os::raw::c_void,
-                             err: *mut OCIError,
-                             date: *const OCIDateTime,
-                             fmt: *const OraText,
-                             fmt_length: ub1,
-                             fsprec: ub1,
-                             lang_name: *const OraText,
-                             lang_length: usize,
-                             buf_size: *mut ub4,
-                             buf: *mut OraText)
-                             -> sword;
+    pub fn OCIDateTimeToText(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        date: *const OCIDateTime,
+        fmt: *const OraText,
+        fmt_length: ub1,
+        fsprec: ub1,
+        lang_name: *const OraText,
+        lang_length: usize,
+        buf_size: *mut ub4,
+        buf: *mut OraText,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDateTimeFromText(hndl: *mut ::std::os::raw::c_void,
-                               err: *mut OCIError,
-                               date_str: *const OraText,
-                               dstr_length: usize,
-                               fmt: *const OraText,
-                               fmt_length: ub1,
-                               lang_name: *const OraText,
-                               lang_length: usize,
-                               date: *mut OCIDateTime)
-                               -> sword;
+    pub fn OCIDateTimeFromText(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        date_str: *const OraText,
+        dstr_length: usize,
+        fmt: *const OraText,
+        fmt_length: ub1,
+        lang_name: *const OraText,
+        lang_length: usize,
+        date: *mut OCIDateTime,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDateTimeCompare(hndl: *mut ::std::os::raw::c_void,
-                              err: *mut OCIError,
-                              date1: *const OCIDateTime,
-                              date2: *const OCIDateTime,
-                              result: *mut sword)
-                              -> sword;
+    pub fn OCIDateTimeCompare(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        date1: *const OCIDateTime,
+        date2: *const OCIDateTime,
+        result: *mut sword,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDateTimeCheck(hndl: *mut ::std::os::raw::c_void,
-                            err: *mut OCIError,
-                            date: *const OCIDateTime,
-                            valid: *mut ub4)
-                            -> sword;
+    pub fn OCIDateTimeCheck(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        date: *const OCIDateTime,
+        valid: *mut ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDateTimeConvert(hndl: *mut ::std::os::raw::c_void,
-                              err: *mut OCIError,
-                              indate: *mut OCIDateTime,
-                              outdate: *mut OCIDateTime)
-                              -> sword;
+    pub fn OCIDateTimeConvert(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        indate: *mut OCIDateTime,
+        outdate: *mut OCIDateTime,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDateTimeSubtract(hndl: *mut ::std::os::raw::c_void,
-                               err: *mut OCIError,
-                               indate1: *mut OCIDateTime,
-                               indate2: *mut OCIDateTime,
-                               inter: *mut OCIInterval)
-                               -> sword;
+    pub fn OCIDateTimeSubtract(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        indate1: *mut OCIDateTime,
+        indate2: *mut OCIDateTime,
+        inter: *mut OCIInterval,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDateTimeIntervalAdd(hndl: *mut ::std::os::raw::c_void,
-                                  err: *mut OCIError,
-                                  datetime: *mut OCIDateTime,
-                                  inter: *mut OCIInterval,
-                                  outdatetime: *mut OCIDateTime)
-                                  -> sword;
+    pub fn OCIDateTimeIntervalAdd(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        datetime: *mut OCIDateTime,
+        inter: *mut OCIInterval,
+        outdatetime: *mut OCIDateTime,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDateTimeIntervalSub(hndl: *mut ::std::os::raw::c_void,
-                                  err: *mut OCIError,
-                                  datetime: *mut OCIDateTime,
-                                  inter: *mut OCIInterval,
-                                  outdatetime: *mut OCIDateTime)
-                                  -> sword;
+    pub fn OCIDateTimeIntervalSub(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        datetime: *mut OCIDateTime,
+        inter: *mut OCIInterval,
+        outdatetime: *mut OCIDateTime,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIIntervalSubtract(hndl: *mut ::std::os::raw::c_void,
-                               err: *mut OCIError,
-                               minuend: *mut OCIInterval,
-                               subtrahend: *mut OCIInterval,
-                               result: *mut OCIInterval)
-                               -> sword;
+    pub fn OCIIntervalSubtract(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        minuend: *mut OCIInterval,
+        subtrahend: *mut OCIInterval,
+        result: *mut OCIInterval,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIIntervalAdd(hndl: *mut ::std::os::raw::c_void,
-                          err: *mut OCIError,
-                          addend1: *mut OCIInterval,
-                          addend2: *mut OCIInterval,
-                          result: *mut OCIInterval)
-                          -> sword;
+    pub fn OCIIntervalAdd(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        addend1: *mut OCIInterval,
+        addend2: *mut OCIInterval,
+        result: *mut OCIInterval,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIIntervalMultiply(hndl: *mut ::std::os::raw::c_void,
-                               err: *mut OCIError,
-                               inter: *const OCIInterval,
-                               nfactor: *mut OCINumber,
-                               result: *mut OCIInterval)
-                               -> sword;
+    pub fn OCIIntervalMultiply(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        inter: *const OCIInterval,
+        nfactor: *mut OCINumber,
+        result: *mut OCIInterval,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIIntervalDivide(hndl: *mut ::std::os::raw::c_void,
-                             err: *mut OCIError,
-                             dividend: *mut OCIInterval,
-                             divisor: *mut OCINumber,
-                             result: *mut OCIInterval)
-                             -> sword;
+    pub fn OCIIntervalDivide(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        dividend: *mut OCIInterval,
+        divisor: *mut OCINumber,
+        result: *mut OCIInterval,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIIntervalCompare(hndl: *mut ::std::os::raw::c_void,
-                              err: *mut OCIError,
-                              inter1: *mut OCIInterval,
-                              inter2: *mut OCIInterval,
-                              result: *mut sword)
-                              -> sword;
+    pub fn OCIIntervalCompare(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        inter1: *mut OCIInterval,
+        inter2: *mut OCIInterval,
+        result: *mut sword,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIIntervalFromNumber(hndl: *mut ::std::os::raw::c_void,
-                                 err: *mut OCIError,
-                                 inter: *mut OCIInterval,
-                                 number: *mut OCINumber)
-                                 -> sword;
+    pub fn OCIIntervalFromNumber(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        inter: *mut OCIInterval,
+        number: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIIntervalFromText(hndl: *mut ::std::os::raw::c_void,
-                               err: *mut OCIError,
-                               inpstr: *const OraText,
-                               str_len: usize,
-                               result: *mut OCIInterval)
-                               -> sword;
+    pub fn OCIIntervalFromText(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        inpstr: *const OraText,
+        str_len: usize,
+        result: *mut OCIInterval,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIIntervalToText(hndl: *mut ::std::os::raw::c_void,
-                             err: *mut OCIError,
-                             inter: *const OCIInterval,
-                             lfprec: ub1,
-                             fsprec: ub1,
-                             buffer: *mut OraText,
-                             buflen: usize,
-                             resultlen: *mut usize)
-                             -> sword;
+    pub fn OCIIntervalToText(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        inter: *const OCIInterval,
+        lfprec: ub1,
+        fsprec: ub1,
+        buffer: *mut OraText,
+        buflen: usize,
+        resultlen: *mut usize,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIIntervalToNumber(hndl: *mut ::std::os::raw::c_void,
-                               err: *mut OCIError,
-                               inter: *const OCIInterval,
-                               number: *mut OCINumber)
-                               -> sword;
+    pub fn OCIIntervalToNumber(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        inter: *const OCIInterval,
+        number: *mut OCINumber,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIIntervalCheck(hndl: *mut ::std::os::raw::c_void,
-                            err: *mut OCIError,
-                            interval: *const OCIInterval,
-                            valid: *mut ub4)
-                            -> sword;
+    pub fn OCIIntervalCheck(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        interval: *const OCIInterval,
+        valid: *mut ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIIntervalAssign(hndl: *mut ::std::os::raw::c_void,
-                             err: *mut OCIError,
-                             ininter: *const OCIInterval,
-                             outinter: *mut OCIInterval)
-                             -> sword;
+    pub fn OCIIntervalAssign(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        ininter: *const OCIInterval,
+        outinter: *mut OCIInterval,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIIntervalSetYearMonth(hndl: *mut ::std::os::raw::c_void,
-                                   err: *mut OCIError,
-                                   yr: sb4,
-                                   mnth: sb4,
-                                   result: *mut OCIInterval)
-                                   -> sword;
+    pub fn OCIIntervalSetYearMonth(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        yr: sb4,
+        mnth: sb4,
+        result: *mut OCIInterval,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIIntervalGetYearMonth(hndl: *mut ::std::os::raw::c_void,
-                                   err: *mut OCIError,
-                                   yr: *mut sb4,
-                                   mnth: *mut sb4,
-                                   result: *const OCIInterval)
-                                   -> sword;
+    pub fn OCIIntervalGetYearMonth(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        yr: *mut sb4,
+        mnth: *mut sb4,
+        result: *const OCIInterval,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIIntervalSetDaySecond(hndl: *mut ::std::os::raw::c_void,
-                                   err: *mut OCIError,
-                                   dy: sb4,
-                                   hr: sb4,
-                                   mm: sb4,
-                                   ss: sb4,
-                                   fsec: sb4,
-                                   result: *mut OCIInterval)
-                                   -> sword;
+    pub fn OCIIntervalSetDaySecond(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        dy: sb4,
+        hr: sb4,
+        mm: sb4,
+        ss: sb4,
+        fsec: sb4,
+        result: *mut OCIInterval,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIIntervalGetDaySecond(hndl: *mut ::std::os::raw::c_void,
-                                   err: *mut OCIError,
-                                   dy: *mut sb4,
-                                   hr: *mut sb4,
-                                   mm: *mut sb4,
-                                   ss: *mut sb4,
-                                   fsec: *mut sb4,
-                                   result: *const OCIInterval)
-                                   -> sword;
+    pub fn OCIIntervalGetDaySecond(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        dy: *mut sb4,
+        hr: *mut sb4,
+        mm: *mut sb4,
+        ss: *mut sb4,
+        fsec: *mut sb4,
+        result: *const OCIInterval,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDateTimeToArray(hndl: *mut ::std::os::raw::c_void,
-                              err: *mut OCIError,
-                              datetime: *const OCIDateTime,
-                              reftz: *const OCIInterval,
-                              outarray: *mut ub1,
-                              len: *mut ub4,
-                              fsprec: ub1)
-                              -> sword;
+    pub fn OCIDateTimeToArray(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        datetime: *const OCIDateTime,
+        reftz: *const OCIInterval,
+        outarray: *mut ub1,
+        len: *mut ub4,
+        fsprec: ub1,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDateTimeFromArray(hndl: *mut ::std::os::raw::c_void,
-                                err: *mut OCIError,
-                                inarray: *mut ub1,
-                                len: ub4,
-                                type_: ub1,
-                                datetime: *mut OCIDateTime,
-                                reftz: *const OCIInterval,
-                                fsprec: ub1)
-                                -> sword;
+    pub fn OCIDateTimeFromArray(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        inarray: *mut ub1,
+        len: ub4,
+        type_: ub1,
+        datetime: *mut OCIDateTime,
+        reftz: *const OCIInterval,
+        fsprec: ub1,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDateTimeGetTimeZoneName(hndl: *mut ::std::os::raw::c_void,
-                                      err: *mut OCIError,
-                                      datetime: *const OCIDateTime,
-                                      buf: *mut ub1,
-                                      buflen: *mut ub4)
-                                      -> sword;
+    pub fn OCIDateTimeGetTimeZoneName(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        datetime: *const OCIDateTime,
+        buf: *mut ub1,
+        buflen: *mut ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIIntervalFromTZ(hndl: *mut ::std::os::raw::c_void,
-                             err: *mut OCIError,
-                             inpstring: *const oratext,
-                             str_len: usize,
-                             result: *mut OCIInterval)
-                             -> sword;
+    pub fn OCIIntervalFromTZ(
+        hndl: *mut ::std::os::raw::c_void,
+        err: *mut OCIError,
+        inpstring: *const oratext,
+        str_len: usize,
+        result: *mut OCIInterval,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIConnectionPoolCreate(envhp: *mut OCIEnv,
-                                   errhp: *mut OCIError,
-                                   poolhp: *mut OCICPool,
-                                   poolName: *mut *mut OraText,
-                                   poolNameLen: *mut sb4,
-                                   dblink: *const OraText,
-                                   dblinkLen: sb4,
-                                   connMin: ub4,
-                                   connMax: ub4,
-                                   connIncr: ub4,
-                                   poolUserName: *const OraText,
-                                   poolUserLen: sb4,
-                                   poolPassword: *const OraText,
-                                   poolPassLen: sb4,
-                                   mode: ub4)
-                                   -> sword;
+    pub fn OCIConnectionPoolCreate(
+        envhp: *mut OCIEnv,
+        errhp: *mut OCIError,
+        poolhp: *mut OCICPool,
+        poolName: *mut *mut OraText,
+        poolNameLen: *mut sb4,
+        dblink: *const OraText,
+        dblinkLen: sb4,
+        connMin: ub4,
+        connMax: ub4,
+        connIncr: ub4,
+        poolUserName: *const OraText,
+        poolUserLen: sb4,
+        poolPassword: *const OraText,
+        poolPassLen: sb4,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIConnectionPoolDestroy(poolhp: *mut OCICPool,
-                                    errhp: *mut OCIError,
-                                    mode: ub4)
-                                    -> sword;
+    pub fn OCIConnectionPoolDestroy(
+        poolhp: *mut OCICPool,
+        errhp: *mut OCIError,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISessionPoolCreate(envhp: *mut OCIEnv,
-                                errhp: *mut OCIError,
-                                spoolhp: *mut OCISPool,
-                                poolName: *mut *mut OraText,
-                                poolNameLen: *mut ub4,
-                                connStr: *const OraText,
-                                connStrLen: ub4,
-                                sessMin: ub4,
-                                sessMax: ub4,
-                                sessIncr: ub4,
-                                userid: *mut OraText,
-                                useridLen: ub4,
-                                password: *mut OraText,
-                                passwordLen: ub4,
-                                mode: ub4)
-                                -> sword;
+    pub fn OCISessionPoolCreate(
+        envhp: *mut OCIEnv,
+        errhp: *mut OCIError,
+        spoolhp: *mut OCISPool,
+        poolName: *mut *mut OraText,
+        poolNameLen: *mut ub4,
+        connStr: *const OraText,
+        connStrLen: ub4,
+        sessMin: ub4,
+        sessMax: ub4,
+        sessIncr: ub4,
+        userid: *mut OraText,
+        useridLen: ub4,
+        password: *mut OraText,
+        passwordLen: ub4,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCISessionPoolDestroy(spoolhp: *mut OCISPool, errhp: *mut OCIError, mode: ub4) -> sword;
 }
 extern "C" {
-    pub fn OCISessionGet(envhp: *mut OCIEnv,
-                         errhp: *mut OCIError,
-                         svchp: *mut *mut OCISvcCtx,
-                         authhp: *mut OCIAuthInfo,
-                         poolName: *mut OraText,
-                         poolName_len: ub4,
-                         tagInfo: *const OraText,
-                         tagInfo_len: ub4,
-                         retTagInfo: *mut *mut OraText,
-                         retTagInfo_len: *mut ub4,
-                         found: *mut boolean,
-                         mode: ub4)
-                         -> sword;
+    pub fn OCISessionGet(
+        envhp: *mut OCIEnv,
+        errhp: *mut OCIError,
+        svchp: *mut *mut OCISvcCtx,
+        authhp: *mut OCIAuthInfo,
+        poolName: *mut OraText,
+        poolName_len: ub4,
+        tagInfo: *const OraText,
+        tagInfo_len: ub4,
+        retTagInfo: *mut *mut OraText,
+        retTagInfo_len: *mut ub4,
+        found: *mut boolean,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCISessionRelease(svchp: *mut OCISvcCtx,
-                             errhp: *mut OCIError,
-                             tag: *mut OraText,
-                             tag_len: ub4,
-                             mode: ub4)
-                             -> sword;
+    pub fn OCISessionRelease(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        tag: *mut OraText,
+        tag_len: ub4,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAppCtxSet(sesshndl: *mut ::std::os::raw::c_void,
-                        nsptr: *mut ::std::os::raw::c_void,
-                        nsptrlen: ub4,
-                        attrptr: *mut ::std::os::raw::c_void,
-                        attrptrlen: ub4,
-                        valueptr: *mut ::std::os::raw::c_void,
-                        valueptrlen: ub4,
-                        errhp: *mut OCIError,
-                        mode: ub4)
-                        -> sword;
+    pub fn OCIAppCtxSet(
+        sesshndl: *mut ::std::os::raw::c_void,
+        nsptr: *mut ::std::os::raw::c_void,
+        nsptrlen: ub4,
+        attrptr: *mut ::std::os::raw::c_void,
+        attrptrlen: ub4,
+        valueptr: *mut ::std::os::raw::c_void,
+        valueptrlen: ub4,
+        errhp: *mut OCIError,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIAppCtxClearAll(sesshndl: *mut ::std::os::raw::c_void,
-                             nsptr: *mut ::std::os::raw::c_void,
-                             nsptrlen: ub4,
-                             errhp: *mut OCIError,
-                             mode: ub4)
-                             -> sword;
+    pub fn OCIAppCtxClearAll(
+        sesshndl: *mut ::std::os::raw::c_void,
+        nsptr: *mut ::std::os::raw::c_void,
+        nsptrlen: ub4,
+        errhp: *mut OCIError,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIMemStats(hndlp: *mut ::std::os::raw::c_void,
-                       errhp: *mut OCIError,
-                       envhp: *mut *mut OCIEnv,
-                       mode: ub4,
-                       mode1: ub4,
-                       tabname: *mut oratext)
-                       -> sword;
+    pub fn OCIMemStats(
+        hndlp: *mut ::std::os::raw::c_void,
+        errhp: *mut OCIError,
+        envhp: *mut *mut OCIEnv,
+        mode: ub4,
+        mode1: ub4,
+        tabname: *mut oratext,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCIPing(svchp: *mut OCISvcCtx, errhp: *mut OCIError, mode: ub4) -> sword;
 }
 extern "C" {
-    pub fn OCIKerbAttrSet(trgthndlp: *mut OCISession,
-                          cred_use: ub4,
-                          ftgt_ticket: *mut ub1,
-                          ticket_len: ub4,
-                          session_key: *mut ub1,
-                          skey_len: ub4,
-                          ftgt_keytype: ub2,
-                          ftgt_ticket_flags: ub4,
-                          ftgt_auth_time: sb4,
-                          ftgt_start_time: sb4,
-                          ftgt_end_time: sb4,
-                          ftgt_renew_time: sb4,
-                          ftgt_client_principal: *mut oratext,
-                          ftgt_client_principal_len: ub4,
-                          ftgt_client_realm: *mut oratext,
-                          ftgt_client_realm_len: ub4,
-                          errhp: *mut OCIError)
-                          -> sword;
+    pub fn OCIKerbAttrSet(
+        trgthndlp: *mut OCISession,
+        cred_use: ub4,
+        ftgt_ticket: *mut ub1,
+        ticket_len: ub4,
+        session_key: *mut ub1,
+        skey_len: ub4,
+        ftgt_keytype: ub2,
+        ftgt_ticket_flags: ub4,
+        ftgt_auth_time: sb4,
+        ftgt_start_time: sb4,
+        ftgt_end_time: sb4,
+        ftgt_renew_time: sb4,
+        ftgt_client_principal: *mut oratext,
+        ftgt_client_principal_len: ub4,
+        ftgt_client_realm: *mut oratext,
+        ftgt_client_realm_len: ub4,
+        errhp: *mut OCIError,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDBStartup(svchp: *mut OCISvcCtx,
-                        errhp: *mut OCIError,
-                        admhp: *mut OCIAdmin,
-                        mode: ub4,
-                        flags: ub4)
-                        -> sword;
+    pub fn OCIDBStartup(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        admhp: *mut OCIAdmin,
+        mode: ub4,
+        flags: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDBShutdown(svchp: *mut OCISvcCtx,
-                         errhp: *mut OCIError,
-                         admhp: *mut OCIAdmin,
-                         mode: ub4)
-                         -> sword;
+    pub fn OCIDBShutdown(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        admhp: *mut OCIAdmin,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIClientVersion(major_version: *mut sword,
-                            minor_version: *mut sword,
-                            update_num: *mut sword,
-                            patch_num: *mut sword,
-                            port_update_num: *mut sword);
+    pub fn OCIClientVersion(
+        major_version: *mut sword,
+        minor_version: *mut sword,
+        update_num: *mut sword,
+        patch_num: *mut sword,
+        port_update_num: *mut sword,
+    );
 }
 extern "C" {
-    pub fn OCIInitEventHandle(errhp: *mut OCIError,
-                              event: *mut OCIEvent,
-                              str: *mut text,
-                              size: ub4)
-                              -> sword;
+    pub fn OCIInitEventHandle(
+        errhp: *mut OCIError,
+        event: *mut OCIEvent,
+        str: *mut text,
+        size: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCITranslatedErrorGet(svchp: *mut OCISvcCtx,
-                                 hndlp: *mut ::std::os::raw::c_void,
-                                 recordno: ub4,
-                                 sqlstate: *mut OraText,
-                                 sqlstatesiz: ub4,
-                                 errcodep: *mut sb4,
-                                 type_: ub4)
-                                 -> sword;
+    pub fn OCITranslatedErrorGet(
+        svchp: *mut OCISvcCtx,
+        hndlp: *mut ::std::os::raw::c_void,
+        recordno: ub4,
+        sqlstate: *mut OraText,
+        sqlstatesiz: ub4,
+        errcodep: *mut sb4,
+        type_: ub4,
+    ) -> sword;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -16651,66 +17949,106 @@ pub struct OCIXmlDiffBnd {
 }
 #[test]
 fn bindgen_test_layout_OCIXmlDiffBnd() {
-    assert_eq!(::std::mem::size_of::<OCIXmlDiffBnd>(),
-               32usize,
-               concat!("Size of: ", stringify!(OCIXmlDiffBnd)));
-    assert_eq!(::std::mem::align_of::<OCIXmlDiffBnd>(),
-               8usize,
-               concat!("Alignment of ", stringify!(OCIXmlDiffBnd)));
-    assert_eq!(unsafe { &(*(0 as *const OCIXmlDiffBnd)).bndnmp as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(OCIXmlDiffBnd),
-                       "::",
-                       stringify!(bndnmp)));
-    assert_eq!(unsafe { &(*(0 as *const OCIXmlDiffBnd)).bndnml as *const _ as usize },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(OCIXmlDiffBnd),
-                       "::",
-                       stringify!(bndnml)));
-    assert_eq!(unsafe { &(*(0 as *const OCIXmlDiffBnd)).bndpos as *const _ as usize },
-               10usize,
-               concat!("Alignment of field: ",
-                       stringify!(OCIXmlDiffBnd),
-                       "::",
-                       stringify!(bndpos)));
-    assert_eq!(unsafe { &(*(0 as *const OCIXmlDiffBnd)).bndnum as *const _ as usize },
-               12usize,
-               concat!("Alignment of field: ",
-                       stringify!(OCIXmlDiffBnd),
-                       "::",
-                       stringify!(bndnum)));
-    assert_eq!(unsafe { &(*(0 as *const OCIXmlDiffBnd)).bnddty as *const _ as usize },
-               14usize,
-               concat!("Alignment of field: ",
-                       stringify!(OCIXmlDiffBnd),
-                       "::",
-                       stringify!(bnddty)));
-    assert_eq!(unsafe { &(*(0 as *const OCIXmlDiffBnd)).bndvalp as *const _ as usize },
-               16usize,
-               concat!("Alignment of field: ",
-                       stringify!(OCIXmlDiffBnd),
-                       "::",
-                       stringify!(bndvalp)));
-    assert_eq!(unsafe { &(*(0 as *const OCIXmlDiffBnd)).bndvallen as *const _ as usize },
-               24usize,
-               concat!("Alignment of field: ",
-                       stringify!(OCIXmlDiffBnd),
-                       "::",
-                       stringify!(bndvallen)));
-    assert_eq!(unsafe { &(*(0 as *const OCIXmlDiffBnd)).bndcsid as *const _ as usize },
-               28usize,
-               concat!("Alignment of field: ",
-                       stringify!(OCIXmlDiffBnd),
-                       "::",
-                       stringify!(bndcsid)));
-    assert_eq!(unsafe { &(*(0 as *const OCIXmlDiffBnd)).bndcsform as *const _ as usize },
-               30usize,
-               concat!("Alignment of field: ",
-                       stringify!(OCIXmlDiffBnd),
-                       "::",
-                       stringify!(bndcsform)));
+    assert_eq!(
+        ::std::mem::size_of::<OCIXmlDiffBnd>(),
+        32usize,
+        concat!("Size of: ", stringify!(OCIXmlDiffBnd))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<OCIXmlDiffBnd>(),
+        8usize,
+        concat!("Alignment of ", stringify!(OCIXmlDiffBnd))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const OCIXmlDiffBnd)).bndnmp as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(OCIXmlDiffBnd),
+            "::",
+            stringify!(bndnmp)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const OCIXmlDiffBnd)).bndnml as *const _ as usize },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(OCIXmlDiffBnd),
+            "::",
+            stringify!(bndnml)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const OCIXmlDiffBnd)).bndpos as *const _ as usize },
+        10usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(OCIXmlDiffBnd),
+            "::",
+            stringify!(bndpos)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const OCIXmlDiffBnd)).bndnum as *const _ as usize },
+        12usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(OCIXmlDiffBnd),
+            "::",
+            stringify!(bndnum)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const OCIXmlDiffBnd)).bnddty as *const _ as usize },
+        14usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(OCIXmlDiffBnd),
+            "::",
+            stringify!(bnddty)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const OCIXmlDiffBnd)).bndvalp as *const _ as usize },
+        16usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(OCIXmlDiffBnd),
+            "::",
+            stringify!(bndvalp)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const OCIXmlDiffBnd)).bndvallen as *const _ as usize },
+        24usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(OCIXmlDiffBnd),
+            "::",
+            stringify!(bndvallen)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const OCIXmlDiffBnd)).bndcsid as *const _ as usize },
+        28usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(OCIXmlDiffBnd),
+            "::",
+            stringify!(bndcsid)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const OCIXmlDiffBnd)).bndcsform as *const _ as usize },
+        30usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(OCIXmlDiffBnd),
+            "::",
+            stringify!(bndcsform)
+        )
+    );
 }
 impl Clone for OCIXmlDiffBnd {
     fn clone(&self) -> Self {
@@ -16736,24 +18074,36 @@ pub struct ocixmldbparam {
 }
 #[test]
 fn bindgen_test_layout_ocixmldbparam() {
-    assert_eq!(::std::mem::size_of::<ocixmldbparam>(),
-               16usize,
-               concat!("Size of: ", stringify!(ocixmldbparam)));
-    assert_eq!(::std::mem::align_of::<ocixmldbparam>(),
-               8usize,
-               concat!("Alignment of ", stringify!(ocixmldbparam)));
-    assert_eq!(unsafe { &(*(0 as *const ocixmldbparam)).name_ocixmldbparam as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(ocixmldbparam),
-                       "::",
-                       stringify!(name_ocixmldbparam)));
-    assert_eq!(unsafe { &(*(0 as *const ocixmldbparam)).value_ocixmldbparam as *const _ as usize },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(ocixmldbparam),
-                       "::",
-                       stringify!(value_ocixmldbparam)));
+    assert_eq!(
+        ::std::mem::size_of::<ocixmldbparam>(),
+        16usize,
+        concat!("Size of: ", stringify!(ocixmldbparam))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<ocixmldbparam>(),
+        8usize,
+        concat!("Alignment of ", stringify!(ocixmldbparam))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const ocixmldbparam)).name_ocixmldbparam as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(ocixmldbparam),
+            "::",
+            stringify!(name_ocixmldbparam)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const ocixmldbparam)).value_ocixmldbparam as *const _ as usize },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(ocixmldbparam),
+            "::",
+            stringify!(value_ocixmldbparam)
+        )
+    );
 }
 impl Clone for ocixmldbparam {
     fn clone(&self) -> Self {
@@ -16817,65 +18167,71 @@ extern "C" {
     /// lobloc (IN)     - The OCI lob locator
     /// Returns
     /// The orastream created on top of the lob is returned in the parameter 'stream'.
-    pub fn OCIXmlDbInitXmlCtx(arg1: *mut OCIEnv,
-                              arg2: *mut OCISvcCtx,
-                              arg3: *mut OCIError,
-                              arg4: *mut ocixmldbparam,
-                              arg5: ::std::os::raw::c_int)
-                              -> *mut xmlctx;
+    pub fn OCIXmlDbInitXmlCtx(
+        arg1: *mut OCIEnv,
+        arg2: *mut OCISvcCtx,
+        arg3: *mut OCIError,
+        arg4: *mut ocixmldbparam,
+        arg5: ::std::os::raw::c_int,
+    ) -> *mut xmlctx;
 }
 extern "C" {
     pub fn OCIXmlDbFreeXmlCtx(xctx: *mut xmlctx);
 }
 extern "C" {
-    pub fn OCIXmlDbStreamFromXMLType(errhp: *mut OCIError,
-                                     stream: *mut *mut ::std::os::raw::c_void,
-                                     doc: *mut OCIXMLType,
-                                     mode: ub4)
-                                     -> sword;
+    pub fn OCIXmlDbStreamFromXMLType(
+        errhp: *mut OCIError,
+        stream: *mut *mut ::std::os::raw::c_void,
+        doc: *mut OCIXMLType,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIXmlDbOrastreamFromLob(errhp: *mut OCIError,
-                                    xctx: *mut xmlctx,
-                                    stream: *mut *mut ::std::os::raw::c_void,
-                                    lobloc: *mut OCILobLocator)
-                                    -> sword;
+    pub fn OCIXmlDbOrastreamFromLob(
+        errhp: *mut OCIError,
+        xctx: *mut xmlctx,
+        stream: *mut *mut ::std::os::raw::c_void,
+        lobloc: *mut OCILobLocator,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIXmlDbStreamRead(errhp: *mut OCIError,
-                              stream: *mut ::std::os::raw::c_void,
-                              bufp: *mut ::std::os::raw::c_void,
-                              len: *mut sb8,
-                              mode: ub4)
-                              -> sword;
+    pub fn OCIXmlDbStreamRead(
+        errhp: *mut OCIError,
+        stream: *mut ::std::os::raw::c_void,
+        bufp: *mut ::std::os::raw::c_void,
+        len: *mut sb8,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCIXmlDbStreamClose(errhp: *mut OCIError, stream: *mut ::std::os::raw::c_void) -> sword;
 }
 extern "C" {
-    pub fn OCIXmlDbRewriteXMLDiff(envhp: *mut OCIEnv,
-                                  errhp: *mut OCIError,
-                                  svchp: *mut OCISvcCtx,
-                                  xctx: *mut xmldrctx,
-                                  colname: *mut oratext,
-                                  colnamelen: ub4,
-                                  xmldiff: *const ::std::os::raw::c_void,
-                                  xmldifflen: ub4,
-                                  xdiff_locator: *mut OCILobLocator,
-                                  updstmt: *mut *mut oratext,
-                                  binditerator: ub2,
-                                  colvalbndcount: *mut ub2,
-                                  bindlist: *mut *mut OCIXmlDiffBnd,
-                                  obj_tab_prefix: *mut oratext,
-                                  obj_tab_prefix_len: ub2)
-                                  -> sword;
+    pub fn OCIXmlDbRewriteXMLDiff(
+        envhp: *mut OCIEnv,
+        errhp: *mut OCIError,
+        svchp: *mut OCISvcCtx,
+        xctx: *mut xmldrctx,
+        colname: *mut oratext,
+        colnamelen: ub4,
+        xmldiff: *const ::std::os::raw::c_void,
+        xmldifflen: ub4,
+        xdiff_locator: *mut OCILobLocator,
+        updstmt: *mut *mut oratext,
+        binditerator: ub2,
+        colvalbndcount: *mut ub2,
+        bindlist: *mut *mut OCIXmlDiffBnd,
+        obj_tab_prefix: *mut oratext,
+        obj_tab_prefix_len: ub2,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIXmlInitDRCtx(env: *mut OCIEnv,
-                           svc: *mut OCISvcCtx,
-                           err: *mut OCIError,
-                           bindtyp: ub1)
-                           -> *mut xmldrctx;
+    pub fn OCIXmlInitDRCtx(
+        env: *mut OCIEnv,
+        svc: *mut OCISvcCtx,
+        err: *mut OCIError,
+        bindtyp: ub1,
+    ) -> *mut xmldrctx;
 }
 extern "C" {
     pub fn OCIXmlFreeDRCtx(xctx: *mut xmldrctx);
@@ -16884,19 +18240,21 @@ extern "C" {
     pub fn OCIXmlGetDiffBndVersion() -> ub1;
 }
 extern "C" {
-    pub fn OCIXmlDbGetFullyQualifiedSchemaUrl(errhp: *mut OCIError,
-                                              schema_url: *mut oratext,
-                                              schema_url_len: ub2,
-                                              schema_owner: *mut oratext,
-                                              schema_owner_len: ub2,
-                                              fq_schema_url: *mut *mut oratext,
-                                              fs_schema_url_len: *mut ub4)
-                                              -> sword;
+    pub fn OCIXmlDbGetFullyQualifiedSchemaUrl(
+        errhp: *mut OCIError,
+        schema_url: *mut oratext,
+        schema_url_len: ub2,
+        schema_owner: *mut oratext,
+        schema_owner_len: ub2,
+        fq_schema_url: *mut *mut oratext,
+        fs_schema_url_len: *mut ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIXmlDbMemCallback(ctx: *mut ::std::os::raw::c_void,
-                               size: usize)
-                               -> *mut ::std::os::raw::c_void;
+    pub fn OCIXmlDbMemCallback(
+        ctx: *mut ::std::os::raw::c_void,
+        size: usize,
+    ) -> *mut ::std::os::raw::c_void;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -16927,10 +18285,11 @@ extern "C" {
     pub fn OCIDirPathAbort(dpctx: *mut OCIDirPathCtx, errhp: *mut OCIError) -> sword;
 }
 extern "C" {
-    pub fn OCIDirPathDataSave(dpctx: *mut OCIDirPathCtx,
-                              errhp: *mut OCIError,
-                              action: ub4)
-                              -> sword;
+    pub fn OCIDirPathDataSave(
+        dpctx: *mut OCIDirPathCtx,
+        errhp: *mut OCIError,
+        action: ub4,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCIDirPathFinish(dpctx: *mut OCIDirPathCtx, errhp: *mut OCIError) -> sword;
@@ -16939,527 +18298,574 @@ extern "C" {
     pub fn OCIDirPathFlushRow(dpctx: *mut OCIDirPathCtx, errhp: *mut OCIError) -> sword;
 }
 extern "C" {
-    pub fn OCIDirPathPrepare(dpctx: *mut OCIDirPathCtx,
-                             svchp: *mut OCISvcCtx,
-                             errhp: *mut OCIError)
-                             -> sword;
+    pub fn OCIDirPathPrepare(
+        dpctx: *mut OCIDirPathCtx,
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDirPathLoadStream(dpctx: *mut OCIDirPathCtx,
-                                dpstr: *mut OCIDirPathStream,
-                                errhp: *mut OCIError)
-                                -> sword;
+    pub fn OCIDirPathLoadStream(
+        dpctx: *mut OCIDirPathCtx,
+        dpstr: *mut OCIDirPathStream,
+        errhp: *mut OCIError,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDirPathColArrayEntryGet(dpca: *mut OCIDirPathColArray,
-                                      errhp: *mut OCIError,
-                                      rownum: ub4,
-                                      colIdx: ub2,
-                                      cvalpp: *mut *mut ub1,
-                                      clenp: *mut ub4,
-                                      cflgp: *mut ub1)
-                                      -> sword;
+    pub fn OCIDirPathColArrayEntryGet(
+        dpca: *mut OCIDirPathColArray,
+        errhp: *mut OCIError,
+        rownum: ub4,
+        colIdx: ub2,
+        cvalpp: *mut *mut ub1,
+        clenp: *mut ub4,
+        cflgp: *mut ub1,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDirPathColArrayEntrySet(dpca: *mut OCIDirPathColArray,
-                                      errhp: *mut OCIError,
-                                      rownum: ub4,
-                                      colIdx: ub2,
-                                      cvalp: *mut ub1,
-                                      clen: ub4,
-                                      cflg: ub1)
-                                      -> sword;
+    pub fn OCIDirPathColArrayEntrySet(
+        dpca: *mut OCIDirPathColArray,
+        errhp: *mut OCIError,
+        rownum: ub4,
+        colIdx: ub2,
+        cvalp: *mut ub1,
+        clen: ub4,
+        cflg: ub1,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIDirPathColArrayRowGet(dpca: *mut OCIDirPathColArray,
-                                    errhp: *mut OCIError,
-                                    rownum: ub4,
-                                    cvalppp: *mut *mut *mut ub1,
-                                    clenpp: *mut *mut ub4,
-                                    cflgpp: *mut *mut ub1)
-                                    -> sword;
+    pub fn OCIDirPathColArrayRowGet(
+        dpca: *mut OCIDirPathColArray,
+        errhp: *mut OCIError,
+        rownum: ub4,
+        cvalppp: *mut *mut *mut ub1,
+        clenpp: *mut *mut ub4,
+        cflgpp: *mut *mut ub1,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCIDirPathColArrayReset(dpca: *mut OCIDirPathColArray, errhp: *mut OCIError) -> sword;
 }
 extern "C" {
-    pub fn OCIDirPathColArrayToStream(dpca: *mut OCIDirPathColArray,
-                                      dpctx: *mut OCIDirPathCtx,
-                                      dpstr: *mut OCIDirPathStream,
-                                      errhp: *mut OCIError,
-                                      rowcnt: ub4,
-                                      rowoff: ub4)
-                                      -> sword;
+    pub fn OCIDirPathColArrayToStream(
+        dpca: *mut OCIDirPathColArray,
+        dpctx: *mut OCIDirPathCtx,
+        dpstr: *mut OCIDirPathStream,
+        errhp: *mut OCIError,
+        rowcnt: ub4,
+        rowoff: ub4,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCIDirPathStreamReset(dpstr: *mut OCIDirPathStream, errhp: *mut OCIError) -> sword;
 }
 extern "C" {
-    pub fn OCILCRNew(svchp: *mut OCISvcCtx,
-                     errhp: *mut OCIError,
-                     duration: OCIDuration,
-                     lcrtype: ub1,
-                     lcrp: *mut *mut ::std::os::raw::c_void,
-                     mode: ub4)
-                     -> sword;
+    pub fn OCILCRNew(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        duration: OCIDuration,
+        lcrtype: ub1,
+        lcrp: *mut *mut ::std::os::raw::c_void,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILCRFree(svchp: *mut OCISvcCtx,
-                      errhp: *mut OCIError,
-                      lcrp: *mut ::std::os::raw::c_void,
-                      mode: ub4)
-                      -> sword;
+    pub fn OCILCRFree(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        lcrp: *mut ::std::os::raw::c_void,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILCRHeaderSet(svchp: *mut OCISvcCtx,
-                           errhp: *mut OCIError,
-                           src_db_name: *mut oratext,
-                           src_db_name_len: ub2,
-                           cmd_type: *mut oratext,
-                           cmd_type_len: ub2,
-                           owner: *mut oratext,
-                           owner_len: ub2,
-                           oname: *mut oratext,
-                           oname_len: ub2,
-                           tag: *mut ub1,
-                           tag_len: ub2,
-                           txid: *mut oratext,
-                           txid_len: ub2,
-                           src_time: *mut OCIDate,
-                           position: *mut ub1,
-                           position_len: ub2,
-                           flag: oraub8,
-                           lcrp: *mut ::std::os::raw::c_void,
-                           mode: ub4)
-                           -> sword;
+    pub fn OCILCRHeaderSet(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        src_db_name: *mut oratext,
+        src_db_name_len: ub2,
+        cmd_type: *mut oratext,
+        cmd_type_len: ub2,
+        owner: *mut oratext,
+        owner_len: ub2,
+        oname: *mut oratext,
+        oname_len: ub2,
+        tag: *mut ub1,
+        tag_len: ub2,
+        txid: *mut oratext,
+        txid_len: ub2,
+        src_time: *mut OCIDate,
+        position: *mut ub1,
+        position_len: ub2,
+        flag: oraub8,
+        lcrp: *mut ::std::os::raw::c_void,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILCRHeaderGet(svchp: *mut OCISvcCtx,
-                           errhp: *mut OCIError,
-                           src_db_name: *mut *mut oratext,
-                           src_db_name_len: *mut ub2,
-                           cmd_type: *mut *mut oratext,
-                           cmd_type_len: *mut ub2,
-                           owner: *mut *mut oratext,
-                           owner_len: *mut ub2,
-                           oname: *mut *mut oratext,
-                           oname_len: *mut ub2,
-                           tag: *mut *mut ub1,
-                           tag_len: *mut ub2,
-                           txid: *mut *mut oratext,
-                           txid_len: *mut ub2,
-                           src_time: *mut OCIDate,
-                           old_columns: *mut ub2,
-                           new_columns: *mut ub2,
-                           position: *mut *mut ub1,
-                           position_len: *mut ub2,
-                           flag: *mut oraub8,
-                           lcrp: *mut ::std::os::raw::c_void,
-                           mode: ub4)
-                           -> sword;
+    pub fn OCILCRHeaderGet(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        src_db_name: *mut *mut oratext,
+        src_db_name_len: *mut ub2,
+        cmd_type: *mut *mut oratext,
+        cmd_type_len: *mut ub2,
+        owner: *mut *mut oratext,
+        owner_len: *mut ub2,
+        oname: *mut *mut oratext,
+        oname_len: *mut ub2,
+        tag: *mut *mut ub1,
+        tag_len: *mut ub2,
+        txid: *mut *mut oratext,
+        txid_len: *mut ub2,
+        src_time: *mut OCIDate,
+        old_columns: *mut ub2,
+        new_columns: *mut ub2,
+        position: *mut *mut ub1,
+        position_len: *mut ub2,
+        flag: *mut oraub8,
+        lcrp: *mut ::std::os::raw::c_void,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILCRRowColumnInfoSet(svchp: *mut OCISvcCtx,
-                                  errhp: *mut OCIError,
-                                  column_value_type: ub2,
-                                  num_columns: ub2,
-                                  column_names: *mut *mut oratext,
-                                  column_name_lens: *mut ub2,
-                                  column_dtyp: *mut ub2,
-                                  column_valuesp: *mut *mut ::std::os::raw::c_void,
-                                  column_indp: *mut OCIInd,
-                                  column_alensp: *mut ub2,
-                                  column_csetfp: *mut ub1,
-                                  column_flags: *mut oraub8,
-                                  column_csid: *mut ub2,
-                                  row_lcrp: *mut ::std::os::raw::c_void,
-                                  mode: ub4)
-                                  -> sword;
+    pub fn OCILCRRowColumnInfoSet(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        column_value_type: ub2,
+        num_columns: ub2,
+        column_names: *mut *mut oratext,
+        column_name_lens: *mut ub2,
+        column_dtyp: *mut ub2,
+        column_valuesp: *mut *mut ::std::os::raw::c_void,
+        column_indp: *mut OCIInd,
+        column_alensp: *mut ub2,
+        column_csetfp: *mut ub1,
+        column_flags: *mut oraub8,
+        column_csid: *mut ub2,
+        row_lcrp: *mut ::std::os::raw::c_void,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILCRRowColumnInfoGet(svchp: *mut OCISvcCtx,
-                                  errhp: *mut OCIError,
-                                  column_value_type: ub2,
-                                  num_columns: *mut ub2,
-                                  column_names: *mut *mut oratext,
-                                  column_name_lens: *mut ub2,
-                                  column_dtyp: *mut ub2,
-                                  column_valuesp: *mut *mut ::std::os::raw::c_void,
-                                  column_indp: *mut OCIInd,
-                                  column_alensp: *mut ub2,
-                                  column_csetfp: *mut ub1,
-                                  column_flags: *mut oraub8,
-                                  column_csid: *mut ub2,
-                                  row_lcrp: *mut ::std::os::raw::c_void,
-                                  array_size: ub2,
-                                  mode: ub4)
-                                  -> sword;
+    pub fn OCILCRRowColumnInfoGet(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        column_value_type: ub2,
+        num_columns: *mut ub2,
+        column_names: *mut *mut oratext,
+        column_name_lens: *mut ub2,
+        column_dtyp: *mut ub2,
+        column_valuesp: *mut *mut ::std::os::raw::c_void,
+        column_indp: *mut OCIInd,
+        column_alensp: *mut ub2,
+        column_csetfp: *mut ub1,
+        column_flags: *mut oraub8,
+        column_csid: *mut ub2,
+        row_lcrp: *mut ::std::os::raw::c_void,
+        array_size: ub2,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILCRDDLInfoSet(svchp: *mut OCISvcCtx,
-                            errhp: *mut OCIError,
-                            object_type: *mut oratext,
-                            object_type_len: ub2,
-                            ddl_text: *mut oratext,
-                            ddl_text_len: ub4,
-                            logon_user: *mut oratext,
-                            logon_user_len: ub2,
-                            current_schema: *mut oratext,
-                            current_schema_len: ub2,
-                            base_table_owner: *mut oratext,
-                            base_table_owner_len: ub2,
-                            base_table_name: *mut oratext,
-                            base_table_name_len: ub2,
-                            flag: oraub8,
-                            ddl_lcrp: *mut ::std::os::raw::c_void,
-                            mode: ub4)
-                            -> sword;
+    pub fn OCILCRDDLInfoSet(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        object_type: *mut oratext,
+        object_type_len: ub2,
+        ddl_text: *mut oratext,
+        ddl_text_len: ub4,
+        logon_user: *mut oratext,
+        logon_user_len: ub2,
+        current_schema: *mut oratext,
+        current_schema_len: ub2,
+        base_table_owner: *mut oratext,
+        base_table_owner_len: ub2,
+        base_table_name: *mut oratext,
+        base_table_name_len: ub2,
+        flag: oraub8,
+        ddl_lcrp: *mut ::std::os::raw::c_void,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILCRDDLInfoGet(svchp: *mut OCISvcCtx,
-                            errhp: *mut OCIError,
-                            object_type: *mut *mut oratext,
-                            object_type_len: *mut ub2,
-                            ddl_text: *mut *mut oratext,
-                            ddl_text_len: *mut ub4,
-                            logon_user: *mut *mut oratext,
-                            logon_user_len: *mut ub2,
-                            current_schema: *mut *mut oratext,
-                            current_schema_len: *mut ub2,
-                            base_table_owner: *mut *mut oratext,
-                            base_table_owner_len: *mut ub2,
-                            base_table_name: *mut *mut oratext,
-                            base_table_name_len: *mut ub2,
-                            flag: *mut oraub8,
-                            ddl_lcrp: *mut ::std::os::raw::c_void,
-                            mode: ub4)
-                            -> sword;
+    pub fn OCILCRDDLInfoGet(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        object_type: *mut *mut oratext,
+        object_type_len: *mut ub2,
+        ddl_text: *mut *mut oratext,
+        ddl_text_len: *mut ub4,
+        logon_user: *mut *mut oratext,
+        logon_user_len: *mut ub2,
+        current_schema: *mut *mut oratext,
+        current_schema_len: *mut ub2,
+        base_table_owner: *mut *mut oratext,
+        base_table_owner_len: *mut ub2,
+        base_table_name: *mut *mut oratext,
+        base_table_name_len: *mut ub2,
+        flag: *mut oraub8,
+        ddl_lcrp: *mut ::std::os::raw::c_void,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILCRAttributesSet(svchp: *mut OCISvcCtx,
-                               errhp: *mut OCIError,
-                               num_attrs: ub2,
-                               attr_names: *mut *mut oratext,
-                               attr_name_lens: *mut ub2,
-                               attr_dtyp: *mut ub2,
-                               attr_valuesp: *mut *mut ::std::os::raw::c_void,
-                               attr_indp: *mut OCIInd,
-                               attr_alensp: *mut ub2,
-                               lcrp: *mut ::std::os::raw::c_void,
-                               mode: ub4)
-                               -> sword;
+    pub fn OCILCRAttributesSet(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        num_attrs: ub2,
+        attr_names: *mut *mut oratext,
+        attr_name_lens: *mut ub2,
+        attr_dtyp: *mut ub2,
+        attr_valuesp: *mut *mut ::std::os::raw::c_void,
+        attr_indp: *mut OCIInd,
+        attr_alensp: *mut ub2,
+        lcrp: *mut ::std::os::raw::c_void,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILCRAttributesGet(svchp: *mut OCISvcCtx,
-                               errhp: *mut OCIError,
-                               num_attrs: *mut ub2,
-                               attr_names: *mut *mut oratext,
-                               attr_namesl: *mut ub2,
-                               attr_dtyp: *mut ub2,
-                               attr_valuesp: *mut *mut ::std::os::raw::c_void,
-                               attr_indp: *mut OCIInd,
-                               attr_alensp: *mut ub2,
-                               lcrp: *mut ::std::os::raw::c_void,
-                               array_size: ub2,
-                               mode: ub4)
-                               -> sword;
+    pub fn OCILCRAttributesGet(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        num_attrs: *mut ub2,
+        attr_names: *mut *mut oratext,
+        attr_namesl: *mut ub2,
+        attr_dtyp: *mut ub2,
+        attr_valuesp: *mut *mut ::std::os::raw::c_void,
+        attr_indp: *mut OCIInd,
+        attr_alensp: *mut ub2,
+        lcrp: *mut ::std::os::raw::c_void,
+        array_size: ub2,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILCRWhereClauseGet(svchp: *mut OCISvcCtx,
-                                errhp: *mut OCIError,
-                                wc_stmt: *mut oratext,
-                                wc_stmt_len: *mut ub4,
-                                row_lcrp: *mut ::std::os::raw::c_void,
-                                mode: ub4)
-                                -> sword;
+    pub fn OCILCRWhereClauseGet(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        wc_stmt: *mut oratext,
+        wc_stmt_len: *mut ub4,
+        row_lcrp: *mut ::std::os::raw::c_void,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILCRRowStmtGet(svchp: *mut OCISvcCtx,
-                            errhp: *mut OCIError,
-                            row_stmt: *mut oratext,
-                            row_stmt_len: *mut ub4,
-                            row_lcrp: *mut ::std::os::raw::c_void,
-                            mode: ub4)
-                            -> sword;
+    pub fn OCILCRRowStmtGet(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        row_stmt: *mut oratext,
+        row_stmt_len: *mut ub4,
+        row_lcrp: *mut ::std::os::raw::c_void,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILCRWhereClauseWithBindVarGet(svchp: *mut OCISvcCtx,
-                                           errhp: *mut OCIError,
-                                           wc_stmt: *mut oratext,
-                                           wc_stmt_len: *mut ub4,
-                                           num_bind_var: *mut ub2,
-                                           bind_var_dtyp: *mut ub2,
-                                           bind_var_valuesp: *mut *mut ::std::os::raw::c_void,
-                                           bind_var_indp: *mut OCIInd,
-                                           bind_var_alensp: *mut ub2,
-                                           bind_var_csetidp: *mut ub2,
-                                           bind_var_csetfp: *mut ub1,
-                                           row_lcrp: *mut ::std::os::raw::c_void,
-                                           array_size: ub2,
-                                           bind_var_syntax: *mut oratext,
-                                           mode: ub4)
-                                           -> sword;
+    pub fn OCILCRWhereClauseWithBindVarGet(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        wc_stmt: *mut oratext,
+        wc_stmt_len: *mut ub4,
+        num_bind_var: *mut ub2,
+        bind_var_dtyp: *mut ub2,
+        bind_var_valuesp: *mut *mut ::std::os::raw::c_void,
+        bind_var_indp: *mut OCIInd,
+        bind_var_alensp: *mut ub2,
+        bind_var_csetidp: *mut ub2,
+        bind_var_csetfp: *mut ub1,
+        row_lcrp: *mut ::std::os::raw::c_void,
+        array_size: ub2,
+        bind_var_syntax: *mut oratext,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILCRRowStmtWithBindVarGet(svchp: *mut OCISvcCtx,
-                                       errhp: *mut OCIError,
-                                       row_stmt: *mut oratext,
-                                       row_stmt_len: *mut ub4,
-                                       num_bind_var: *mut ub2,
-                                       bind_var_dtyp: *mut ub2,
-                                       bind_var_valuesp: *mut *mut ::std::os::raw::c_void,
-                                       bind_var_indp: *mut OCIInd,
-                                       bind_var_alensp: *mut ub2,
-                                       bind_var_csetidp: *mut ub2,
-                                       bind_var_csetfp: *mut ub1,
-                                       row_lcrp: *mut ::std::os::raw::c_void,
-                                       chunk_column_names: *mut *mut oratext,
-                                       chunk_column_namesl: *mut ub2,
-                                       chunk_column_flags: *mut oraub8,
-                                       array_size: ub2,
-                                       bind_var_syntax: *mut oratext,
-                                       mode: ub4)
-                                       -> sword;
+    pub fn OCILCRRowStmtWithBindVarGet(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        row_stmt: *mut oratext,
+        row_stmt_len: *mut ub4,
+        num_bind_var: *mut ub2,
+        bind_var_dtyp: *mut ub2,
+        bind_var_valuesp: *mut *mut ::std::os::raw::c_void,
+        bind_var_indp: *mut OCIInd,
+        bind_var_alensp: *mut ub2,
+        bind_var_csetidp: *mut ub2,
+        bind_var_csetfp: *mut ub1,
+        row_lcrp: *mut ::std::os::raw::c_void,
+        chunk_column_names: *mut *mut oratext,
+        chunk_column_namesl: *mut ub2,
+        chunk_column_flags: *mut oraub8,
+        array_size: ub2,
+        bind_var_syntax: *mut oratext,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILCRSCNsFromPosition(svchp: *mut OCISvcCtx,
-                                  errhp: *mut OCIError,
-                                  position: *mut ub1,
-                                  position_len: ub2,
-                                  scn: *mut OCINumber,
-                                  commit_scn: *mut OCINumber,
-                                  mode: ub4)
-                                  -> sword;
+    pub fn OCILCRSCNsFromPosition(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        position: *mut ub1,
+        position_len: ub2,
+        scn: *mut OCINumber,
+        commit_scn: *mut OCINumber,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILCRSCNToPosition(svchp: *mut OCISvcCtx,
-                               errhp: *mut OCIError,
-                               position: *mut ub1,
-                               position_len: *mut ub2,
-                               scn: *mut OCINumber,
-                               mode: ub4)
-                               -> sword;
+    pub fn OCILCRSCNToPosition(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        position: *mut ub1,
+        position_len: *mut ub2,
+        scn: *mut OCINumber,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILCRLobInfoGet(svchp: *mut OCISvcCtx,
-                            errhp: *mut OCIError,
-                            column_name: *mut *mut oratext,
-                            column_name_len: *mut ub2,
-                            column_dty: *mut ub2,
-                            column_flag: *mut oraub8,
-                            offset: *mut ub4,
-                            size: *mut ub4,
-                            row_lcrp: *mut ::std::os::raw::c_void,
-                            mode: ub4)
-                            -> sword;
+    pub fn OCILCRLobInfoGet(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        column_name: *mut *mut oratext,
+        column_name_len: *mut ub2,
+        column_dty: *mut ub2,
+        column_flag: *mut oraub8,
+        offset: *mut ub4,
+        size: *mut ub4,
+        row_lcrp: *mut ::std::os::raw::c_void,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCILCRLobInfoSet(svchp: *mut OCISvcCtx,
-                            errhp: *mut OCIError,
-                            column_name: *mut oratext,
-                            column_name_len: ub2,
-                            column_dty: ub2,
-                            column_flag: oraub8,
-                            offset: ub4,
-                            size: ub4,
-                            row_lcrp: *mut ::std::os::raw::c_void,
-                            mode: ub4)
-                            -> sword;
+    pub fn OCILCRLobInfoSet(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        column_name: *mut oratext,
+        column_name_len: ub2,
+        column_dty: ub2,
+        column_flag: oraub8,
+        offset: ub4,
+        size: ub4,
+        row_lcrp: *mut ::std::os::raw::c_void,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIXStreamOutAttach(svchp: *mut OCISvcCtx,
-                               errhp: *mut OCIError,
-                               server_name: *mut oratext,
-                               server_name_len: ub2,
-                               last_position: *mut ub1,
-                               last_position_len: ub2,
-                               mode: ub4)
-                               -> sword;
+    pub fn OCIXStreamOutAttach(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        server_name: *mut oratext,
+        server_name_len: ub2,
+        last_position: *mut ub1,
+        last_position_len: ub2,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIXStreamOutProcessedLWMSet(svchp: *mut OCISvcCtx,
-                                        errhp: *mut OCIError,
-                                        processed_low_position: *mut ub1,
-                                        processed_low_position_len: ub2,
-                                        mode: ub4)
-                                        -> sword;
+    pub fn OCIXStreamOutProcessedLWMSet(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        processed_low_position: *mut ub1,
+        processed_low_position_len: ub2,
+        mode: ub4,
+    ) -> sword;
 }
-pub type OCICallbackXStreamOutLCRProcess =
-    ::std::option::Option<unsafe extern "C" fn(usrctxp: *mut ::std::os::raw::c_void,
-                                               lcrp: *mut ::std::os::raw::c_void,
-                                               lcrtyp: ub1,
-                                               flag: oraub8)
-                                               -> sb4>;
-pub type OCICallbackXStreamOutChunkProcess =
-    ::std::option::Option<unsafe extern "C" fn(usrctxp: *mut ::std::os::raw::c_void,
-                                               column_name: *mut oratext,
-                                               column_name_len: ub2,
-                                               column_dty: ub2,
-                                               column_flag: oraub8,
-                                               column_csid: ub2,
-                                               chunk_bytes: ub4,
-                                               chunk_data: *mut ub1,
-                                               flag: oraub8)
-                                               -> sb4>;
+pub type OCICallbackXStreamOutLCRProcess = ::std::option::Option<
+    unsafe extern "C" fn(
+        usrctxp: *mut ::std::os::raw::c_void,
+        lcrp: *mut ::std::os::raw::c_void,
+        lcrtyp: ub1,
+        flag: oraub8,
+    ) -> sb4,
+>;
+pub type OCICallbackXStreamOutChunkProcess = ::std::option::Option<
+    unsafe extern "C" fn(
+        usrctxp: *mut ::std::os::raw::c_void,
+        column_name: *mut oratext,
+        column_name_len: ub2,
+        column_dty: ub2,
+        column_flag: oraub8,
+        column_csid: ub2,
+        chunk_bytes: ub4,
+        chunk_data: *mut ub1,
+        flag: oraub8,
+    ) -> sb4,
+>;
 extern "C" {
-    pub fn OCIXStreamOutLCRCallbackReceive(svchp: *mut OCISvcCtx,
-                                           errhp: *mut OCIError,
-                                           processlcr_cb: OCICallbackXStreamOutLCRProcess,
-                                           processchunk_cb: OCICallbackXStreamOutChunkProcess,
-                                           usrctxp: *mut ::std::os::raw::c_void,
-                                           fetch_low_position: *mut ub1,
-                                           fetch_low_position_len: *mut ub2,
-                                           mode: ub4)
-                                           -> sword;
-}
-extern "C" {
-    pub fn OCIXStreamOutLCRReceive(svchp: *mut OCISvcCtx,
-                                   errhp: *mut OCIError,
-                                   lcrp: *mut *mut ::std::os::raw::c_void,
-                                   lcrtype: *mut ub1,
-                                   flag: *mut oraub8,
-                                   fetch_low_position: *mut ub1,
-                                   fetch_low_position_len: *mut ub2,
-                                   mode: ub4)
-                                   -> sword;
+    pub fn OCIXStreamOutLCRCallbackReceive(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        processlcr_cb: OCICallbackXStreamOutLCRProcess,
+        processchunk_cb: OCICallbackXStreamOutChunkProcess,
+        usrctxp: *mut ::std::os::raw::c_void,
+        fetch_low_position: *mut ub1,
+        fetch_low_position_len: *mut ub2,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIXStreamOutChunkReceive(svchp: *mut OCISvcCtx,
-                                     errhp: *mut OCIError,
-                                     column_name: *mut *mut oratext,
-                                     column_name_len: *mut ub2,
-                                     column_dty: *mut ub2,
-                                     column_flag: *mut oraub8,
-                                     column_csid: *mut ub2,
-                                     chunk_bytes: *mut ub4,
-                                     chunk_data: *mut *mut ub1,
-                                     flag: *mut oraub8,
-                                     mode: ub4)
-                                     -> sword;
+    pub fn OCIXStreamOutLCRReceive(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        lcrp: *mut *mut ::std::os::raw::c_void,
+        lcrtype: *mut ub1,
+        flag: *mut oraub8,
+        fetch_low_position: *mut ub1,
+        fetch_low_position_len: *mut ub2,
+        mode: ub4,
+    ) -> sword;
+}
+extern "C" {
+    pub fn OCIXStreamOutChunkReceive(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        column_name: *mut *mut oratext,
+        column_name_len: *mut ub2,
+        column_dty: *mut ub2,
+        column_flag: *mut oraub8,
+        column_csid: *mut ub2,
+        chunk_bytes: *mut ub4,
+        chunk_data: *mut *mut ub1,
+        flag: *mut oraub8,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCIXStreamOutDetach(svchp: *mut OCISvcCtx, errhp: *mut OCIError, mode: ub4) -> sword;
 }
 extern "C" {
-    pub fn OCIXStreamInAttach(svchp: *mut OCISvcCtx,
-                              errhp: *mut OCIError,
-                              server_name: *mut oratext,
-                              server_name_len: ub2,
-                              source_name: *mut oratext,
-                              source_name_len: ub2,
-                              last_position: *mut ub1,
-                              last_position_len: *mut ub2,
-                              mode: ub4)
-                              -> sword;
+    pub fn OCIXStreamInAttach(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        server_name: *mut oratext,
+        server_name_len: ub2,
+        source_name: *mut oratext,
+        source_name_len: ub2,
+        last_position: *mut ub1,
+        last_position_len: *mut ub2,
+        mode: ub4,
+    ) -> sword;
 }
-pub type OCICallbackXStreamInLCRCreate =
-    ::std::option::Option<unsafe extern "C" fn(usrctxp: *mut ::std::os::raw::c_void,
-                                               lcrp: *mut *mut ::std::os::raw::c_void,
-                                               lcrtyp: *mut ub1,
-                                               flag: *mut oraub8)
-                                               -> sb4>;
-pub type OCICallbackXStreamInChunkCreate =
-    ::std::option::Option<unsafe extern "C" fn(usrctxp: *mut ::std::os::raw::c_void,
-                                               column_name: *mut *mut oratext,
-                                               column_name_len: *mut ub2,
-                                               column_dty: *mut ub2,
-                                               column_flag: *mut oraub8,
-                                               column_csid: *mut ub2,
-                                               chunk_bytes: *mut ub4,
-                                               chunk_data: *mut *mut ub1,
-                                               flag: *mut oraub8)
-                                               -> sb4>;
+pub type OCICallbackXStreamInLCRCreate = ::std::option::Option<
+    unsafe extern "C" fn(
+        usrctxp: *mut ::std::os::raw::c_void,
+        lcrp: *mut *mut ::std::os::raw::c_void,
+        lcrtyp: *mut ub1,
+        flag: *mut oraub8,
+    ) -> sb4,
+>;
+pub type OCICallbackXStreamInChunkCreate = ::std::option::Option<
+    unsafe extern "C" fn(
+        usrctxp: *mut ::std::os::raw::c_void,
+        column_name: *mut *mut oratext,
+        column_name_len: *mut ub2,
+        column_dty: *mut ub2,
+        column_flag: *mut oraub8,
+        column_csid: *mut ub2,
+        chunk_bytes: *mut ub4,
+        chunk_data: *mut *mut ub1,
+        flag: *mut oraub8,
+    ) -> sb4,
+>;
 extern "C" {
-    pub fn OCIXStreamInLCRCallbackSend(svchp: *mut OCISvcCtx,
-                                       errhp: *mut OCIError,
-                                       createlcr_cb: OCICallbackXStreamInLCRCreate,
-                                       createchunk_cb: OCICallbackXStreamInChunkCreate,
-                                       userctxp: *mut ::std::os::raw::c_void,
-                                       mode: ub4)
-                                       -> sword;
-}
-extern "C" {
-    pub fn OCIXStreamInLCRSend(svchp: *mut OCISvcCtx,
-                               errhp: *mut OCIError,
-                               lcrp: *mut ::std::os::raw::c_void,
-                               lcrtype: ub1,
-                               flag: oraub8,
-                               mode: ub4)
-                               -> sword;
+    pub fn OCIXStreamInLCRCallbackSend(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        createlcr_cb: OCICallbackXStreamInLCRCreate,
+        createchunk_cb: OCICallbackXStreamInChunkCreate,
+        userctxp: *mut ::std::os::raw::c_void,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIXStreamInChunkSend(svchp: *mut OCISvcCtx,
-                                 errhp: *mut OCIError,
-                                 column_name: *mut oratext,
-                                 column_name_len: ub2,
-                                 column_dty: ub2,
-                                 column_flag: oraub8,
-                                 column_csid: ub2,
-                                 chunk_bytes: ub4,
-                                 chunk_data: *mut ub1,
-                                 flag: oraub8,
-                                 mode: ub4)
-                                 -> sword;
+    pub fn OCIXStreamInLCRSend(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        lcrp: *mut ::std::os::raw::c_void,
+        lcrtype: ub1,
+        flag: oraub8,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIXStreamInDetach(svchp: *mut OCISvcCtx,
-                              errhp: *mut OCIError,
-                              processed_low_position: *mut ub1,
-                              processed_low_position_len: *mut ub2,
-                              mode: ub4)
-                              -> sword;
+    pub fn OCIXStreamInChunkSend(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        column_name: *mut oratext,
+        column_name_len: ub2,
+        column_dty: ub2,
+        column_flag: oraub8,
+        column_csid: ub2,
+        chunk_bytes: ub4,
+        chunk_data: *mut ub1,
+        flag: oraub8,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIXStreamInProcessedLWMGet(svchp: *mut OCISvcCtx,
-                                       errhp: *mut OCIError,
-                                       processed_low_position: *mut ub1,
-                                       processed_low_position_len: *mut ub2,
-                                       mode: ub4)
-                                       -> sword;
+    pub fn OCIXStreamInDetach(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        processed_low_position: *mut ub1,
+        processed_low_position_len: *mut ub2,
+        mode: ub4,
+    ) -> sword;
+}
+extern "C" {
+    pub fn OCIXStreamInProcessedLWMGet(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        processed_low_position: *mut ub1,
+        processed_low_position_len: *mut ub2,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
     pub fn OCIXStreamInFlush(svchp: *mut OCISvcCtx, errhp: *mut OCIError, mode: ub4) -> sword;
 }
 extern "C" {
-    pub fn OCIXStreamInCommit(svchp: *mut OCISvcCtx,
-                              errhp: *mut OCIError,
-                              lcrp: *mut ::std::os::raw::c_void,
-                              mode: ub4)
-                              -> sword;
+    pub fn OCIXStreamInCommit(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        lcrp: *mut ::std::os::raw::c_void,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIXStreamInErrorGet(svchp: *mut OCISvcCtx,
-                                errhp: *mut OCIError,
-                                errcodep: *mut sb4,
-                                msgbuf: *mut oratext,
-                                msg_bufsize: ub2,
-                                msg_len: *mut ub2,
-                                txn_id: *mut oratext,
-                                txn_id_bufsize: ub2,
-                                txn_id_len: *mut ub2)
-                                -> sword;
+    pub fn OCIXStreamInErrorGet(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        errcodep: *mut sb4,
+        msgbuf: *mut oratext,
+        msg_bufsize: ub2,
+        msg_len: *mut ub2,
+        txn_id: *mut oratext,
+        txn_id_bufsize: ub2,
+        txn_id_len: *mut ub2,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIXStreamOutSessionSet(svchp: *mut OCISvcCtx,
-                                   errhp: *mut OCIError,
-                                   attribute_name: *mut oratext,
-                                   attribute_name_len: ub2,
-                                   attribute_value: *mut ::std::os::raw::c_void,
-                                   attribute_value_len: ub2,
-                                   attribute_dty: ub2,
-                                   mode: ub4)
-                                   -> sword;
+    pub fn OCIXStreamOutSessionSet(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        attribute_name: *mut oratext,
+        attribute_name_len: ub2,
+        attribute_value: *mut ::std::os::raw::c_void,
+        attribute_value_len: ub2,
+        attribute_dty: ub2,
+        mode: ub4,
+    ) -> sword;
 }
 extern "C" {
-    pub fn OCIXStreamInSessionSet(svchp: *mut OCISvcCtx,
-                                  errhp: *mut OCIError,
-                                  attribute_name: *mut oratext,
-                                  attribute_name_len: ub2,
-                                  attribute_value: *mut ::std::os::raw::c_void,
-                                  attribute_value_len: ub2,
-                                  attribute_dty: ub2,
-                                  mode: ub4)
-                                  -> sword;
+    pub fn OCIXStreamInSessionSet(
+        svchp: *mut OCISvcCtx,
+        errhp: *mut OCIError,
+        attribute_name: *mut oratext,
+        attribute_name_len: ub2,
+        attribute_value: *mut ::std::os::raw::c_void,
+        attribute_value_len: ub2,
+        attribute_dty: ub2,
+        mode: ub4,
+    ) -> sword;
 }
 pub type __builtin_va_list = [__va_list_tag; 1usize];
 #[repr(C)]
@@ -17472,36 +18878,56 @@ pub struct __va_list_tag {
 }
 #[test]
 fn bindgen_test_layout___va_list_tag() {
-    assert_eq!(::std::mem::size_of::<__va_list_tag>(),
-               24usize,
-               concat!("Size of: ", stringify!(__va_list_tag)));
-    assert_eq!(::std::mem::align_of::<__va_list_tag>(),
-               8usize,
-               concat!("Alignment of ", stringify!(__va_list_tag)));
-    assert_eq!(unsafe { &(*(0 as *const __va_list_tag)).gp_offset as *const _ as usize },
-               0usize,
-               concat!("Alignment of field: ",
-                       stringify!(__va_list_tag),
-                       "::",
-                       stringify!(gp_offset)));
-    assert_eq!(unsafe { &(*(0 as *const __va_list_tag)).fp_offset as *const _ as usize },
-               4usize,
-               concat!("Alignment of field: ",
-                       stringify!(__va_list_tag),
-                       "::",
-                       stringify!(fp_offset)));
-    assert_eq!(unsafe { &(*(0 as *const __va_list_tag)).overflow_arg_area as *const _ as usize },
-               8usize,
-               concat!("Alignment of field: ",
-                       stringify!(__va_list_tag),
-                       "::",
-                       stringify!(overflow_arg_area)));
-    assert_eq!(unsafe { &(*(0 as *const __va_list_tag)).reg_save_area as *const _ as usize },
-               16usize,
-               concat!("Alignment of field: ",
-                       stringify!(__va_list_tag),
-                       "::",
-                       stringify!(reg_save_area)));
+    assert_eq!(
+        ::std::mem::size_of::<__va_list_tag>(),
+        24usize,
+        concat!("Size of: ", stringify!(__va_list_tag))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<__va_list_tag>(),
+        8usize,
+        concat!("Alignment of ", stringify!(__va_list_tag))
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const __va_list_tag)).gp_offset as *const _ as usize },
+        0usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(__va_list_tag),
+            "::",
+            stringify!(gp_offset)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const __va_list_tag)).fp_offset as *const _ as usize },
+        4usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(__va_list_tag),
+            "::",
+            stringify!(fp_offset)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const __va_list_tag)).overflow_arg_area as *const _ as usize },
+        8usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(__va_list_tag),
+            "::",
+            stringify!(overflow_arg_area)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(0 as *const __va_list_tag)).reg_save_area as *const _ as usize },
+        16usize,
+        concat!(
+            "Alignment of field: ",
+            stringify!(__va_list_tag),
+            "::",
+            stringify!(reg_save_area)
+        )
+    );
 }
 impl Clone for __va_list_tag {
     fn clone(&self) -> Self {

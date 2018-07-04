@@ -1,8 +1,9 @@
 extern crate dotenv;
 
-mod backend;
+pub mod backend;
 pub mod connection;
 mod query_builder;
-mod types;
+pub mod types;
+mod query_dsl;
 
 

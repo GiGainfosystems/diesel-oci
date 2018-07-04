@@ -27,4 +27,4 @@ impl UsesAnsiSavepointSyntax for Oracle {}
 
 // TODO: check if Oracle supports this
 impl SupportsDefaultKeyword for Oracle {}
-
+impl SupportsReturningClause for Oracle {}

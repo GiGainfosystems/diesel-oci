@@ -7,21 +7,21 @@ use diesel::query_dsl::methods::{ExecuteDsl, FindDsl};
 use diesel::query_dsl::{LoadQuery, RunQueryDsl};
 use diesel::result::QueryResult;
 
-use super::super::OciConnection;
+use super::super::connection::OciConnection;
 
 use diesel::query_builder::functions::update;
-use diesel::query_dsl::save_changes_dsl::InternalSaveChangesDsl;
+use diesel::query_dsl::UpdateAndFetchResults;
 
-impl<T, U> InternalSaveChangesDsl<OciConnection, U> for T
-where
-    T: Copy + Identifiable,
-    T: AsChangeset<Target = <T as HasTable>::Table> + IntoUpdateTarget,
-    T::Table: FindDsl<T::Id>,
-    Update<T, T>: ExecuteDsl<OciConnection>,
-    Find<T::Table, T::Id>: LoadQuery<OciConnection, U>,
+impl<Changes, Output> UpdateAndFetchResults<Changes, Output> for OciConnection
+    where
+        Changes: Copy + Identifiable,
+        Changes: AsChangeset<Target = <Changes as HasTable>::Table> + IntoUpdateTarget,
+        Changes::Table: FindDsl<Changes::Id>,
+        Update<Changes, Changes>: ExecuteDsl<OciConnection>,
+        Find<Changes::Table, Changes::Id>: LoadQuery<OciConnection, Output>,
 {
-    fn internal_save_changes(self, conn: &OciConnection) -> QueryResult<U> {
-        update(self).set(self).execute(conn)?;
-        T::table().find(self.id()).get_result(conn)
+    fn update_and_fetch(&self, changeset: Changes) -> QueryResult<Output> {
+        update(changeset).set(changeset).execute(self)?;
+        Changes::table().find(changeset.id()).get_result(self)
     }
 }

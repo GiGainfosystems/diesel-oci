@@ -1,6 +1,7 @@
 use diesel::connection::StatementCache;
 use diesel::connection::{Connection, MaybeCached, SimpleConnection};
 use diesel::deserialize::{Queryable, QueryableByName};
+use diesel::migration::MigrationConnection;
 use diesel::query_builder::bind_collector::RawBytesBindCollector;
 use diesel::query_builder::QueryId;
 use diesel::query_builder::{AsQuery, QueryFragment};
@@ -25,6 +26,32 @@ pub struct OciConnection {
     raw: Rc<raw::RawConnection>,
     transaction_manager: OCITransactionManager,
     statement_cache: StatementCache<Oracle, Statement>,
+}
+
+impl MigrationConnection for OciConnection {
+    #[cfg(ka)]
+    const CREATE_MIGRATIONS_FUNCTION: &'static str =
+        "create or replace procedure create_if_not_exists(input_sql varchar2) \
+         as \
+         begin \
+         execute immediate input_sql; \
+         exception \
+         when others then \
+         if sqlcode = -955 then \
+         NULL; \
+         else \
+         raise; \
+         end if; \
+         end; \n ";
+
+    const CREATE_MIGRATIONS_TABLE: &'static str = "
+    declare \
+    begin \
+    create_if_not_exists('CREATE TABLE \"__DIESEL_SCHEMA_MIGRATIONS\" (\
+         \"VERSION\" VARCHAR2(50) PRIMARY KEY NOT NULL,\
+         \"RUN_ON\" TIMESTAMP with time zone DEFAULT sysdate not null\
+         )'); \
+        end; \n";
 }
 
 // This relies on the invariant that RawConnection or Statement are never

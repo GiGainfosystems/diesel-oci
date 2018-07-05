@@ -68,8 +68,22 @@ impl Statement {
             connection: raw_connection.clone(),
             inner_statement: stmt,
             bind_index: 0,
-            // TODO: this can go wrong: `UPDATE table SET k='select';`
-            is_select: sql.contains("SELECT") || sql.contains("select"),
+            // TODO: this can go wrong: `UPDATE table SET k='select';` OR
+            // ```
+//            CREATE OR REPLACE FORCE VIEW full_bounding_boxes(id, o_c1, o_c2, o_c3, u_c1, u_c2, u_c3, v_c1, v_c2, v_c3, w_c1, w_c2, w_c3)
+//            AS
+//            SELECT bbox.id as id,
+//            o.c1 as o_c1, o.c2 as o_c2, o.c3 as o_c3,
+//            u.c1 as u_c1, u.c2 as u_c2, u.c3 as u_c3,
+//            v.c1 as v_c1, v.c2 as v_c2, v.c3 as v_c3,
+//            w.c1 as w_c1, w.c2 as w_c2, w.c3 as w_c3
+//            FROM bounding_boxes bbox
+//            INNER JOIN geo_points o ON bbox.o = o.id
+//            INNER JOIN geo_points u ON bbox.u = u.id
+//            INNER JOIN geo_points v ON bbox.v = v.id
+//            INNER JOIN geo_points w ON bbox.w = w.id
+            // ```
+            is_select: sql.starts_with("SELECT") || sql.starts_with("select"),
             buffers: Vec::with_capacity(NUM_ELEMENTS),
             sizes: Vec::with_capacity(NUM_ELEMENTS),
             indicators: Vec::with_capacity(NUM_ELEMENTS),

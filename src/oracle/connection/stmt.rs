@@ -24,7 +24,7 @@ const NUM_ELEMENTS: usize = 20;
 impl Statement {
     pub fn prepare(raw_connection: &Rc<RawConnection>, sql: &str) -> QueryResult<Self> {
         let mysql = sql.to_string();
-
+        println!("{:?}", mysql);
         let stmt = unsafe {
             let mut stmt: *mut ffi::OCIStmt = ptr::null_mut();
             let status = ffi::OCIStmtPrepare2(

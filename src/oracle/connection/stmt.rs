@@ -274,7 +274,7 @@ impl Statement {
                 }
                 ffi::SQLT_BLOB => {
                     tpe = ffi::SQLT_BIN;
-                    tpe_size=8000;
+                    tpe_size=154;
                 }
                 _ => {
                     return Err(Error::DatabaseError(

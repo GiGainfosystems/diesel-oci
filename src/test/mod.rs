@@ -362,7 +362,7 @@ fn gst_compat() {
     use self::gst_types::columns::{big, big2, d, normal, r, small, v, byte};
     use self::gst_types::dsl::gst_types;
     use diesel::dsl::sql;
-    use diesel::sql_types::{BigInt, Double, Float, Integer, SmallInt, Text, Binary};
+    use diesel::sql_types::{BigInt, Double, Float, Integer, SmallInt, Text};
     use diesel::ExpressionMethods;
     use diesel::QueryDsl;
     use std::{i16, i32, i64};
@@ -429,14 +429,21 @@ fn gst_compat() {
             assert_eq!(val[1].5, "test");
         }
         Way::Diesel => {
+
+            let mut bin : Vec<u8> = Vec::new();
+            for i in 0..154 {
+                bin.push(i as u8 % 128u8);
+            }
+
             let new_row = (
                 big.eq(i64::MIN),
                 big2.eq(i64::MIN),
                 small.eq(i16::MIN),
                 normal.eq(i32::MIN),
-                v.eq("test"),
+                v.eq("t"),
                 d.eq(1e-307f64),
                 r.eq(1e-37f32),
+                byte.eq(bin),
             );
             let ret = ::diesel::insert_into(gst_types)
                 .values(&new_row)
@@ -470,13 +477,20 @@ fn gst_compat() {
                     Option<f64>,
                     Option<f32>,
                     Option<String>,
+                    Option<Vec<u8>>
                 )>,
                 Error,
-            > = gst_types.select((big, small, normal, d, r, v)).load(&conn);
+            > = gst_types.select((
+                big,
+                small,
+                normal,
+                d,
+                r,
+                v,
+                byte)).load(&conn);
             assert_result!(ret);
             let val = ret.unwrap();
             assert_eq!(val.len(), 3);
-
             // value should not be null
             assert_ne!(val[0].0, None);
             assert_eq!(val[0].0, Some(i64::MIN));
@@ -499,7 +513,7 @@ fn gst_compat() {
             assert_ne!(val[1].4, None);
             assert_eq!(val[1].4, Some(1e37f32));
             assert_ne!(val[0].5, None);
-            assert_eq!(val[0].5, Some("test".to_string()));
+            assert_eq!(val[0].5, Some("t".to_string()));
             assert_ne!(val[1].5, None);
             assert_eq!(val[1].5, Some("test".to_string()));
             assert_eq!(val[2].0, None);
@@ -508,6 +522,10 @@ fn gst_compat() {
             assert_eq!(val[2].3, None);
             assert_eq!(val[2].4, None);
             assert_eq!(val[2].5, None);
+
+            assert_ne!(val[0].6, None);
+            assert_eq!(val[1].6, None);
+            assert_eq!(val[2].6, None);
         }
     }
 }

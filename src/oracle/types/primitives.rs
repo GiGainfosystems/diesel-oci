@@ -5,7 +5,6 @@ use diesel::result::Error as DieselError;
 use diesel::sql_types::*;
 use oracle::backend::Oracle;
 use std::ffi::CStr;
-use std::slice;
 
 use super::super::connection::OracleValue;
 

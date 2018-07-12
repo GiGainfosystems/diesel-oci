@@ -272,6 +272,10 @@ impl Statement {
                     //tpe_size += 1;
                     tpe = ffi::SQLT_STR;
                 }
+                ffi::SQLT_BLOB => {
+                    tpe = ffi::SQLT_BIN;
+                    tpe_size=8000;
+                }
                 _ => {
                     return Err(Error::DatabaseError(
                         DatabaseErrorKind::__Unknown,

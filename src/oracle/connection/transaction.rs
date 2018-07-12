@@ -100,10 +100,7 @@ impl TransactionManager<OciConnection> for OCITransactionManager {
             };
             Ok(())
         } else {
-            conn.batch_execute(&format!(
-                "COMMIT",
-                transaction_depth - 1
-            ))
+            conn.batch_execute("COMMIT")
         };
         self.change_transaction_depth(-1, query)
     }

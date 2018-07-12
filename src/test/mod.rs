@@ -324,6 +324,64 @@ enum Way {
     Native,
 }
 
+extern crate chrono;
+use self::chrono::NaiveDateTime;
+
+
+#[derive(Queryable, Clone, PartialEq)]
+pub struct GSTTypes {
+    pub big: Option<i64>,
+    pub big2: Option<i64>,
+    pub small: Option<i16>,
+    pub normal: Option<i32>,
+    pub tz: Option<NaiveDateTime>,
+    pub text: Option<String>,
+    pub byte: Option<Vec<u8>>,
+    pub d: Option<f64>,
+    pub r: Option<f32>,
+    pub v: Option<String>,
+}
+
+#[derive(Debug, Insertable)]
+#[table_name="gst_types"]
+pub struct Newgst_types {
+    pub big: Option<i64>,
+    pub big2: Option<i64>,
+    pub small: Option<i16>,
+    pub normal: Option<i32>,
+    pub tz: Option<NaiveDateTime>,
+    pub text: Option<String>,
+    pub byte: Option<Vec<u8>>,
+    pub d: Option<f64>,
+    pub r: Option<f32>,
+    pub v: Option<String>,
+}
+
+impl Newgst_types {
+    pub fn new(    big: Option<i64>,
+    big2: Option<i64>,
+    small: Option<i16>,
+    normal: Option<i32>,
+    text: Option<String>,
+    byte: Option<Vec<u8>>,
+    d: Option<f64>,
+    r: Option<f32>,
+    v: Option<String>) -> Newgst_types {
+        Newgst_types {
+            big,
+            big2 ,
+            small ,
+            normal ,
+            tz: None,
+            text ,
+            byte,
+            d,
+            r,
+            v,
+        }
+    }
+}
+
 #[test]
 fn gst_compat() {
     // bigint -2^63 to 2^63-1 http://wiki.ispirer.com/sqlways/postgresql/data-types/bigint // 12 byte
@@ -435,6 +493,30 @@ fn gst_compat() {
                 bin.push(i as u8 % 128u8);
             }
 
+
+            let new_row = Newgst_types::new(
+                Some(i64::MIN),
+                Some(i64::MAX),
+                Some(i16::MIN),
+                Some(i32::MAX),
+                Some("T".to_string()),
+                Some(bin),
+                Some(1e-307f64),
+                Some(1e-37f32),
+                Some("Te".to_string()),
+
+            );
+
+            let new_row = ::diesel::insert_into(gst_types)
+                .values(&new_row)
+                .get_results::<GSTTypes>(&conn);
+            assert_result!(new_row);
+
+            let mut bin : Vec<u8> = Vec::new();
+            for i in 0..154 {
+                bin.push(i as u8 % 128u8);
+            }
+            
             let new_row = (
                 big.eq(i64::MIN),
                 big2.eq(i64::MIN),

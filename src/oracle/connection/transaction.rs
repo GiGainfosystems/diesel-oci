@@ -101,7 +101,7 @@ impl TransactionManager<OciConnection> for OCITransactionManager {
             Ok(())
         } else {
             conn.batch_execute(&format!(
-                "COMMIT diesel_savepoint_{}",
+                "COMMIT",
                 transaction_depth - 1
             ))
         };

@@ -88,6 +88,7 @@ impl OCIDataType {
             Float | BFloat | IBFloat => ffi::SQLT_BDOUBLE, // this should be SQLT_BFLOAT, but diesel comes with a float here
             BDouble | IBDouble => ffi::SQLT_BDOUBLE,
             Char | String => ffi::SQLT_CHR,
+            Binary => ffi::SQLT_BIN,
             _ => 0u32,
         }
     }

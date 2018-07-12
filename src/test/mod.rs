@@ -91,7 +91,7 @@ table! {
         normal -> Nullable<Integer>,
         tz -> Nullable<Timestamp>,
         text -> Nullable<VarChar>,
-        byte -> Nullable<VarChar>,
+        byte -> Nullable<Binary>,
         d -> Nullable<Double>,
         r -> Nullable<Float>,
         v -> Nullable<VarChar>,
@@ -359,10 +359,10 @@ fn gst_compat() {
     let ret = conn.execute(CREATE_GST_TYPE_TABLE);
     assert_result!(ret);
 
-    use self::gst_types::columns::{big, big2, d, normal, r, small, v};
+    use self::gst_types::columns::{big, big2, d, normal, r, small, v, byte};
     use self::gst_types::dsl::gst_types;
     use diesel::dsl::sql;
-    use diesel::sql_types::{BigInt, Double, Float, Integer, SmallInt, Text};
+    use diesel::sql_types::{BigInt, Double, Float, Integer, SmallInt, Text, Binary};
     use diesel::ExpressionMethods;
     use diesel::QueryDsl;
     use std::{i16, i32, i64};

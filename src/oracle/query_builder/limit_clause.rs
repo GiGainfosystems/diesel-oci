@@ -1,8 +1,5 @@
-#![feature(specialization)]
-
 /// TODO: this is currently not used, IDK why diesel still takes the original limit clause
 /// coming from diesel which uses `LIMIT` syntax
-use diesel::backend::Backend;
 use diesel::result::QueryResult;
 use diesel::query_builder::{QueryFragment, AstPass};
 

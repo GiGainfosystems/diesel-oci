@@ -745,7 +745,6 @@ fn moma_elem() {
     use diesel::QueryDsl;
     use diesel::GroupByDsl;
     use diesel::BoolExpressionMethods;
-    use diesel::connection::TransactionManager;
 
     let groupby = (
         elements::id,
@@ -801,36 +800,116 @@ fn moma_elem() {
 
 #[test]
 fn limit() {
+    const CREATE_GST_TYPE_TABLE: &'static str = "CREATE TABLE gst_types (\
+            big NUMBER(19),
+            big2 NUMBER(19),
+            small NUMBER(5),
+            normal NUMBER(10),
+            tz timestamp default sysdate,
+            text clob,
+            byte blob,
+            d binary_double,
+            r binary_float,
+            v VARCHAR2(50)
+     )";
 
     let conn = OciConnection::establish(&DB_URL).unwrap();
 
-    use diesel::ExpressionMethods;
-    use diesel::QueryDsl;
-    use diesel::GroupByDsl;
-    use diesel::BoolExpressionMethods;
-    use diesel::connection::TransactionManager;
+    drop_table(&conn, "GST_TYPES");
 
-    let groupby = (
-        elements::id,
-        elements::label,
-        elements::comment,
-        elements::owner_id,
-        elements::level_id,
-    );
-
-    let ret = conn.begin_test_transaction();
+    let ret = conn.execute(CREATE_GST_TYPE_TABLE);
     assert_result!(ret);
 
-    let k : Result<(
-        i64,
-        String,
-        Option<String>,
-        i32,
-        i16,
-    ), _> = elements::table
-        .select(groupby)
-        .first(&conn);
-    assert_result!(k);
+    use self::gst_types::columns::{big, big2, d, normal, r, small, v, byte};
+    use self::gst_types::dsl::gst_types;
+    use diesel::ExpressionMethods;
+    use diesel::QueryDsl;
+    use std::{i16, i32, i64};
 
+
+
+    let mut bin : Vec<u8> = Vec::new();
+    for i in 0..310 {
+        bin.push(i as u8 % 128u8);
+    }
+
+
+    let _new_row = Newgst_types::new(
+        Some(i64::MIN),
+        Some(i64::MAX),
+        Some(i16::MIN),
+        Some(i32::MAX),
+        Some("T".to_string()),
+        Some(bin),
+        Some(1e-307f64),
+        Some(1e-37f32),
+        Some("Te".to_string()),
+
+    );
+
+//            let new_row = ::diesel::insert_into(gst_types)
+//                .values(&new_row)
+//                .get_results::<GSTTypes>(&conn);
+//            assert_result!(new_row);
+
+    let mut bin : Vec<u8> = Vec::new();
+    for i in 0..310 {
+        bin.push(i as u8 % 128u8);
+    }
+
+    let new_row = (
+        big.eq(i64::MIN),
+        big2.eq(i64::MIN),
+        small.eq(i16::MIN),
+        normal.eq(i32::MIN),
+        v.eq("t"),
+        d.eq(1e-307f64),
+        r.eq(1e-37f32),
+        byte.eq(bin),
+    );
+    let ret = ::diesel::insert_into(gst_types)
+        .values(&new_row)
+        .execute(&conn);
+    assert_result!(ret);
+
+    let new_row = (
+        big.eq(i64::MAX),
+        big2.eq(i64::MAX),
+        small.eq(i16::MAX),
+        normal.eq(i32::MAX),
+        v.eq("test"),
+        d.eq(1e308f64),
+        r.eq(1e37f32),
+    );
+    let ret = ::diesel::insert_into(gst_types)
+        .values(&new_row)
+        .execute(&conn);
+    assert_result!(ret);
+
+    let ret = ::diesel::insert_into(gst_types)
+        .values(big.eq::<Option<i64>>(None))
+        .execute(&conn);
+    assert_result!(ret);
+
+    let ret: Result<
+        (
+            Option<i64>,
+            Option<i16>,
+            Option<i32>,
+            Option<f64>,
+            Option<f32>,
+            Option<String>,
+            Option<Vec<u8>>
+        ),
+        Error,
+    > = gst_types.select((
+        big,
+        small,
+        normal,
+        d,
+        r,
+        v,
+        byte)).first(&conn);
+    assert_result!(ret);
 
 }

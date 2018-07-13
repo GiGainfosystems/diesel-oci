@@ -23,7 +23,15 @@ const NUM_ELEMENTS: usize = 20;
 
 impl Statement {
     pub fn prepare(raw_connection: &Rc<RawConnection>, sql: &str) -> QueryResult<Self> {
-        let mysql = sql.to_string();
+        let mut mysql = sql.to_string();
+        // TODO: this can go wrong: `UPDATE table SET k='LIMIT';`
+        if mysql.contains("LIMIT") {
+            let pos = mysql.find("LIMIT").expect("We know that returning is contained");
+            let mut limit_clause = mysql.split_off(pos);
+            let place_holder = limit_clause.split_off(String::from("LIMIT ").len());
+            mysql = mysql + &format!("OFFSET 0 ROWS FETCH NEXT {} ROWS ONLY", place_holder);
+        }
+
         println!("{:?}", mysql);
         let stmt = unsafe {
             let mut stmt: *mut ffi::OCIStmt = ptr::null_mut();

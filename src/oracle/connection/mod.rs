@@ -1,5 +1,5 @@
 use diesel::connection::StatementCache;
-use diesel::connection::{Connection, MaybeCached, SimpleConnection};
+use diesel::connection::{Connection, MaybeCached, SimpleConnection, TransactionManager};
 use diesel::deserialize::{Queryable, QueryableByName};
 use diesel::migration::MigrationConnection;
 use diesel::query_builder::bind_collector::RawBytesBindCollector;
@@ -8,6 +8,7 @@ use diesel::query_builder::{AsQuery, QueryFragment};
 use diesel::result::*;
 use diesel::sql_types::HasSqlType;
 use std::rc::Rc;
+use std::cell::Cell;
 
 use self::cursor::Cursor;
 use self::stmt::Statement;
@@ -26,6 +27,7 @@ pub struct OciConnection {
     raw: Rc<raw::RawConnection>,
     transaction_manager: OCITransactionManager,
     statement_cache: StatementCache<Oracle, Statement>,
+    has_open_test_transaction: Cell<bool>,
 }
 
 impl MigrationConnection for OciConnection {
@@ -82,8 +84,18 @@ impl Connection for OciConnection {
             raw: Rc::new(r),
             transaction_manager: OCITransactionManager::new(),
             statement_cache: StatementCache::new(),
+            has_open_test_transaction: Cell::new(false)
         };
         Ok(ret)
+    }
+
+    /// Creates a transaction that will never be committed. This is useful for
+    /// tests. Panics if called while inside of a transaction.
+    fn begin_test_transaction(&self) -> QueryResult<()> {
+        let transaction_manager = self.transaction_manager();
+        assert_eq!(transaction_manager.get_transaction_depth(), 0);
+        self.has_open_test_transaction.set(true);
+        transaction_manager.begin_transaction(self)
     }
 
     #[doc(hidden)]
@@ -156,5 +168,14 @@ impl OciConnection {
     ) -> QueryResult<MaybeCached<Statement>> {
         self.statement_cache
             .cached_statement(source, &[], |sql| Statement::prepare(&self.raw, sql))
+    }
+}
+
+impl Drop for OciConnection {
+    fn drop(&mut self) {
+        if self.has_open_test_transaction.get() {
+            let tm = self.transaction_manager();
+            tm.rollback_transaction(&self).expect("This return Ok() for all paths anyway");
+        }
     }
 }

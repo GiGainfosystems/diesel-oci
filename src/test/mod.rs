@@ -342,6 +342,7 @@ pub struct GSTTypes {
     pub v: Option<String>,
 }
 
+#[allow(non_camel_case_types)]
 #[derive(Debug, Insertable)]
 #[table_name="gst_types"]
 pub struct Newgst_types {
@@ -489,12 +490,12 @@ fn gst_compat() {
         Way::Diesel => {
 
             let mut bin : Vec<u8> = Vec::new();
-            for i in 0..154 {
+            for i in 0..310 {
                 bin.push(i as u8 % 128u8);
             }
 
 
-            let new_row = Newgst_types::new(
+            let _new_row = Newgst_types::new(
                 Some(i64::MIN),
                 Some(i64::MAX),
                 Some(i16::MIN),
@@ -507,13 +508,13 @@ fn gst_compat() {
 
             );
 
-            let new_row = ::diesel::insert_into(gst_types)
-                .values(&new_row)
-                .get_results::<GSTTypes>(&conn);
-            assert_result!(new_row);
+//            let new_row = ::diesel::insert_into(gst_types)
+//                .values(&new_row)
+//                .get_results::<GSTTypes>(&conn);
+//            assert_result!(new_row);
 
             let mut bin : Vec<u8> = Vec::new();
-            for i in 0..154 {
+            for i in 0..310 {
                 bin.push(i as u8 % 128u8);
             }
             
@@ -608,6 +609,228 @@ fn gst_compat() {
             assert_ne!(val[0].6, None);
             assert_eq!(val[1].6, None);
             assert_eq!(val[2].6, None);
+
+            let ret: Result<
+                Vec<(
+                    Option<i64>,
+                    Option<i16>,
+                    Option<i32>,
+                    Option<f64>,
+                    Option<f32>,
+                    Option<String>,
+                    Option<Vec<u8>>
+                )>,
+                Error,
+            > = gst_types
+                .filter(big.eq(i64::MAX))
+                .select((
+                    big,
+                    small,
+                    normal,
+                    d,
+                    r,
+                    v,
+                    byte))
+                .load(&conn);
+            assert_result!(ret);
         }
     }
+}
+
+
+table! {
+    /// all elements which have been created
+    elements {
+        /// a unique identifier
+        id -> BigInt,
+        /// a label to help the user
+        label -> Text,
+        /// an arbitrary comment which can be NULL
+        comment -> Nullable<Text>,
+        /// the user which created the element
+        owner_id -> Integer,
+        /// to which level does the element belong
+        level_id -> SmallInt,
+    }
+
+}
+
+table! {
+    /// a table containing the nodelinks, either to an element or feature
+    node_links {
+        /// unique identifier
+        id -> BigInt,
+        /// reference id which can be either an element or feature
+        ref_id -> BigInt,
+        /// describing what kind of link we have above
+        target_type -> SmallInt,
+        /// the parent of the above nodelink id
+        parent_id -> BigInt,
+        /// the user who created the nodelink
+        owner_id -> Integer,
+    }
+}
+
+joinable!(node_links -> elements(ref_id));
+
+
+
+table! {
+    /// all the property descriptions which have been created
+    element_properties {
+        /// a unique identifier
+        id -> BigInt,
+        /// the property type which is constrained on database side
+        /// to be either bool, int, double, text
+        property_type -> SmallInt,
+        /// name of the property
+        name -> Text,
+        /// user which created the property
+        owner_id -> Integer,
+    }
+}
+
+table! {
+    /// The table containing the special granted rights for moma elements
+    element_rights {
+        /// The id of the additional right
+        ///
+        /// This column is currently used to determine which right applies in
+        /// case of multiple alternatives. The newest right, that one with the
+        /// biggest id will determine the right for a given  moma element
+        id -> BigInt,
+        /// The corresponding moma elements id
+        element_id -> BigInt,
+        /// The corresponding group id
+        group_id -> Nullable<Integer>,
+        /// The corresponding user id
+        user_id -> Nullable<Integer>,
+        /// The granted right
+        access_level -> SmallInt,
+    }
+}
+
+table! {
+    /// The table containing the special granted rights for element properties (moma)
+    element_property_rights {
+        /// The id of the additional right
+        ///
+        /// This column is currently used to determine which right applies in
+        /// case of multiple alternatives. The newest right, that one with the
+        /// biggest id will determine the right for a given element property (moma)
+        id -> BigInt,
+        /// The corresponding element property (moma) id
+        element_property_id -> BigInt,
+        /// The corresponding group id
+        group_id -> Nullable<Integer>,
+        /// The corresponding user id
+        user_id -> Nullable<Integer>,
+        /// The granted right
+        access_level -> SmallInt,
+    }
+}
+
+allow_tables_to_appear_in_same_query!(
+    elements,
+    element_rights,
+    node_links
+);
+
+#[test]
+fn moma_elem() {
+
+    let conn = OciConnection::establish(&DB_URL).unwrap();
+
+    use diesel::ExpressionMethods;
+    use diesel::QueryDsl;
+    use diesel::GroupByDsl;
+    use diesel::BoolExpressionMethods;
+    use diesel::connection::TransactionManager;
+
+    let groupby = (
+        elements::id,
+        elements::label,
+        elements::comment,
+        elements::owner_id,
+        elements::level_id,
+    );
+
+    let ret = conn.execute("alter session set \"_optimizer_reduce_groupby_key\" = false");
+    assert_result!(ret);
+
+    let ret = conn.begin_test_transaction();
+    assert_result!(ret);
+
+    let k : Result<Vec<(
+        i64,
+        String,
+        Option<String>,
+        i32,
+        i16,
+        i64
+    )>, _> = elements::table
+        .left_join(node_links::table)
+        .group_by(groupby)
+        .filter(elements::level_id.eq(1))
+        .filter(elements::owner_id.eq(22))
+        .filter(
+            node_links::target_type
+                .eq(0)
+                .or(node_links::target_type.is_null()),
+        )
+        //.filter(::diesel::dsl::sql("1=1 GROUP BY ELEMENTS.ID, ELEMENTS.LABEL, ELEMENTS.\"COMMENT\", ELEMENTS.OWNER_ID, ELEMENTS.LEVEL_ID"))
+        .select((
+            elements::id,
+            elements::label,
+            elements::comment,
+            elements::owner_id,
+            elements::level_id,
+            ::diesel::dsl::sql::<::diesel::sql_types::BigInt>("CAST(COUNT(node_links.parent_id) as NUMBER(19))"),
+        ))
+        .order(elements::label.asc())
+        .load(&conn);
+    assert_result!(k);
+
+    //let tm = conn.transaction_manager();
+    //let ret = tm.rollback_transaction(&conn);
+    //assert_result!(ret);
+
+
+}
+
+
+#[test]
+fn limit() {
+
+    let conn = OciConnection::establish(&DB_URL).unwrap();
+
+    use diesel::ExpressionMethods;
+    use diesel::QueryDsl;
+    use diesel::GroupByDsl;
+    use diesel::BoolExpressionMethods;
+    use diesel::connection::TransactionManager;
+
+    let groupby = (
+        elements::id,
+        elements::label,
+        elements::comment,
+        elements::owner_id,
+        elements::level_id,
+    );
+
+    let ret = conn.begin_test_transaction();
+    assert_result!(ret);
+
+    let k : Result<(
+        i64,
+        String,
+        Option<String>,
+        i32,
+        i16,
+    ), _> = elements::table
+        .select(groupby)
+        .first(&conn);
+    assert_result!(k);
+
+
 }

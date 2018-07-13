@@ -4,6 +4,7 @@ use diesel::query_builder::QueryBuilder;
 use diesel::result::Error as DieselError;
 
 //mod insert_statement;
+mod limit_clause;
 
 #[derive(Default)]
 pub struct OciQueryBuilder {

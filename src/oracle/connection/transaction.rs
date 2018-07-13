@@ -49,7 +49,7 @@ impl OCITransactionManager {
 impl TransactionManager<OciConnection> for OCITransactionManager {
     fn begin_transaction(&self, conn: &OciConnection) -> QueryResult<()> {
         let transaction_depth = self.transaction_depth.get();
-        let query = if transaction_depth == -1 {
+        let query = if transaction_depth == 0 {
             let _status = unsafe {
                 ffi::OCITransStart(
                     conn.raw.service_handle,
@@ -70,7 +70,7 @@ impl TransactionManager<OciConnection> for OCITransactionManager {
         // all preceding DML will be commited with a DDL statement !!!
         // c.f. https://docs.oracle.com/cd/E25054_01/server.1111/e25789/transact.htm#sthref1318
         let transaction_depth = self.transaction_depth.get();
-        let query = if transaction_depth == -1 {
+        let query = if transaction_depth == 1 {
             let _status = unsafe {
                 ffi::OCITransRollback(
                     conn.raw.service_handle,
@@ -90,7 +90,7 @@ impl TransactionManager<OciConnection> for OCITransactionManager {
 
     fn commit_transaction(&self, conn: &OciConnection) -> QueryResult<()> {
         let transaction_depth = self.transaction_depth.get();
-        let query = if transaction_depth <= -1 {
+        let query = if transaction_depth <= 1 {
             let _status = unsafe {
                 ffi::OCITransCommit(
                     conn.raw.service_handle,

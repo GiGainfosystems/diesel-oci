@@ -282,7 +282,7 @@ impl Statement {
                 }
                 ffi::SQLT_BLOB => {
                     tpe = ffi::SQLT_BIN;
-                    tpe_size=310;
+                    //tpe_size=310;
                     tpe_size=88;
                 }
                 _ => {

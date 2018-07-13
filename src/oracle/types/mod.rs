@@ -177,7 +177,7 @@ impl HasSqlType<Bool> for Oracle {
 
 impl FromSql<Bool, Oracle> for bool {
     fn from_sql(bytes: Option<&OracleValue>) -> FromSqlResult<Self> {
-        FromSql::<Double, Oracle>::from_sql(bytes).map(|v: f64| v != 0.0)
+        FromSql::<SmallInt, Oracle>::from_sql(bytes).map(|v: i16| v != 0)
     }
 }
 

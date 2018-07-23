@@ -261,12 +261,7 @@ impl Statement {
                 | ffi::SQLT_VCS
                 | ffi::SQLT_LVC
                 | ffi::SQLT_AFC
-                | ffi::SQLT_VST
-                | ffi::SQLT_ODT
-                | ffi::SQLT_DATE
-                | ffi::SQLT_TIMESTAMP
-                | ffi::SQLT_TIMESTAMP_TZ
-                | ffi::SQLT_TIMESTAMP_LTZ => {
+                | ffi::SQLT_VST => {
                     let mut length = 0u32;
                     let status = ffi::OCIAttrGet(
                         col_handle as *mut _,
@@ -279,6 +274,14 @@ impl Statement {
                     Self::check_error(self.connection.env.error_handle, status)?;
                     //tpe_size += 1;
                     tpe = ffi::SQLT_STR;
+                }
+                ffi::SQLT_ODT
+                | ffi::SQLT_DATE
+                | ffi::SQLT_TIMESTAMP
+                | ffi::SQLT_TIMESTAMP_TZ
+                | ffi::SQLT_TIMESTAMP_LTZ => {
+                    tpe = ffi::SQLT_DAT;
+                    tpe_size = 7;
                 }
                 ffi::SQLT_BLOB => {
                     tpe = ffi::SQLT_BIN;

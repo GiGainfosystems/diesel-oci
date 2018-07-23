@@ -31,7 +31,8 @@ impl Statement {
             let place_holder = limit_clause.split_off(String::from("LIMIT ").len());
             mysql = mysql + &format!("OFFSET 0 ROWS FETCH NEXT {} ROWS ONLY", place_holder);
         }
-        
+
+        println!("{:?}", mysql);
         let stmt = unsafe {
             let mut stmt: *mut ffi::OCIStmt = ptr::null_mut();
             let status = ffi::OCIStmtPrepare2(

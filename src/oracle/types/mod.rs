@@ -89,6 +89,7 @@ impl OCIDataType {
             BDouble | IBDouble => ffi::SQLT_BDOUBLE,
             Char | String => ffi::SQLT_CHR,
             Binary => ffi::SQLT_BIN,
+            Timestamp | InternDate => ffi::SQLT_DAT,
             _ => 0u32,
         }
     }

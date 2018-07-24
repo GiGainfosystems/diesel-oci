@@ -32,7 +32,6 @@ impl Statement {
             mysql = mysql + &format!("OFFSET 0 ROWS FETCH NEXT {} ROWS ONLY", place_holder);
         }
 
-        println!("{:?}", mysql);
         let stmt = unsafe {
             let mut stmt: *mut ffi::OCIStmt = ptr::null_mut();
             let status = ffi::OCIStmtPrepare2(

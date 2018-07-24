@@ -84,6 +84,7 @@ where
             if let Some(err) =
                 Statement::check_error(self.stmt.connection.env.error_handle, status).err()
             {
+                println!("{:?}", self.stmt.mysql);
                 return Some(Err(err));
             }
             if status as u32 == ffi::OCI_NO_DATA {

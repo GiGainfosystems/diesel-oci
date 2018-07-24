@@ -153,7 +153,7 @@ impl Statement {
         check
     }
 
-    pub fn run(&self) -> QueryResult<()> {
+    pub fn run(&mut self) -> QueryResult<()> {
         let iters = if self.is_select { 0 } else { 1 };
         unsafe {
             let status = ffi::OCIStmtExecute(
@@ -168,6 +168,9 @@ impl Statement {
             );
             Self::check_error_sql(self.connection.env.error_handle, status, &self.mysql, "EXECUTING STMT".to_string())?;
         }
+        // TODO: since we have a statement cache, which I couldn't find to turn off,
+        // we need to reset the bind_index once we executed the statement
+        self.bind_index = 0;
         Ok(())
     }
 
@@ -383,7 +386,7 @@ impl Statement {
         Ok(fields)
     }
 
-    pub fn run_with_cursor<ST, T>(&self) -> QueryResult<Cursor<ST, T>> {
+    pub fn run_with_cursor<ST, T>(&mut self) -> QueryResult<Cursor<ST, T>> {
         self.run()?;
         let fields = self.define_all_columns()?;
 

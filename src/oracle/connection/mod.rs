@@ -65,7 +65,7 @@ unsafe impl Send for OciConnection {}
 
 impl SimpleConnection for OciConnection {
     fn batch_execute(&self, query: &str) -> QueryResult<()> {
-        let stmt = try!(Statement::prepare(&self.raw, query));
+        let mut stmt = try!(Statement::prepare(&self.raw, query));
         try!(stmt.run());
         Ok(())
     }
@@ -100,7 +100,7 @@ impl Connection for OciConnection {
 
     #[doc(hidden)]
     fn execute(&self, query: &str) -> QueryResult<usize> {
-        let stmt = try!(Statement::prepare(&self.raw, query));
+        let mut stmt = try!(Statement::prepare(&self.raw, query));
         try!(stmt.run());
         Ok(try!(stmt.get_affected_rows()))
     }
@@ -110,7 +110,7 @@ impl Connection for OciConnection {
     where
         T: QueryFragment<Self::Backend> + QueryId,
     {
-        let stmt = try!(self.prepare_query(source));
+        let mut stmt = try!(self.prepare_query(source));
         try!(stmt.run());
         Ok(try!(stmt.get_affected_rows()))
     }
@@ -126,7 +126,7 @@ impl Connection for OciConnection {
         Self::Backend: HasSqlType<T::SqlType>,
         U: Queryable<T::SqlType, Self::Backend>,
     {
-        let stmt = self.prepare_query(&source.as_query())?;
+        let mut stmt = self.prepare_query(&source.as_query())?;
         let cursor: Cursor<T::SqlType, U> = stmt.run_with_cursor()?;
         let mut ret = Vec::new();
         for el in cursor {

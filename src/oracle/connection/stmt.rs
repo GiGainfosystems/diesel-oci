@@ -17,6 +17,7 @@ pub struct Statement {
     buffers: Vec<Box<[u8]>>,
     sizes: Vec<i32>,
     indicators: Vec<Box<ffi::OCIInd>>,
+    pub mysql: String,
 }
 
 const NUM_ELEMENTS: usize = 20;
@@ -46,7 +47,7 @@ impl Statement {
                 ffi::OCI_DEFAULT,
             );
 
-            Self::check_error(raw_connection.env.error_handle, status)?;
+            Self::check_error_sql(raw_connection.env.error_handle, status, &mysql, "PREPARING STMT".to_string())?;
 
             // for create statements we need to run OCIStmtPrepare2 twice
             // c.f. https://docs.oracle.com/database/121/LNOCI/oci17msc001.htm#LNOCI17165
@@ -65,7 +66,7 @@ impl Statement {
                         ffi::OCI_DEFAULT,
                     );
 
-                    Self::check_error(raw_connection.env.error_handle, status)?;
+                    Self::check_error_sql(raw_connection.env.error_handle, status, &mysql, "PREPARING STMT 2".to_string())?;
                 }
             }
 
@@ -94,6 +95,7 @@ impl Statement {
             buffers: Vec::with_capacity(NUM_ELEMENTS),
             sizes: Vec::with_capacity(NUM_ELEMENTS),
             indicators: Vec::with_capacity(NUM_ELEMENTS),
+            mysql
         })
     }
 
@@ -143,6 +145,14 @@ impl Statement {
         }
     }
 
+    pub fn check_error_sql(error_handle: *mut ffi::OCIError, status: i32, sql: &String, action: String) -> Result<(), Error> {
+        let check = Self::check_error(error_handle, status);
+        if check.is_err() {
+            println!("{:?} while {:?}", sql, action);
+        }
+        check
+    }
+
     pub fn run(&self) -> QueryResult<()> {
         let iters = if self.is_select { 0 } else { 1 };
         unsafe {
@@ -156,7 +166,7 @@ impl Statement {
                 ptr::null_mut(),
                 ffi::OCI_DEFAULT,
             );
-            Self::check_error(self.connection.env.error_handle, status)?;
+            Self::check_error_sql(self.connection.env.error_handle, status, &self.mysql, "EXECUTING STMT".to_string())?;
         }
         Ok(())
     }
@@ -172,7 +182,7 @@ impl Statement {
                 ffi::OCI_ATTR_ROW_COUNT,
                 self.connection.env.error_handle,
             );
-            Self::check_error(self.connection.env.error_handle, status)?;
+            Self::check_error_sql(self.connection.env.error_handle, status, &self.mysql, "GET AFFECTED ROWS".to_string())?;
         }
         Ok(affected_rows as usize)
     }
@@ -189,7 +199,7 @@ impl Statement {
                 self.connection.env.error_handle,
             );
 
-            Self::check_error(self.connection.env.error_handle, status)?;
+            Self::check_error_sql(self.connection.env.error_handle, status, &self.mysql, "GET NUM COLS".to_string())?;
         }
         Ok(col_count)
     }
@@ -206,7 +216,7 @@ impl Statement {
                 ffi::OCI_ATTR_DATA_TYPE,
                 self.connection.env.error_handle,
             );
-            Self::check_error(self.connection.env.error_handle, status)?;
+            Self::check_error_sql(self.connection.env.error_handle, status, &self.mysql, "RETRIEVING TYPE".to_string())?;
 
             match tpe {
                 ffi::SQLT_INT | ffi::SQLT_UIN => {
@@ -224,7 +234,7 @@ impl Statement {
                         ffi::OCI_ATTR_PRECISION,
                         self.connection.env.error_handle,
                     );
-                    Self::check_error(self.connection.env.error_handle, status)?;
+                    Self::check_error_sql(self.connection.env.error_handle, status, &self.mysql, "RETRIEVING PRECISION".to_string())?;
                     let mut attributesize = 8u32; // sb1
                     let status = ffi::OCIAttrGet(
                         col_handle as *mut _,
@@ -234,7 +244,7 @@ impl Statement {
                         ffi::OCI_ATTR_SCALE,
                         self.connection.env.error_handle,
                     );
-                    Self::check_error(self.connection.env.error_handle, status)?;
+                    Self::check_error_sql(self.connection.env.error_handle, status, &self.mysql, "RETRIEVING SCALE".to_string())?;
                     if scale == 0 {
                         tpe_size = match precision {
                             5 => 2,  // number(5) -> smallint
@@ -270,7 +280,7 @@ impl Statement {
                         ffi::OCI_ATTR_CHAR_SIZE,
                         self.connection.env.error_handle,
                     );
-                    Self::check_error(self.connection.env.error_handle, status)?;
+                    Self::check_error_sql(self.connection.env.error_handle, status, &self.mysql, "RETRIEVING LENGTH".to_string())?;
                     //tpe_size += 1;
                     tpe = ffi::SQLT_STR;
                 }
@@ -328,7 +338,7 @@ impl Statement {
                 ptr::null_mut(),
                 ffi::OCI_DEFAULT,
             );
-            Self::check_error(self.connection.env.error_handle, status)?;
+            Self::check_error_sql(self.connection.env.error_handle, status, &self.mysql, "DEFINING".to_string())?;
             def
         };
         if let Some(tpe) = ::oracle::types::OCIDataType::from_raw(tpe) {
@@ -353,7 +363,7 @@ impl Statement {
                 (&mut parameter_descriptor as *mut *mut ffi::OCIStmt) as *mut _,
                 col_number as u32,
             );
-            Self::check_error(self.connection.env.error_handle, status)?;
+            Self::check_error_sql(self.connection.env.error_handle, status, &self.mysql, "RETRIEVING COL HANDLE".to_string())?;
             parameter_descriptor
         };
 
@@ -420,7 +430,7 @@ impl Statement {
             self.sizes.push(size);
             self.indicators.push(nullind);
 
-            Self::check_error(self.connection.env.error_handle, status)?;
+            Self::check_error_sql(self.connection.env.error_handle, status, &self.mysql, "BINDING".to_string())?;
 
             if tpe == OCIDataType::Char {
                 let mut cs_id = self.connection.env.cs_id;
@@ -448,7 +458,7 @@ impl Drop for Statement {
                 0,
                 ffi::OCI_DEFAULT,
             );
-            if let Some(err) = Self::check_error(self.connection.env.error_handle, status).err() {
+            if let Some(err) = Self::check_error_sql(self.connection.env.error_handle, status, &self.mysql, "DROPPING STMT".to_string()).err() {
                 println!("{:?}", err);
             }
         }

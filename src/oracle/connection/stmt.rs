@@ -288,6 +288,11 @@ impl Statement {
                     //tpe_size=310;
                     tpe_size=88;
                 }
+                ffi::SQLT_CLOB => {
+                    // just read two GB
+                    tpe_size = 2_000_000;
+                    tpe = ffi::SQLT_STR;
+                }
                 _ => {
                     return Err(Error::DatabaseError(
                         DatabaseErrorKind::__Unknown,

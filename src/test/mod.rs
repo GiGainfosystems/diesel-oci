@@ -913,3 +913,702 @@ fn limit() {
     assert_result!(ret);
 
 }
+
+use num::FromPrimitive;
+use diesel::deserialize::{self, FromSql};
+use diesel::serialize::{self, ToSql};
+use diesel::sql_types::SmallInt;
+use std::io::Write;
+
+use oracle::backend::Oracle;
+use oracle::connection::OracleValue;
+use std::error::Error as StdError;
+
+#[derive(Debug)]
+pub struct InvalidEnumValueError<T>(pub T);
+
+impl<T> ::std::error::Error for InvalidEnumValueError<T>
+    where
+        T: ::std::fmt::Display + ::std::fmt::Debug,
+{
+    fn description(&self) -> &str {
+        "Invalid enum value"
+    }
+}
+
+impl<T> ::std::fmt::Display for InvalidEnumValueError<T>
+    where
+        T: ::std::fmt::Display,
+{
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        write!(f, "Invalid enum value {}", self.0)
+    }
+}
+
+pub fn make_err<E>(e: E) -> Box<StdError + Send + Sync>
+    where
+        E: StdError + Send + Sync + 'static,
+{
+    Box::new(e)
+}
+
+/// The type of a coordinate system
+#[derive(FromPrimitive, Debug, PartialEq, Clone, Copy, FromSqlRow, AsExpression)]
+#[sql_type = "SmallInt"]
+pub enum CoordinateSystemType {
+    /// The coordinate system is cartesian,
+    /// that means there are 3 perpendicular axes
+    Cartesian = 0,
+    /// The coordinate system is spherical, which means
+    /// there are two angle-axes(latitude, longitude) and one even axis (height)
+    Spherical = 1,
+    /// The coordinate system is cylindrical, which means
+    /// there are one angle-axis and two even axes
+    Cylindrical = 2,
+}
+
+impl ToSql<SmallInt, Oracle> for CoordinateSystemType {
+    fn to_sql<W: Write>(&self, out: &mut serialize::Output<W, Oracle>) -> serialize::Result {
+        <i16 as ToSql<SmallInt, _>>::to_sql(&(*self as i16), out)
+    }
+}
+
+impl FromSql<SmallInt, Oracle> for CoordinateSystemType {
+    fn from_sql(bytes: Option<&OracleValue>) -> deserialize::Result<Self> {
+        let value = <i16 as FromSql<SmallInt, Oracle>>::from_sql(bytes)?;
+        CoordinateSystemType::from_i16(value).ok_or_else(|| {
+            error!("Invalid value for coordinate system type found: {}", value);
+            make_err(InvalidEnumValueError(value))
+        })
+    }
+}
+
+table! {
+    /// A database table containing all coordinate system definitions
+    coordinate_system_descriptions {
+        /// A unique id for a coordinate system
+        id -> Integer,
+        /// The name of the coordinate system
+        name -> Text,
+        /// The label applied to the first axis
+        c1_label -> Text,
+        /// Is the first axis reversed, or not
+        c1_reversed -> Bool,
+        /// The unit of the first axis, if avaible
+        c1_unit -> Nullable<Text>,
+        /// The label applied to the second axis
+        c2_label -> Text,
+        /// Is the second axis reversed, or not
+        c2_reversed -> Bool,
+        /// The unit of the second axis, if avaible
+        c2_unit -> Nullable<Text>,
+        /// The label applied to the third axis
+        c3_label -> Text,
+        /// Is the third axis reversed, or not
+        c3_reversed -> Bool,
+        /// The unit of the third axis, if avaible
+        c3_unit -> Nullable<Text>,
+        /// The type of the coordinate system
+        srs_type -> SmallInt,
+    }
+}
+
+/// A struct representing a coordinate system definition from the database
+#[derive(Queryable, Debug, Clone, PartialEq)]
+pub struct CoordinateSystemDescription {
+    /// The unique id of the coordinate system definition
+    pub id: i32,
+    name: String,
+    c1_label: String,
+    c1_reversed: bool,
+    c1_unit: Option<String>,
+    c2_label: String,
+    c2_reversed: bool,
+    c2_unit: Option<String>,
+    c3_label: String,
+    c3_reversed: bool,
+    c3_unit: Option<String>,
+    srs_type: CoordinateSystemType,
+}
+
+#[test]
+fn coordinatesys() {
+
+    let conn = OciConnection::establish(&DB_URL).unwrap();
+
+    use self::coordinate_system_descriptions::dsl::coordinate_system_descriptions;
+    use self::coordinate_system_descriptions::columns::{id, name, c1_label, c1_reversed, c1_unit, c2_label, c2_reversed, c2_unit, c3_label, c3_reversed, c3_unit, srs_type};
+    use diesel::QueryDsl;
+
+    let coord : Result<Vec<(
+    i32,
+    String,
+    String,
+    bool,
+    Option<String>,
+    String,
+    bool,
+    Option<String>,
+    String,
+    bool,
+    Option<String>,
+    CoordinateSystemType,
+    )>, _> =
+        coordinate_system_descriptions
+            .select((
+                id,
+                name,
+                c1_label,
+                c1_reversed,
+                c1_unit,
+                c2_label,
+                c2_reversed,
+                c2_unit,
+                c3_label,
+                c3_reversed,
+                c3_unit,
+                srs_type
+            ))
+            .load(&conn);
+
+    assert_result!(coord);
+}
+
+
+table! {
+    t1 {
+        id -> Integer,
+        name -> Nullable<Text>,
+        bol -> Bool,
+        t2 -> Text,
+        bin -> Binary,
+        si -> SmallInt,
+    }
+}
+
+table! {
+    t2 {
+        id -> Integer,
+        name -> Text,
+    }
+}
+
+joinable!(t1 -> t2(id));
+allow_tables_to_appear_in_same_query!(
+    t1,
+    t2
+);
+
+#[test]
+fn ambigious_col_names() {
+
+    const CREATE_T1: &'static str = "CREATE TABLE t1 (\
+            id NUMBER(10),
+            name VARCHAR2(50),
+            bol NUMBER(5) DEFAULT 0 NOT NULL,
+            t2 VARCHAR2(50),
+            bin blob,
+            si NUMBER(5)
+     )";
+    const CREATE_T2: &'static str = "CREATE TABLE t2 (\
+            id NUMBER(10),
+            name VARCHAR2(50)
+     )";
+
+    let conn = OciConnection::establish(&DB_URL).unwrap();
+
+    drop_table(&conn, "T1");
+    drop_table(&conn, "T2");
+
+    let ret = conn.execute(CREATE_T1);
+    assert_result!(ret);
+    let ret = conn.execute(CREATE_T2);
+    assert_result!(ret);
+
+    use self::t1;
+    use self::t2;
+    use diesel::QueryDsl;
+    use diesel::JoinOnDsl;
+    use diesel::ExpressionMethods;
+    use oracle::query_builder::Alias;
+
+    let mut bin : Vec<u8> = Vec::new();
+    for i in 0..88 {
+        bin.push(i as u8 % 128u8);
+    }
+
+    let new_row = (
+        t1::id.eq(1),
+        t1::name.eq("test1"),
+        t1::bol.eq(true),
+        t1::t2.eq("tryme "),
+        t1::bin.eq(bin),
+        t1::si.eq(2),
+    );
+    let ret = ::diesel::insert_into(t1::table)
+        .values(&new_row)
+        .execute(&conn);
+    assert_result!(ret);
+    let new_row = (
+        t2::id.eq(1),
+        t2::name.eq("test2"),
+    );
+    let ret = ::diesel::insert_into(t2::table)
+        .values(&new_row)
+        .execute(&conn);
+    assert_result!(ret);
+
+    let col = t1::name.alias("da".to_string());
+    let ambigious : Result<(
+        i32,
+        i32,
+        Option<String>,
+        String,
+        bool,
+        String,
+        Vec<u8>,
+        i16
+    ), _> =
+        t1::table
+            .filter(t2::id.eq(1))
+            .inner_join(t2::table.on(t1::id.eq(t2::id)))
+            .select((
+                t1::id,
+                t2::id.alias("a".to_string()),
+                col,
+                t2::name,
+                t1::bol,
+                t1::t2,
+                t1::bin,
+                t1::si
+            ))
+            .limit(1) // this is the crucial part!
+            .first(&conn);
+
+    assert_result!(ambigious);
+}
+
+table! {
+    ts {
+        id -> Integer,
+        tis -> Timestamp,
+    }
+}
+
+#[test]
+fn timestamp() {
+
+    const CREATE_TS: &'static str = "CREATE TABLE TS (\
+            id NUMBER(10),
+            tis TIMESTAMP
+     )";
+
+    let conn = OciConnection::establish(&DB_URL).unwrap();
+
+    drop_table(&conn, "TS");
+
+
+    let ret = conn.execute(CREATE_TS);
+    assert_result!(ret);
+
+
+    use self::ts;
+    use diesel::ExpressionMethods;
+    use self::chrono::{NaiveDateTime, Utc};
+
+    let n = Utc::now().naive_utc();
+
+    let new_row = (
+        ts::id.eq(1),
+        ts::tis.eq(n),
+    );
+    let query = ::diesel::insert_into(ts::table)
+        .values(&new_row);
+    let ret = query.execute(&conn);
+    assert_result!(ret);
+
+    let ret : Result<Vec<(i32, NaiveDateTime)>, _>= ts::table.load(&conn);
+    assert_result!(ret);
+
+
+}
+
+table! {
+    clobber {
+        id -> Integer,
+        tiss -> Text,
+        tis -> Text,
+    }
+}
+
+#[test]
+fn clob() {
+
+    const CREATE_CLOBBER: &'static str = "CREATE TABLE CLOBBER (\
+            id NUMBER(10),
+            tiss VARCHAR2(50),
+            tis CLOB
+     )";
+
+    let conn = OciConnection::establish(&DB_URL).unwrap();
+
+    drop_table(&conn, "CLOBBER");
+
+
+    let ret = conn.execute(CREATE_CLOBBER);
+    assert_result!(ret);
+
+
+    use self::clobber;
+    use diesel::ExpressionMethods;
+
+    let new_row = (
+        clobber::id.eq(1),
+        clobber::tiss.eq("This is a varcharThis is a varchar"),
+        clobber::tis.eq("This is a test"),
+    );
+    let query = ::diesel::insert_into(clobber::table)
+        .values(&new_row);
+    let ret = query.execute(&conn);
+    assert_result!(ret);
+
+    let ret : Result<Vec<(i32, String, String)>, _>= clobber::table.load(&conn);
+    assert_result!(ret);
+
+
+}
+
+table! {
+    props {
+        id -> Integer,
+        is_based -> Nullable<Bool>,
+    }
+}
+
+table!{
+    properties{
+        id -> BigInt,
+        name -> Text,
+        is_vertex_based -> Bool,
+        property_type -> SmallInt,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
+        feature_class -> BigInt,
+    }
+}
+
+#[derive(FromPrimitive, Debug, PartialEq, Clone, Copy, Eq, Hash, FromSqlRow, AsExpression)]
+#[sql_type = "SmallInt"]
+pub enum PropertyDataType {
+    Int = 0,
+    Float = 1,
+    Bool = 2,
+    String = 3,
+}
+
+impl ToSql<SmallInt, Oracle> for PropertyDataType {
+    fn to_sql<W: Write>(&self, out: &mut serialize::Output<W, Oracle>) -> serialize::Result {
+        <i16 as ToSql<SmallInt, _>>::to_sql(&(*self as i16), out)
+    }
+}
+
+impl FromSql<SmallInt, Oracle> for PropertyDataType {
+    fn from_sql(bytes: Option<&OracleValue>) -> deserialize::Result<Self> {
+        let value = <i16 as FromSql<SmallInt, Oracle>>::from_sql(bytes)?;
+        PropertyDataType::from_i16(value).ok_or_else(|| {
+            error!("Invalid value for property data type found: {}", value);
+            make_err(InvalidEnumValueError(value))
+        })
+    }
+}
+
+#[derive(PartialEq, Hash, Eq, Debug, Clone, Queryable, Associations,
+Identifiable)]
+#[table_name = "properties"]
+pub struct Property {
+    pub id: i64,
+    pub name: String,
+    pub is_vertex_based: bool,
+    pub property_type: PropertyDataType,
+    pub created_at: NaiveDateTime,
+    pub updated_at: NaiveDateTime,
+    pub feature_class: i64,
+}
+
+#[test]
+fn props() {
+    let conn = OciConnection::establish(&DB_URL).unwrap();
+    use self::properties::dsl::*;
+    use diesel::ExpressionMethods;
+    use diesel::QueryDsl;
+    use diesel::debug_query;
+
+    let ids = 4;
+    let query = properties.filter(feature_class.eq(ids));
+    let dbg = debug_query::<Oracle, _>(&query);
+    println!("{:?}", dbg.to_string());
+    let ret : Result<Vec<Property>, _> = query.load(&conn);
+    assert_result!(ret);
+
+    let query = properties.filter(feature_class.eq(ids));
+    let dbg = debug_query::<Oracle, _>(&query);
+    println!("{:?}", dbg.to_string());
+    let ret : Result<Vec<Property>, _> = query.load(&conn);
+    assert_result!(ret);
+
+    let query = properties.filter(feature_class.eq(ids));
+    let dbg = debug_query::<Oracle, _>(&query);
+    println!("{:?}", dbg.to_string());
+    let ret : Result<Vec<Property>, _> = query.load(&conn);
+    assert_result!(ret);
+
+    let query = properties.filter(feature_class.eq(ids));
+    let dbg = debug_query::<Oracle, _>(&query);
+    println!("{:?}", dbg.to_string());
+    let ret : Result<Vec<Property>, _> = query.load(&conn);
+    assert_result!(ret);
+}
+
+#[test]
+fn props_orig() {
+
+    const CREATE_TESTT : &'static str = "CREATE TABLE PROPS (\
+            id NUMBER(10),
+            is_based NUMBER(5)
+     )";
+
+    let conn = OciConnection::establish(&DB_URL).unwrap();
+
+    drop_table(&conn, "PROPS");
+
+
+    let ret = conn.execute(CREATE_TESTT);
+    assert_result!(ret);
+
+
+    use self::props;
+    use diesel::ExpressionMethods;
+    use diesel::QueryDsl;
+
+    let new_row = (
+        props::id.eq(1),
+        props::is_based.eq(true),
+    );
+    let query = ::diesel::insert_into(props::table)
+        .values(&new_row);
+    let ret = query.execute(&conn);
+    assert_result!(ret);
+
+    let new_row = (
+        props::id.eq(2),
+        props::is_based.eq(false),
+    );
+    let query = ::diesel::insert_into(props::table)
+        .values(&new_row);
+    let ret = query.execute(&conn);
+    assert_result!(ret);
+
+    let new_row = (
+        props::id.eq(3),
+    );
+    let query = ::diesel::insert_into(props::table)
+        .values(&new_row);
+    let ret = query.execute(&conn);
+    assert_result!(ret);
+
+    let ret : Result<Vec<(i32, Option<bool>)>, _>= props::table.load(&conn);
+    assert_result!(ret);
+    let ret = ret.unwrap();
+    assert_eq!(ret.len(), 3);
+    assert_eq!(ret[0].1, Some(true));
+    assert_eq!(ret[1].1, Some(false));
+    assert_eq!(ret[2].1, None);
+
+    let ret : Result<Vec<(i32, Option<bool>)>, _>= props::table.filter(props::id.eq(2)).load(&conn);
+    assert_result!(ret);
+    let ret = ret.unwrap();
+    assert_eq!(ret.len(), 1);
+    assert_eq!(ret[0].1, Some(false));
+
+}
+
+
+table! {
+    /// all tables
+    all_tables (owner, table_name) {
+        /// all tables
+        owner -> Text,
+        /// all tables
+        table_name -> Text,
+//        /// all tables
+//        tablespace_name -> Nullable<Text>,
+//        /// all tables
+//        cluster_name -> Nullable<Text>,
+//        /// all tables
+//        iot_name -> Nullable<Text>,
+//        /// all tables
+//        status -> Nullable<Text>,
+//        /// all tables
+//        pct_free -> Nullable<BigInt>,
+//        /// all tables
+//        pct_used -> Nullable<BigInt>,
+//        /// all tables
+//        ini_trans -> Nullable<BigInt>,
+//        /// all tables
+//        max_trans -> Nullable<BigInt>,
+//        /// all tables
+//        initial_extent -> Nullable<BigInt>,
+//        /// all tables
+//        next_extent -> Nullable<BigInt>,
+//        /// all tables
+//        min_extents -> Nullable<BigInt>,
+//        /// all tables
+//        max_extents -> Nullable<BigInt>,
+//        /// all tables
+//        pct_increase -> Nullable<BigInt>,
+//        /// all tables
+//        freelists -> Nullable<BigInt>,
+//        /// all tables
+//        freelist_groups -> Nullable<BigInt>,
+//        /// all tables
+//        logging -> Nullable<Text>,
+//        /// all tables
+//        backed_up -> Nullable<Text>,
+//        /// all tables
+//        num_rows -> Nullable<BigInt>,
+//        /// all tables
+//        blocks -> Nullable<BigInt>,
+//        /// all tables
+//        empty_blocks -> Nullable<BigInt>,
+//        /// all tables
+//        avg_space -> Nullable<BigInt>,
+//        /// all tables
+//        chain_cnt -> Nullable<BigInt>,
+//        /// all tables
+//        avg_row_len -> Nullable<BigInt>,
+//        /// all tables
+//        avg_space_freelist_blocks -> Nullable<BigInt>,
+//        /// all tables
+//        num_freelist_blocks -> Nullable<BigInt>,
+//        /// all tables
+//        degree -> Nullable<Text>,
+//        /// all tables
+//        instances -> Nullable<Text>,
+//        /// all tables
+//        cache -> Nullable<Text>,
+//        /// all tables
+//        table_lock -> Nullable<Text>,
+//        /// all tables
+//        sample_size -> Nullable<BigInt>,
+//        /// all tables
+//        last_analyzed -> Timestamp,
+//        /// all tables
+//        partitioned -> Nullable<Text>,
+//        /// all tables
+//        iot_type -> Nullable<Text>,
+//        /// all tables
+//        temporary -> Nullable<Text>,
+//        /// all tables
+//        secondary -> Nullable<Text>,
+//        /// all tables
+//        nested -> Nullable<Text>,
+//        /// all tables
+//        buffer_pool -> Nullable<Text>,
+//        /// all tables
+//        flash_cache -> Nullable<Text>,
+//        /// all tables
+//        cell_flash_cache -> Nullable<Text>,
+//        /// all tables
+//        row_movement -> Nullable<Text>,
+//        /// all tables
+//        global_stats -> Nullable<Text>,
+//        /// all tables
+//        user_stats -> Nullable<Text>,
+//        /// all tables
+//        duration -> Nullable<Text>,
+//        /// all tables
+//        skip_corrupt -> Nullable<Text>,
+//        /// all tables
+//        monitoring -> Nullable<Text>,
+//        /// all tables
+//        cluster_owner -> Nullable<Text>,
+//        /// all tables
+//        dependencies -> Nullable<Text>,
+//        /// all tables
+//        compression -> Nullable<Text>,
+//        /// all tables
+//        compress_for -> Nullable<Text>,
+//        /// all tables
+//        dropped -> Nullable<Text>,
+//        /// all tables
+//        read_only -> Nullable<Text>,
+//        /// all tables
+//        segment_created -> Nullable<Text>,
+//        /// all tables
+//        result_cache -> Nullable<Text>,
+//        /// all tables
+//        clustering -> Nullable<Text>,
+//        /// all tables
+//        activity_tracking -> Nullable<Text>,
+//        /// all tables
+//        dml_timestamp -> Nullable<Text>,
+//        /// all tables
+//        has_identity -> Nullable<Text>,
+//        /// all tables
+//        container_data -> Nullable<Text>,
+//        /// all tables
+//        inmemory -> Nullable<Text>,
+//        /// all tables
+//        inmemory_priority -> Nullable<Text>,
+//        /// all tables
+//        inmemory_distribute -> Nullable<Text>,
+//        /// all tables
+//        inmemory_compression -> Nullable<Text>,
+//        /// all tables
+//        inmemory_duplicate -> Nullable<Text>,
+    }
+}
+
+
+#[test]
+fn systable() {
+    let conn = OciConnection::establish(&DB_URL).unwrap();
+
+    use self::all_tables;
+
+    let ret : Result<Vec<(String, String)>, _>= all_tables::table.load(&conn);
+    assert_result!(ret);
+    let ret = ret.unwrap();
+    assert_eq!(ret.len(), 141);
+
+}
+
+#[test]
+fn exists() {
+    let conn = OciConnection::establish(&DB_URL).unwrap();
+
+    use self::all_tables;
+
+    //use diesel::dsl::exists;
+    use oracle::query_builder::exists;
+    use diesel::query_dsl::filter_dsl::FilterDsl;
+    use diesel::ExpressionMethods;
+    use diesel::query_dsl::select_dsl::SelectDsl;
+
+    let q = all_tables::table
+        .filter(all_tables::owner.eq("diesel"))
+        .select(all_tables::owner);
+    let ret = exists::<_, String>(q, &conn);
+    assert_result!(ret);
+    let ret = ret.unwrap(); // has been asserted before ;)
+    assert_eq!(ret, true);
+
+    let q = all_tables::table
+        .filter(all_tables::owner.eq("dieasel"))
+        .select(all_tables::owner);
+    let ret = exists::<_, String>(q, &conn);
+    assert_result!(ret);
+    let ret = ret.unwrap(); // has been asserted before ;)
+    assert_eq!(ret, false);
+
+}

@@ -6,8 +6,10 @@ use diesel::result::Error as DieselError;
 //mod insert_statement;
 mod limit_clause;
 mod alias;
+mod exists;
 
 pub use self::alias::Alias;
+pub use self::exists::exists;
 
 #[derive(Default)]
 pub struct OciQueryBuilder {

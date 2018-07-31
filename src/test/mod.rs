@@ -490,7 +490,7 @@ fn gst_compat() {
         Way::Diesel => {
 
             let mut bin : Vec<u8> = Vec::new();
-            for i in 0..310 {
+            for i in 0..88 {
                 bin.push(i as u8 % 128u8);
             }
 
@@ -514,7 +514,7 @@ fn gst_compat() {
 //            assert_result!(new_row);
 
             let mut bin : Vec<u8> = Vec::new();
-            for i in 0..310 {
+            for i in 0..88 {
                 bin.push(i as u8 % 128u8);
             }
             
@@ -853,7 +853,7 @@ fn limit() {
 //            assert_result!(new_row);
 
     let mut bin : Vec<u8> = Vec::new();
-    for i in 0..310 {
+    for i in 0..88 {
         bin.push(i as u8 % 128u8);
     }
 

@@ -26,8 +26,7 @@ impl Statement {
     pub fn prepare(raw_connection: &Rc<RawConnection>, sql: &str) -> QueryResult<Self> {
         let mut mysql = sql.to_string();
         // TODO: this can go wrong: `UPDATE table SET k='LIMIT';`
-        if mysql.contains("LIMIT") {
-            let pos = mysql.find("LIMIT").expect("We know that returning is contained");
+        if let Some(pos) = mysql.find("LIMIT") {
             let mut limit_clause = mysql.split_off(pos);
             let place_holder = limit_clause.split_off(String::from("LIMIT ").len());
             mysql = mysql + &format!("OFFSET 0 ROWS FETCH NEXT {} ROWS ONLY", place_holder);
@@ -292,17 +291,20 @@ impl Statement {
                 | ffi::SQLT_TIMESTAMP
                 | ffi::SQLT_TIMESTAMP_TZ
                 | ffi::SQLT_TIMESTAMP_LTZ => {
+                    // DATE is 7 bytes, c.f. https://docs.oracle.com/en/database/oracle/oracle-database/12.2/lnoci/data-types.html#GUID-7DA48B90-07C7-41A7-BC57-D8F358A4EEBE
                     tpe = ffi::SQLT_DAT;
                     tpe_size = 7;
                 }
                 ffi::SQLT_BLOB => {
                     tpe = ffi::SQLT_BIN;
-                    //tpe_size=310;
-                    tpe_size=88;
+                    // this just fits GST's current password hashing settings, if they are changed
+                    // we need to change the size here
+                    // TODO: FIXME: find a away to read the size of a BLOB
+                    tpe_size = 88;
                 }
                 ffi::SQLT_CLOB => {
                     // just read two GB
-                    tpe_size = 2_000_000;
+                    tpe_size = 2_000_000_000;
                     tpe = ffi::SQLT_STR;
                 }
                 _ => {

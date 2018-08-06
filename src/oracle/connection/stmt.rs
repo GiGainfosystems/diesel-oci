@@ -46,7 +46,12 @@ impl Statement {
                 ffi::OCI_DEFAULT,
             );
 
-            Self::check_error_sql(raw_connection.env.error_handle, status, &mysql, "PREPARING STMT".to_string())?;
+            Self::check_error_sql(
+                raw_connection.env.error_handle,
+                status,
+                &mysql,
+                "PREPARING STMT".to_string(),
+            )?;
 
             // for create statements we need to run OCIStmtPrepare2 twice
             // c.f. https://docs.oracle.com/database/121/LNOCI/oci17msc001.htm#LNOCI17165
@@ -65,7 +70,12 @@ impl Statement {
                         ffi::OCI_DEFAULT,
                     );
 
-                    Self::check_error_sql(raw_connection.env.error_handle, status, &mysql, "PREPARING STMT 2".to_string())?;
+                    Self::check_error_sql(
+                        raw_connection.env.error_handle,
+                        status,
+                        &mysql,
+                        "PREPARING STMT 2".to_string(),
+                    )?;
                 }
             }
 
@@ -77,24 +87,24 @@ impl Statement {
             bind_index: 0,
             // TODO: this can go wrong: `UPDATE table SET k='select';` OR
             // ```
-//            CREATE OR REPLACE FORCE VIEW full_bounding_boxes(id, o_c1, o_c2, o_c3, u_c1, u_c2, u_c3, v_c1, v_c2, v_c3, w_c1, w_c2, w_c3)
-//            AS
-//            SELECT bbox.id as id,
-//            o.c1 as o_c1, o.c2 as o_c2, o.c3 as o_c3,
-//            u.c1 as u_c1, u.c2 as u_c2, u.c3 as u_c3,
-//            v.c1 as v_c1, v.c2 as v_c2, v.c3 as v_c3,
-//            w.c1 as w_c1, w.c2 as w_c2, w.c3 as w_c3
-//            FROM bounding_boxes bbox
-//            INNER JOIN geo_points o ON bbox.o = o.id
-//            INNER JOIN geo_points u ON bbox.u = u.id
-//            INNER JOIN geo_points v ON bbox.v = v.id
-//            INNER JOIN geo_points w ON bbox.w = w.id
+            //            CREATE OR REPLACE FORCE VIEW full_bounding_boxes(id, o_c1, o_c2, o_c3, u_c1, u_c2, u_c3, v_c1, v_c2, v_c3, w_c1, w_c2, w_c3)
+            //            AS
+            //            SELECT bbox.id as id,
+            //            o.c1 as o_c1, o.c2 as o_c2, o.c3 as o_c3,
+            //            u.c1 as u_c1, u.c2 as u_c2, u.c3 as u_c3,
+            //            v.c1 as v_c1, v.c2 as v_c2, v.c3 as v_c3,
+            //            w.c1 as w_c1, w.c2 as w_c2, w.c3 as w_c3
+            //            FROM bounding_boxes bbox
+            //            INNER JOIN geo_points o ON bbox.o = o.id
+            //            INNER JOIN geo_points u ON bbox.u = u.id
+            //            INNER JOIN geo_points v ON bbox.v = v.id
+            //            INNER JOIN geo_points w ON bbox.w = w.id
             // ```
             is_select: sql.starts_with("SELECT") || sql.starts_with("select"),
             buffers: Vec::with_capacity(NUM_ELEMENTS),
             sizes: Vec::with_capacity(NUM_ELEMENTS),
             indicators: Vec::with_capacity(NUM_ELEMENTS),
-            mysql
+            mysql,
         })
     }
 
@@ -144,7 +154,12 @@ impl Statement {
         }
     }
 
-    pub fn check_error_sql(error_handle: *mut ffi::OCIError, status: i32, sql: &String, action: String) -> Result<(), Error> {
+    pub fn check_error_sql(
+        error_handle: *mut ffi::OCIError,
+        status: i32,
+        sql: &String,
+        action: String,
+    ) -> Result<(), Error> {
         let check = Self::check_error(error_handle, status);
         if check.is_err() {
             println!("{:?} while {:?}", sql, action);
@@ -165,7 +180,12 @@ impl Statement {
                 ptr::null_mut(),
                 ffi::OCI_DEFAULT,
             );
-            Self::check_error_sql(self.connection.env.error_handle, status, &self.mysql, "EXECUTING STMT".to_string())?;
+            Self::check_error_sql(
+                self.connection.env.error_handle,
+                status,
+                &self.mysql,
+                "EXECUTING STMT".to_string(),
+            )?;
         }
         // TODO: since we have a statement cache, which I couldn't find to turn off,
         // we need to reset the bind_index once we executed the statement
@@ -184,7 +204,12 @@ impl Statement {
                 ffi::OCI_ATTR_ROW_COUNT,
                 self.connection.env.error_handle,
             );
-            Self::check_error_sql(self.connection.env.error_handle, status, &self.mysql, "GET AFFECTED ROWS".to_string())?;
+            Self::check_error_sql(
+                self.connection.env.error_handle,
+                status,
+                &self.mysql,
+                "GET AFFECTED ROWS".to_string(),
+            )?;
         }
         Ok(affected_rows as usize)
     }
@@ -201,7 +226,12 @@ impl Statement {
                 self.connection.env.error_handle,
             );
 
-            Self::check_error_sql(self.connection.env.error_handle, status, &self.mysql, "GET NUM COLS".to_string())?;
+            Self::check_error_sql(
+                self.connection.env.error_handle,
+                status,
+                &self.mysql,
+                "GET NUM COLS".to_string(),
+            )?;
         }
         Ok(col_count)
     }
@@ -218,8 +248,14 @@ impl Statement {
                 ffi::OCI_ATTR_DATA_TYPE,
                 self.connection.env.error_handle,
             );
-            Self::check_error_sql(self.connection.env.error_handle, status, &self.mysql, "RETRIEVING TYPE".to_string())?;
+            Self::check_error_sql(
+                self.connection.env.error_handle,
+                status,
+                &self.mysql,
+                "RETRIEVING TYPE".to_string(),
+            )?;
 
+            // c.f. https://docs.oracle.com/en/database/oracle/oracle-database/12.2/lnoci/data-types.html#GUID-7DA48B90-07C7-41A7-BC57-D8F358A4EEBE
             match tpe {
                 ffi::SQLT_INT | ffi::SQLT_UIN => {
                     tpe_size = 8;
@@ -236,7 +272,12 @@ impl Statement {
                         ffi::OCI_ATTR_PRECISION,
                         self.connection.env.error_handle,
                     );
-                    Self::check_error_sql(self.connection.env.error_handle, status, &self.mysql, "RETRIEVING PRECISION".to_string())?;
+                    Self::check_error_sql(
+                        self.connection.env.error_handle,
+                        status,
+                        &self.mysql,
+                        "RETRIEVING PRECISION".to_string(),
+                    )?;
                     let mut attributesize = 8u32; // sb1
                     let status = ffi::OCIAttrGet(
                         col_handle as *mut _,
@@ -246,7 +287,12 @@ impl Statement {
                         ffi::OCI_ATTR_SCALE,
                         self.connection.env.error_handle,
                     );
-                    Self::check_error_sql(self.connection.env.error_handle, status, &self.mysql, "RETRIEVING SCALE".to_string())?;
+                    Self::check_error_sql(
+                        self.connection.env.error_handle,
+                        status,
+                        &self.mysql,
+                        "RETRIEVING SCALE".to_string(),
+                    )?;
                     if scale == 0 {
                         tpe_size = match precision {
                             5 => 2,  // number(5) -> smallint
@@ -268,11 +314,7 @@ impl Statement {
                     tpe_size = 4;
                     tpe = ffi::SQLT_BFLOAT;
                 }
-                ffi::SQLT_CHR
-                | ffi::SQLT_VCS
-                | ffi::SQLT_LVC
-                | ffi::SQLT_AFC
-                | ffi::SQLT_VST => {
+                ffi::SQLT_CHR | ffi::SQLT_VCS | ffi::SQLT_LVC | ffi::SQLT_AFC | ffi::SQLT_VST => {
                     let mut length = 0u32;
                     let status = ffi::OCIAttrGet(
                         col_handle as *mut _,
@@ -282,7 +324,12 @@ impl Statement {
                         ffi::OCI_ATTR_CHAR_SIZE,
                         self.connection.env.error_handle,
                     );
-                    Self::check_error_sql(self.connection.env.error_handle, status, &self.mysql, "RETRIEVING LENGTH".to_string())?;
+                    Self::check_error_sql(
+                        self.connection.env.error_handle,
+                        status,
+                        &self.mysql,
+                        "RETRIEVING LENGTH".to_string(),
+                    )?;
                     //tpe_size += 1;
                     tpe = ffi::SQLT_STR;
                 }
@@ -343,7 +390,12 @@ impl Statement {
                 ptr::null_mut(),
                 ffi::OCI_DEFAULT,
             );
-            Self::check_error_sql(self.connection.env.error_handle, status, &self.mysql, "DEFINING".to_string())?;
+            Self::check_error_sql(
+                self.connection.env.error_handle,
+                status,
+                &self.mysql,
+                "DEFINING".to_string(),
+            )?;
             def
         };
         if let Some(tpe) = ::oracle::types::OCIDataType::from_raw(tpe) {
@@ -368,7 +420,12 @@ impl Statement {
                 (&mut parameter_descriptor as *mut *mut ffi::OCIStmt) as *mut _,
                 col_number as u32,
             );
-            Self::check_error_sql(self.connection.env.error_handle, status, &self.mysql, "RETRIEVING COL HANDLE".to_string())?;
+            Self::check_error_sql(
+                self.connection.env.error_handle,
+                status,
+                &self.mysql,
+                "RETRIEVING COL HANDLE".to_string(),
+            )?;
             parameter_descriptor
         };
 
@@ -435,7 +492,12 @@ impl Statement {
             self.sizes.push(size);
             self.indicators.push(nullind);
 
-            Self::check_error_sql(self.connection.env.error_handle, status, &self.mysql, "BINDING".to_string())?;
+            Self::check_error_sql(
+                self.connection.env.error_handle,
+                status,
+                &self.mysql,
+                "BINDING".to_string(),
+            )?;
 
             if tpe == OCIDataType::Char {
                 let mut cs_id = self.connection.env.cs_id;
@@ -463,7 +525,13 @@ impl Drop for Statement {
                 0,
                 ffi::OCI_DEFAULT,
             );
-            if let Some(err) = Self::check_error_sql(self.connection.env.error_handle, status, &self.mysql, "DROPPING STMT".to_string()).err() {
+            if let Some(err) = Self::check_error_sql(
+                self.connection.env.error_handle,
+                status,
+                &self.mysql,
+                "DROPPING STMT".to_string(),
+            ).err()
+            {
                 println!("{:?}", err);
             }
         }

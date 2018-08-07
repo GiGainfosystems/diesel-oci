@@ -33,6 +33,6 @@ impl FromSql<Binary, Oracle> for *const [u8] {
     fn from_sql(bytes: Option<&OracleValue>) -> Result<Self, Box<Error + Send + Sync>> {
         let bytes = not_none!(bytes);
 
-        Ok(&bytes.bytes as *const[u8])
+        Ok(&bytes.bytes as *const [u8])
     }
 }

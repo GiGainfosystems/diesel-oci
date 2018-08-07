@@ -4,9 +4,9 @@ use diesel::query_builder::QueryBuilder;
 use diesel::result::Error as DieselError;
 
 //mod insert_statement;
-mod limit_clause;
 mod alias;
 mod exists;
+mod limit_clause;
 
 pub use self::alias::Alias;
 pub use self::exists::exists;

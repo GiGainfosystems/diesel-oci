@@ -1,18 +1,15 @@
 use super::Oracle;
 
+use diesel::query_builder::{AstPass, QueryFragment};
 use diesel::result::QueryResult;
-use diesel::query_builder::{QueryFragment, AstPass};
 
-pub trait Alias : Sized {
+pub trait Alias: Sized {
     fn alias(self, alias: String) -> As<Self>;
 }
 
 impl<T> Alias for T {
-    fn alias(self, alias: String) -> As<Self>  {
-        As {
-            query: self,
-            alias
-        }
+    fn alias(self, alias: String) -> As<Self> {
+        As { query: self, alias }
     }
 }
 
@@ -28,21 +25,17 @@ impl<T: Expression> Expression for As<T> {
 }
 
 use diesel::expression::AppearsOnTable;
-impl<QS, T:Expression> AppearsOnTable<QS> for As<T> {}
+impl<QS, T: Expression> AppearsOnTable<QS> for As<T> {}
 
 use diesel::expression::SelectableExpression;
-impl<T, QS> SelectableExpression<QS> for As<T>
-    where
-        T: SelectableExpression<QS>,
-{
-}
+impl<T, QS> SelectableExpression<QS> for As<T> where T: SelectableExpression<QS> {}
 
 use diesel::expression::NonAggregate;
 impl<T> NonAggregate for As<T> {}
 
 impl<T> QueryFragment<Oracle> for As<T>
-    where
-        T: QueryFragment<Oracle>
+where
+    T: QueryFragment<Oracle>,
 {
     fn walk_ast(&self, mut out: AstPass<Oracle>) -> QueryResult<()> {
         self.query.walk_ast(out.reborrow())?;

@@ -1,7 +1,7 @@
 extern crate dotenv;
 
-use super::oracle::connection::OciConnection;
 use self::dotenv::dotenv;
+use super::oracle::connection::OciConnection;
 use diesel::result::Error;
 use diesel::Connection;
 use diesel::RunQueryDsl;
@@ -55,7 +55,6 @@ fn database_url_from_env(backend_specific_env_var: &str) -> String {
     }
 }
 
-
 const DB_URL: &str = "oci://\"diesel\"/diesel@//192.168.2.81:1521/orcl";
 
 const CREATE_TEST_TABLE: &str = "CREATE TABLE test (\
@@ -63,7 +62,6 @@ const CREATE_TEST_TABLE: &str = "CREATE TABLE test (\
                                  TST_CHR VARCHAR(50),\
                                  TST_NUM NUMBER(38)\
                                  )";
-
 
 const DROP_TEST_TABLE: &str = "DROP TABLE test";
 
@@ -327,7 +325,6 @@ enum Way {
 extern crate chrono;
 use self::chrono::NaiveDateTime;
 
-
 #[derive(Queryable, Clone, PartialEq)]
 pub struct GSTTypes {
     pub big: Option<i64>,
@@ -344,7 +341,7 @@ pub struct GSTTypes {
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Insertable)]
-#[table_name="gst_types"]
+#[table_name = "gst_types"]
 pub struct Newgst_types {
     pub big: Option<i64>,
     pub big2: Option<i64>,
@@ -359,22 +356,24 @@ pub struct Newgst_types {
 }
 
 impl Newgst_types {
-    pub fn new(    big: Option<i64>,
-    big2: Option<i64>,
-    small: Option<i16>,
-    normal: Option<i32>,
-    text: Option<String>,
-    byte: Option<Vec<u8>>,
-    d: Option<f64>,
-    r: Option<f32>,
-    v: Option<String>) -> Newgst_types {
+    pub fn new(
+        big: Option<i64>,
+        big2: Option<i64>,
+        small: Option<i16>,
+        normal: Option<i32>,
+        text: Option<String>,
+        byte: Option<Vec<u8>>,
+        d: Option<f64>,
+        r: Option<f32>,
+        v: Option<String>,
+    ) -> Newgst_types {
         Newgst_types {
             big,
-            big2 ,
-            small ,
-            normal ,
+            big2,
+            small,
+            normal,
             tz: None,
-            text ,
+            text,
             byte,
             d,
             r,
@@ -418,7 +417,7 @@ fn gst_compat() {
     let ret = conn.execute(CREATE_GST_TYPE_TABLE);
     assert_result!(ret);
 
-    use self::gst_types::columns::{big, big2, d, normal, r, small, v, byte};
+    use self::gst_types::columns::{big, big2, byte, d, normal, r, small, v};
     use self::gst_types::dsl::gst_types;
     use diesel::dsl::sql;
     use diesel::sql_types::{BigInt, Double, Float, Integer, SmallInt, Text};
@@ -488,12 +487,10 @@ fn gst_compat() {
             assert_eq!(val[1].5, "test");
         }
         Way::Diesel => {
-
-            let mut bin : Vec<u8> = Vec::new();
+            let mut bin: Vec<u8> = Vec::new();
             for i in 0..88 {
                 bin.push(i as u8 % 128u8);
             }
-
 
             let _new_row = Newgst_types::new(
                 Some(i64::MIN),
@@ -505,19 +502,18 @@ fn gst_compat() {
                 Some(1e-307f64),
                 Some(1e-37f32),
                 Some("Te".to_string()),
-
             );
 
-//            let new_row = ::diesel::insert_into(gst_types)
-//                .values(&new_row)
-//                .get_results::<GSTTypes>(&conn);
-//            assert_result!(new_row);
+            //            let new_row = ::diesel::insert_into(gst_types)
+            //                .values(&new_row)
+            //                .get_results::<GSTTypes>(&conn);
+            //            assert_result!(new_row);
 
-            let mut bin : Vec<u8> = Vec::new();
+            let mut bin: Vec<u8> = Vec::new();
             for i in 0..88 {
                 bin.push(i as u8 % 128u8);
             }
-            
+
             let new_row = (
                 big.eq(i64::MIN),
                 big2.eq(i64::MIN),
@@ -560,17 +556,12 @@ fn gst_compat() {
                     Option<f64>,
                     Option<f32>,
                     Option<String>,
-                    Option<Vec<u8>>
+                    Option<Vec<u8>>,
                 )>,
                 Error,
-            > = gst_types.select((
-                big,
-                small,
-                normal,
-                d,
-                r,
-                v,
-                byte)).load(&conn);
+            > = gst_types
+                .select((big, small, normal, d, r, v, byte))
+                .load(&conn);
             assert_result!(ret);
             let val = ret.unwrap();
             assert_eq!(val.len(), 3);
@@ -618,25 +609,17 @@ fn gst_compat() {
                     Option<f64>,
                     Option<f32>,
                     Option<String>,
-                    Option<Vec<u8>>
+                    Option<Vec<u8>>,
                 )>,
                 Error,
             > = gst_types
                 .filter(big.eq(i64::MAX))
-                .select((
-                    big,
-                    small,
-                    normal,
-                    d,
-                    r,
-                    v,
-                    byte))
+                .select((big, small, normal, d, r, v, byte))
                 .load(&conn);
             assert_result!(ret);
         }
     }
 }
-
 
 table! {
     /// all elements which have been created
@@ -672,8 +655,6 @@ table! {
 }
 
 joinable!(node_links -> elements(ref_id));
-
-
 
 table! {
     /// all the property descriptions which have been created
@@ -730,21 +711,16 @@ table! {
     }
 }
 
-allow_tables_to_appear_in_same_query!(
-    elements,
-    element_rights,
-    node_links
-);
+allow_tables_to_appear_in_same_query!(elements, element_rights, node_links);
 
 #[test]
 fn moma_elem() {
-
     let conn = OciConnection::establish(&DB_URL).unwrap();
 
-    use diesel::ExpressionMethods;
-    use diesel::QueryDsl;
-    use diesel::GroupByDsl;
     use diesel::BoolExpressionMethods;
+    use diesel::ExpressionMethods;
+    use diesel::GroupByDsl;
+    use diesel::QueryDsl;
 
     let groupby = (
         elements::id,
@@ -760,14 +736,7 @@ fn moma_elem() {
     let ret = conn.begin_test_transaction();
     assert_result!(ret);
 
-    let k : Result<Vec<(
-        i64,
-        String,
-        Option<String>,
-        i32,
-        i16,
-        i64
-    )>, _> = elements::table
+    let k: Result<Vec<(i64, String, Option<String>, i32, i16, i64)>, _> = elements::table
         .left_join(node_links::table)
         .group_by(groupby)
         .filter(elements::level_id.eq(1))
@@ -793,10 +762,7 @@ fn moma_elem() {
     //let tm = conn.transaction_manager();
     //let ret = tm.rollback_transaction(&conn);
     //assert_result!(ret);
-
-
 }
-
 
 #[test]
 fn limit() {
@@ -820,19 +786,16 @@ fn limit() {
     let ret = conn.execute(CREATE_GST_TYPE_TABLE);
     assert_result!(ret);
 
-    use self::gst_types::columns::{big, big2, d, normal, r, small, v, byte};
+    use self::gst_types::columns::{big, big2, byte, d, normal, r, small, v};
     use self::gst_types::dsl::gst_types;
     use diesel::ExpressionMethods;
     use diesel::QueryDsl;
     use std::{i16, i32, i64};
 
-
-
-    let mut bin : Vec<u8> = Vec::new();
+    let mut bin: Vec<u8> = Vec::new();
     for i in 0..310 {
         bin.push(i as u8 % 128u8);
     }
-
 
     let _new_row = Newgst_types::new(
         Some(i64::MIN),
@@ -844,15 +807,14 @@ fn limit() {
         Some(1e-307f64),
         Some(1e-37f32),
         Some("Te".to_string()),
-
     );
 
-//            let new_row = ::diesel::insert_into(gst_types)
-//                .values(&new_row)
-//                .get_results::<GSTTypes>(&conn);
-//            assert_result!(new_row);
+    //            let new_row = ::diesel::insert_into(gst_types)
+    //                .values(&new_row)
+    //                .get_results::<GSTTypes>(&conn);
+    //            assert_result!(new_row);
 
-    let mut bin : Vec<u8> = Vec::new();
+    let mut bin: Vec<u8> = Vec::new();
     for i in 0..88 {
         bin.push(i as u8 % 128u8);
     }
@@ -899,25 +861,19 @@ fn limit() {
             Option<f64>,
             Option<f32>,
             Option<String>,
-            Option<Vec<u8>>
+            Option<Vec<u8>>,
         ),
         Error,
-    > = gst_types.select((
-        big,
-        small,
-        normal,
-        d,
-        r,
-        v,
-        byte)).first(&conn);
+    > = gst_types
+        .select((big, small, normal, d, r, v, byte))
+        .first(&conn);
     assert_result!(ret);
-
 }
 
-use num::FromPrimitive;
 use diesel::deserialize::{self, FromSql};
 use diesel::serialize::{self, ToSql};
 use diesel::sql_types::SmallInt;
+use num::FromPrimitive;
 use std::io::Write;
 
 use oracle::backend::Oracle;
@@ -928,8 +884,8 @@ use std::error::Error as StdError;
 pub struct InvalidEnumValueError<T>(pub T);
 
 impl<T> ::std::error::Error for InvalidEnumValueError<T>
-    where
-        T: ::std::fmt::Display + ::std::fmt::Debug,
+where
+    T: ::std::fmt::Display + ::std::fmt::Debug,
 {
     fn description(&self) -> &str {
         "Invalid enum value"
@@ -937,8 +893,8 @@ impl<T> ::std::error::Error for InvalidEnumValueError<T>
 }
 
 impl<T> ::std::fmt::Display for InvalidEnumValueError<T>
-    where
-        T: ::std::fmt::Display,
+where
+    T: ::std::fmt::Display,
 {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         write!(f, "Invalid enum value {}", self.0)
@@ -946,8 +902,8 @@ impl<T> ::std::fmt::Display for InvalidEnumValueError<T>
 }
 
 pub fn make_err<E>(e: E) -> Box<StdError + Send + Sync>
-    where
-        E: StdError + Send + Sync + 'static,
+where
+    E: StdError + Send + Sync + 'static,
 {
     Box::new(e)
 }
@@ -1033,47 +989,50 @@ pub struct CoordinateSystemDescription {
 
 #[test]
 fn coordinatesys() {
-
     let conn = OciConnection::establish(&DB_URL).unwrap();
 
+    use self::coordinate_system_descriptions::columns::{
+        c1_label, c1_reversed, c1_unit, c2_label, c2_reversed, c2_unit, c3_label, c3_reversed,
+        c3_unit, id, name, srs_type,
+    };
     use self::coordinate_system_descriptions::dsl::coordinate_system_descriptions;
-    use self::coordinate_system_descriptions::columns::{id, name, c1_label, c1_reversed, c1_unit, c2_label, c2_reversed, c2_unit, c3_label, c3_reversed, c3_unit, srs_type};
     use diesel::QueryDsl;
 
-    let coord : Result<Vec<(
-    i32,
-    String,
-    String,
-    bool,
-    Option<String>,
-    String,
-    bool,
-    Option<String>,
-    String,
-    bool,
-    Option<String>,
-    CoordinateSystemType,
-    )>, _> =
-        coordinate_system_descriptions
-            .select((
-                id,
-                name,
-                c1_label,
-                c1_reversed,
-                c1_unit,
-                c2_label,
-                c2_reversed,
-                c2_unit,
-                c3_label,
-                c3_reversed,
-                c3_unit,
-                srs_type
-            ))
-            .load(&conn);
+    let coord: Result<
+        Vec<(
+            i32,
+            String,
+            String,
+            bool,
+            Option<String>,
+            String,
+            bool,
+            Option<String>,
+            String,
+            bool,
+            Option<String>,
+            CoordinateSystemType,
+        )>,
+        _,
+    > = coordinate_system_descriptions
+        .select((
+            id,
+            name,
+            c1_label,
+            c1_reversed,
+            c1_unit,
+            c2_label,
+            c2_reversed,
+            c2_unit,
+            c3_label,
+            c3_reversed,
+            c3_unit,
+            srs_type,
+        ))
+        .load(&conn);
 
     assert_result!(coord);
 }
-
 
 table! {
     t1 {
@@ -1094,14 +1053,10 @@ table! {
 }
 
 joinable!(t1 -> t2(id));
-allow_tables_to_appear_in_same_query!(
-    t1,
-    t2
-);
+allow_tables_to_appear_in_same_query!(t1, t2);
 
 #[test]
 fn ambigious_col_names() {
-
     const CREATE_T1: &'static str = "CREATE TABLE t1 (\
             id NUMBER(10),
             name VARCHAR2(50),
@@ -1127,12 +1082,12 @@ fn ambigious_col_names() {
 
     use self::t1;
     use self::t2;
-    use diesel::QueryDsl;
-    use diesel::JoinOnDsl;
     use diesel::ExpressionMethods;
+    use diesel::JoinOnDsl;
+    use diesel::QueryDsl;
     use oracle::query_builder::Alias;
 
-    let mut bin : Vec<u8> = Vec::new();
+    let mut bin: Vec<u8> = Vec::new();
     for i in 0..88 {
         bin.push(i as u8 % 128u8);
     }
@@ -1149,26 +1104,14 @@ fn ambigious_col_names() {
         .values(&new_row)
         .execute(&conn);
     assert_result!(ret);
-    let new_row = (
-        t2::id.eq(1),
-        t2::name.eq("test2"),
-    );
+    let new_row = (t2::id.eq(1), t2::name.eq("test2"));
     let ret = ::diesel::insert_into(t2::table)
         .values(&new_row)
         .execute(&conn);
     assert_result!(ret);
 
     let col = t1::name.alias("da".to_string());
-    let ambigious : Result<(
-        i32,
-        i32,
-        Option<String>,
-        String,
-        bool,
-        String,
-        Vec<u8>,
-        i16
-    ), _> =
+    let ambigious: Result<(i32, i32, Option<String>, String, bool, String, Vec<u8>, i16), _> =
         t1::table
             .filter(t2::id.eq(1))
             .inner_join(t2::table.on(t1::id.eq(t2::id)))
@@ -1197,7 +1140,6 @@ table! {
 
 #[test]
 fn timestamp() {
-
     const CREATE_TS: &'static str = "CREATE TABLE TS (\
             id NUMBER(10),
             tis TIMESTAMP
@@ -1207,30 +1149,22 @@ fn timestamp() {
 
     drop_table(&conn, "TS");
 
-
     let ret = conn.execute(CREATE_TS);
     assert_result!(ret);
 
-
+    use self::chrono::{NaiveDateTime, Utc};
     use self::ts;
     use diesel::ExpressionMethods;
-    use self::chrono::{NaiveDateTime, Utc};
 
     let n = Utc::now().naive_utc();
 
-    let new_row = (
-        ts::id.eq(1),
-        ts::tis.eq(n),
-    );
-    let query = ::diesel::insert_into(ts::table)
-        .values(&new_row);
+    let new_row = (ts::id.eq(1), ts::tis.eq(n));
+    let query = ::diesel::insert_into(ts::table).values(&new_row);
     let ret = query.execute(&conn);
     assert_result!(ret);
 
-    let ret : Result<Vec<(i32, NaiveDateTime)>, _>= ts::table.load(&conn);
+    let ret: Result<Vec<(i32, NaiveDateTime)>, _> = ts::table.load(&conn);
     assert_result!(ret);
-
-
 }
 
 table! {
@@ -1243,7 +1177,6 @@ table! {
 
 #[test]
 fn clob() {
-
     const CREATE_CLOBBER: &'static str = "CREATE TABLE CLOBBER (\
             id NUMBER(10),
             tiss VARCHAR2(50),
@@ -1254,10 +1187,8 @@ fn clob() {
 
     drop_table(&conn, "CLOBBER");
 
-
     let ret = conn.execute(CREATE_CLOBBER);
     assert_result!(ret);
-
 
     use self::clobber;
     use diesel::ExpressionMethods;
@@ -1267,15 +1198,12 @@ fn clob() {
         clobber::tiss.eq("This is a varcharThis is a varchar"),
         clobber::tis.eq("This is a test"),
     );
-    let query = ::diesel::insert_into(clobber::table)
-        .values(&new_row);
+    let query = ::diesel::insert_into(clobber::table).values(&new_row);
     let ret = query.execute(&conn);
     assert_result!(ret);
 
-    let ret : Result<Vec<(i32, String, String)>, _>= clobber::table.load(&conn);
+    let ret: Result<Vec<(i32, String, String)>, _> = clobber::table.load(&conn);
     assert_result!(ret);
-
-
 }
 
 table! {
@@ -1322,8 +1250,7 @@ impl FromSql<SmallInt, Oracle> for PropertyDataType {
     }
 }
 
-#[derive(PartialEq, Hash, Eq, Debug, Clone, Queryable, Associations,
-Identifiable)]
+#[derive(PartialEq, Hash, Eq, Debug, Clone, Queryable, Associations, Identifiable)]
 #[table_name = "properties"]
 pub struct Property {
     pub id: i64,
@@ -1339,40 +1266,39 @@ pub struct Property {
 fn props() {
     let conn = OciConnection::establish(&DB_URL).unwrap();
     use self::properties::dsl::*;
+    use diesel::debug_query;
     use diesel::ExpressionMethods;
     use diesel::QueryDsl;
-    use diesel::debug_query;
 
     let ids = 4;
     let query = properties.filter(feature_class.eq(ids));
     let dbg = debug_query::<Oracle, _>(&query);
     println!("{:?}", dbg.to_string());
-    let ret : Result<Vec<Property>, _> = query.load(&conn);
+    let ret: Result<Vec<Property>, _> = query.load(&conn);
     assert_result!(ret);
 
     let query = properties.filter(feature_class.eq(ids));
     let dbg = debug_query::<Oracle, _>(&query);
     println!("{:?}", dbg.to_string());
-    let ret : Result<Vec<Property>, _> = query.load(&conn);
+    let ret: Result<Vec<Property>, _> = query.load(&conn);
     assert_result!(ret);
 
     let query = properties.filter(feature_class.eq(ids));
     let dbg = debug_query::<Oracle, _>(&query);
     println!("{:?}", dbg.to_string());
-    let ret : Result<Vec<Property>, _> = query.load(&conn);
+    let ret: Result<Vec<Property>, _> = query.load(&conn);
     assert_result!(ret);
 
     let query = properties.filter(feature_class.eq(ids));
     let dbg = debug_query::<Oracle, _>(&query);
     println!("{:?}", dbg.to_string());
-    let ret : Result<Vec<Property>, _> = query.load(&conn);
+    let ret: Result<Vec<Property>, _> = query.load(&conn);
     assert_result!(ret);
 }
 
 #[test]
 fn props_orig() {
-
-    const CREATE_TESTT : &'static str = "CREATE TABLE PROPS (\
+    const CREATE_TESTT: &'static str = "CREATE TABLE PROPS (\
             id NUMBER(10),
             is_based NUMBER(5)
      )";
@@ -1381,42 +1307,29 @@ fn props_orig() {
 
     drop_table(&conn, "PROPS");
 
-
     let ret = conn.execute(CREATE_TESTT);
     assert_result!(ret);
-
 
     use self::props;
     use diesel::ExpressionMethods;
     use diesel::QueryDsl;
 
-    let new_row = (
-        props::id.eq(1),
-        props::is_based.eq(true),
-    );
-    let query = ::diesel::insert_into(props::table)
-        .values(&new_row);
+    let new_row = (props::id.eq(1), props::is_based.eq(true));
+    let query = ::diesel::insert_into(props::table).values(&new_row);
     let ret = query.execute(&conn);
     assert_result!(ret);
 
-    let new_row = (
-        props::id.eq(2),
-        props::is_based.eq(false),
-    );
-    let query = ::diesel::insert_into(props::table)
-        .values(&new_row);
+    let new_row = (props::id.eq(2), props::is_based.eq(false));
+    let query = ::diesel::insert_into(props::table).values(&new_row);
     let ret = query.execute(&conn);
     assert_result!(ret);
 
-    let new_row = (
-        props::id.eq(3),
-    );
-    let query = ::diesel::insert_into(props::table)
-        .values(&new_row);
+    let new_row = (props::id.eq(3),);
+    let query = ::diesel::insert_into(props::table).values(&new_row);
     let ret = query.execute(&conn);
     assert_result!(ret);
 
-    let ret : Result<Vec<(i32, Option<bool>)>, _>= props::table.load(&conn);
+    let ret: Result<Vec<(i32, Option<bool>)>, _> = props::table.load(&conn);
     assert_result!(ret);
     let ret = ret.unwrap();
     assert_eq!(ret.len(), 3);
@@ -1424,14 +1337,12 @@ fn props_orig() {
     assert_eq!(ret[1].1, Some(false));
     assert_eq!(ret[2].1, None);
 
-    let ret : Result<Vec<(i32, Option<bool>)>, _>= props::table.filter(props::id.eq(2)).load(&conn);
+    let ret: Result<Vec<(i32, Option<bool>)>, _> = props::table.filter(props::id.eq(2)).load(&conn);
     assert_result!(ret);
     let ret = ret.unwrap();
     assert_eq!(ret.len(), 1);
     assert_eq!(ret[0].1, Some(false));
-
 }
-
 
 table! {
     /// all tables
@@ -1569,18 +1480,16 @@ table! {
     }
 }
 
-
 #[test]
 fn systable() {
     let conn = OciConnection::establish(&DB_URL).unwrap();
 
     use self::all_tables;
 
-    let ret : Result<Vec<(String, String)>, _>= all_tables::table.load(&conn);
+    let ret: Result<Vec<(String, String)>, _> = all_tables::table.load(&conn);
     assert_result!(ret);
     let ret = ret.unwrap();
     assert_eq!(ret.len(), 141);
-
 }
 
 #[test]
@@ -1590,10 +1499,10 @@ fn exists() {
     use self::all_tables;
 
     //use diesel::dsl::exists;
-    use oracle::query_builder::exists;
     use diesel::query_dsl::filter_dsl::FilterDsl;
-    use diesel::ExpressionMethods;
     use diesel::query_dsl::select_dsl::SelectDsl;
+    use diesel::ExpressionMethods;
+    use oracle::query_builder::exists;
 
     let q = all_tables::table
         .filter(all_tables::owner.eq("diesel"))
@@ -1610,5 +1519,4 @@ fn exists() {
     assert_result!(ret);
     let ret = ret.unwrap(); // has been asserted before ;)
     assert_eq!(ret, false);
-
 }

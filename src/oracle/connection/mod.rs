@@ -7,8 +7,8 @@ use diesel::query_builder::QueryId;
 use diesel::query_builder::{AsQuery, QueryFragment};
 use diesel::result::*;
 use diesel::sql_types::HasSqlType;
-use std::rc::Rc;
 use std::cell::Cell;
+use std::rc::Rc;
 
 use self::cursor::Cursor;
 use self::stmt::Statement;
@@ -62,7 +62,6 @@ impl MigrationConnection for OciConnection {
 // Similar to diesel::sqlite::SqliteConnection;
 unsafe impl Send for OciConnection {}
 
-
 impl SimpleConnection for OciConnection {
     fn batch_execute(&self, query: &str) -> QueryResult<()> {
         let mut stmt = try!(Statement::prepare(&self.raw, query));
@@ -84,7 +83,7 @@ impl Connection for OciConnection {
             raw: Rc::new(r),
             transaction_manager: OCITransactionManager::new(),
             statement_cache: StatementCache::new(),
-            has_open_test_transaction: Cell::new(false)
+            has_open_test_transaction: Cell::new(false),
         };
         Ok(ret)
     }
@@ -176,7 +175,8 @@ impl Drop for OciConnection {
     fn drop(&mut self) {
         if self.has_open_test_transaction.get() {
             let tm = self.transaction_manager();
-            tm.rollback_transaction(&self).expect("This return Ok() for all paths anyway");
+            tm.rollback_transaction(&self)
+                .expect("This return Ok() for all paths anyway");
         }
     }
 }

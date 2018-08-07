@@ -1,10 +1,9 @@
 use super::Oracle;
 
+use diesel::deserialize::Queryable;
 use diesel::query_builder::{AsQuery, QueryFragment, QueryId};
 use diesel::result::QueryResult;
-use diesel::deserialize::Queryable;
 use diesel::sql_types::HasSqlType;
-
 
 // this cannot be done but would be the most preferred solution
 //impl<T> QueryFragment<Oracle> for Exists<T>
@@ -19,13 +18,12 @@ use diesel::sql_types::HasSqlType;
 //    }
 //}
 
-
 pub fn exists<T, U>(query: T, conn: &::oracle::connection::OciConnection) -> QueryResult<bool>
-    where
-        T: AsQuery,
-        T::Query: QueryFragment<Oracle> + QueryId,
-        Oracle: HasSqlType<T::SqlType>,
-        U: Queryable<T::SqlType, Oracle>,
+where
+    T: AsQuery,
+    T::Query: QueryFragment<Oracle> + QueryId,
+    Oracle: HasSqlType<T::SqlType>,
+    U: Queryable<T::SqlType, Oracle>,
 {
     use diesel::Connection;
     // this doesn't work for oracle (is always 0)
@@ -37,13 +35,12 @@ pub fn exists<T, U>(query: T, conn: &::oracle::connection::OciConnection) -> Que
     //}
     // TODO: I am not happy with that, but currently diesel has not other options
     // the code above would be better, need to check why it doesn't work
-    let v : Vec<U> = conn.query_by_index(query)?;
+    let v: Vec<U> = conn.query_by_index(query)?;
     if v.len() > 0 {
         Ok(true)
     } else {
         Ok(false)
     }
-
 }
 // we could define our own expression but then would probably need to implement everything
 // here instead of using diesel (this yields some compiler errors about unfulfilled traits

@@ -69,7 +69,7 @@ impl FromSql<Numeric, Oracle> for BigDecimal {
     fn from_sql(bytes: Option<&OracleValue>) -> Result<Self, Box<Error + Send + Sync>> {
         let bytes = not_none!(bytes);
         let bytes = &bytes.bytes;
-        BigDecimal::parse_bytes(bytes,10)
+        BigDecimal::parse_bytes(bytes, 10)
             .ok_or(Box::new(BigDecimalError) as Box<Error + Send + Sync>)
     }
 }

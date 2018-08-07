@@ -85,7 +85,10 @@ impl Statement {
             connection: raw_connection.clone(),
             inner_statement: stmt,
             bind_index: 0,
-            // TODO: this can go wrong: `UPDATE table SET k='select';` OR
+            // TODO: this can go wrong, since where is also `WITH` and other SQL structures. before
+            // there was `sql.contains("SELECT")||sql.contains("select") which might fails on the
+            // following queries (meaning they will be identified as select clause even if they are
+            // not: `UPDATE table SET k='select';` OR
             // ```
             //            CREATE OR REPLACE FORCE VIEW full_bounding_boxes(id, o_c1, o_c2, o_c3, u_c1, u_c2, u_c3, v_c1, v_c2, v_c3, w_c1, w_c2, w_c3)
             //            AS

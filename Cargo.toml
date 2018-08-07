@@ -26,7 +26,6 @@ version = "0.4"
 [dependencies.diesel]
 default-features = false
 version = "1.3"
-##path = "../diesel/diesel"
 
 [dependencies.oci-sys]
 path = "oci-sys"

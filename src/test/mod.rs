@@ -7,6 +7,13 @@ use diesel::Connection;
 use diesel::RunQueryDsl;
 use std::env;
 
+fn init_testing() -> OciConnection {
+    use super::logger::init;
+    init();
+    //let database_url = database_url_from_env("OCI_DATABASE_URL");
+    OciConnection::establish(&DB_URL).expect("No connection, no test!")
+}
+
 #[cfg(ka)]
 use diesel::migration::MigrationConnection;
 
@@ -173,8 +180,7 @@ fn connect() {
 
 #[test]
 fn transaction_commit() {
-    //let database_url = database_url_from_env("OCI_DATABASE_URL");
-    let conn = OciConnection::establish(&DB_URL).unwrap();
+    let conn = init_testing();
 
     clean_test(&conn);
 
@@ -195,8 +201,7 @@ fn transaction_commit() {
 
 #[test]
 fn transaction_rollback() {
-    //let database_url = database_url_from_env("OCI_DATABASE_URL");
-    let conn = OciConnection::establish(&DB_URL).unwrap();
+    let conn = init_testing();
 
     clean_test(&conn);
 
@@ -217,8 +222,7 @@ fn transaction_rollback() {
 
 #[test]
 fn create_table() {
-    //let database_url = database_url_from_env("OCI_DATABASE_URL");
-    let conn = OciConnection::establish(&DB_URL).unwrap();
+    let conn = init_testing();
 
     clean_test(&conn);
 
@@ -228,7 +232,7 @@ fn create_table() {
 
 #[test]
 fn test_diesel_migration() {
-    let conn = OciConnection::establish(&DB_URL).unwrap();
+    let conn = init_testing();
 
     clean_test(&conn);
 
@@ -273,7 +277,7 @@ fn test_diesel_migration() {
 #[cfg(this_test_doesnt_work)]
 #[test]
 fn test_multi_insert() {
-    let conn = OciConnection::establish(&DB_URL).unwrap();
+    let conn = init_testing();
 
     clean_test(&conn);
 
@@ -410,7 +414,7 @@ fn gst_compat() {
             v VARCHAR2(50)
      )";
 
-    let conn = OciConnection::establish(&DB_URL).unwrap();
+    let conn = init_testing();
 
     drop_table(&conn, "GST_TYPES");
 
@@ -715,7 +719,7 @@ allow_tables_to_appear_in_same_query!(elements, element_rights, node_links);
 
 #[test]
 fn moma_elem() {
-    let conn = OciConnection::establish(&DB_URL).unwrap();
+    let conn = init_testing();
 
     use diesel::BoolExpressionMethods;
     use diesel::ExpressionMethods;
@@ -779,7 +783,7 @@ fn limit() {
             v VARCHAR2(50)
      )";
 
-    let conn = OciConnection::establish(&DB_URL).unwrap();
+    let conn = init_testing();
 
     drop_table(&conn, "GST_TYPES");
 
@@ -989,7 +993,7 @@ pub struct CoordinateSystemDescription {
 
 #[test]
 fn coordinatesys() {
-    let conn = OciConnection::establish(&DB_URL).unwrap();
+    let conn = init_testing();
 
     use self::coordinate_system_descriptions::columns::{
         c1_label, c1_reversed, c1_unit, c2_label, c2_reversed, c2_unit, c3_label, c3_reversed,
@@ -1070,7 +1074,7 @@ fn ambigious_col_names() {
             name VARCHAR2(50)
      )";
 
-    let conn = OciConnection::establish(&DB_URL).unwrap();
+    let conn = init_testing();
 
     drop_table(&conn, "T1");
     drop_table(&conn, "T2");
@@ -1145,7 +1149,7 @@ fn timestamp() {
             tis TIMESTAMP
      )";
 
-    let conn = OciConnection::establish(&DB_URL).unwrap();
+    let conn = init_testing();
 
     drop_table(&conn, "TS");
 
@@ -1183,7 +1187,7 @@ fn clob() {
             tis CLOB
      )";
 
-    let conn = OciConnection::establish(&DB_URL).unwrap();
+    let conn = init_testing();
 
     drop_table(&conn, "CLOBBER");
 
@@ -1264,7 +1268,7 @@ pub struct Property {
 
 #[test]
 fn props() {
-    let conn = OciConnection::establish(&DB_URL).unwrap();
+    let conn = init_testing();
     use self::properties::dsl::*;
     use diesel::debug_query;
     use diesel::ExpressionMethods;
@@ -1303,7 +1307,7 @@ fn props_orig() {
             is_based NUMBER(5)
      )";
 
-    let conn = OciConnection::establish(&DB_URL).unwrap();
+    let conn = init_testing();
 
     drop_table(&conn, "PROPS");
 
@@ -1482,7 +1486,7 @@ table! {
 
 #[test]
 fn systable() {
-    let conn = OciConnection::establish(&DB_URL).unwrap();
+    let conn = init_testing();
 
     use self::all_tables;
 
@@ -1494,7 +1498,7 @@ fn systable() {
 
 #[test]
 fn exists() {
-    let conn = OciConnection::establish(&DB_URL).unwrap();
+    let conn = init_testing();
 
     use self::all_tables;
 

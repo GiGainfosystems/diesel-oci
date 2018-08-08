@@ -14,3 +14,6 @@ extern crate num_derive;
 
 #[cfg(test)]
 mod test;
+
+#[cfg(test)]
+mod logger;

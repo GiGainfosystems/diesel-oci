@@ -165,7 +165,7 @@ impl Statement {
     ) -> Result<(), Error> {
         let check = Self::check_error(error_handle, status);
         if check.is_err() {
-            println!("{:?} while {:?}", sql, action);
+            debug!("{:?} while {:?}", sql, action);
         }
         check
     }
@@ -535,7 +535,7 @@ impl Drop for Statement {
                 "DROPPING STMT".to_string(),
             ).err()
             {
-                println!("{:?}", err);
+                debug!("{:?}", err);
             }
         }
     }

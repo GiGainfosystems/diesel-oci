@@ -1,4 +1,7 @@
 use log::{Log, LogLevelFilter, LogMetadata as Metadata, LogRecord as Record};
+use std::sync::Once;
+
+static START: Once = Once::new();
 
 struct SimpleLogger;
 
@@ -15,8 +18,10 @@ impl Log for SimpleLogger {
 }
 
 pub(crate) fn init() {
-    ::log::set_logger(|max_log_level| {
-        max_log_level.set(LogLevelFilter::Debug);
-        Box::new(SimpleLogger)
-    }).expect("This logger needs to present");
+    START.call_once(|| {
+        ::log::set_logger(|max_log_level| {
+            max_log_level.set(LogLevelFilter::Debug);
+            Box::new(SimpleLogger)
+        }).expect("This logger needs to be present");
+    });
 }

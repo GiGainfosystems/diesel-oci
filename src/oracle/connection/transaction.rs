@@ -90,7 +90,11 @@ impl TransactionManager<OciConnection> for OCITransactionManager {
 
     fn commit_transaction(&self, conn: &OciConnection) -> QueryResult<()> {
         let transaction_depth = self.transaction_depth.get();
-        let query = if transaction_depth <= 1 {
+        // since oracle doesn't support nested transactions we only commit the outmost transaction
+        // and not every inner transaction; if the outmost transaction fails everything will be
+        // rolled back, every inner transaction can fail, but no be committed since it doesn't make
+        // sense to commit the inner ones
+        if transaction_depth <= 1 {
             let _status = unsafe {
                 ffi::OCITransCommit(
                     conn.raw.service_handle,
@@ -98,11 +102,8 @@ impl TransactionManager<OciConnection> for OCITransactionManager {
                     ffi::OCI_DEFAULT,
                 )
             };
-            Ok(())
-        } else {
-            conn.batch_execute("COMMIT")
         };
-        self.change_transaction_depth(-1, query)
+        self.change_transaction_depth(-1, Ok(()))
     }
 
     fn get_transaction_depth(&self) -> u32 {

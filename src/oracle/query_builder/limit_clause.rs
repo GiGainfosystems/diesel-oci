@@ -13,8 +13,9 @@ where
     Expr: QueryFragment<Oracle>,
 {
     fn walk_ast(&self, mut out: AstPass<Oracle>) -> QueryResult<()> {
-        out.push_sql("OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY");
+        out.push_sql("OFFSET 0 ROWS FETCH NEXT ");
         self.0.walk_ast(out.reborrow())?;
+        out.push_sql(" ROWS ONLY");
         Ok(())
     }
 }

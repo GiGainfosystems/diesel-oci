@@ -109,7 +109,7 @@ impl Connection for OciConnection {
     where
         T: QueryFragment<Self::Backend> + QueryId,
     {
-        // TODO: FIXME: This doesn't work, enjoy debugging it!
+        // TODO: FIXME: this always returns 0 whereas the code looks proper
         let mut stmt = try!(self.prepare_query(source));
         try!(stmt.run());
         Ok(try!(stmt.get_affected_rows()))

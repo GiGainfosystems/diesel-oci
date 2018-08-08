@@ -353,8 +353,11 @@ impl Statement {
                     tpe_size = 88;
                 }
                 ffi::SQLT_CLOB => {
-                    // just read two GB
-                    tpe_size = 2_000_000_000;
+                    // TODO: FIXME: do proper LOB Handling here
+                    // if we set below 2_000_000_000 oracle will deny the binding with
+                    // ORA-01062: unable to allocate memory for define buffer
+                    // just read two MB
+                    tpe_size = 2_000_000;
                     tpe = ffi::SQLT_STR;
                 }
                 _ => {

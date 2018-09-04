@@ -190,8 +190,8 @@ impl Statement {
                 "EXECUTING STMT".to_string(),
             )?;
         }
-        // TODO: since we have a statement cache, which I couldn't find to turn off,
-        // we need to reset the bind_index once we executed the statement
+        // the bind index is required to start by zero. if a statement is
+        // executed more than once we need to reset the index here
         self.bind_index = 0;
         Ok(())
     }

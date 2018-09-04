@@ -17,7 +17,7 @@ pub struct Statement {
     buffers: Vec<Box<[u8]>>,
     sizes: Vec<i32>,
     indicators: Vec<Box<ffi::OCIInd>>,
-    pub mysql: String,
+    pub(crate) mysql: String,
 }
 
 const NUM_ELEMENTS: usize = 20;
@@ -50,7 +50,7 @@ impl Statement {
                 raw_connection.env.error_handle,
                 status,
                 &mysql,
-                "PREPARING STMT".to_string(),
+                "PREPARING STMT",
             )?;
 
             // for create statements we need to run OCIStmtPrepare2 twice
@@ -74,7 +74,7 @@ impl Statement {
                         raw_connection.env.error_handle,
                         status,
                         &mysql,
-                        "PREPARING STMT 2".to_string(),
+                        "PREPARING STMT 2",
                     )?;
                 }
             }
@@ -161,7 +161,7 @@ impl Statement {
         error_handle: *mut ffi::OCIError,
         status: i32,
         sql: &String,
-        action: String,
+        action: &str,
     ) -> Result<(), Error> {
         let check = Self::check_error(error_handle, status);
         if check.is_err() {
@@ -187,7 +187,7 @@ impl Statement {
                 self.connection.env.error_handle,
                 status,
                 &self.mysql,
-                "EXECUTING STMT".to_string(),
+                "EXECUTING STMT",
             )?;
         }
         // the bind index is required to start by zero. if a statement is
@@ -211,7 +211,7 @@ impl Statement {
                 self.connection.env.error_handle,
                 status,
                 &self.mysql,
-                "GET AFFECTED ROWS".to_string(),
+                "GET AFFECTED ROWS",
             )?;
         }
         Ok(affected_rows as usize)
@@ -233,7 +233,7 @@ impl Statement {
                 self.connection.env.error_handle,
                 status,
                 &self.mysql,
-                "GET NUM COLS".to_string(),
+                "GET NUM COLS",
             )?;
         }
         Ok(col_count)
@@ -255,7 +255,7 @@ impl Statement {
                 self.connection.env.error_handle,
                 status,
                 &self.mysql,
-                "RETRIEVING TYPE".to_string(),
+                "RETRIEVING TYPE",
             )?;
 
             // c.f. https://docs.oracle.com/en/database/oracle/oracle-database/12.2/lnoci/data-types.html#GUID-7DA48B90-07C7-41A7-BC57-D8F358A4EEBE
@@ -279,7 +279,7 @@ impl Statement {
                         self.connection.env.error_handle,
                         status,
                         &self.mysql,
-                        "RETRIEVING PRECISION".to_string(),
+                        "RETRIEVING PRECISION",
                     )?;
                     let mut attributesize = 8u32; // sb1
                     let status = ffi::OCIAttrGet(
@@ -294,7 +294,7 @@ impl Statement {
                         self.connection.env.error_handle,
                         status,
                         &self.mysql,
-                        "RETRIEVING SCALE".to_string(),
+                        "RETRIEVING SCALE",
                     )?;
                     if scale == 0 {
                         tpe_size = match precision {
@@ -331,7 +331,7 @@ impl Statement {
                         self.connection.env.error_handle,
                         status,
                         &self.mysql,
-                        "RETRIEVING LENGTH".to_string(),
+                        "RETRIEVING LENGTH",
                     )?;
                     //tpe_size += 1;
                     tpe = ffi::SQLT_STR;
@@ -400,7 +400,7 @@ impl Statement {
                 self.connection.env.error_handle,
                 status,
                 &self.mysql,
-                "DEFINING".to_string(),
+                "DEFINING",
             )?;
             def
         };
@@ -430,7 +430,7 @@ impl Statement {
                 self.connection.env.error_handle,
                 status,
                 &self.mysql,
-                "RETRIEVING COL HANDLE".to_string(),
+                "RETRIEVING COL HANDLE",
             )?;
             parameter_descriptor
         };
@@ -502,7 +502,7 @@ impl Statement {
                 self.connection.env.error_handle,
                 status,
                 &self.mysql,
-                "BINDING".to_string(),
+                "BINDING",
             )?;
 
             if tpe == OCIDataType::Char {
@@ -535,7 +535,7 @@ impl Drop for Statement {
                 self.connection.env.error_handle,
                 status,
                 &self.mysql,
-                "DROPPING STMT".to_string(),
+                "DROPPING STMT",
             ).err()
             {
                 debug!("{:?}", err);

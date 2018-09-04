@@ -1,11 +1,20 @@
+extern crate chrono;
 extern crate dotenv;
-
+use self::chrono::NaiveDateTime;
 use self::dotenv::dotenv;
 use super::oracle::connection::OciConnection;
+use diesel::deserialize::{self, FromSql};
 use diesel::result::Error;
+use diesel::serialize::{self, ToSql};
+use diesel::sql_types::SmallInt;
 use diesel::Connection;
 use diesel::RunQueryDsl;
+use num::FromPrimitive;
+use oracle::backend::Oracle;
+use oracle::connection::OracleValue;
 use std::env;
+use std::error::Error as StdError;
+use std::io::Write;
 
 fn init_testing() -> OciConnection {
     use super::logger::init;
@@ -427,9 +436,6 @@ enum Way {
     Diesel,
     Native,
 }
-
-extern crate chrono;
-use self::chrono::NaiveDateTime;
 
 #[derive(Queryable, Clone, PartialEq)]
 pub struct GSTTypes {
@@ -976,16 +982,6 @@ fn limit() {
     assert_result!(ret);
 }
 
-use diesel::deserialize::{self, FromSql};
-use diesel::serialize::{self, ToSql};
-use diesel::sql_types::SmallInt;
-use num::FromPrimitive;
-use std::io::Write;
-
-use oracle::backend::Oracle;
-use oracle::connection::OracleValue;
-use std::error::Error as StdError;
-
 #[derive(Debug)]
 pub struct InvalidEnumValueError<T>(pub T);
 
@@ -1453,136 +1449,10 @@ fn props_orig() {
 table! {
     /// all tables
     all_tables (owner, table_name) {
-        /// all tables
+        /// owner
         owner -> Text,
-        /// all tables
+        /// table name
         table_name -> Text,
-//        /// all tables
-//        tablespace_name -> Nullable<Text>,
-//        /// all tables
-//        cluster_name -> Nullable<Text>,
-//        /// all tables
-//        iot_name -> Nullable<Text>,
-//        /// all tables
-//        status -> Nullable<Text>,
-//        /// all tables
-//        pct_free -> Nullable<BigInt>,
-//        /// all tables
-//        pct_used -> Nullable<BigInt>,
-//        /// all tables
-//        ini_trans -> Nullable<BigInt>,
-//        /// all tables
-//        max_trans -> Nullable<BigInt>,
-//        /// all tables
-//        initial_extent -> Nullable<BigInt>,
-//        /// all tables
-//        next_extent -> Nullable<BigInt>,
-//        /// all tables
-//        min_extents -> Nullable<BigInt>,
-//        /// all tables
-//        max_extents -> Nullable<BigInt>,
-//        /// all tables
-//        pct_increase -> Nullable<BigInt>,
-//        /// all tables
-//        freelists -> Nullable<BigInt>,
-//        /// all tables
-//        freelist_groups -> Nullable<BigInt>,
-//        /// all tables
-//        logging -> Nullable<Text>,
-//        /// all tables
-//        backed_up -> Nullable<Text>,
-//        /// all tables
-//        num_rows -> Nullable<BigInt>,
-//        /// all tables
-//        blocks -> Nullable<BigInt>,
-//        /// all tables
-//        empty_blocks -> Nullable<BigInt>,
-//        /// all tables
-//        avg_space -> Nullable<BigInt>,
-//        /// all tables
-//        chain_cnt -> Nullable<BigInt>,
-//        /// all tables
-//        avg_row_len -> Nullable<BigInt>,
-//        /// all tables
-//        avg_space_freelist_blocks -> Nullable<BigInt>,
-//        /// all tables
-//        num_freelist_blocks -> Nullable<BigInt>,
-//        /// all tables
-//        degree -> Nullable<Text>,
-//        /// all tables
-//        instances -> Nullable<Text>,
-//        /// all tables
-//        cache -> Nullable<Text>,
-//        /// all tables
-//        table_lock -> Nullable<Text>,
-//        /// all tables
-//        sample_size -> Nullable<BigInt>,
-//        /// all tables
-//        last_analyzed -> Timestamp,
-//        /// all tables
-//        partitioned -> Nullable<Text>,
-//        /// all tables
-//        iot_type -> Nullable<Text>,
-//        /// all tables
-//        temporary -> Nullable<Text>,
-//        /// all tables
-//        secondary -> Nullable<Text>,
-//        /// all tables
-//        nested -> Nullable<Text>,
-//        /// all tables
-//        buffer_pool -> Nullable<Text>,
-//        /// all tables
-//        flash_cache -> Nullable<Text>,
-//        /// all tables
-//        cell_flash_cache -> Nullable<Text>,
-//        /// all tables
-//        row_movement -> Nullable<Text>,
-//        /// all tables
-//        global_stats -> Nullable<Text>,
-//        /// all tables
-//        user_stats -> Nullable<Text>,
-//        /// all tables
-//        duration -> Nullable<Text>,
-//        /// all tables
-//        skip_corrupt -> Nullable<Text>,
-//        /// all tables
-//        monitoring -> Nullable<Text>,
-//        /// all tables
-//        cluster_owner -> Nullable<Text>,
-//        /// all tables
-//        dependencies -> Nullable<Text>,
-//        /// all tables
-//        compression -> Nullable<Text>,
-//        /// all tables
-//        compress_for -> Nullable<Text>,
-//        /// all tables
-//        dropped -> Nullable<Text>,
-//        /// all tables
-//        read_only -> Nullable<Text>,
-//        /// all tables
-//        segment_created -> Nullable<Text>,
-//        /// all tables
-//        result_cache -> Nullable<Text>,
-//        /// all tables
-//        clustering -> Nullable<Text>,
-//        /// all tables
-//        activity_tracking -> Nullable<Text>,
-//        /// all tables
-//        dml_timestamp -> Nullable<Text>,
-//        /// all tables
-//        has_identity -> Nullable<Text>,
-//        /// all tables
-//        container_data -> Nullable<Text>,
-//        /// all tables
-//        inmemory -> Nullable<Text>,
-//        /// all tables
-//        inmemory_priority -> Nullable<Text>,
-//        /// all tables
-//        inmemory_distribute -> Nullable<Text>,
-//        /// all tables
-//        inmemory_compression -> Nullable<Text>,
-//        /// all tables
-//        inmemory_duplicate -> Nullable<Text>,
     }
 }
 

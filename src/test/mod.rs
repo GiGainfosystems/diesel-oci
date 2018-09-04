@@ -10,38 +10,8 @@ use std::env;
 fn init_testing() -> OciConnection {
     use super::logger::init;
     init();
-    //let database_url = database_url_from_env("OCI_DATABASE_URL");
-    OciConnection::establish(&DB_URL).expect("No connection, no test!")
-}
-
-#[cfg(ka)]
-use diesel::migration::MigrationConnection;
-
-#[cfg(ka)]
-impl MigrationConnection for OciConnection {
-    #[cfg(ka)]
-    const CREATE_MIGRATIONS_FUNCTION: &'static str =
-        "create or replace procedure create_if_not_exists(input_sql varchar2) \
-         as \
-         begin \
-         execute immediate input_sql; \
-         exception \
-         when others then \
-         if sqlcode = -955 then \
-         NULL; \
-         else \
-         raise; \
-         end if; \
-         end; \n ";
-
-    const CREATE_MIGRATIONS_TABLE: &'static str = "
-    declare \
-    begin \
-    create_if_not_exists('CREATE TABLE \"__DIESEL_SCHEMA_MIGRATIONS\" (\
-         \"VERSION\" VARCHAR2(50) PRIMARY KEY NOT NULL,\
-         \"RUN_ON\" TIMESTAMP with time zone DEFAULT sysdate not null\
-         )'); \
-        end; \n";
+    let database_url = database_url_from_env("OCI_DATABASE_URL");
+    OciConnection::establish(&database_url).expect("No connection, no test!")
 }
 
 #[allow(dead_code)]
@@ -50,7 +20,6 @@ fn connection() -> OciConnection {
     OciConnection::establish(&database_url).unwrap()
 }
 
-#[allow(dead_code)]
 fn database_url_from_env(backend_specific_env_var: &str) -> String {
     dotenv().ok();
     match env::var(backend_specific_env_var) {
@@ -58,11 +27,10 @@ fn database_url_from_env(backend_specific_env_var: &str) -> String {
             println!(r#"cargo:rustc-cfg=feature="backend_specific_database_url""#);
             val
         }
-        _ => env::var("DATABASE_URL").expect("DATABASE_URL must be set in order to run tests"),
+        _ => env::var("OCI_DATABASE_URL")
+            .expect("OCI_DATABASE_URL must be set in order to run tests"),
     }
 }
-
-const DB_URL: &str = "oci://\"diesel\"/diesel@//192.168.2.81:1521/orcl";
 
 const CREATE_TEST_TABLE: &str = "CREATE TABLE test (\
                                  ID NUMBER(38), \
@@ -172,8 +140,8 @@ fn drop_table(conn: &OciConnection, tbl: &str) {
 
 #[test]
 fn connect() {
-    //let database_url = database_url_from_env("OCI_DATABASE_URL");
-    let conn = OciConnection::establish(&DB_URL);
+    let database_url = database_url_from_env("OCI_DATABASE_URL");
+    let conn = OciConnection::establish(&database_url);
 
     assert_result!(conn);
 }

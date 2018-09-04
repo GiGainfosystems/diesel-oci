@@ -41,6 +41,16 @@ where
     } else {
         Ok(false)
     }
+    // TODO: the below needs more trait bounds, e.g. T: QueryDsL, @weiznich may look into this
+    // adding T: QueryDsl as bound yields some recursion error
+    //use diesel::dsl::count_star;
+    //use diesel::QueryDsl;
+    //let v = query.select(count_star()).load()?;
+    //if v > 0 {
+    //    Ok(true)
+    //} else {
+    //    Ok(false)
+    //}
 }
 // we could define our own expression but then would probably need to implement everything
 // here instead of using diesel (this yields some compiler errors about unfulfilled traits

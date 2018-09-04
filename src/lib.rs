@@ -1,3 +1,4 @@
+#![feature(exclusive_range_pattern)]
 #[macro_use]
 extern crate diesel;
 extern crate bigdecimal;

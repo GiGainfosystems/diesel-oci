@@ -33,7 +33,6 @@ fn database_url_from_env(backend_specific_env_var: &str) -> String {
     dotenv().ok();
     match env::var(backend_specific_env_var) {
         Ok(val) => {
-            println!(r#"cargo:rustc-cfg=feature="backend_specific_database_url""#);
             val
         }
         _ => env::var("OCI_DATABASE_URL")
@@ -1519,7 +1518,7 @@ fn transaction_nested_rollback_rollback_rollback() {
                 self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
             assert_eq!(ret_inner.len(), 2);
 
-            let inner_inner = conn.transaction::<i32, Error, _>(|| {
+            let _inner_inner = conn.transaction::<i32, Error, _>(|| {
                 let sql_inner_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
                 let _ret_inner_inner = conn.execute(&*sql_inner_inner)?;
                 let ret_inner_inner =
@@ -1567,7 +1566,7 @@ fn transaction_nested_rollback_rollback_commit() {
                 self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
             assert_eq!(ret_inner.len(), 2);
 
-            let inner_inner = conn.transaction::<_, Error, _>(|| {
+            let _inner_inner = conn.transaction::<_, Error, _>(|| {
                 let sql_inner_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
                 let _ret_inner_inner = conn.execute(&*sql_inner_inner)?;
                 let ret_inner_inner =
@@ -1615,7 +1614,7 @@ fn transaction_nested_commit_commit_commit() {
                 self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
             assert_eq!(ret_inner.len(), 2);
 
-            let inner_inner = conn.transaction::<_, Error, _>(|| {
+            let _inner_inner = conn.transaction::<_, Error, _>(|| {
                 let sql_inner_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
                 let _ret_inner_inner = conn.execute(&*sql_inner_inner)?;
                 let ret_inner_inner =
@@ -1662,7 +1661,7 @@ fn transaction_nested_commit_commit_rollback() {
                 self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
             assert_eq!(ret_inner.len(), 2);
 
-            let inner_inner = conn.transaction::<i32, Error, _>(|| {
+            let _inner_inner = conn.transaction::<i32, Error, _>(|| {
                 let sql_inner_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
                 let _ret_inner_inner = conn.execute(&*sql_inner_inner)?;
                 let ret_inner_inner =
@@ -1709,7 +1708,7 @@ fn transaction_nested_commit_rollback_rollback() {
                 self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
             assert_eq!(ret_inner.len(), 2);
 
-            let inner_inner = conn.transaction::<i32, Error, _>(|| {
+            let _inner_inner = conn.transaction::<i32, Error, _>(|| {
                 let sql_inner_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
                 let _ret_inner_inner = conn.execute(&*sql_inner_inner)?;
                 let ret_inner_inner =
@@ -1756,7 +1755,7 @@ fn transaction_nested_rollback_commit_commit() {
                 self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
             assert_eq!(ret_inner.len(), 2);
 
-            let inner_inner = conn.transaction::<_, Error, _>(|| {
+            let _inner_inner = conn.transaction::<_, Error, _>(|| {
                 let sql_inner_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
                 let _ret_inner_inner = conn.execute(&*sql_inner_inner)?;
                 let ret_inner_inner =
@@ -1804,7 +1803,7 @@ fn transaction_nested_commit_rollback_commit() {
                 self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
             assert_eq!(ret_inner.len(), 2);
 
-            let inner_inner = conn.transaction::<_, Error, _>(|| {
+            let _inner_inner = conn.transaction::<_, Error, _>(|| {
                 let sql_inner_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
                 let _ret_inner_inner = conn.execute(&*sql_inner_inner)?;
                 let ret_inner_inner =
@@ -1851,7 +1850,7 @@ fn transaction_nested_rollback_commit_rollback() {
                 self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
             assert_eq!(ret_inner.len(), 2);
 
-            let inner_inner = conn.transaction::<i32, Error, _>(|| {
+            let _inner_inner = conn.transaction::<i32, Error, _>(|| {
                 let sql_inner_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
                 let _ret_inner_inner = conn.execute(&*sql_inner_inner)?;
                 let ret_inner_inner =

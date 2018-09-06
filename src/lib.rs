@@ -1,4 +1,3 @@
-#![feature(exclusive_range_pattern)]
 #[macro_use]
 extern crate diesel;
 extern crate bigdecimal;
@@ -8,10 +7,6 @@ extern crate libc;
 extern crate log;
 extern crate oci_sys;
 pub mod oracle;
-
-extern crate num;
-#[macro_use]
-extern crate num_derive;
 
 #[cfg(test)]
 mod test;

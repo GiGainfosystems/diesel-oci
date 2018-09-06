@@ -298,9 +298,9 @@ impl Statement {
                     )?;
                     if scale == 0 {
                         tpe_size = match precision {
-                            1..5 => 2,   // number(5) -> smallint
-                            6..10 => 4,  // number(10) -> int
-                            11..19 => 8, // number(19) -> bigint
+                            1..=5 => 2,   // number(5) -> smallint
+                            6..=10 => 4,  // number(10) -> int
+                            11..=19 => 8, // number(19) -> bigint
                             _ => 21,     // number(38) -> consume_all // TODO: use numeric(diesel)
                         };
                         tpe = ffi::SQLT_INT;

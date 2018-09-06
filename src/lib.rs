@@ -8,10 +8,6 @@ extern crate log;
 extern crate oci_sys;
 pub mod oracle;
 
-extern crate num;
-#[macro_use]
-extern crate num_derive;
-
 #[cfg(test)]
 mod test;
 

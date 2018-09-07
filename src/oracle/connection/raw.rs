@@ -20,7 +20,7 @@ impl ConnectionEnviroment {
             let mut handle: *mut ffi::OCIEnv = ptr::null_mut();
             let code = ffi::OCIEnvNlsCreate(
                 &mut handle as *mut _,
-                ffi::OCI_DEFAULT,
+                ffi::OCI_THREADED,
                 ptr::null_mut(),
                 None,
                 None,

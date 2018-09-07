@@ -1,8 +1,5 @@
 extern crate chrono;
 extern crate dotenv;
-extern crate num;
-#[macro_use]
-extern crate num_derive;
 use self::chrono::NaiveDateTime;
 use self::dotenv::dotenv;
 use super::oracle::connection::OciConnection;

@@ -170,8 +170,13 @@ impl Statement {
         check
     }
 
-    pub fn run(&mut self) -> QueryResult<()> {
+    pub fn run(&mut self, auto_commit: bool) -> QueryResult<()> {
         let iters = if self.is_select { 0 } else { 1 };
+        let mode = if !self.is_select && auto_commit {
+            ffi::OCI_COMMIT_ON_SUCCESS
+        } else {
+            ffi::OCI_DEFAULT
+        };
         unsafe {
             let status = ffi::OCIStmtExecute(
                 self.connection.service_handle,
@@ -181,7 +186,7 @@ impl Statement {
                 0,
                 ptr::null(),
                 ptr::null_mut(),
-                ffi::OCI_DEFAULT,
+                mode,
             );
             Self::check_error_sql(
                 self.connection.env.error_handle,
@@ -301,7 +306,7 @@ impl Statement {
                             1..=5 => 2,   // number(5) -> smallint
                             6..=10 => 4,  // number(10) -> int
                             11..=19 => 8, // number(19) -> bigint
-                            _ => 21,     // number(38) -> consume_all // TODO: use numeric(diesel)
+                            _ => 21,      // number(38) -> consume_all // TODO: use numeric(diesel)
                         };
                         tpe = ffi::SQLT_INT;
                     } else {
@@ -451,8 +456,8 @@ impl Statement {
         Ok(fields)
     }
 
-    pub fn run_with_cursor<ST, T>(&mut self) -> QueryResult<Cursor<ST, T>> {
-        self.run()?;
+    pub fn run_with_cursor<ST, T>(&mut self, auto_commit: bool) -> QueryResult<Cursor<ST, T>> {
+        self.run(auto_commit)?;
         let fields = self.define_all_columns()?;
 
         Ok(Cursor::new(self, fields))

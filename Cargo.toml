@@ -17,8 +17,6 @@ libc = "0.2"
 log = "0.3"
 dotenv = ">=0.8, <0.11"
 bigdecimal = { version = ">= 0.0.10, < 0.0.12"}
-num = { version = "0.1", default-features = false }
-num-derive = "0.1"
 
 
 [dependencies.chrono]
@@ -31,6 +29,10 @@ version = "1.3"
 
 [dependencies.oci-sys]
 path = "oci-sys"
+
+[dev-dependencies]
+num = { version = "0.1", default-features = false }
+num-derive = "0.1"
 
 [features]
 chrono-time = ["chrono", "diesel/chrono"]

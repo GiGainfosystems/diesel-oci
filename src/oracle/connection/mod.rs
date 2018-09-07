@@ -65,7 +65,7 @@ unsafe impl Send for OciConnection {}
 impl SimpleConnection for OciConnection {
     fn batch_execute(&self, query: &str) -> QueryResult<()> {
         let mut stmt = try!(Statement::prepare(&self.raw, query));
-        try!(stmt.run());
+        try!(stmt.run(self.auto_commit()));
         Ok(())
     }
 }
@@ -100,7 +100,7 @@ impl Connection for OciConnection {
     #[doc(hidden)]
     fn execute(&self, query: &str) -> QueryResult<usize> {
         let mut stmt = try!(Statement::prepare(&self.raw, query));
-        try!(stmt.run());
+        try!(stmt.run(self.auto_commit()));
         Ok(try!(stmt.get_affected_rows()))
     }
 
@@ -111,7 +111,7 @@ impl Connection for OciConnection {
     {
         // TODO: FIXME: this always returns 0 whereas the code looks proper
         let mut stmt = try!(self.prepare_query(source));
-        try!(stmt.run());
+        try!(stmt.run(self.auto_commit()));
         Ok(try!(stmt.get_affected_rows()))
     }
 
@@ -127,7 +127,7 @@ impl Connection for OciConnection {
         U: Queryable<T::SqlType, Self::Backend>,
     {
         let mut stmt = self.prepare_query(&source.as_query())?;
-        let cursor: Cursor<T::SqlType, U> = stmt.run_with_cursor()?;
+        let cursor: Cursor<T::SqlType, U> = stmt.run_with_cursor(self.auto_commit())?;
         let mut ret = Vec::new();
         for el in cursor {
             ret.push(el?);
@@ -168,6 +168,10 @@ impl OciConnection {
     ) -> QueryResult<MaybeCached<Statement>> {
         self.statement_cache
             .cached_statement(source, &[], |sql| Statement::prepare(&self.raw, sql))
+    }
+
+    fn auto_commit(&self) -> bool {
+        self.transaction_manager.get_transaction_depth() == 0
     }
 }
 

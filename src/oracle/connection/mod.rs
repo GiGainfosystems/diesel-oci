@@ -127,12 +127,37 @@ impl Connection for OciConnection {
         U: Queryable<T::SqlType, Self::Backend>,
     {
         let mut stmt = self.prepare_query(&source.as_query())?;
-        let cursor: Cursor<T::SqlType, U> = stmt.run_with_cursor(self.auto_commit())?;
-        let mut ret = Vec::new();
-        for el in cursor {
-            ret.push(el?);
+        if stmt.is_returning {
+            type SqlType<T> = <T as ::diesel::expression::Expression>::SqlType;
+            type AllColumns<T> = <T as ::diesel::query_source::Table>::AllColumns;
+
+            let table = stmt.affected_table.clone();
+            let cursor: Cursor<T::SqlType, U> = stmt.run_with_cursor(self.auto_commit())?;
+
+            let mut ret = Vec::new();
+            for el in cursor {
+                let rowid = el?;
+
+                let sql = format!("select * from {} where rowid='AAB'", table);
+                let query = ::diesel::sql_query(sql);
+                let mut stmt = self.prepare_query(&query)?;
+                let cursor2: Cursor<T::SqlType, U> = stmt.run_with_cursor(self.auto_commit())?;
+                //let stmt = self.prepare_query(AllColumns<source>.as_query());
+
+                for el2 in cursor2 {
+                    ret.push(el2?);
+                }
+            }
+
+            Ok(ret)
+        } else {
+            let cursor: Cursor<T::SqlType, U> = stmt.run_with_cursor(self.auto_commit())?;
+            let mut ret = Vec::new();
+            for el in cursor {
+                ret.push(el?);
+            }
+            Ok(ret)
         }
-        Ok(ret)
     }
 
     fn query_by_name<T, U>(&self, _source: &T) -> QueryResult<Vec<U>>

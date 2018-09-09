@@ -14,6 +14,8 @@ pub struct Statement {
     pub inner_statement: *mut ffi::OCIStmt,
     bind_index: libc::c_uint,
     is_select: bool,
+    pub is_returning: bool,
+    pub affected_table: String,
     buffers: Vec<Box<[u8]>>,
     sizes: Vec<i32>,
     indicators: Vec<Box<ffi::OCIInd>>,
@@ -31,7 +33,29 @@ impl Statement {
             let place_holder = limit_clause.split_off(String::from("LIMIT ").len());
             mysql = mysql + &format!("OFFSET 0 ROWS FETCH NEXT {} ROWS ONLY", place_holder);
         }
+        let mut affected_table = "".to_string();
+        let mut is_returning = false;
+        if let Some(pos) = mysql.find("RETURNING") {
+            is_returning = true;
+//            mysql = mysql + &format!(" into ");
+            // determine the affected table, which is stupid, but works for `insert into #table ...` pretty well and is used as proof of concept
+            let mysqlcopy = mysql.clone();
+            let keywords : Vec<&str> = mysqlcopy.split(' ').collect();
+            affected_table = format!("{}", keywords[2]);
 
+            // we clone since we need the original statement
+            let mut fields = mysql.split_off(pos + String::from("RETURNING").len());
+            // now that's just a shortcut to count the `,` which now come
+//            let single_fields : Vec<&str> = fields.split(',').collect();
+//            for i in 0..single_fields.len() {
+//                if i > 0 {
+//                    mysql = mysql + &format!(",");
+//                }
+//                mysql = mysql + &format!(":out{}", i);
+//            }
+            mysql = mysql + &format!(" rowid into :out1");
+        }
+        debug!("SQL Statement {}", mysql);
         let stmt = unsafe {
             let mut stmt: *mut ffi::OCIStmt = ptr::null_mut();
             let status = ffi::OCIStmtPrepare2(
@@ -78,7 +102,7 @@ impl Statement {
                     )?;
                 }
             }
-
+            debug!("Executing {:?}", mysql);
             stmt
         };
         Ok(Statement {
@@ -104,6 +128,8 @@ impl Statement {
             //            INNER JOIN geo_points w ON bbox.w = w.id
             // ```
             is_select: sql.starts_with("SELECT") || sql.starts_with("select"),
+            is_returning,
+            affected_table,
             buffers: Vec::with_capacity(NUM_ELEMENTS),
             sizes: Vec::with_capacity(NUM_ELEMENTS),
             indicators: Vec::with_capacity(NUM_ELEMENTS),
@@ -172,6 +198,92 @@ impl Statement {
 
     pub fn run(&mut self, auto_commit: bool) -> QueryResult<()> {
         let iters = if self.is_select { 0 } else { 1 };
+        if self.is_returning {
+            self.bind_index += 1;
+            let tpe = OCIDataType::String;
+            let mut bndp = ptr::null_mut() as *mut ffi::OCIBind;
+            let mut is_null = true;
+            // using a box here otherwise the string will be deleted before
+            // reaching OCIBindByPos
+            let (mut buf, size): (Box<[u8]>, i32) = (Vec::new().into_boxed_slice(), 0);
+            let mut nullind: Box<ffi::OCIInd> = if is_null { Box::new(-1) } else { Box::new(0) };
+            unsafe {
+                let status = ffi::OCIBindByPos(
+                    self.inner_statement,
+                    &mut bndp,
+                    self.connection.env.error_handle,
+                    self.bind_index,
+                    buf.as_mut_ptr() as *mut c_void,
+                    buf.len() as i32,
+                    tpe.to_raw() as u16,
+                    &mut *nullind as *mut i16 as *mut c_void,
+                    ptr::null_mut(),
+                    ptr::null_mut(),
+                    0,
+                    ptr::null_mut(),
+                    ffi::OCI_DATA_AT_EXEC,
+                );
+
+                self.buffers.push(buf);
+                self.sizes.push(size);
+                self.indicators.push(nullind);
+
+                Self::check_error_sql(
+                    self.connection.env.error_handle,
+                    status,
+                    &self.mysql,
+                    "BINDING",
+                )?;
+
+                if tpe == OCIDataType::Char {
+                    let mut cs_id = self.connection.env.cs_id;
+                    ffi::OCIAttrSet(
+                        bndp as *mut c_void,
+                        ffi::OCI_HTYPE_BIND,
+                        &mut cs_id as *mut u16 as *mut c_void,
+                        0,
+                        ffi::OCI_ATTR_CHARSET_ID,
+                        self.connection.env.error_handle,
+                    );
+                }
+            }
+            // bind_dynamic
+
+//            let handle = try!(self.bind_value(index, info, BindMode::DataAtExec));
+//            try!(self.bind_dynamic(handle, move |_, v, iter, index, _| {
+ //               let is_null = match func(iter, index).as_db() {
+ //                   Some(slice) => { v.extend_from_slice(slice); false },
+ //                   None => true,
+ //               };
+ //               (is_null, Piece::One, false)
+ //           }));
+
+//         fn bind_dynamic<F>(&mut self, handle: *mut OCIBind, supplier: F) -> DbResult<()>
+//                where F: FnMut(&mut OCIBind, &mut Vec<u8>, u32, u32, Piece) -> (bool, Piece, bool) + 'conn
+            //{
+            let ctx = BindContext::new(move |_, v, iter, index, _| {
+                               let is_null = match func(iter, index).as_db() {
+                                   Some(slice) => { v.extend_from_slice(slice); false },
+                                   None => true,
+                               };
+                               (is_null, false)
+            });
+            let res = unsafe {
+                //let ctx = self.binds.last_mut().unwrap();
+                ffi::OCIBindDynamic(
+                    bndp,
+                    self.connection.env.error_handle,
+                    ctx as *mut _ as *mut c_void,
+                    Some(in_bind_adapter),
+                    ptr::null_mut(),
+                    None
+                )
+            };
+
+
+
+
+        }
         let mode = if !self.is_select && auto_commit {
             ffi::OCI_COMMIT_ON_SUCCESS
         } else {
@@ -457,10 +569,23 @@ impl Statement {
     }
 
     pub fn run_with_cursor<ST, T>(&mut self, auto_commit: bool) -> QueryResult<Cursor<ST, T>> {
-        self.run(auto_commit)?;
-        let fields = self.define_all_columns()?;
 
-        Ok(Cursor::new(self, fields))
+        self.run(auto_commit)?;
+        if self.is_returning {
+            // read from the binds with callback stuff
+            type SqlType<T> = <T as ::diesel::expression::Expression>::SqlType;
+            type AllColumns<T> = <T as ::diesel::query_source::Table>::AllColumns;
+
+            Err(Error::DatabaseError(
+                DatabaseErrorKind::__Unknown,
+                Box::new(format!("we need to do stuff: {}", self.mysql))))
+
+
+
+        } else {
+            let fields = self.define_all_columns()?;
+            Ok(Cursor::new(self, fields))
+        }
     }
 
     pub fn bind(&mut self, tpe: OCIDataType, value: Option<Vec<u8>>) -> QueryResult<()> {
@@ -547,4 +672,92 @@ impl Drop for Statement {
             }
         }
     }
+}
+
+
+
+use std::mem;
+use std::fmt;
+
+pub type OCICallbackInBind  = extern "C" fn(ictxp: *mut c_void,
+                                            bindp: *mut ffi::OCIBind,
+                                            iter: u32,
+                                            index: u32,
+                                            bufpp: *mut *mut c_void,
+                                            alenp: *mut u32,
+                                            piecep: *mut u8,
+                                            indpp: *mut *mut c_void) -> i32;
+pub type OCICallbackOutBind = extern "C" fn(octxp: *mut c_void,
+                                            bindp: *mut ffi::OCIBind,
+                                            iter: u32,
+                                            index: u32,
+                                            bufpp: *mut *mut c_void,
+                                            alenpp: *mut *mut u32,
+                                            piecep: *mut u8,
+                                            indpp: *mut *mut c_void,
+                                            rcodepp: *mut *mut u16) -> i32;
+
+pub type InBindFn<'f> = FnMut(&mut ffi::OCIBind, &mut Vec<u8>, u32, u32) -> (bool, bool) + 'f;
+
+pub struct BindContext<'a> {
+    /// Функция, предоставляющая данные для связанных переменных
+    func: Box<InBindFn<'a>>,
+    /// Место, где хранятся данные для связанной переменной, возвращенные замыканием, пока не будет
+    /// вызван метод `execute`.
+    store: Vec<u8>,
+    /// Место для указания адреса в памяти, в котором хранится признак `NULL`-а в связанной переменной.
+    /// По странной прихоти API требует указать адрес переменной, в которой хранится признак `NULL`-а,
+    /// а не просто заполнить выходной параметр в функции обратного вызова.
+    is_null: ffi::OCIInd,
+}
+impl<'a> BindContext<'a> {
+    pub fn new<F>(f: F) -> Self
+        where F: FnMut(&mut ffi::OCIBind, &mut Vec<u8>, u32, u32) -> (bool, bool) + 'a
+    {
+        BindContext {
+            func: Box::new(f),
+            store: Vec::new(),
+            is_null: 0,
+        }
+    }
+}
+impl<'a> fmt::Debug for BindContext<'a> {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        fmt.debug_struct("BindContext")
+            .field("func", &(&self.func as *const _))
+            .field("store", &self.store)
+            .field("is_null", &self.is_null)
+            .finish()
+    }
+}
+
+pub extern "C" fn in_bind_adapter(ictxp: *mut c_void,
+                                  bindp: *mut ffi::OCIBind,
+                                  iter: u32,
+                                  index: u32,
+                                  bufpp: *mut *mut c_void,
+                                  alenp: *mut u32,
+                                  piecep: *mut u8,
+                                  indpp: *mut *mut c_void) -> i32 {
+    let ctx: &mut BindContext = unsafe { mem::transmute(ictxp) };
+    let handle = unsafe { &mut *bindp };
+    let s = &mut ctx.store;
+
+    let (is_null, res) = (ctx.func)(handle, s, iter, index);
+    ctx.is_null = if is_null { -1 } else { 0 };
+
+    let (ptr, len) = match is_null {
+        false => ( s.as_mut_ptr(), s.len()),
+        true  => (ptr::null_mut(),       0),
+    };
+
+    unsafe {
+        if !bufpp.is_null() { *bufpp = ptr as *mut c_void; }
+        if !alenp.is_null() { *alenp = len as u32; }
+        if !indpp.is_null() { *indpp = &ctx.is_null as *const _ as *const c_void as *mut c_void; }
+    }
+
+    (if res { true //CallbackResult::Done
+    } else { false //CallbackResult::Continue
+    }) as i32
 }

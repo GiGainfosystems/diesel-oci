@@ -25,3 +25,17 @@ where
         Changes::table().find(changeset.id()).get_result(self)
     }
 }
+
+//use diesel::Connection;
+//
+//impl<Conn> RunQueryDsl<Conn> for OciConnection
+//where
+//    Conn: Connection
+//{
+//    fn get_result<U>(self, conn: &Conn) -> QueryResult<U>
+//        where
+//            Self: LoadQuery<Conn, U>,
+//    {
+//        self.load(conn)
+//    }
+//}

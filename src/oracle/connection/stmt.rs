@@ -261,33 +261,22 @@ impl Statement {
                                //(is_null, false)
                 (false, false)
             });
-//            try!(self.bind_dynamic(handle, move |_, v, iter, index, _| {
- //               let is_null = match func(iter, index).as_db() {
- //                   Some(slice) => { v.extend_from_slice(slice); false },
- //                   None => true,
- //               };
- //               (is_null, Piece::One, false)
- //           }));
-
-//         fn bind_dynamic<F>(&mut self, handle: *mut OCIBind, supplier: F) -> DbResult<()>
-//                where F: FnMut(&mut OCIBind, &mut Vec<u8>, u32, u32, Piece) -> (bool, Piece, bool) + 'conn
-            //{
-            let ctx = BindContext::new(move |_, v, iter, index, _| {
-                               let is_null = match func(iter, index).as_db() {
-                                   Some(slice) => { v.extend_from_slice(slice); false },
-                                   None => true,
-                               };
-                               (is_null, false)
+            let mut octx = BindContext::new(move |_, v, iter, index| {
+                //let is_null = match func(iter, index).as_db() {
+                //    Some(slice) => { v.extend_from_slice(slice); false },
+                //    None => true,
+                //};
+                //(is_null, false)
+                (false, false)
             });
             let res = unsafe {
-                //let ctx = self.binds.last_mut().unwrap();
                 ffi::OCIBindDynamic(
                     bndp,
                     self.connection.env.error_handle,
-                    ctx as *mut _ as *mut c_void,
-                    Some(in_bind_adapter),
-                    ptr::null_mut(),
-                    None
+                    &mut ictx as *mut _ as *mut c_void, // this can be a number
+                    Some(cbf_no_data),
+                    &mut octx as *mut _ as *mut c_void,// this can be a number
+                    Some(cbf_get_data)
                 )
             };
 
@@ -735,6 +724,125 @@ impl<'a> fmt::Debug for BindContext<'a> {
             .field("is_null", &self.is_null)
             .finish()
     }
+}
+
+// c.f. https://github.com/dongyongzhi/android_work/blob/adcaec07b3a7dd64b98763645522972387c67e73/xvapl(sql)/oci/samples/cdemodr1.c#L1038
+pub extern "C" fn cbf_no_data(ictxp: *mut c_void,
+                              bindp: *mut ffi::OCIBind,
+                              iter: u32,
+                              index: u32,
+                              bufpp: *mut *mut c_void,
+                              alenp: *mut u32,
+                              piecep: *mut u8,
+                              indpp: *mut *mut c_void) -> i32 {
+    unsafe {
+        *bufpp = ptr::null_mut();
+        *alenp = 0;
+        *indpp = ptr::null_mut();
+        *piecep = ffi::OCI_ONE_PIECE as u8;
+    }
+
+    ffi::OCI_CONTINUE
+}
+// c.f. https://github.com/dongyongzhi/android_work/blob/adcaec07b3a7dd64b98763645522972387c67e73/xvapl(sql)/oci/samples/cdemodr1.c#L1038
+pub unsafe extern "C" fn cbf_get_data(octxp: *mut c_void,
+                               bindp: *mut ffi::OCIBind,
+                               iter: u32,
+                               index: u32,
+                               bufpp: *mut *mut c_void,
+                               alenp: *mut *mut u32,
+                               piecep: *mut u8,
+                               indpp: *mut *mut c_void,
+                                rcodepp: *mut *mut u16) -> i32 {
+
+    // This is the callback function that is called to receive the OUT
+    // bind values for the bind variables in the RETURNING clause
+
+
+    let rows : i32 = 0;
+    let pos = *ctxp;
+
+    // For each iteration the OCI_ATTR_ROWS_RETURNED tells us the number
+    // of rows returned in that iteration.  So we can use this information
+    // to dynamically allocate storage for all the returned rows for that
+    // bind.
+
+    if index == 0 {
+            (void) ffi::OCIAttrGet((CONST dvoid *)bindp, ffi::OCI_HTYPE_BIND, (dvoid *)&rows,
+            (ub4 *) sizeof(ub4), ffi::OCI_ATTR_ROWS_RETURNED, errhp);
+            rowsret[iter] = (ub2)rows;
+
+            //Dynamically allocate storage
+            if alloc_buffer(pos, iter, rows)
+                return ffi::OCI_ERROR;
+    }
+
+    // Provide the address of the storage where the data is to be returned
+    switch(pos)
+    {
+        case 0:
+        rl[pos][iter][index] = sizeof(int);
+        *bufpp =  (dvoid *) (p1[iter]+ index);
+        break;
+        case 1:
+        rl[pos][iter][index] = (ub4) MAXCOLLEN;
+        *bufpp =  (dvoid *) (p2[iter]+(index * MAXCOLLEN));
+        break;
+        case 2:
+        rl[pos][iter][index] = (ub4) MAXCOLLEN;
+        *bufpp =  (dvoid *) (p3[iter]+(index * MAXCOLLEN));
+        break;
+        case 3:
+        rl[pos][iter][index] = sizeof(float);
+        *bufpp =  (dvoid *) (p4[iter]+ index);
+        break;
+        case 4:
+        rl[pos][iter][index] = sizeof(int);
+        *bufpp =  (dvoid *) (p5[iter]+index);
+        break;
+        case 5:
+        rl[pos][iter][index] = sizeof(float);
+        *bufpp =  (dvoid *) (p6[iter]+index );
+        break;
+        case 6:
+        rl[pos][iter][index] = sizeof(int);
+        *bufpp =  (dvoid *) (p7[iter]+ index);
+        break;
+        case 7:
+        rl[pos][iter][index] = sizeof(float);
+        *bufpp =  (dvoid *) (p8[iter]+index);
+        break;
+        case 8:
+        rl[pos][iter][index] = DATBUFLEN;
+        *bufpp =  (dvoid *) (p9[iter]+(index * DATBUFLEN));
+        break;
+        case 9:
+        rl[pos][iter][index] = (ub4) MAXCOLLEN;
+        *bufpp =  (dvoid *) (p10[iter]+(index * MAXCOLLEN));
+        break;
+        default:
+            *bufpp =  (dvoid *) 0;
+        *alenp =  (ub4 *) 0;
+        (void) printf("ERROR: invalid position number: %d\n", *((ub2 *)ctxp));
+    }
+
+    *piecep = ffi::OCI_ONE_PIECE as u8;
+
+    // provide address of the storage where the indicator will be returned
+    ind[pos][iter][index] = 0;
+    *indpp = (dvoid *) &ind[pos][iter][index];
+
+
+    // provide address of the storage where the return code  will be returned
+    rc[pos][iter][index] = 0;
+    *rcodepp = &rc[pos][iter][index];
+
+    // provide address of the storage where the actual length  will be
+    // returned
+
+    *alenp = &rl[pos][iter][index];
+
+    ffi::OCI_CONTINUE
 }
 
 pub extern "C" fn in_bind_adapter(ictxp: *mut c_void,

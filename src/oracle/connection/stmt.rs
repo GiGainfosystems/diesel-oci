@@ -249,7 +249,18 @@ impl Statement {
             }
             // bind_dynamic
 
-//            let handle = try!(self.bind_value(index, info, BindMode::DataAtExec));
+            // TODO: this was more less taken from:
+            // https://github.com/Mingun/rust-oci/blob/2b06c2564cf529db6b9cafa9eea3f764fb981f27/src/stmt/mod.rs
+            // https://github.com/Mingun/rust-oci/blob/2b06c2564cf529db6b9cafa9eea3f764fb981f27/src/ffi/native/bind.rs
+            // we need to get this to compile and "just" define the callback properly
+            let mut ictx = BindContext::new(move |_, v, iter, index| {
+                               //let is_null = match func(iter, index).as_db() {
+                               //    Some(slice) => { v.extend_from_slice(slice); false },
+                               //    None => true,
+                               //};
+                               //(is_null, false)
+                (false, false)
+            });
 //            try!(self.bind_dynamic(handle, move |_, v, iter, index, _| {
  //               let is_null = match func(iter, index).as_db() {
  //                   Some(slice) => { v.extend_from_slice(slice); false },
@@ -572,15 +583,10 @@ impl Statement {
 
         self.run(auto_commit)?;
         if self.is_returning {
-            // read from the binds with callback stuff
-            type SqlType<T> = <T as ::diesel::expression::Expression>::SqlType;
-            type AllColumns<T> = <T as ::diesel::query_source::Table>::AllColumns;
+            // TODO: this needs to read from last bind/field and create
+            // a custom cursor which has one row and one column (the rowid)
 
-            Err(Error::DatabaseError(
-                DatabaseErrorKind::__Unknown,
-                Box::new(format!("we need to do stuff: {}", self.mysql))))
-
-
+            unimplemented!("");
 
         } else {
             let fields = self.define_all_columns()?;

@@ -1992,7 +1992,15 @@ fn insert_returning() {
 
     let ret : QueryResult<(i64, String, i16, NaiveDateTime, NaiveDateTime, i64, i64, i64)> = ::diesel::insert_into(geometries::table).values(new_row).get_result(&conn);
     assert_result!(ret);
-    //assert_eq!(ret.unwrap(), );
-
-
+    let ret = ret.unwrap(); // asserted above ;)
+    assert_eq!(ret.1, "test");
+    assert_eq!(ret.2, 1);
+    // just don't compare the dates, they are off by a tenth of a second:
+    //   left: `2018-09-10T23:34:43`,
+    // right: `2018-09-10T23:34:43.856998961`', src/test/mod.rs:1998:5
+    //assert_eq!(ret.3, n);
+    //assert_eq!(ret.4, n2);
+    assert_eq!(ret.5, 1);
+    assert_eq!(ret.6, 1);
+    assert_eq!(ret.7, 1);
 }

@@ -12,7 +12,7 @@ use std::rc::Rc;
 pub struct Statement {
     pub connection: Rc<RawConnection>,
     pub inner_statement: *mut ffi::OCIStmt,
-    bind_index: libc::c_uint,
+    pub bind_index: libc::c_uint,
     is_select: bool,
     pub is_returning: bool,
     pub affected_table: String,
@@ -20,9 +20,10 @@ pub struct Statement {
     sizes: Vec<i32>,
     indicators: Vec<Box<ffi::OCIInd>>,
     pub(crate) mysql: String,
+    pub(crate) returning_buffer: Vec<u8>,
 }
 
-const NUM_ELEMENTS: usize = 20;
+const NUM_ELEMENTS: usize = 40;
 
 impl Statement {
     pub fn prepare(raw_connection: &Rc<RawConnection>, sql: &str) -> QueryResult<Self> {
@@ -134,6 +135,7 @@ impl Statement {
             sizes: Vec::with_capacity(NUM_ELEMENTS),
             indicators: Vec::with_capacity(NUM_ELEMENTS),
             mysql,
+            returning_buffer: Vec::with_capacity(NUM_ELEMENTS),
         })
     }
 
@@ -200,33 +202,32 @@ impl Statement {
         let iters = if self.is_select { 0 } else { 1 };
         if self.is_returning {
             self.bind_index += 1;
+        }
+        let mut octx = BindContext::new(self.connection.env.error_handle);
+        if self.is_returning {
             let tpe = OCIDataType::Char;
             let mut bndp = ptr::null_mut() as *mut ffi::OCIBind;
-            let is_null = true;
-            // using a box here otherwise the string will be deleted before
-            // reaching OCIBindByPos
-            let (mut buf, size): (Box<[u8]>, i32) = (Vec::new().into_boxed_slice(), 0);
-            let mut nullind: Box<ffi::OCIInd> = if is_null { Box::new(-1) } else { Box::new(0) };
+
             unsafe {
+                // read https://docs.oracle.com/database/121/LNOCI/oci16rel003.htm#LNOCI153
+                // read it again, then you will understand why the parameters are set like that
+                // make sure to read it again
+                // otherwise you may enter the ORA-03106: fatal two-task communication protocol error-hell
                 let status = ffi::OCIBindByPos(
                     self.inner_statement,
                     &mut bndp,
                     self.connection.env.error_handle,
                     self.bind_index,
-                    buf.as_mut_ptr() as *mut c_void,
-                    buf.len() as i32,
+                    ptr::null_mut(),
+                    NUM_ELEMENTS as i32,
                     tpe.to_raw() as u16,
-                    &mut *nullind as *mut i16 as *mut c_void,
+                    ptr::null_mut(),
                     ptr::null_mut(),
                     ptr::null_mut(),
                     0,
                     ptr::null_mut(),
                     ffi::OCI_DATA_AT_EXEC,
                 );
-
-                self.buffers.push(buf);
-                self.sizes.push(size);
-                self.indicators.push(nullind);
 
                 Self::check_error_sql(
                     self.connection.env.error_handle,
@@ -253,25 +254,8 @@ impl Statement {
             // https://github.com/Mingun/rust-oci/blob/2b06c2564cf529db6b9cafa9eea3f764fb981f27/src/stmt/mod.rs
             // https://github.com/Mingun/rust-oci/blob/2b06c2564cf529db6b9cafa9eea3f764fb981f27/src/ffi/native/bind.rs
             // we need to get this to compile and "just" define the callback properly
-            let mut ictx = BindContext::new(move |_, _v, iter, index| {
-                debug!("in call back iter {}, index {}", iter, index);
-                               //let is_null = match func(iter, index).as_db() {
-                               //    Some(slice) => { v.extend_from_slice(slice); false },
-                               //    None => true,
-                               //};
-                               //(is_null, false)
-                (false, false)
-            }, &self);
-            let mut octx = BindContext::new(move |_, v, iter, index| {
-                debug!("out call back iter {}, index {}", iter, index);
-                debug!("{:?}", v);
-                //let is_null = match func(iter, index).as_db() {
-                //    Some(slice) => { v.extend_from_slice(slice); false },
-                //    None => true,
-                //};
-                //(is_null, false)
-                (false, false)
-            }, &self);
+            let mut ictx = BindContext::new(self.connection.env.error_handle);
+
             unsafe {
                 ffi::OCIBindDynamic(
                     bndp,
@@ -310,9 +294,14 @@ impl Statement {
                 "EXECUTING STMT",
             )?;
         }
+        if self.is_returning {
+            for i in octx.store {
+                self.returning_buffer.push(i);
+            }
+        }
         // the bind index is required to start by zero. if a statement is
         // executed more than once we need to reset the index here
-        self.bind_index = 0;
+        //self.bind_index = 0;
         Ok(())
     }
 
@@ -574,11 +563,19 @@ impl Statement {
     pub fn run_with_cursor<ST, T>(&mut self, auto_commit: bool) -> QueryResult<Cursor<ST, T>> {
 
         self.run(auto_commit)?;
+        self.bind_index = 0;
         if self.is_returning {
             // TODO: this needs to read from last bind/field and create
             // a custom cursor which has one row and one column (the rowid)
-
-            unimplemented!("");
+            let mut fields = Vec::<Field>::with_capacity(1);
+            let null_indicator: Box<i16> = Box::new(1);
+            let mut buffer = Vec::with_capacity(NUM_ELEMENTS);
+            for i in &self.returning_buffer {
+                buffer.push(i.clone());
+            }
+            let f = Field::new(ptr::null_mut(), buffer, null_indicator, OCIDataType::String);
+            fields.push(f);
+            Ok (Cursor::new(self, fields))
 
         } else {
             let fields = self.define_all_columns()?;
@@ -677,11 +674,7 @@ impl Drop for Statement {
 use std::mem;
 use std::fmt;
 
-pub type InBindFn<'f> = FnMut(&mut ffi::OCIBind, &mut Vec<u8>, u32, u32) -> (bool, bool) + 'f;
-
-pub struct BindContext<'a> {
-    /// Функция, предоставляющая данные для связанных переменных
-    func: Box<InBindFn<'a>>,
+pub struct BindContext {
     /// Место, где хранятся данные для связанной переменной, возвращенные замыканием, пока не будет
     /// вызван метод `execute`.
     store: Vec<u8>,
@@ -691,26 +684,24 @@ pub struct BindContext<'a> {
     is_null: ffi::OCIInd,
     return_code: u16,
     return_len: u32,
-    stmt: &'a Statement,
+    error_handle: *mut ffi::OCIError,
 }
-impl<'a> BindContext<'a> {
-    pub fn new<F>(f: F, stmt: &'a Statement) -> Self
-        where F: FnMut(&mut ffi::OCIBind, &mut Vec<u8>, u32, u32) -> (bool, bool) + 'a
+impl BindContext {
+    pub fn new(error_handle: *mut ffi::OCIError) -> Self
+
     {
         BindContext {
-            func: Box::new(f),
             store: Vec::new(),
             is_null: 0,
             return_code: 0,
             return_len: 0,
-            stmt,
+            error_handle,
         }
     }
 }
-impl<'a> fmt::Debug for BindContext<'a> {
+impl fmt::Debug for BindContext {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         fmt.debug_struct("BindContext")
-            .field("func", &(&self.func as *const _))
             .field("store", &self.store)
             .field("is_null", &self.is_null)
             .finish()
@@ -738,18 +729,16 @@ pub extern "C" fn cbf_no_data(_ictxp: *mut c_void,
 // c.f. https://github.com/dongyongzhi/android_work/blob/adcaec07b3a7dd64b98763645522972387c67e73/xvapl(sql)/oci/samples/cdemodr1.c#L1038
 pub unsafe extern "C" fn cbf_get_data(octxp: *mut c_void,
                                bindp: *mut ffi::OCIBind,
-                               iter: u32,
+                               _iter: u32,
                                index: u32,
                                bufpp: *mut *mut c_void,
                                alenp: *mut *mut u32,
                                piecep: *mut u8,
                                indpp: *mut *mut c_void,
                                rcodepp: *mut *mut u16) -> i32 {
-    debug!("we are in the callback");
     // This is the callback function that is called to receive the OUT
     // bind values for the bind variables in the RETURNING clause
     let ctx: &mut BindContext = mem::transmute(octxp);
-    let handle = &mut *bindp;
     // For each iteration the OCI_ATTR_ROWS_RETURNED tells us the number
     // of rows returned in that iteration.  So we can use this information
     // to dynamically allocate storage for all the returned rows for that
@@ -764,13 +753,13 @@ pub unsafe extern "C" fn cbf_get_data(octxp: *mut c_void,
             (&mut rows as *mut u32) as *mut _,
             &mut 4, //sizeof(ub4),
             ffi::OCI_ATTR_ROWS_RETURNED,
-            ctx.stmt.connection.env.error_handle,
+            ctx.error_handle,
         );
 
         let err = Statement::check_error_sql(
-            ctx.stmt.connection.env.error_handle,
+            ctx.error_handle,
             status,
-            &ctx.stmt.mysql,
+            &"returning rowid".to_string(),
             "GET ROWS RETURNED",
         );
         if err.is_err() {
@@ -780,11 +769,8 @@ pub unsafe extern "C" fn cbf_get_data(octxp: *mut c_void,
     }
 
     // Provide the address of the storage where the data is to be returned
-    const ELEM : usize = 8;
-    ctx.store = Vec::with_capacity(ELEM);
-    ctx.store.resize(ELEM, 0);
+    ctx.store.resize(NUM_ELEMENTS, 0);
 
-    debug!("vec len: {}", ctx.store.len());
     *bufpp = ctx.store.as_ptr() as *mut _;
 
     *piecep = ffi::OCI_ONE_PIECE as u8;
@@ -799,8 +785,6 @@ pub unsafe extern "C" fn cbf_get_data(octxp: *mut c_void,
     // returned
     ctx.return_len = ctx.store.len() as u32;
     *alenp = &mut ctx.return_len as *mut _;
-
-    let (_is_null, _res) = (ctx.func)(handle, &mut ctx.store, iter, index);
 
     ffi::OCI_CONTINUE
 }

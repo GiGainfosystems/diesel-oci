@@ -40,8 +40,10 @@ impl Field {
 
 impl Drop for Field {
     fn drop(&mut self) {
-        unsafe {
-            ffi::OCIHandleFree(self.inner as *mut _, ffi::OCI_HTYPE_DEFINE);
+        if !self.inner.is_null() {
+            unsafe {
+                ffi::OCIHandleFree(self.inner as *mut _, ffi::OCI_HTYPE_DEFINE);
+            }
         }
     }
 }
@@ -72,23 +74,25 @@ where
     type Item = QueryResult<T>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        unsafe {
-            let status = ffi::OCIStmtFetch2(
-                self.stmt.inner_statement,
-                self.stmt.connection.env.error_handle,
-                1,
-                ffi::OCI_FETCH_NEXT as u16,
-                0,
-                ffi::OCI_DEFAULT,
-            );
-            if let Some(err) =
+        if !self.stmt.is_returning {
+            unsafe {
+                let status = ffi::OCIStmtFetch2(
+                    self.stmt.inner_statement,
+                    self.stmt.connection.env.error_handle,
+                    1,
+                    ffi::OCI_FETCH_NEXT as u16,
+                    0,
+                    ffi::OCI_DEFAULT,
+                );
+                if let Some(err) =
                 Statement::check_error(self.stmt.connection.env.error_handle, status).err()
-            {
-                debug!("{:?}", self.stmt.mysql);
-                return Some(Err(err));
-            }
-            if status as u32 == ffi::OCI_NO_DATA {
-                return None;
+                    {
+                        debug!("{:?}", self.stmt.mysql);
+                        return Some(Err(err));
+                    }
+                if status as u32 == ffi::OCI_NO_DATA {
+                    return None;
+                }
             }
         }
 

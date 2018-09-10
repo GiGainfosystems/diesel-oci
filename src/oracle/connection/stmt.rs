@@ -260,15 +260,16 @@ impl Statement {
                                //};
                                //(is_null, false)
                 (false, false)
-            });
+            }, &self);
             let mut octx = BindContext::new(move |_, v, iter, index| {
+                debug!("iter {}, index {}", iter, index);
                 //let is_null = match func(iter, index).as_db() {
                 //    Some(slice) => { v.extend_from_slice(slice); false },
                 //    None => true,
                 //};
                 //(is_null, false)
                 (false, false)
-            });
+            }, &self);
             let res = unsafe {
                 ffi::OCIBindDynamic(
                     bndp,
@@ -704,15 +705,21 @@ pub struct BindContext<'a> {
     /// По странной прихоти API требует указать адрес переменной, в которой хранится признак `NULL`-а,
     /// а не просто заполнить выходной параметр в функции обратного вызова.
     is_null: ffi::OCIInd,
+    return_code: u16,
+    return_len: u32,
+    stmt: &'a Statement,
 }
 impl<'a> BindContext<'a> {
-    pub fn new<F>(f: F) -> Self
+    pub fn new<F>(f: F, stmt: &'a Statement) -> Self
         where F: FnMut(&mut ffi::OCIBind, &mut Vec<u8>, u32, u32) -> (bool, bool) + 'a
     {
         BindContext {
             func: Box::new(f),
             store: Vec::new(),
             is_null: 0,
+            return_code: 0,
+            return_len: 0,
+            stmt,
         }
     }
 }
@@ -753,94 +760,60 @@ pub unsafe extern "C" fn cbf_get_data(octxp: *mut c_void,
                                alenp: *mut *mut u32,
                                piecep: *mut u8,
                                indpp: *mut *mut c_void,
-                                rcodepp: *mut *mut u16) -> i32 {
-
+                               rcodepp: *mut *mut u16) -> i32 {
+    debug!("we are in the callback");
     // This is the callback function that is called to receive the OUT
     // bind values for the bind variables in the RETURNING clause
-
-
-    let rows : i32 = 0;
-    let pos = *ctxp;
+    let ctx: &mut BindContext = unsafe { mem::transmute(octxp) };
 
     // For each iteration the OCI_ATTR_ROWS_RETURNED tells us the number
     // of rows returned in that iteration.  So we can use this information
     // to dynamically allocate storage for all the returned rows for that
     // bind.
 
-    if index == 0 {
-            (void) ffi::OCIAttrGet((CONST dvoid *)bindp, ffi::OCI_HTYPE_BIND, (dvoid *)&rows,
-            (ub4 *) sizeof(ub4), ffi::OCI_ATTR_ROWS_RETURNED, errhp);
-            rowsret[iter] = (ub2)rows;
+    let mut rows : u32 = 0;
 
-            //Dynamically allocate storage
-            if alloc_buffer(pos, iter, rows)
-                return ffi::OCI_ERROR;
+    if index == 0 {
+        let status = ffi::OCIAttrGet(
+            bindp as *const _,
+            ffi::OCI_HTYPE_BIND,
+            (&mut rows as *mut u32) as *mut _,
+            &mut 4, //sizeof(ub4),
+            ffi::OCI_ATTR_ROWS_RETURNED,
+            ctx.stmt.connection.env.error_handle,
+        );
+
+        let err = Statement::check_error_sql(
+            ctx.stmt.connection.env.error_handle,
+            status,
+            &ctx.stmt.mysql,
+            "GET ROWS RETURNED",
+        );
+        if err.is_err() {
+            debug!("{:?}", err.err());
+            return ffi::OCI_ERROR;
+        }
     }
 
     // Provide the address of the storage where the data is to be returned
-    switch(pos)
-    {
-        case 0:
-        rl[pos][iter][index] = sizeof(int);
-        *bufpp =  (dvoid *) (p1[iter]+ index);
-        break;
-        case 1:
-        rl[pos][iter][index] = (ub4) MAXCOLLEN;
-        *bufpp =  (dvoid *) (p2[iter]+(index * MAXCOLLEN));
-        break;
-        case 2:
-        rl[pos][iter][index] = (ub4) MAXCOLLEN;
-        *bufpp =  (dvoid *) (p3[iter]+(index * MAXCOLLEN));
-        break;
-        case 3:
-        rl[pos][iter][index] = sizeof(float);
-        *bufpp =  (dvoid *) (p4[iter]+ index);
-        break;
-        case 4:
-        rl[pos][iter][index] = sizeof(int);
-        *bufpp =  (dvoid *) (p5[iter]+index);
-        break;
-        case 5:
-        rl[pos][iter][index] = sizeof(float);
-        *bufpp =  (dvoid *) (p6[iter]+index );
-        break;
-        case 6:
-        rl[pos][iter][index] = sizeof(int);
-        *bufpp =  (dvoid *) (p7[iter]+ index);
-        break;
-        case 7:
-        rl[pos][iter][index] = sizeof(float);
-        *bufpp =  (dvoid *) (p8[iter]+index);
-        break;
-        case 8:
-        rl[pos][iter][index] = DATBUFLEN;
-        *bufpp =  (dvoid *) (p9[iter]+(index * DATBUFLEN));
-        break;
-        case 9:
-        rl[pos][iter][index] = (ub4) MAXCOLLEN;
-        *bufpp =  (dvoid *) (p10[iter]+(index * MAXCOLLEN));
-        break;
-        default:
-            *bufpp =  (dvoid *) 0;
-        *alenp =  (ub4 *) 0;
-        (void) printf("ERROR: invalid position number: %d\n", *((ub2 *)ctxp));
-    }
+    //rl[pos][iter][index] = MAXCOLLEN;
+    ctx.store = Vec::with_capacity(200);
+    let s = &mut ctx.store;
+    *bufpp =  s.as_mut_ptr() as *mut c_void;
 
     *piecep = ffi::OCI_ONE_PIECE as u8;
 
     // provide address of the storage where the indicator will be returned
-    ind[pos][iter][index] = 0;
-    *indpp = (dvoid *) &ind[pos][iter][index];
-
+    //ind[pos][iter][index] = 0;
+    *indpp = ctx.is_null as *mut c_void;
 
     // provide address of the storage where the return code  will be returned
-    rc[pos][iter][index] = 0;
-    *rcodepp = &rc[pos][iter][index];
+    //rc[pos][iter][index] = 0;
+    *rcodepp = &mut ctx.return_code as *mut _;
 
     // provide address of the storage where the actual length  will be
     // returned
-
-    *alenp = &rl[pos][iter][index];
+    *alenp = &mut ctx.return_len as *mut _;
 
     ffi::OCI_CONTINUE
 }
@@ -871,7 +844,7 @@ pub extern "C" fn in_bind_adapter(ictxp: *mut c_void,
         if !indpp.is_null() { *indpp = &ctx.is_null as *const _ as *const c_void as *mut c_void; }
     }
 
-    (if res { true //CallbackResult::Done
-    } else { false //CallbackResult::Continue
+    (if res { ffi::OCI_ROWCBK_DONE
+    } else { ffi::OCI_CONTINUE
     }) as i32
 }

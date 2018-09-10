@@ -1977,7 +1977,6 @@ fn insert_returning() {
     use self::chrono::Utc;
     use self::geometries;
     use diesel::ExpressionMethods;
-    use diesel::query_dsl::filter_dsl::FindDsl;
 
     let n = Utc::now().naive_utc();
     let n2 = Utc::now().naive_utc();

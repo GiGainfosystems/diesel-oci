@@ -44,7 +44,7 @@ impl Statement {
             affected_table = format!("{}", keywords[2]);
 
             // we clone since we need the original statement
-            let mut fields = mysql.split_off(pos + String::from("RETURNING").len());
+            let mut _fields = mysql.split_off(pos + String::from("RETURNING").len());
             // now that's just a shortcut to count the `,` which now come
 //            let single_fields : Vec<&str> = fields.split(',').collect();
 //            for i in 0..single_fields.len() {
@@ -53,7 +53,7 @@ impl Statement {
 //                }
 //                mysql = mysql + &format!(":out{}", i);
 //            }
-            mysql = mysql + &format!(" rowid into :out1");
+            mysql = mysql + &format!(" rowidtochar(rowid) into :out1");
         }
         debug!("SQL Statement {}", mysql);
         let stmt = unsafe {
@@ -200,9 +200,9 @@ impl Statement {
         let iters = if self.is_select { 0 } else { 1 };
         if self.is_returning {
             self.bind_index += 1;
-            let tpe = OCIDataType::String;
+            let tpe = OCIDataType::Char;
             let mut bndp = ptr::null_mut() as *mut ffi::OCIBind;
-            let mut is_null = true;
+            let is_null = true;
             // using a box here otherwise the string will be deleted before
             // reaching OCIBindByPos
             let (mut buf, size): (Box<[u8]>, i32) = (Vec::new().into_boxed_slice(), 0);
@@ -253,7 +253,8 @@ impl Statement {
             // https://github.com/Mingun/rust-oci/blob/2b06c2564cf529db6b9cafa9eea3f764fb981f27/src/stmt/mod.rs
             // https://github.com/Mingun/rust-oci/blob/2b06c2564cf529db6b9cafa9eea3f764fb981f27/src/ffi/native/bind.rs
             // we need to get this to compile and "just" define the callback properly
-            let mut ictx = BindContext::new(move |_, v, iter, index| {
+            let mut ictx = BindContext::new(move |_, _v, iter, index| {
+                debug!("in call back iter {}, index {}", iter, index);
                                //let is_null = match func(iter, index).as_db() {
                                //    Some(slice) => { v.extend_from_slice(slice); false },
                                //    None => true,
@@ -262,7 +263,8 @@ impl Statement {
                 (false, false)
             }, &self);
             let mut octx = BindContext::new(move |_, v, iter, index| {
-                debug!("iter {}, index {}", iter, index);
+                debug!("out call back iter {}, index {}", iter, index);
+                debug!("{:?}", v);
                 //let is_null = match func(iter, index).as_db() {
                 //    Some(slice) => { v.extend_from_slice(slice); false },
                 //    None => true,
@@ -270,7 +272,7 @@ impl Statement {
                 //(is_null, false)
                 (false, false)
             }, &self);
-            let res = unsafe {
+            unsafe {
                 ffi::OCIBindDynamic(
                     bndp,
                     self.connection.env.error_handle,
@@ -675,24 +677,6 @@ impl Drop for Statement {
 use std::mem;
 use std::fmt;
 
-pub type OCICallbackInBind  = extern "C" fn(ictxp: *mut c_void,
-                                            bindp: *mut ffi::OCIBind,
-                                            iter: u32,
-                                            index: u32,
-                                            bufpp: *mut *mut c_void,
-                                            alenp: *mut u32,
-                                            piecep: *mut u8,
-                                            indpp: *mut *mut c_void) -> i32;
-pub type OCICallbackOutBind = extern "C" fn(octxp: *mut c_void,
-                                            bindp: *mut ffi::OCIBind,
-                                            iter: u32,
-                                            index: u32,
-                                            bufpp: *mut *mut c_void,
-                                            alenpp: *mut *mut u32,
-                                            piecep: *mut u8,
-                                            indpp: *mut *mut c_void,
-                                            rcodepp: *mut *mut u16) -> i32;
-
 pub type InBindFn<'f> = FnMut(&mut ffi::OCIBind, &mut Vec<u8>, u32, u32) -> (bool, bool) + 'f;
 
 pub struct BindContext<'a> {
@@ -734,10 +718,10 @@ impl<'a> fmt::Debug for BindContext<'a> {
 }
 
 // c.f. https://github.com/dongyongzhi/android_work/blob/adcaec07b3a7dd64b98763645522972387c67e73/xvapl(sql)/oci/samples/cdemodr1.c#L1038
-pub extern "C" fn cbf_no_data(ictxp: *mut c_void,
-                              bindp: *mut ffi::OCIBind,
-                              iter: u32,
-                              index: u32,
+pub extern "C" fn cbf_no_data(_ictxp: *mut c_void,
+                              _bindp: *mut ffi::OCIBind,
+                              _iter: u32,
+                              _index: u32,
                               bufpp: *mut *mut c_void,
                               alenp: *mut u32,
                               piecep: *mut u8,
@@ -764,8 +748,8 @@ pub unsafe extern "C" fn cbf_get_data(octxp: *mut c_void,
     debug!("we are in the callback");
     // This is the callback function that is called to receive the OUT
     // bind values for the bind variables in the RETURNING clause
-    let ctx: &mut BindContext = unsafe { mem::transmute(octxp) };
-
+    let ctx: &mut BindContext = mem::transmute(octxp);
+    let handle = &mut *bindp;
     // For each iteration the OCI_ATTR_ROWS_RETURNED tells us the number
     // of rows returned in that iteration.  So we can use this information
     // to dynamically allocate storage for all the returned rows for that
@@ -796,55 +780,27 @@ pub unsafe extern "C" fn cbf_get_data(octxp: *mut c_void,
     }
 
     // Provide the address of the storage where the data is to be returned
-    //rl[pos][iter][index] = MAXCOLLEN;
-    ctx.store = Vec::with_capacity(200);
-    let s = &mut ctx.store;
-    *bufpp =  s.as_mut_ptr() as *mut c_void;
+    const ELEM : usize = 8;
+    ctx.store = Vec::with_capacity(ELEM);
+    ctx.store.resize(ELEM, 0);
+
+    debug!("vec len: {}", ctx.store.len());
+    *bufpp = ctx.store.as_ptr() as *mut _;
 
     *piecep = ffi::OCI_ONE_PIECE as u8;
 
     // provide address of the storage where the indicator will be returned
-    //ind[pos][iter][index] = 0;
-    *indpp = ctx.is_null as *mut c_void;
+    *indpp = &mut ctx.is_null as *mut _ as *mut c_void;
 
     // provide address of the storage where the return code  will be returned
-    //rc[pos][iter][index] = 0;
     *rcodepp = &mut ctx.return_code as *mut _;
 
     // provide address of the storage where the actual length  will be
     // returned
+    ctx.return_len = ctx.store.len() as u32;
     *alenp = &mut ctx.return_len as *mut _;
 
+    let (_is_null, _res) = (ctx.func)(handle, &mut ctx.store, iter, index);
+
     ffi::OCI_CONTINUE
-}
-
-pub extern "C" fn in_bind_adapter(ictxp: *mut c_void,
-                                  bindp: *mut ffi::OCIBind,
-                                  iter: u32,
-                                  index: u32,
-                                  bufpp: *mut *mut c_void,
-                                  alenp: *mut u32,
-                                  piecep: *mut u8,
-                                  indpp: *mut *mut c_void) -> i32 {
-    let ctx: &mut BindContext = unsafe { mem::transmute(ictxp) };
-    let handle = unsafe { &mut *bindp };
-    let s = &mut ctx.store;
-
-    let (is_null, res) = (ctx.func)(handle, s, iter, index);
-    ctx.is_null = if is_null { -1 } else { 0 };
-
-    let (ptr, len) = match is_null {
-        false => ( s.as_mut_ptr(), s.len()),
-        true  => (ptr::null_mut(),       0),
-    };
-
-    unsafe {
-        if !bufpp.is_null() { *bufpp = ptr as *mut c_void; }
-        if !alenp.is_null() { *alenp = len as u32; }
-        if !indpp.is_null() { *indpp = &ctx.is_null as *const _ as *const c_void as *mut c_void; }
-    }
-
-    (if res { ffi::OCI_ROWCBK_DONE
-    } else { ffi::OCI_CONTINUE
-    }) as i32
 }

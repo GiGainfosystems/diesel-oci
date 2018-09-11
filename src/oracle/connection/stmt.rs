@@ -36,17 +36,18 @@ impl Statement {
         }
         let mut affected_table = "".to_string();
         let mut is_returning = false;
-        if let Some(pos) = mysql.find("RETURNING") {
-            is_returning = true;
+        if sql.starts_with("INSERT") || sql.starts_with("insert") {
+            if let Some(pos) = mysql.find("RETURNING") {
+                is_returning = true;
 //            mysql = mysql + &format!(" into ");
-            // determine the affected table, which is stupid, but works for `insert into #table ...` pretty well and is used as proof of concept
-            let mysqlcopy = mysql.clone();
-            let keywords : Vec<&str> = mysqlcopy.split(' ').collect();
-            affected_table = format!("{}", keywords[2]);
+                // determine the affected table, which is stupid, but works for `insert into #table ...` pretty well and is used as proof of concept
+                let mysqlcopy = mysql.clone();
+                let keywords : Vec<&str> = mysqlcopy.split(' ').collect();
+                affected_table = format!("{}", keywords[2]);
 
-            // we clone since we need the original statement
-            let mut _fields = mysql.split_off(pos + String::from("RETURNING").len());
-            // now that's just a shortcut to count the `,` which now come
+                // we clone since we need the original statement
+                let mut _fields = mysql.split_off(pos + String::from("RETURNING").len());
+                // now that's just a shortcut to count the `,` which now come
 //            let single_fields : Vec<&str> = fields.split(',').collect();
 //            for i in 0..single_fields.len() {
 //                if i > 0 {
@@ -54,7 +55,8 @@ impl Statement {
 //                }
 //                mysql = mysql + &format!(":out{}", i);
 //            }
-            mysql = mysql + &format!(" rowidtochar(rowid) into :out1");
+                mysql = mysql + &format!(" rowidtochar(rowid) into :out1");
+            }
         }
         debug!("SQL Statement {}", mysql);
         let stmt = unsafe {

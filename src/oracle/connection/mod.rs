@@ -1,3 +1,6 @@
+use std::cell::Cell;
+use std::rc::Rc;
+
 use diesel::connection::StatementCache;
 use diesel::connection::{Connection, MaybeCached, SimpleConnection, TransactionManager};
 use diesel::deserialize::{Queryable, QueryableByName};
@@ -7,13 +10,12 @@ use diesel::query_builder::QueryId;
 use diesel::query_builder::{AsQuery, QueryFragment};
 use diesel::result::*;
 use diesel::sql_types::HasSqlType;
-use std::cell::Cell;
-use std::rc::Rc;
 
 use self::cursor::Cursor;
 use self::stmt::Statement;
 use self::transaction::OCITransactionManager;
-use super::backend::Oracle;
+use super::backend::{Oracle, HasSqlTypeExt};
+
 mod oracle_value;
 pub use self::oracle_value::OracleValue;
 
@@ -22,6 +24,7 @@ mod raw;
 mod row;
 mod stmt;
 mod transaction;
+mod bind_context;
 
 pub struct OciConnection {
     raw: Rc<raw::RawConnection>,
@@ -131,8 +134,7 @@ impl Connection for OciConnection {
     {
         let mut stmt = self.prepare_query(&source.as_query())?;
         let mut metadata = Vec::new();
-        // TODO: find a solution without deprecated function
-        Oracle::row_metadata(&mut metadata, &());
+        Oracle::oci_row_metadata(&mut metadata);
         let cursor: Cursor<T::SqlType, U> = stmt.run_with_cursor(self.auto_commit(), metadata)?;
         cursor.collect()
     }

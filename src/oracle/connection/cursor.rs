@@ -5,17 +5,17 @@ use diesel::sql_types::HasSqlType;
 use oci_sys as ffi;
 use std::marker::PhantomData;
 
-use super::super::backend::Oracle;
-use super::super::types::OCIDataType;
 use super::row::OciRow;
 use super::stmt::Statement;
+use oracle::backend::Oracle;
+use oracle::types::OciDataType;
 
 pub struct Field {
     inner: *mut ffi::OCIDefine,
     buffer: Vec<u8>,
     null_indicator: Box<i16>,
     #[allow(dead_code)]
-    typ: OCIDataType,
+    typ: OciDataType,
 }
 
 impl Field {
@@ -23,7 +23,7 @@ impl Field {
         raw: *mut ffi::OCIDefine,
         buffer: Vec<u8>,
         indicator: Box<i16>,
-        typ: OCIDataType,
+        typ: OciDataType,
     ) -> Field {
         Field {
             inner: raw,
@@ -85,11 +85,11 @@ where
                     ffi::OCI_DEFAULT,
                 );
                 if let Some(err) =
-                Statement::check_error(self.stmt.connection.env.error_handle, status).err()
-                    {
-                        debug!("{:?}", self.stmt.mysql);
-                        return Some(Err(err));
-                    }
+                    Statement::check_error(self.stmt.connection.env.error_handle, status).err()
+                {
+                    debug!("{:?}", self.stmt.mysql);
+                    return Some(Err(err));
+                }
                 if status as u32 == ffi::OCI_NO_DATA {
                     return None;
                 }

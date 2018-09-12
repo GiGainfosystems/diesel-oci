@@ -92,7 +92,7 @@ macro_rules!  impl_bind_column_list {
                         }
                         out.push_sql(":");
                         out.push_sql($T::NAME);
-                        needs_comma = false;
+                        needs_comma = true;
                     )+
                     Ok(())
                 }

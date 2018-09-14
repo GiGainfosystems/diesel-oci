@@ -368,29 +368,27 @@ impl Statement {
     fn get_define_buffer_size(
         &self,
         col_param: *mut ffi::OCIParam,
-        requested_diesel_type: OciDataType,
+        col_type: OciDataType,
     ) -> QueryResult<usize> {
         // TODO: FIXME: proper CLOB and BLOB handling
-        match requested_diesel_type {
-            OciDataType::Number { size, .. }
-            | OciDataType::Float { size, .. }
-            | OciDataType::Date { size, .. } => Ok(size),
-            OciDataType::Text { .. } => {
+
+        // Improvement for text:
+        //
+        // We can check the column type and see if it is varchar.
+        // If yes, we use the column char size as buffer size.
+        // Otherwise we use the default size.
+        match col_type {
+            OciDataType::Text => {
                 let column_type = self.get_column_data_type(col_param)?;
-                // do we have varchar(x) or clob?
                 match column_type {
                     ffi::SQLT_CHR => {
                         let char_size = self.get_column_char_size(col_param)?;
                         Ok(char_size as usize)
                     }
-                    ffi::SQLT_CLOB => Ok(2_000_000),
-                    _ => Err(Error::DatabaseError(
-                        DatabaseErrorKind::UnableToSendCommand,
-                        Box::new("Unexpected column type for Text".to_string()),
-                    )),
+                    _ => Ok(col_type.byte_size()),
                 }
             }
-            OciDataType::Blob { .. } => Ok(88),
+            _ => Ok(col_type.byte_size()),
         }
     }
 

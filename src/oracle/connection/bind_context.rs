@@ -18,13 +18,7 @@ pub struct BindContext {
 impl BindContext {
     pub fn new(error_handle: *mut ffi::OCIError, tpe: &OciDataType) -> Self {
         // TODO: FIXME: proper CLOB and BLOB handling
-        let size = match *tpe {
-            OciDataType::Number { size, .. }
-            | OciDataType::Float { size, .. }
-            | OciDataType::Date { size, .. } => size,
-            OciDataType::Text { .. } => 2_000_000,
-            OciDataType::Blob { .. } => 88,
-        };
+        let size = tpe.byte_size();
         BindContext {
             store: Vec::new(),
             is_null: 0,

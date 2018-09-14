@@ -15,35 +15,23 @@ pub type ToSqlResult = FromSqlResult<IsNull>;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum OciDataType {
-    Number {
-        bind_type: u32,
-        define_type: u32,
-        size: usize,
-    },
-    Float {
-        bind_type: u32,
-        define_type: u32,
-        size: usize,
-    },
-    Text {
-        bind_type: u32,
-        define_type: u32,
-    },
-    Date {
-        bind_type: u32,
-        define_type: u32,
-        size: usize,
-    },
-    Blob {
-        bind_type: u32,
-        define_type: u32,
-    },
+    Bool,
+    SmallInt,
+    Integer,
+    BigInt,
+    Float,
+    Double,
+    Text,
+    Binary,
+    Date,
+    Time,
+    Timestamp,
 }
 
 impl OciDataType {
     pub fn is_text(&self) -> bool {
         match *self {
-            OciDataType::Text { .. } => true,
+            OciDataType::Text => true,
             _ => false,
         }
     }
@@ -51,22 +39,38 @@ impl OciDataType {
     pub fn bind_type(&self) -> u32 {
         use self::OciDataType::*;
         match *self {
-            Float { bind_type, .. }
-            | Text { bind_type, .. }
-            | Number { bind_type, .. }
-            | Date { bind_type, .. }
-            | Blob { bind_type, .. } => bind_type,
+            Bool => ffi::SQLT_INT,
+            SmallInt => ffi::SQLT_INT,
+            Integer => ffi::SQLT_INT,
+            BigInt => ffi::SQLT_INT,
+            Float => ffi::SQLT_BFLOAT,
+            Double => ffi::SQLT_BDOUBLE,
+            Text => ffi::SQLT_CHR,
+            Binary => ffi::SQLT_BIN,
+            Date | Time | Timestamp => ffi::SQLT_DAT,
         }
     }
 
     pub fn define_type(&self) -> u32 {
         use self::OciDataType::*;
         match *self {
-            Float { define_type, .. }
-            | Text { define_type, .. }
-            | Number { define_type, .. }
-            | Date { define_type, .. }
-            | Blob { define_type, .. } => define_type,
+            Text => ffi::SQLT_STR,
+            _ => self.bind_type(),
+        }
+    }
+
+    pub fn byte_size(&self) -> usize {
+        use self::OciDataType::*;
+        match *self {
+            Bool => 2,
+            SmallInt => 2,
+            Integer => 4,
+            BigInt => 8,
+            Float => 4,
+            Double => 8,
+            Text => 2_000_000,
+            Binary => 88,
+            Date | Time | Timestamp => 7,
         }
     }
 }
@@ -82,51 +86,31 @@ macro_rules! not_none {
 
 impl HasSqlType<SmallInt> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Number {
-            bind_type: ffi::SQLT_INT,
-            define_type: ffi::SQLT_INT,
-            size: 2,
-        }
+        OciDataType::SmallInt
     }
 }
 
 impl HasSqlType<Integer> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Number {
-            bind_type: ffi::SQLT_INT,
-            define_type: ffi::SQLT_INT,
-            size: 4,
-        }
+        OciDataType::Integer
     }
 }
 
 impl HasSqlType<BigInt> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Number {
-            bind_type: ffi::SQLT_INT,
-            define_type: ffi::SQLT_INT,
-            size: 8,
-        }
+        OciDataType::BigInt
     }
 }
 
 impl HasSqlType<Float> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Float {
-            bind_type: ffi::SQLT_BFLOAT,
-            define_type: ffi::SQLT_BFLOAT,
-            size: 4,
-        }
+        OciDataType::Float
     }
 }
 
 impl HasSqlType<Double> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Float {
-            bind_type: ffi::SQLT_BDOUBLE,
-            define_type: ffi::SQLT_BDOUBLE,
-            size: 8,
-        }
+        OciDataType::Double
     }
 }
 
@@ -138,55 +122,37 @@ impl HasSqlType<Numeric> for Oracle {
 
 impl HasSqlType<Text> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Text {
-            bind_type: ffi::SQLT_CHR,
-            define_type: ffi::SQLT_STR,
-        }
+        OciDataType::Text
     }
 }
 
 impl HasSqlType<Binary> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Blob {
-            bind_type: ffi::SQLT_BIN,
-            define_type: ffi::SQLT_BIN,
-        }
+        OciDataType::Binary
     }
 }
 
 impl HasSqlType<Date> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Date {
-            bind_type: ffi::SQLT_DAT,
-            define_type: ffi::SQLT_DAT,
-            size: 7,
-        }
+        OciDataType::Date
     }
 }
 
 impl HasSqlType<Time> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Date {
-            bind_type: ffi::SQLT_DAT,
-            define_type: ffi::SQLT_DAT,
-            size: 7,
-        }
+        OciDataType::Time
     }
 }
 
 impl HasSqlType<Timestamp> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Date {
-            bind_type: ffi::SQLT_DAT,
-            define_type: ffi::SQLT_DAT,
-            size: 7,
-        }
+        OciDataType::Timestamp
     }
 }
 
 impl HasSqlType<Bool> for Oracle {
-    fn metadata(lookup: &Self::MetadataLookup) -> Self::TypeMetadata {
-        <Oracle as HasSqlType<SmallInt>>::metadata(lookup)
+    fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
+        OciDataType::Bool
     }
 }
 

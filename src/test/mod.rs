@@ -3,6 +3,7 @@ extern crate dotenv;
 use self::chrono::NaiveDateTime;
 use self::dotenv::dotenv;
 use super::oracle::connection::OciConnection;
+use oracle::query_dsl::OciReturningDsl;
 use diesel::deserialize::{self, FromSql};
 use diesel::result::Error;
 use diesel::serialize::{self, ToSql};
@@ -1961,7 +1962,6 @@ fn updateing_unique_constraint() {
 
 #[test]
 fn insert_returning() {
-    use oracle::query_dsl::OciReturningDsl;
     let conn = init_testing();
 
     clean_test(&conn);

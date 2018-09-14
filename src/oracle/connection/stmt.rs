@@ -215,7 +215,7 @@ impl Statement {
                         self.connection.env.error_handle,
                         status,
                         &self.mysql,
-                        "BINDING",
+                        "RETURNING BINDING",
                     )?;
 
                     if tpe.is_text() {

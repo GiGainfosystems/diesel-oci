@@ -94,6 +94,10 @@ where
                     return None;
                 }
             }
+        } else {
+            if self.current_row > 0 {
+                return None;
+            }
         }
 
         self.current_row += 1;

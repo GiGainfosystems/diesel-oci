@@ -92,6 +92,8 @@ macro_rules!  impl_bind_column_list {
                         }
                         out.push_sql(":");
                         out.push_sql($T::NAME);
+                        // Fixes ORA-01745, if T::NAME is a reserved word.
+                        out.push_sql("_");
                         needs_comma = true;
                     )+
                     Ok(())

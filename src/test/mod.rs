@@ -1463,8 +1463,7 @@ fn systable() {
 
     let ret: Result<Vec<(String, String)>, _> = all_tables::table.load(&conn);
     assert_result!(ret);
-    let ret = ret.unwrap();
-    assert_eq!(ret.len(), 141);
+    let _ = ret.unwrap();
 }
 
 #[test]
@@ -1480,7 +1479,7 @@ fn exists() {
     use oracle::query_builder::exists;
 
     let q = all_tables::table
-        .filter(all_tables::owner.eq("diesel"))
+        .filter(all_tables::table_name.eq("GEOMETRIES"))
         .select(all_tables::owner);
     let ret = exists::<_, String>(q, &conn);
     assert_result!(ret);
@@ -1962,6 +1961,7 @@ fn updateing_unique_constraint() {
 
 #[test]
 fn insert_returning() {
+    use oracle::query_dsl::OciReturningDsl;
     let conn = init_testing();
 
     clean_test(&conn);
@@ -1990,7 +1990,19 @@ fn insert_returning() {
     );
     use diesel::QueryResult;
 
-    let ret : QueryResult<(i64, String, i16, NaiveDateTime, NaiveDateTime, i64, i64, i64)> = ::diesel::insert_into(geometries::table).values(new_row).get_result(&conn);
+    let ret: QueryResult<(
+        i64,
+        String,
+        i16,
+        NaiveDateTime,
+        NaiveDateTime,
+        i64,
+        i64,
+        i64,
+    )> = ::diesel::insert_into(geometries::table)
+        .values(new_row)
+        .oci_returning()
+        .get_result(&conn);
     assert_result!(ret);
     let ret = ret.unwrap(); // asserted above ;)
     assert_eq!(ret.1, "test");

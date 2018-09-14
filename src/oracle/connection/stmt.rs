@@ -383,7 +383,9 @@ impl Statement {
                 match column_type {
                     ffi::SQLT_CHR => {
                         let char_size = self.get_column_char_size(col_param)?;
-                        Ok(char_size as usize)
+                        // + 1 accounts for the extra 0 byte we need,
+                        // because we define with SQLT_STR i.e. 0-terminated string.
+                        Ok((char_size + 1) as usize)
                     }
                     _ => Ok(col_type.byte_size()),
                 }

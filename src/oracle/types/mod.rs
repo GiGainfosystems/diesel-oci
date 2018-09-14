@@ -114,12 +114,6 @@ impl HasSqlType<Double> for Oracle {
     }
 }
 
-impl HasSqlType<Numeric> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        panic!("currently not supported")
-    }
-}
-
 impl HasSqlType<Text> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
         OciDataType::Text

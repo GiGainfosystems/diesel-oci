@@ -10,29 +10,6 @@ use super::super::connection::OracleValue;
 use byteorder::ReadBytesExt;
 use diesel::backend::*;
 
-use std::fmt;
-
-#[derive(Debug, Clone)]
-struct BigDecimalError;
-
-// Generation of an error is completely separate from how it is displayed.
-// There's no need to be concerned about cluttering complex logic with the display style.
-//
-// Note that we don't store any extra info about the errors. This means we can't state
-// which string failed to parse without modifying our types to carry that information.
-impl fmt::Display for BigDecimalError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Error while converting numeric to BigDecimal")
-    }
-}
-
-// This is important for other errors to wrap this one.
-impl Error for BigDecimalError {
-    fn description(&self) -> &str {
-        "Error while converting numeric to BigDecimal"
-    }
-}
-
 impl FromSql<Double, Oracle> for f64 {
     fn from_sql(bytes: Option<&OracleValue>) -> Result<Self, Box<Error + Send + Sync>> {
         let bytes = not_none!(bytes);

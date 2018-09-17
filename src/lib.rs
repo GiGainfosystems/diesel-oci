@@ -1,6 +1,5 @@
 #[macro_use]
 extern crate diesel;
-extern crate bigdecimal;
 extern crate byteorder;
 extern crate libc;
 #[macro_use]

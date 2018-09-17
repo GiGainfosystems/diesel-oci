@@ -1,5 +1,9 @@
 [package]
-authors = ["Georg Semmler <georg.semmler@giga-infosystems.com>"]
+authors = [
+    "Georg Semmler <georg.semmler@giga-infosystems.com>",
+    "Paul Gabriel <paul.gabriel@giga-infosystems.com>",
+    "Daniel Buse <daniel.buse@giga-infosystems.com>",
+]
 name = "diesel-oci"
 version = "0.1.0"
 license = "MIT OR Apache-2.0"

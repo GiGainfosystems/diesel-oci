@@ -202,7 +202,7 @@ impl Statement {
                         self.bind_index,
                         ptr::null_mut(),
                         NUM_ELEMENTS as i32,
-                        tpe.as_raw() as u16,
+                        tpe.bind_type() as u16,
                         ptr::null_mut(),
                         ptr::null_mut(),
                         ptr::null_mut(),
@@ -215,7 +215,7 @@ impl Statement {
                         self.connection.env.error_handle,
                         status,
                         &self.mysql,
-                        "BINDING",
+                        "RETURNING BINDING",
                     )?;
 
                     if tpe.is_text() {
@@ -303,111 +303,126 @@ impl Statement {
         Ok(affected_rows as usize)
     }
 
-    fn get_attr_type_and_size(
-        &self,
-        col_handle: *mut ffi::OCIStmt,
-        tpe: OciDataType,
-    ) -> QueryResult<usize> {
-        match tpe {
-            OciDataType::Number { size, .. }
-            | OciDataType::Float { size, .. }
-            | OciDataType::Date { size, .. } => Ok(size),
-            OciDataType::Text {
-                raw_type: ffi::SQLT_CLOB,
-            } => {
-                // TODO: FIXME: do proper LOB Handling here
-                // if we set below 2_000_000_000 oracle will deny the binding with
-                // ORA-01062: unable to allocate memory for define buffer
-                // just read two MB
-                Ok(2_000_000)
-            }
-            OciDataType::Text { .. } => {
-                let mut type_size = 0_u32;
-                let mut length = 0_u32;
+    fn get_column_param(&self, col_number: u32) -> QueryResult<*mut ffi::OCIParam> {
+        let mut col_param: *mut ffi::OCIParam = ptr::null_mut();
+        let status = unsafe {
+            ffi::OCIParamGet(
+                self.inner_statement as *const _,
+                ffi::OCI_HTYPE_STMT,
+                self.connection.env.error_handle,
+                (&mut col_param as *mut *mut ffi::OCIParam) as *mut _,
+                col_number,
+            )
+        };
+        Self::check_error_sql(
+            self.connection.env.error_handle,
+            status,
+            &self.mysql,
+            "RETRIEVING PARAM HANDLE",
+        )?;
+        Ok(col_param)
+    }
 
-                let status = unsafe {
-                    ffi::OCIAttrGet(
-                        col_handle as *mut _,
-                        ffi::OCI_DTYPE_PARAM,
-                        (&mut type_size as *mut u32) as *mut _,
-                        &mut length as *mut u32,
-                        ffi::OCI_ATTR_CHAR_SIZE,
-                        self.connection.env.error_handle,
-                    )
-                };
-                Self::check_error_sql(
-                    self.connection.env.error_handle,
-                    status,
-                    &self.mysql,
-                    "RETRIEVING LENGTH",
-                )?;
-                Ok(type_size as usize)
+    fn get_column_data_type(&self, col_param: *mut ffi::OCIParam) -> QueryResult<u32> {
+        let mut column_type: u32 = 0;
+        let status = unsafe {
+            ffi::OCIAttrGet(
+                col_param as *mut _,
+                ffi::OCI_DTYPE_PARAM,
+                (&mut column_type as *mut u32) as *mut _,
+                ptr::null_mut(),
+                ffi::OCI_ATTR_DATA_TYPE,
+                self.connection.env.error_handle,
+            )
+        };
+        Self::check_error_sql(
+            self.connection.env.error_handle,
+            status,
+            &self.mysql,
+            "RETRIEVING DATA_TYPE",
+        )?;
+        Ok(column_type)
+    }
+
+    fn get_column_char_size(&self, col_param: *mut ffi::OCIParam) -> QueryResult<u32> {
+        let mut type_size: u32 = 0;
+        let status = unsafe {
+            ffi::OCIAttrGet(
+                col_param as *mut _,
+                ffi::OCI_DTYPE_PARAM,
+                (&mut type_size as *mut u32) as *mut _,
+                ptr::null_mut(),
+                ffi::OCI_ATTR_CHAR_SIZE,
+                self.connection.env.error_handle,
+            )
+        };
+        Self::check_error_sql(
+            self.connection.env.error_handle,
+            status,
+            &self.mysql,
+            "RETRIEVING CHAR_SIZE",
+        )?;
+        Ok(type_size)
+    }
+
+    fn get_define_buffer_size(
+        &self,
+        col_param: *mut ffi::OCIParam,
+        col_type: OciDataType,
+    ) -> QueryResult<usize> {
+        // TODO: FIXME: proper CLOB and BLOB handling
+
+        // Improvement for text:
+        //
+        // We can check the column type and see if it is varchar.
+        // If yes, we use the column char size as buffer size.
+        // Otherwise we use the default size.
+        match col_type {
+            OciDataType::Text => {
+                let column_type = self.get_column_data_type(col_param)?;
+                match column_type {
+                    ffi::SQLT_CHR => {
+                        let char_size = self.get_column_char_size(col_param)?;
+                        // + 1 accounts for the extra 0 byte we need,
+                        // because we define with SQLT_STR i.e. 0-terminated string.
+                        Ok((char_size + 1) as usize)
+                    }
+                    _ => Ok(col_type.byte_size()),
+                }
             }
-            OciDataType::Blob { .. } => {
-                // this just fits GST's current password hashing settings, if they are changed
-                // we need to change the size here
-                // TODO: FIXME: find a away to read the size of a BLOB
-                Ok(88)
-            }
+            _ => Ok(col_type.byte_size()),
         }
     }
 
-    pub fn define(
-        &self,
-        tpe_size: usize,
-        tpe: OciDataType,
-        col_number: usize,
-    ) -> QueryResult<Field> {
-        let v = vec![0; tpe_size as usize];
+    fn define_column(&self, col_number: usize, col_type: OciDataType) -> QueryResult<Field> {
+        let param = self.get_column_param(col_number as u32)?;
+        let buf_size = self.get_define_buffer_size(param, col_type)?;
+
+        let buf = vec![0; buf_size as usize];
         let mut null_indicator: Box<i16> = Box::new(-1);
-        let def = unsafe {
-            let mut def = ptr::null_mut();
-            let status = ffi::OCIDefineByPos(
+        let mut define_handle = ptr::null_mut();
+        let status = unsafe {
+            ffi::OCIDefineByPos(
                 self.inner_statement,
-                &mut def,
+                &mut define_handle,
                 self.connection.env.error_handle,
                 col_number as u32,
-                v.as_ptr() as *mut _,
-                v.len() as i32,
-                tpe.as_raw() as libc::c_ushort,
+                buf.as_ptr() as *mut _,
+                buf.len() as i32,
+                col_type.define_type() as libc::c_ushort,
                 &mut *null_indicator as *mut i16 as *mut c_void,
                 ptr::null_mut(),
                 ptr::null_mut(),
                 ffi::OCI_DEFAULT,
-            );
-            Self::check_error_sql(
-                self.connection.env.error_handle,
-                status,
-                &self.mysql,
-                "DEFINING",
-            )?;
-            def
+            )
         };
-        Ok(Field::new(def, v, null_indicator, tpe))
-    }
-
-    fn define_column(&self, col_number: usize, tpe: OciDataType) -> QueryResult<Field> {
-        let col_handle = unsafe {
-            let mut parameter_descriptor: *mut ffi::OCIStmt = ptr::null_mut();
-            let status = ffi::OCIParamGet(
-                self.inner_statement as *const _,
-                ffi::OCI_HTYPE_STMT,
-                self.connection.env.error_handle,
-                (&mut parameter_descriptor as *mut *mut ffi::OCIStmt) as *mut _,
-                col_number as u32,
-            );
-            Self::check_error_sql(
-                self.connection.env.error_handle,
-                status,
-                &self.mysql,
-                "RETRIEVING COL HANDLE",
-            )?;
-            parameter_descriptor
-        };
-
-        let tpe_size = self.get_attr_type_and_size(col_handle, tpe)?;
-
-        self.define(tpe_size, tpe, col_number)
+        Self::check_error_sql(
+            self.connection.env.error_handle,
+            status,
+            &self.mysql,
+            "DEFINING",
+        )?;
+        Ok(Field::new(define_handle, buf, null_indicator, col_type))
     }
 
     fn define_all_columns(&self, row: &[OciDataType]) -> QueryResult<Vec<Field>> {
@@ -464,7 +479,7 @@ impl Statement {
                 self.bind_index,
                 buf.as_mut_ptr() as *mut c_void,
                 buf.len() as i32,
-                tpe.as_raw() as u16,
+                tpe.bind_type() as u16,
                 &mut *nullind as *mut i16 as *mut c_void,
                 ptr::null_mut(),
                 ptr::null_mut(),

@@ -90,8 +90,8 @@ macro_rules!  impl_bind_column_list {
                         if needs_comma {
                             out.push_sql(", ");
                         }
-                        out.push_sql(":");
-                        out.push_sql($T::NAME);
+                        let placeholder = format!(":out{}", $idx);
+                        out.push_sql(&placeholder);
                         needs_comma = true;
                     )+
                     Ok(())

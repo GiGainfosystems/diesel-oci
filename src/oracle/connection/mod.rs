@@ -14,17 +14,17 @@ use diesel::sql_types::HasSqlType;
 use self::cursor::Cursor;
 use self::stmt::Statement;
 use self::transaction::OCITransactionManager;
-use super::backend::{Oracle, HasSqlTypeExt};
+use super::backend::Oracle;
 
 mod oracle_value;
 pub use self::oracle_value::OracleValue;
 
+mod bind_context;
 mod cursor;
 mod raw;
 mod row;
 mod stmt;
 mod transaction;
-mod bind_context;
 
 pub struct OciConnection {
     raw: Rc<raw::RawConnection>,
@@ -134,7 +134,9 @@ impl Connection for OciConnection {
     {
         let mut stmt = self.prepare_query(&source.as_query())?;
         let mut metadata = Vec::new();
-        Oracle::oci_row_metadata(&mut metadata);
+        // TODO: FIXME: Georg will check if this can get un-deprecated.
+        #[allow(deprecated)]
+        Oracle::row_metadata(&mut metadata, &());
         let cursor: Cursor<T::SqlType, U> = stmt.run_with_cursor(self.auto_commit(), metadata)?;
         cursor.collect()
     }

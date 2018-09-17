@@ -1,4 +1,4 @@
-#[allow(missing_debug_implementations, missing_copy_implementations)]
+#[derive(Debug)]
 pub struct OracleValue {
     pub(crate) bytes: [u8],
 }

@@ -3,8 +3,6 @@ use std::error::Error;
 use diesel::deserialize::FromSql;
 use diesel::sql_types::*;
 
-use bigdecimal::BigDecimal;
-
 use oracle::backend::Oracle;
 
 use super::super::connection::OracleValue;
@@ -62,14 +60,5 @@ impl FromSql<Float, Oracle> for f32 {
         bytes
             .read_f32::<<Oracle as Backend>::ByteOrder>()
             .map_err(|e| Box::new(e) as Box<Error + Send + Sync>)
-    }
-}
-
-impl FromSql<Numeric, Oracle> for BigDecimal {
-    fn from_sql(bytes: Option<&OracleValue>) -> Result<Self, Box<Error + Send + Sync>> {
-        let bytes = not_none!(bytes);
-        let bytes = &bytes.bytes;
-        BigDecimal::parse_bytes(bytes, 10)
-            .ok_or(Box::new(BigDecimalError) as Box<Error + Send + Sync>)
     }
 }

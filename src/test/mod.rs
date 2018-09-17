@@ -2016,3 +2016,23 @@ fn insert_returning() {
     assert_eq!(ret.6, 1);
     assert_eq!(ret.7, 1);
 }
+
+#[test]
+fn insert_returning_with_nulls() {
+    use self::test;
+    use diesel::ExpressionMethods;
+    let conn = init_testing();
+    clean_test(&conn);
+    create_test_table(&conn);
+    type ResultType = ::diesel::QueryResult<(Option<i64>, Option<String>, Option<i64>)>;
+    let result: ResultType = ::diesel::insert_into(test::table)
+        .values(test::id.eq(1))
+        .oci_returning()
+        .get_result(&conn);
+    assert_result!(result);
+    let result = result.unwrap();
+    assert_eq!(result.0, Some(1));
+    assert_eq!(result.1, None);
+    assert_eq!(result.2, None);
+    drop_test_table(&conn);
+}

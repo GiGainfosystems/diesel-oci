@@ -10,7 +10,7 @@ use super::stmt::Statement;
 
 pub struct BindContext {
     pub(crate) store: Vec<u8>,
-    is_null: ffi::OCIInd,
+    pub(crate) is_null: ffi::OCIInd,
     return_code: u16,
     return_len: u32,
     error_handle: *mut ffi::OCIError,

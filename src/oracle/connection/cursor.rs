@@ -5,17 +5,17 @@ use diesel::sql_types::HasSqlType;
 use oci_sys as ffi;
 use std::marker::PhantomData;
 
-use super::super::backend::Oracle;
-use super::super::types::OCIDataType;
 use super::row::OciRow;
 use super::stmt::Statement;
+use oracle::backend::Oracle;
+use oracle::types::OciDataType;
 
 pub struct Field {
     inner: *mut ffi::OCIDefine,
     buffer: Vec<u8>,
     null_indicator: Box<i16>,
     #[allow(dead_code)]
-    typ: OCIDataType,
+    typ: OciDataType,
 }
 
 impl Field {
@@ -23,7 +23,7 @@ impl Field {
         raw: *mut ffi::OCIDefine,
         buffer: Vec<u8>,
         indicator: Box<i16>,
-        typ: OCIDataType,
+        typ: OciDataType,
     ) -> Field {
         Field {
             inner: raw,
@@ -40,8 +40,10 @@ impl Field {
 
 impl Drop for Field {
     fn drop(&mut self) {
-        unsafe {
-            ffi::OCIHandleFree(self.inner as *mut _, ffi::OCI_HTYPE_DEFINE);
+        if !self.inner.is_null() {
+            unsafe {
+                ffi::OCIHandleFree(self.inner as *mut _, ffi::OCI_HTYPE_DEFINE);
+            }
         }
     }
 }
@@ -72,22 +74,28 @@ where
     type Item = QueryResult<T>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        unsafe {
-            let status = ffi::OCIStmtFetch2(
-                self.stmt.inner_statement,
-                self.stmt.connection.env.error_handle,
-                1,
-                ffi::OCI_FETCH_NEXT as u16,
-                0,
-                ffi::OCI_DEFAULT,
-            );
-            if let Some(err) =
-                Statement::check_error(self.stmt.connection.env.error_handle, status).err()
-            {
-                debug!("{:?}", self.stmt.mysql);
-                return Some(Err(err));
+        if !self.stmt.is_returning {
+            unsafe {
+                let status = ffi::OCIStmtFetch2(
+                    self.stmt.inner_statement,
+                    self.stmt.connection.env.error_handle,
+                    1,
+                    ffi::OCI_FETCH_NEXT as u16,
+                    0,
+                    ffi::OCI_DEFAULT,
+                );
+                if let Some(err) =
+                    Statement::check_error(self.stmt.connection.env.error_handle, status).err()
+                {
+                    debug!("{:?}", self.stmt.mysql);
+                    return Some(Err(err));
+                }
+                if status as u32 == ffi::OCI_NO_DATA {
+                    return None;
+                }
             }
-            if status as u32 == ffi::OCI_NO_DATA {
+        } else {
+            if self.current_row > 0 {
                 return None;
             }
         }

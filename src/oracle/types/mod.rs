@@ -13,84 +13,64 @@ pub type FromSqlResult<T> = Result<T, ErrorType>;
 pub type ErrorType = Box<Error + Send + Sync>;
 pub type ToSqlResult = FromSqlResult<IsNull>;
 
-#[allow(dead_code)]
-#[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Hash, Eq)]
-pub enum OCIDataType {
-    Char = ffi::SQLT_CHR,
-    Date = ffi::SQLT_DATE,
-    Time = ffi::SQLT_TIME,
-    Timestamp = ffi::SQLT_TIMESTAMP,
-    TimestampWithTz = ffi::SQLT_TIMESTAMP_TZ,
-    TimestampWithLocalTz = ffi::SQLT_TIMESTAMP_LTZ,
-    IntervalYearToMonth = ffi::SQLT_INTERVAL_YM,
-    IntervalDayToSecond = ffi::SQLT_INTERVAL_DS,
-    Clob = ffi::SQLT_CLOB,
-    Blob = ffi::SQLT_BLOB,
-    Int = ffi::SQLT_INT,
-    Uint = ffi::SQLT_UIN,
-    Float = ffi::SQLT_FLT,
-    PackedDecimalNumber = ffi::SQLT_PDN,
-    Binary = ffi::SQLT_BIN,
-    Numeric = ffi::SQLT_NUM,
-    NamedObject = ffi::SQLT_NTY,
-    Ref = ffi::SQLT_REF,
-    OCIString = ffi::SQLT_VST,
-    NumericWithLength = ffi::SQLT_VNU,
-    BFloat = ffi::SQLT_BFLOAT,
-    BDouble = ffi::SQLT_BDOUBLE,
-    IBFloat = ffi::SQLT_IBFLOAT,
-    IBDouble = ffi::SQLT_IBDOUBLE,
-    String = ffi::SQLT_STR,
-    AnsiChar = ffi::SQLT_AFC,
-    InternDate = ffi::SQLT_DAT,
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub enum OciDataType {
+    Bool,
+    SmallInt,
+    Integer,
+    BigInt,
+    Float,
+    Double,
+    Text,
+    Binary,
+    Date,
+    Time,
+    Timestamp,
 }
 
-impl OCIDataType {
-    pub fn from_raw(n: u32) -> Option<OCIDataType> {
-        use self::OCIDataType::*;
-        match n {
-            ffi::SQLT_CHR => Some(Char),
-            ffi::SQLT_NUM => Some(Numeric),
-            ffi::SQLT_INT => Some(Int),
-            ffi::SQLT_FLT => Some(Float),
-            ffi::SQLT_STR => Some(String),
-            ffi::SQLT_VNU => Some(NumericWithLength),
-            ffi::SQLT_PDN => Some(PackedDecimalNumber),
-            ffi::SQLT_DAT => Some(InternDate),
-            ffi::SQLT_BFLOAT => Some(BFloat),
-            ffi::SQLT_BDOUBLE => Some(BDouble),
-            ffi::SQLT_BIN => Some(Binary),
-            ffi::SQLT_UIN => Some(Uint),
-            ffi::SQLT_AFC => Some(AnsiChar),
-            ffi::SQLT_IBFLOAT => Some(IBFloat),
-            ffi::SQLT_IBDOUBLE => Some(IBDouble),
-            ffi::SQLT_NTY => Some(NamedObject),
-            ffi::SQLT_REF => Some(Ref),
-            ffi::SQLT_CLOB => Some(Clob),
-            ffi::SQLT_BLOB => Some(Blob),
-            ffi::SQLT_VST => Some(OCIString),
-            ffi::SQLT_DATE => Some(Date),
-            ffi::SQLT_TIME => Some(Time),
-            ffi::SQLT_TIMESTAMP => Some(Timestamp),
-            ffi::SQLT_TIMESTAMP_TZ => Some(TimestampWithTz),
-            ffi::SQLT_INTERVAL_YM => Some(IntervalYearToMonth),
-            ffi::SQLT_INTERVAL_DS => Some(IntervalDayToSecond),
-            ffi::SQLT_TIMESTAMP_LTZ => Some(TimestampWithLocalTz),
-            _ => None,
+impl OciDataType {
+    pub fn is_text(&self) -> bool {
+        match *self {
+            OciDataType::Text => true,
+            _ => false,
         }
     }
 
-    pub fn to_raw(self) -> u32 {
-        use self::OCIDataType::*;
-        match self {
-            Int => ffi::SQLT_INT,
-            Float | BFloat | IBFloat => ffi::SQLT_BDOUBLE, // this should be SQLT_BFLOAT, but diesel comes with a float here
-            BDouble | IBDouble => ffi::SQLT_BDOUBLE,
-            Char | String => ffi::SQLT_CHR,
+    pub fn bind_type(&self) -> u32 {
+        use self::OciDataType::*;
+        match *self {
+            Bool => ffi::SQLT_INT,
+            SmallInt => ffi::SQLT_INT,
+            Integer => ffi::SQLT_INT,
+            BigInt => ffi::SQLT_INT,
+            Float => ffi::SQLT_IBFLOAT,
+            Double => ffi::SQLT_IBDOUBLE,
+            Text => ffi::SQLT_CHR,
             Binary => ffi::SQLT_BIN,
-            Timestamp | InternDate => ffi::SQLT_DAT,
-            _ => 0u32,
+            Date | Time | Timestamp => ffi::SQLT_DAT,
+        }
+    }
+
+    pub fn define_type(&self) -> u32 {
+        use self::OciDataType::*;
+        match *self {
+            Text => ffi::SQLT_STR,
+            _ => self.bind_type(),
+        }
+    }
+
+    pub fn byte_size(&self) -> usize {
+        use self::OciDataType::*;
+        match *self {
+            Bool => 2,
+            SmallInt => 2,
+            Integer => 4,
+            BigInt => 8,
+            Float => 4,
+            Double => 8,
+            Text => 2_000_000,
+            Binary => 88,
+            Date | Time | Timestamp => 7,
         }
     }
 }
@@ -105,74 +85,68 @@ macro_rules! not_none {
 }
 
 impl HasSqlType<SmallInt> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::Int
+    fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
+        OciDataType::SmallInt
     }
 }
 
 impl HasSqlType<Integer> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::Int
+    fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
+        OciDataType::Integer
     }
 }
 
 impl HasSqlType<BigInt> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::Int
+    fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
+        OciDataType::BigInt
     }
 }
 
 impl HasSqlType<Float> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::Float
+    fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
+        OciDataType::Float
     }
 }
 
 impl HasSqlType<Double> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::Float
+    fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
+        OciDataType::Double
     }
 }
 
-impl HasSqlType<Numeric> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::Float
-    }
-}
-
-impl HasSqlType<VarChar> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::Char
+impl HasSqlType<Text> for Oracle {
+    fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
+        OciDataType::Text
     }
 }
 
 impl HasSqlType<Binary> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::Binary
+    fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
+        OciDataType::Binary
     }
 }
 
 impl HasSqlType<Date> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::InternDate
+    fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
+        OciDataType::Date
     }
 }
 
 impl HasSqlType<Time> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::Time
+    fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
+        OciDataType::Time
     }
 }
 
 impl HasSqlType<Timestamp> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::InternDate
+    fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
+        OciDataType::Timestamp
     }
 }
 
 impl HasSqlType<Bool> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::Int
+    fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
+        OciDataType::Bool
     }
 }
 

@@ -1,3 +1,6 @@
+use std::cell::Cell;
+use std::rc::Rc;
+
 use diesel::connection::StatementCache;
 use diesel::connection::{Connection, MaybeCached, SimpleConnection, TransactionManager};
 use diesel::deserialize::{Queryable, QueryableByName};
@@ -7,16 +10,16 @@ use diesel::query_builder::QueryId;
 use diesel::query_builder::{AsQuery, QueryFragment};
 use diesel::result::*;
 use diesel::sql_types::HasSqlType;
-use std::cell::Cell;
-use std::rc::Rc;
 
 use self::cursor::Cursor;
 use self::stmt::Statement;
 use self::transaction::OCITransactionManager;
 use super::backend::Oracle;
+
 mod oracle_value;
 pub use self::oracle_value::OracleValue;
 
+mod bind_context;
 mod cursor;
 mod raw;
 mod row;
@@ -65,7 +68,8 @@ unsafe impl Send for OciConnection {}
 impl SimpleConnection for OciConnection {
     fn batch_execute(&self, query: &str) -> QueryResult<()> {
         let mut stmt = try!(Statement::prepare(&self.raw, query));
-        try!(stmt.run(self.auto_commit()));
+        try!(stmt.run(self.auto_commit(), &[]));
+        stmt.bind_index = 0;
         Ok(())
     }
 }
@@ -100,7 +104,8 @@ impl Connection for OciConnection {
     #[doc(hidden)]
     fn execute(&self, query: &str) -> QueryResult<usize> {
         let mut stmt = try!(Statement::prepare(&self.raw, query));
-        try!(stmt.run(self.auto_commit()));
+        try!(stmt.run(self.auto_commit(), &[]));
+        stmt.bind_index = 0;
         Ok(try!(stmt.get_affected_rows()))
     }
 
@@ -111,7 +116,8 @@ impl Connection for OciConnection {
     {
         // TODO: FIXME: this always returns 0 whereas the code looks proper
         let mut stmt = try!(self.prepare_query(source));
-        try!(stmt.run(self.auto_commit()));
+        try!(stmt.run(self.auto_commit(), &[]));
+        stmt.bind_index = 0;
         Ok(try!(stmt.get_affected_rows()))
     }
 
@@ -127,12 +133,12 @@ impl Connection for OciConnection {
         U: Queryable<T::SqlType, Self::Backend>,
     {
         let mut stmt = self.prepare_query(&source.as_query())?;
-        let cursor: Cursor<T::SqlType, U> = stmt.run_with_cursor(self.auto_commit())?;
-        let mut ret = Vec::new();
-        for el in cursor {
-            ret.push(el?);
-        }
-        Ok(ret)
+        let mut metadata = Vec::new();
+        // TODO: FIXME: Georg will check if this can get un-deprecated.
+        #[allow(deprecated)]
+        Oracle::row_metadata(&mut metadata, &());
+        let cursor: Cursor<T::SqlType, U> = stmt.run_with_cursor(self.auto_commit(), metadata)?;
+        cursor.collect()
     }
 
     fn query_by_name<T, U>(&self, _source: &T) -> QueryResult<Vec<U>>

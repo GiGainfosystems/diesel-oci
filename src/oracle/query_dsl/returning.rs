@@ -90,10 +90,8 @@ macro_rules!  impl_bind_column_list {
                         if needs_comma {
                             out.push_sql(", ");
                         }
-                        out.push_sql(":");
-                        out.push_sql($T::NAME);
-                        // Fixes ORA-01745, if T::NAME is a reserved word.
-                        out.push_sql("_");
+                        let placeholder = format!(":out{}", $idx);
+                        out.push_sql(&placeholder);
                         needs_comma = true;
                     )+
                     Ok(())

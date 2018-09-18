@@ -20,7 +20,7 @@ pub struct Statement {
     sizes: Vec<i32>,
     indicators: Vec<Box<ffi::OCIInd>>,
     pub(crate) mysql: String,
-    pub(crate) returning_buffer: Vec<Vec<u8>>,
+    pub(crate) returning_contexts: Vec<BindContext>,
 }
 
 const NUM_ELEMENTS: usize = 40;
@@ -115,7 +115,7 @@ impl Statement {
             sizes: Vec::with_capacity(NUM_ELEMENTS),
             indicators: Vec::with_capacity(NUM_ELEMENTS),
             mysql,
-            returning_buffer: Vec::with_capacity(NUM_ELEMENTS),
+            returning_contexts: Vec::new(),
         })
     }
 
@@ -180,14 +180,17 @@ impl Statement {
 
     pub fn run(&mut self, auto_commit: bool, metadata: &[OciDataType]) -> QueryResult<()> {
         let iters = if self.is_select { 0 } else { 1 };
-        let mut octx = Vec::new();
 
         if self.is_returning {
-            octx.reserve_exact(metadata.len());
+            self.returning_contexts.reserve_exact(metadata.len());
             for tpe in metadata {
                 self.bind_index += 1;
-                octx.push(BindContext::new(self.connection.env.error_handle, tpe));
-                let octx = octx.last_mut().expect("We pushed it above");
+                self.returning_contexts
+                    .push(BindContext::new(self.connection.env.error_handle, tpe));
+                let octx = self
+                    .returning_contexts
+                    .last_mut()
+                    .expect("We pushed it above");
                 let mut bndp = ptr::null_mut() as *mut ffi::OCIBind;
 
                 unsafe {
@@ -272,9 +275,6 @@ impl Statement {
                 &self.mysql,
                 "EXECUTING STMT",
             )?;
-        }
-        if self.is_returning {
-            self.returning_buffer = octx.into_iter().map(|octx| octx.store).collect();
         }
         // the bind index is required to start by zero. if a statement is
         // executed more than once we need to reset the index here
@@ -441,12 +441,17 @@ impl Statement {
         self.bind_index = 0;
         if self.is_returning {
             let fields = self
-                .returning_buffer
+                .returning_contexts
                 .iter()
                 .zip(metadata.into_iter())
                 .map(|(buffer, tpe)| {
-                    let null_indicator: Box<i16> = Box::new(1);
-                    Field::new(ptr::null_mut(), buffer.to_owned(), null_indicator, tpe)
+                    let null_indicator: Box<i16> = Box::new(buffer.is_null);
+                    Field::new(
+                        ptr::null_mut(),
+                        buffer.store.to_owned(),
+                        null_indicator,
+                        tpe,
+                    )
                 })
                 .collect();
             Ok(Cursor::new(self, fields))

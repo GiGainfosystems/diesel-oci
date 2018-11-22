@@ -2036,3 +2036,33 @@ fn insert_returning_with_nulls() {
     assert_eq!(result.2, None);
     drop_test_table(&conn);
 }
+
+#[test]
+fn umlauts() {
+    let conn = init_testing();
+
+    clean_test(&conn);
+
+    use self::test::columns::TST_CHR;
+    use self::test::dsl::test;
+    use diesel::ExpressionMethods;
+    use diesel::QueryDsl;
+
+    let ret = conn.execute(CREATE_TEST_TABLE);
+    assert_result!(ret);
+
+    let input = "äöüß";
+
+    let ret = ::diesel::insert_into(test)
+        .values(TST_CHR.eq(input))
+        .execute(&conn);
+    assert_result!(ret);
+
+    let ret: Result<Vec<Option<String>>, _> = self::test::dsl::test.select(TST_CHR).load(&conn);
+    assert_result!(ret);
+    let ret = ret.unwrap();
+    assert_eq!(ret.len(), 1);
+    assert!(ret[0].is_some());
+    let tst_chr = ret[0].clone().unwrap();
+    assert_eq!(tst_chr, input);
+}

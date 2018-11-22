@@ -82,6 +82,8 @@ impl Connection for OciConnection {
     /// should be a valid connection string for a given backend. See the
     /// documentation for the specific backend for specifics.
     fn establish(database_url: &str) -> ConnectionResult<Self> {
+        use std::env;
+        env::set_var("NLS_LANG", "_.UTF8");
         let r = try!(raw::RawConnection::establish(database_url));
         let ret = OciConnection {
             raw: Rc::new(r),

@@ -2064,6 +2064,7 @@ fn umlauts() {
     v.push(String::from("Olá"));
     v.push(String::from("Здравствуйте"));
     v.push(String::from("Hola"));
+    v.push(String::from("🎉🦀"));
     for hello in &v {
         let ret = ::diesel::insert_into(test)
             .values(TST_CHR.eq(&hello))

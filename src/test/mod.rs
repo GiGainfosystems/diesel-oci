@@ -2036,3 +2036,49 @@ fn insert_returning_with_nulls() {
     assert_eq!(result.2, None);
     drop_test_table(&conn);
 }
+
+#[test]
+fn umlauts() {
+    let conn = init_testing();
+
+    clean_test(&conn);
+
+    use self::test::columns::TST_CHR;
+    use self::test::dsl::test;
+    use diesel::ExpressionMethods;
+    use diesel::QueryDsl;
+
+    let ret = conn.execute(CREATE_TEST_TABLE);
+    assert_result!(ret);
+
+    let mut v = Vec::new();
+    v.push(String::from("äöüß"));
+    v.push(String::from("السلام عليكم"));
+    v.push(String::from("Dobrý den"));
+    v.push(String::from("Hello"));
+    v.push(String::from("שָׁלוֹם"));
+    v.push(String::from("नमस्ते"));
+    v.push(String::from("こんにちは"));
+    v.push(String::from("안녕하세요"));
+    v.push(String::from("你好"));
+    v.push(String::from("Olá"));
+    v.push(String::from("Здравствуйте"));
+    v.push(String::from("Hola"));
+    v.push(String::from("🎉🦀"));
+    for hello in &v {
+        let ret = ::diesel::insert_into(test)
+            .values(TST_CHR.eq(&hello))
+            .execute(&conn);
+        assert_result!(ret);
+    }
+
+    let ret: Result<Vec<Option<String>>, _> = self::test::dsl::test.select(TST_CHR).load(&conn);
+    assert_result!(ret);
+    let ret = ret.unwrap();
+    assert_eq!(ret.len(), v.len());
+    for (i, r) in ret.iter().enumerate() {
+        assert!(r.is_some());
+        let tst_chr = r.clone().unwrap();
+        assert_eq!(tst_chr, v[i]);
+    }
+}

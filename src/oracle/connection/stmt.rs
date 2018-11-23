@@ -422,6 +422,21 @@ impl Statement {
             &self.mysql,
             "DEFINING",
         )?;
+
+        if col_type == OciDataType::Text {
+            let mut cs_id = self.connection.env.cs_id;
+            unsafe {
+                ffi::OCIAttrSet(
+                    define_handle as *mut c_void,
+                    ffi::OCI_HTYPE_DEFINE,
+                    &mut cs_id as *mut u16 as *mut c_void,
+                    0,
+                    ffi::OCI_ATTR_CHARSET_ID,
+                    self.connection.env.error_handle,
+                );
+            }
+        }
+
         Ok(Field::new(define_handle, buf, null_indicator, col_type))
     }
 

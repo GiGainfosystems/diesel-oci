@@ -42,7 +42,7 @@ impl ConnectionEnviroment {
             unsafe { alloc_handle::<ffi::OCIError>(env_handle, ffi::OCI_HTYPE_ERROR) };
         // we are certain that our string doesn't have 0 bytes in the middle,
         // so we can .unwrap()
-        let enc = CString::new("UTF8").unwrap();
+        let enc = CString::new("AL32UTF8").unwrap();
         let cs_id = unsafe {
             ffi::OCINlsCharSetNameToId(
                 env_handle as *mut libc::c_void,

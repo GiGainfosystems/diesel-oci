@@ -13,4 +13,5 @@ fn main() {
         panic!("Please set OCI_LIB_DIR to build oci-sys");
     }
     println!("cargo:rustc-link-lib={}", OCI_LIB);
+    println!("cargo:rerun-if-env-changed=OCI_LIB_DIR");
 }

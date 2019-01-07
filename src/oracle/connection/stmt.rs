@@ -27,25 +27,15 @@ const NUM_ELEMENTS: usize = 40;
 
 impl Statement {
     pub fn prepare(raw_connection: &Rc<RawConnection>, sql: &str) -> QueryResult<Self> {
-        let mut mysql = sql.to_string();
-        // TODO: this can go wrong: `UPDATE table SET k='LIMIT';`
-        if let Some(pos) = mysql.find("LIMIT") {
-            let mut limit_clause = mysql.split_off(pos);
-            let place_holder = limit_clause.split_off(String::from("LIMIT ").len());
-            mysql = mysql + &format!("OFFSET 0 ROWS FETCH NEXT {} ROWS ONLY", place_holder);
-        }
-        // TODO: this is bad, things will break
-        let is_returning =
-            (sql.starts_with("INSERT") || sql.starts_with("insert")) && sql.contains("RETURNING");
-        debug!("SQL Statement {}", mysql);
+        debug!("SQL Statement {}", sql);
         let stmt = unsafe {
             let mut stmt: *mut ffi::OCIStmt = ptr::null_mut();
             let status = ffi::OCIStmtPrepare2(
                 raw_connection.service_handle,
                 &mut stmt,
                 raw_connection.env.error_handle,
-                mysql.as_ptr(),
-                mysql.len() as u32,
+                sql.as_ptr(),
+                sql.len() as u32,
                 ptr::null(),
                 0,
                 ffi::OCI_NTV_SYNTAX,
@@ -55,21 +45,21 @@ impl Statement {
             Self::check_error_sql(
                 raw_connection.env.error_handle,
                 status,
-                &mysql,
+                &sql,
                 "PREPARING STMT",
             )?;
 
             // for create statements we need to run OCIStmtPrepare2 twice
             // c.f. https://docs.oracle.com/database/121/LNOCI/oci17msc001.htm#LNOCI17165
             // "To reexecute a DDL statement, you must prepare the statement again using OCIStmtPrepare2()."
-            if let Some(u) = mysql.to_string().find("CREATE") {
+            if let Some(u) = sql.find("CREATE") {
                 if u < 10 {
                     let status = ffi::OCIStmtPrepare2(
                         raw_connection.service_handle,
                         &mut stmt,
                         raw_connection.env.error_handle,
-                        mysql.as_ptr(),
-                        mysql.len() as u32,
+                        sql.as_ptr(),
+                        sql.len() as u32,
                         ptr::null(),
                         0,
                         ffi::OCI_NTV_SYNTAX,
@@ -79,12 +69,12 @@ impl Statement {
                     Self::check_error_sql(
                         raw_connection.env.error_handle,
                         status,
-                        &mysql,
+                        &sql,
                         "PREPARING STMT 2",
                     )?;
                 }
             }
-            debug!("Executing {:?}", mysql);
+            debug!("Executing {:?}", sql);
             stmt
         };
         Ok(Statement {
@@ -110,11 +100,12 @@ impl Statement {
             //            INNER JOIN geo_points w ON bbox.w = w.id
             // ```
             is_select: sql.starts_with("SELECT") || sql.starts_with("select"),
-            is_returning,
+            is_returning: (sql.starts_with("INSERT") || sql.starts_with("insert"))
+                && sql.contains("RETURNING"),
             buffers: Vec::with_capacity(NUM_ELEMENTS),
             sizes: Vec::with_capacity(NUM_ELEMENTS),
             indicators: Vec::with_capacity(NUM_ELEMENTS),
-            mysql,
+            mysql: sql.to_owned(),
             returning_contexts: Vec::new(),
         })
     }
@@ -168,7 +159,7 @@ impl Statement {
     pub fn check_error_sql(
         error_handle: *mut ffi::OCIError,
         status: i32,
-        sql: &String,
+        sql: &str,
         action: &str,
     ) -> Result<(), Error> {
         let check = Self::check_error(error_handle, status);
@@ -550,7 +541,8 @@ impl Drop for Statement {
                 status,
                 &self.mysql,
                 "DROPPING STMT",
-            ).err()
+            )
+            .err()
             {
                 debug!("{:?}", err);
             }

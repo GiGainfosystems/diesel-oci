@@ -3,7 +3,6 @@ extern crate dotenv;
 use self::chrono::NaiveDateTime;
 use self::dotenv::dotenv;
 use super::oracle::connection::OciConnection;
-use oracle::query_dsl::OciReturningDsl;
 use diesel::deserialize::{self, FromSql};
 use diesel::result::Error;
 use diesel::serialize::{self, ToSql};
@@ -13,6 +12,7 @@ use diesel::RunQueryDsl;
 use num::FromPrimitive;
 use oracle::backend::Oracle;
 use oracle::connection::OracleValue;
+use oracle::query_dsl::OciReturningDsl;
 use std::env;
 use std::error::Error as StdError;
 use std::io::Write;
@@ -33,9 +33,7 @@ fn connection() -> OciConnection {
 fn database_url_from_env(backend_specific_env_var: &str) -> String {
     dotenv().ok();
     match env::var(backend_specific_env_var) {
-        Ok(val) => {
-            val
-        }
+        Ok(val) => val,
         _ => env::var("OCI_DATABASE_URL")
             .expect("OCI_DATABASE_URL must be set in order to run tests"),
     }
@@ -166,7 +164,8 @@ fn transaction_commit() {
     let out = conn.transaction::<_, Error, _>(|| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
         let _ret = conn.execute(&*sql)?;
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 1);
         Ok(())
     });
@@ -187,7 +186,8 @@ fn transaction_rollback() {
     let out = conn.transaction::<i32, Error, _>(|| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
         let _ret = conn.execute(&*sql)?;
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 1);
         Err(Error::NotFound)
     });
@@ -208,7 +208,8 @@ fn transaction_nested_rollback_rollback() {
     let out = conn.transaction::<i32, Error, _>(|| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
         let _ret = conn.execute(&*sql)?;
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 1);
 
         let out_inner = conn.transaction::<i32, Error, _>(|| {
@@ -220,7 +221,8 @@ fn transaction_nested_rollback_rollback() {
             Err(Error::NotFound)
         });
         assert!(out_inner.is_err() && !out_inner.is_ok(), "What :shrug:?");
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 1);
 
         Err(Error::NotFound)
@@ -242,7 +244,8 @@ fn transaction_nested_commit_commit() {
     let out = conn.transaction::<_, Error, _>(|| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
         let _ret = conn.execute(&*sql)?;
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 1);
 
         let out_inner = conn.transaction::<_, Error, _>(|| {
@@ -254,7 +257,8 @@ fn transaction_nested_commit_commit() {
             Ok(())
         });
         assert_result!(out_inner);
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 2);
         Ok(())
     });
@@ -275,7 +279,8 @@ fn transaction_nested_commit_rollback() {
     let out = conn.transaction::<_, Error, _>(|| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
         let _ret = conn.execute(&*sql)?;
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 1);
 
         let out_inner = conn.transaction::<i32, Error, _>(|| {
@@ -287,7 +292,8 @@ fn transaction_nested_commit_rollback() {
             Err(Error::NotFound)
         });
         assert!(out_inner.is_err() && !out_inner.is_ok(), "What :shrug:?");
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 1);
         Ok(())
     });
@@ -308,7 +314,8 @@ fn transaction_nested_rollback_commit() {
     let out = conn.transaction::<i32, Error, _>(|| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
         let _ret = conn.execute(&*sql)?;
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 1);
 
         let out_inner = conn.transaction::<_, Error, _>(|| {
@@ -320,7 +327,8 @@ fn transaction_nested_rollback_commit() {
             Ok(())
         });
         assert_result!(out_inner);
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 2);
 
         Err(Error::NotFound)
@@ -356,14 +364,13 @@ fn test_diesel_migration() {
     use std::collections::HashSet;
     use std::iter::FromIterator;
 
-    let migrations = vec!["00000000000000", "20151219180527", "20160107090901"];
+    let expected = vec!["00000000000000", "20151219180527", "20160107090901"];
+    let migrations = expected.iter().map(|m| version.eq(*m)).collect::<Vec<_>>();
 
-    for mig in &migrations {
-        let ret = ::diesel::insert_into(__diesel_schema_migrations)
-            .values(&version.eq(mig))
-            .execute(&conn);
-        assert_result!(ret);
-    }
+    let ret = ::diesel::insert_into(__diesel_schema_migrations)
+        .values(&migrations)
+        .execute(&conn);
+    assert_result!(ret);
 
     let _already_run: HashSet<String> =
         self::__diesel_schema_migrations::dsl::__diesel_schema_migrations
@@ -377,7 +384,7 @@ fn test_diesel_migration() {
         .load(&conn);
     let already_run: HashSet<String> = ret.map(FromIterator::from_iter).unwrap();
 
-    let pending_migrations: Vec<_> = migrations
+    let pending_migrations: Vec<_> = expected
         .into_iter()
         .filter(|m| !already_run.contains(&m.to_string()))
         .collect();
@@ -865,7 +872,9 @@ fn moma_elem() {
             elements::comment,
             elements::owner_id,
             elements::level_id,
-            ::diesel::dsl::sql::<::diesel::sql_types::BigInt>("CAST(COUNT(node_links.parent_id) as NUMBER(19))"),
+            ::diesel::dsl::sql::<::diesel::sql_types::BigInt>(
+                "CAST(COUNT(node_links.parent_id) as NUMBER(19))",
+            ),
         ))
         .order(elements::label.asc())
         .load(&conn);
@@ -1225,7 +1234,7 @@ fn ambigious_col_names() {
                 t1::bol,
                 t1::t2,
                 t1::bin,
-                t1::si
+                t1::si,
             ))
             .limit(1) // this is the crucial part!
             .first(&conn);
@@ -1315,7 +1324,7 @@ table! {
     }
 }
 
-table!{
+table! {
     properties{
         id -> BigInt,
         name -> Text,
@@ -1473,29 +1482,31 @@ fn exists() {
 
     use self::all_tables;
 
-    //use diesel::dsl::exists;
+    use diesel::dsl::exists;
     use diesel::query_dsl::filter_dsl::FilterDsl;
     use diesel::query_dsl::select_dsl::SelectDsl;
     use diesel::ExpressionMethods;
-    use oracle::query_builder::exists;
 
-    let q = all_tables::table
-        .filter(all_tables::table_name.eq("GEOMETRIES"))
-        .select(all_tables::owner);
-    let ret = exists::<_, String>(q, &conn);
+    let ret = diesel::select(exists(
+        all_tables::table
+            .filter(all_tables::table_name.eq("GEOMETRIES"))
+            .select(all_tables::owner),
+    ))
+    .get_result::<bool>(&conn);
     assert_result!(ret);
     let ret = ret.unwrap(); // has been asserted before ;)
     assert_eq!(ret, true);
 
-    let q = all_tables::table
-        .filter(all_tables::owner.eq("dieasel"))
-        .select(all_tables::owner);
-    let ret = exists::<_, String>(q, &conn);
+    let ret = diesel::select(exists(
+        all_tables::table
+            .filter(all_tables::owner.eq("dieasel"))
+            .select(all_tables::owner),
+    ))
+    .get_result::<bool>(&conn);
     assert_result!(ret);
     let ret = ret.unwrap(); // has been asserted before ;)
     assert_eq!(ret, false);
 }
-
 
 #[test]
 fn transaction_nested_rollback_rollback_rollback() {
@@ -1508,7 +1519,8 @@ fn transaction_nested_rollback_rollback_rollback() {
     let out = conn.transaction::<i32, Error, _>(|| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
         let _ret = conn.execute(&*sql)?;
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 1);
 
         let out_inner = conn.transaction::<i32, Error, _>(|| {
@@ -1519,10 +1531,12 @@ fn transaction_nested_rollback_rollback_rollback() {
             assert_eq!(ret_inner.len(), 2);
 
             let _inner_inner = conn.transaction::<i32, Error, _>(|| {
-                let sql_inner_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
+                let sql_inner_inner =
+                    format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
                 let _ret_inner_inner = conn.execute(&*sql_inner_inner)?;
                 let ret_inner_inner =
-                    self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                    self::test::dsl::test
+                        .load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
                 assert_eq!(ret_inner_inner.len(), 3);
                 Err(Error::NotFound)
             });
@@ -1534,7 +1548,8 @@ fn transaction_nested_rollback_rollback_rollback() {
             Err(Error::NotFound)
         });
         assert!(out_inner.is_err() && !out_inner.is_ok(), "What :shrug:?");
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 1);
 
         Err(Error::NotFound)
@@ -1556,7 +1571,8 @@ fn transaction_nested_rollback_rollback_commit() {
     let out = conn.transaction::<i32, Error, _>(|| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
         let _ret = conn.execute(&*sql)?;
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 1);
 
         let out_inner = conn.transaction::<i32, Error, _>(|| {
@@ -1567,10 +1583,12 @@ fn transaction_nested_rollback_rollback_commit() {
             assert_eq!(ret_inner.len(), 2);
 
             let _inner_inner = conn.transaction::<_, Error, _>(|| {
-                let sql_inner_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
+                let sql_inner_inner =
+                    format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
                 let _ret_inner_inner = conn.execute(&*sql_inner_inner)?;
                 let ret_inner_inner =
-                    self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                    self::test::dsl::test
+                        .load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
                 assert_eq!(ret_inner_inner.len(), 3);
                 Ok(())
             });
@@ -1582,7 +1600,8 @@ fn transaction_nested_rollback_rollback_commit() {
             Err(Error::NotFound)
         });
         assert!(out_inner.is_err() && !out_inner.is_ok(), "What :shrug:?");
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 1);
 
         Err(Error::NotFound)
@@ -1604,7 +1623,8 @@ fn transaction_nested_commit_commit_commit() {
     let out = conn.transaction::<_, Error, _>(|| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
         let _ret = conn.execute(&*sql)?;
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 1);
 
         let out_inner = conn.transaction::<_, Error, _>(|| {
@@ -1615,10 +1635,12 @@ fn transaction_nested_commit_commit_commit() {
             assert_eq!(ret_inner.len(), 2);
 
             let _inner_inner = conn.transaction::<_, Error, _>(|| {
-                let sql_inner_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
+                let sql_inner_inner =
+                    format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
                 let _ret_inner_inner = conn.execute(&*sql_inner_inner)?;
                 let ret_inner_inner =
-                    self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                    self::test::dsl::test
+                        .load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
                 assert_eq!(ret_inner_inner.len(), 3);
                 Ok(())
             });
@@ -1630,7 +1652,8 @@ fn transaction_nested_commit_commit_commit() {
             Ok(())
         });
         assert_result!(out_inner);
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 3);
         Ok(())
     });
@@ -1651,7 +1674,8 @@ fn transaction_nested_commit_commit_rollback() {
     let out = conn.transaction::<_, Error, _>(|| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
         let _ret = conn.execute(&*sql)?;
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 1);
 
         let out_inner = conn.transaction::<_, Error, _>(|| {
@@ -1662,10 +1686,12 @@ fn transaction_nested_commit_commit_rollback() {
             assert_eq!(ret_inner.len(), 2);
 
             let _inner_inner = conn.transaction::<i32, Error, _>(|| {
-                let sql_inner_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
+                let sql_inner_inner =
+                    format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
                 let _ret_inner_inner = conn.execute(&*sql_inner_inner)?;
                 let ret_inner_inner =
-                    self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                    self::test::dsl::test
+                        .load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
                 assert_eq!(ret_inner_inner.len(), 3);
                 Err(Error::NotFound)
             });
@@ -1677,7 +1703,8 @@ fn transaction_nested_commit_commit_rollback() {
             Ok(())
         });
         assert_result!(out_inner);
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 2);
         Ok(())
     });
@@ -1698,7 +1725,8 @@ fn transaction_nested_commit_rollback_rollback() {
     let out = conn.transaction::<_, Error, _>(|| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
         let _ret = conn.execute(&*sql)?;
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 1);
 
         let out_inner = conn.transaction::<i32, Error, _>(|| {
@@ -1709,10 +1737,12 @@ fn transaction_nested_commit_rollback_rollback() {
             assert_eq!(ret_inner.len(), 2);
 
             let _inner_inner = conn.transaction::<i32, Error, _>(|| {
-                let sql_inner_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
+                let sql_inner_inner =
+                    format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
                 let _ret_inner_inner = conn.execute(&*sql_inner_inner)?;
                 let ret_inner_inner =
-                    self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                    self::test::dsl::test
+                        .load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
                 assert_eq!(ret_inner_inner.len(), 3);
                 Err(Error::NotFound)
             });
@@ -1724,7 +1754,8 @@ fn transaction_nested_commit_rollback_rollback() {
             Err(Error::NotFound)
         });
         assert!(out_inner.is_err() && !out_inner.is_ok(), "What :shrug:?");
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 1);
         Ok(())
     });
@@ -1745,7 +1776,8 @@ fn transaction_nested_rollback_commit_commit() {
     let out = conn.transaction::<i32, Error, _>(|| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
         let _ret = conn.execute(&*sql)?;
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 1);
 
         let out_inner = conn.transaction::<_, Error, _>(|| {
@@ -1756,10 +1788,12 @@ fn transaction_nested_rollback_commit_commit() {
             assert_eq!(ret_inner.len(), 2);
 
             let _inner_inner = conn.transaction::<_, Error, _>(|| {
-                let sql_inner_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
+                let sql_inner_inner =
+                    format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
                 let _ret_inner_inner = conn.execute(&*sql_inner_inner)?;
                 let ret_inner_inner =
-                    self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                    self::test::dsl::test
+                        .load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
                 assert_eq!(ret_inner_inner.len(), 3);
                 Ok(())
             });
@@ -1771,7 +1805,8 @@ fn transaction_nested_rollback_commit_commit() {
             Ok(())
         });
         assert_result!(out_inner);
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 3);
 
         Err(Error::NotFound)
@@ -1793,7 +1828,8 @@ fn transaction_nested_commit_rollback_commit() {
     let out = conn.transaction::<_, Error, _>(|| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
         let _ret = conn.execute(&*sql)?;
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 1);
 
         let out_inner = conn.transaction::<i32, Error, _>(|| {
@@ -1804,10 +1840,12 @@ fn transaction_nested_commit_rollback_commit() {
             assert_eq!(ret_inner.len(), 2);
 
             let _inner_inner = conn.transaction::<_, Error, _>(|| {
-                let sql_inner_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
+                let sql_inner_inner =
+                    format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
                 let _ret_inner_inner = conn.execute(&*sql_inner_inner)?;
                 let ret_inner_inner =
-                    self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                    self::test::dsl::test
+                        .load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
                 assert_eq!(ret_inner_inner.len(), 3);
                 Ok(())
             });
@@ -1819,7 +1857,8 @@ fn transaction_nested_commit_rollback_commit() {
             Err(Error::NotFound)
         });
         assert!(out_inner.is_err() && !out_inner.is_ok(), "What :shrug:?");
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 1);
         Ok(())
     });
@@ -1840,7 +1879,8 @@ fn transaction_nested_rollback_commit_rollback() {
     let out = conn.transaction::<i32, Error, _>(|| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
         let _ret = conn.execute(&*sql)?;
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 1);
 
         let out_inner = conn.transaction::<_, Error, _>(|| {
@@ -1851,10 +1891,12 @@ fn transaction_nested_rollback_commit_rollback() {
             assert_eq!(ret_inner.len(), 2);
 
             let _inner_inner = conn.transaction::<i32, Error, _>(|| {
-                let sql_inner_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
+                let sql_inner_inner =
+                    format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
                 let _ret_inner_inner = conn.execute(&*sql_inner_inner)?;
                 let ret_inner_inner =
-                    self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                    self::test::dsl::test
+                        .load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
                 assert_eq!(ret_inner_inner.len(), 3);
                 Err(Error::NotFound)
             });
@@ -1866,7 +1908,8 @@ fn transaction_nested_rollback_commit_rollback() {
             Ok(())
         });
         assert_result!(out_inner);
-        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret =
+            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
         assert_eq!(ret.len(), 2);
 
         Err(Error::NotFound)
@@ -1877,23 +1920,22 @@ fn transaction_nested_rollback_commit_rollback() {
     assert_eq!(ret.unwrap().len(), 0);
 }
 
-
-const CREATE_GEOMETRIES: &str = "CREATE TABLE geometries( \
-        id NUMBER(19) GENERATED BY DEFAULT as IDENTITY(START with 1 INCREMENT by 1) PRIMARY KEY, \
-        name VARCHAR2(2000) NOT NULL, \
-        geometry_type NUMBER(5) NOT NULL, \
-        created_at TIMESTAMP DEFAULT sysdate NOT NULL, \
-        updated_at TIMESTAMP DEFAULT sysdate NOT NULL, \
-        bbox NUMBER(19) NOT NULL, \
-        origin NUMBER(19) NOT NULL, \
-        feature_class NUMBER(19) NOT NULL, \
-        CONSTRAINT feature_name_uniq_in_fc UNIQUE (feature_class, name) \
-)";
+const CREATE_GEOMETRIES: &str =
+    "CREATE TABLE geometries( \
+     id NUMBER(19) GENERATED BY DEFAULT as IDENTITY(START with 1 INCREMENT by 1) PRIMARY KEY, \
+     name VARCHAR2(2000) NOT NULL, \
+     geometry_type NUMBER(5) NOT NULL, \
+     created_at TIMESTAMP DEFAULT sysdate NOT NULL, \
+     updated_at TIMESTAMP DEFAULT sysdate NOT NULL, \
+     bbox NUMBER(19) NOT NULL, \
+     origin NUMBER(19) NOT NULL, \
+     feature_class NUMBER(19) NOT NULL, \
+     CONSTRAINT feature_name_uniq_in_fc UNIQUE (feature_class, name) \
+     )";
 
 const DROP_GEOMETRIES: &str = "drop table geometries cascade constraints";
 
-
-table!{
+table! {
     geometries {
         id -> BigInt,
         name -> Text,
@@ -1922,12 +1964,13 @@ fn updateing_unique_constraint() {
 
     use self::chrono::Utc;
     use self::geometries;
-    use diesel::ExpressionMethods;
     use diesel::query_dsl::filter_dsl::FindDsl;
+    use diesel::ExpressionMethods;
 
     let n = Utc::now().naive_utc();
     let n2 = Utc::now().naive_utc();
-    let new_row = (geometries::name.eq("test"),
+    let new_row = (
+        geometries::name.eq("test"),
         geometries::geometry_type.eq(1),
         geometries::created_at.eq(n),
         geometries::updated_at.eq(n2),
@@ -1935,19 +1978,24 @@ fn updateing_unique_constraint() {
         geometries::origin.eq(1),
         geometries::feature_class.eq(1),
     );
-    let ret = ::diesel::insert_into(geometries::table).values(new_row).execute(&conn);
+    let ret = ::diesel::insert_into(geometries::table)
+        .values(new_row)
+        .execute(&conn);
     assert_result!(ret);
     assert_eq!(ret.unwrap(), 1);
 
-    let new_row = (geometries::name.eq("testa"),
-                   geometries::geometry_type.eq(1),
-                   geometries::created_at.eq(n),
-                   geometries::updated_at.eq(n2),
-                   geometries::bbox.eq(1),
-                   geometries::origin.eq(1),
-                   geometries::feature_class.eq(1),
+    let new_row = (
+        geometries::name.eq("testa"),
+        geometries::geometry_type.eq(1),
+        geometries::created_at.eq(n),
+        geometries::updated_at.eq(n2),
+        geometries::bbox.eq(1),
+        geometries::origin.eq(1),
+        geometries::feature_class.eq(1),
     );
-    let ret = ::diesel::insert_into(geometries::table).values(new_row).execute(&conn);
+    let ret = ::diesel::insert_into(geometries::table)
+        .values(new_row)
+        .execute(&conn);
     assert_result!(ret);
 
     let new_name = "test";
@@ -1955,10 +2003,7 @@ fn updateing_unique_constraint() {
         .set(geometries::name.eq(new_name))
         .execute(&conn);
     assert_result!(ret);
-
 }
-
-
 
 #[test]
 fn insert_returning() {
@@ -1980,13 +2025,14 @@ fn insert_returning() {
 
     let n = Utc::now().naive_utc();
     let n2 = Utc::now().naive_utc();
-    let new_row = (geometries::name.eq("test"),
-                   geometries::geometry_type.eq(1),
-                   geometries::created_at.eq(n),
-                   geometries::updated_at.eq(n2),
-                   geometries::bbox.eq(1),
-                   geometries::origin.eq(1),
-                   geometries::feature_class.eq(1),
+    let new_row = (
+        geometries::name.eq("test"),
+        geometries::geometry_type.eq(1),
+        geometries::created_at.eq(n),
+        geometries::updated_at.eq(n2),
+        geometries::bbox.eq(1),
+        geometries::origin.eq(1),
+        geometries::feature_class.eq(1),
     );
     use diesel::QueryResult;
 

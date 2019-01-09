@@ -1,15 +1,7 @@
 language: rust
 sudo: required
 env:
-  - ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe
-  - ORACLE_SID=XE
-  - OCI_LIB_DIR=/u01/app/oracle/product/11.2.0/xe/lib
-  - LD_LIBRARY_PATH=/u01/app/oracle/product/11.2.0/xe/lib
-  - OCI_DATABASE_URL=oci://travis/travis@//localhost:1521/XE
-  - ORACLE_COOKIE=sqldev
-  - ORACLE_FILE=oracle11g/xe/oracle-xe-11.2.0-1.0.x86_64.rpm.zip
-  - ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe
-  - ORACLE_SID=XE
+  - ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe ORACLE_SID=XE OCI_LIB_DIR=/u01/app/oracle/product/11.2.0/xe/lib LD_LIBRARY_PATH=/u01/app/oracle/product/11.2.0/xe/lib OCI_DATABASE_URL=oci://travis/travis@//localhost:1521/XE ORACLE_COOKIE=sqldev ORACLE_FILE=oracle11g/xe/oracle-xe-11.2.0-1.0.x86_64.rpm.zip ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe ORACLE_SID=XE
 before_install:
   - .travis/oracle/download.sh
   - .travis/oracle/install.sh

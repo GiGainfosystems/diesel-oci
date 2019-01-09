@@ -12,6 +12,8 @@ use diesel::Table;
 
 use super::backend::Oracle;
 
+// please refer to https://stackoverflow.com/questions/39576/best-way-to-do-multi-row-insert-in-oracle
+
 impl<'a, T, Tab, Inner> QueryFragment<Oracle> for BatchInsert<'a, T, Tab>
 where
     &'a T: Insertable<Tab, Values = ValuesClause<Inner, Tab>>,

@@ -8,6 +8,7 @@ use diesel::query_builder::QueryFragment;
 use diesel::query_builder::ValuesClause;
 use diesel::query_source::Column;
 use diesel::result::QueryResult;
+use diesel::Table;
 
 use super::backend::Oracle;
 
@@ -15,12 +16,18 @@ impl<'a, T, Tab, Inner> QueryFragment<Oracle> for BatchInsert<'a, T, Tab>
 where
     &'a T: Insertable<Tab, Values = ValuesClause<Inner, Tab>>,
     ValuesClause<Inner, Tab>: QueryFragment<Oracle>,
-    Inner: QueryFragment<Oracle>,
+    Inner: QueryFragment<Oracle> + InsertValues<Tab, Oracle>,
+    Tab: Table,
 {
     fn walk_ast(&self, mut out: AstPass<Oracle>) -> QueryResult<()> {
         let mut records = self.records.iter().map(Insertable::values);
         if let Some(record) = records.next() {
-            record.walk_ast(out.reborrow())?;
+            out.push_sql("(");
+            record.values.column_names(out.reborrow())?;
+            out.push_sql(") ");
+            out.push_sql("select ");
+            record.values.walk_ast(out.reborrow())?;
+            out.push_sql(" from dual");
         }
         for record in records {
             out.push_sql(" union all select ");
@@ -34,12 +41,18 @@ where
 impl<Tab, Inner> QueryFragment<Oracle> for OwnedBatchInsert<ValuesClause<Inner, Tab>>
 where
     ValuesClause<Inner, Tab>: QueryFragment<Oracle>,
-    Inner: QueryFragment<Oracle>,
+    Inner: QueryFragment<Oracle> + InsertValues<Tab, Oracle>,
+    Tab: Table,
 {
     fn walk_ast(&self, mut out: AstPass<Oracle>) -> QueryResult<()> {
         let mut records = self.values.iter();
         if let Some(record) = records.next() {
-            record.walk_ast(out.reborrow())?;
+            out.push_sql("(");
+            record.values.column_names(out.reborrow())?;
+            out.push_sql(") ");
+            out.push_sql("select ");
+            record.values.walk_ast(out.reborrow())?;
+            out.push_sql(" from dual");
         }
         for record in records {
             out.push_sql(" union all select ");

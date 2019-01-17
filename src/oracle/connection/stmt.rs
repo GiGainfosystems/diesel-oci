@@ -1,10 +1,11 @@
+use super::bind_context::BindContext;
 use super::cursor::{Cursor, Field};
 use super::raw::RawConnection;
 use diesel::result::Error;
 use diesel::result::*;
 use libc;
 use oci_sys as ffi;
-use oracle::types::OCIDataType;
+use oracle::types::OciDataType;
 use std::os::raw::{c_int, c_void};
 use std::ptr;
 use std::rc::Rc;
@@ -12,67 +13,100 @@ use std::rc::Rc;
 pub struct Statement {
     pub connection: Rc<RawConnection>,
     pub inner_statement: *mut ffi::OCIStmt,
-    bind_index: libc::c_uint,
+    pub bind_index: libc::c_uint,
     is_select: bool,
+    pub is_returning: bool,
     buffers: Vec<Box<[u8]>>,
     sizes: Vec<i32>,
     indicators: Vec<Box<ffi::OCIInd>>,
+    pub(crate) mysql: String,
+    pub(crate) returning_contexts: Vec<BindContext>,
 }
 
-const NUM_ELEMENTS: usize = 20;
+const NUM_ELEMENTS: usize = 40;
 
 impl Statement {
     pub fn prepare(raw_connection: &Rc<RawConnection>, sql: &str) -> QueryResult<Self> {
-        let mysql = sql.to_string();
-
+        debug!("SQL Statement {}", sql);
         let stmt = unsafe {
             let mut stmt: *mut ffi::OCIStmt = ptr::null_mut();
             let status = ffi::OCIStmtPrepare2(
                 raw_connection.service_handle,
                 &mut stmt,
                 raw_connection.env.error_handle,
-                mysql.as_ptr(),
-                mysql.len() as u32,
+                sql.as_ptr(),
+                sql.len() as u32,
                 ptr::null(),
                 0,
                 ffi::OCI_NTV_SYNTAX,
                 ffi::OCI_DEFAULT,
             );
 
-            Self::check_error(raw_connection.env.error_handle, status)?;
+            Self::check_error_sql(
+                raw_connection.env.error_handle,
+                status,
+                &sql,
+                "PREPARING STMT",
+            )?;
 
             // for create statements we need to run OCIStmtPrepare2 twice
             // c.f. https://docs.oracle.com/database/121/LNOCI/oci17msc001.htm#LNOCI17165
             // "To reexecute a DDL statement, you must prepare the statement again using OCIStmtPrepare2()."
-            if let Some(u) = mysql.to_string().find("CREATE") {
+            if let Some(u) = sql.find("CREATE") {
                 if u < 10 {
                     let status = ffi::OCIStmtPrepare2(
                         raw_connection.service_handle,
                         &mut stmt,
                         raw_connection.env.error_handle,
-                        mysql.as_ptr(),
-                        mysql.len() as u32,
+                        sql.as_ptr(),
+                        sql.len() as u32,
                         ptr::null(),
                         0,
                         ffi::OCI_NTV_SYNTAX,
                         ffi::OCI_DEFAULT,
                     );
 
-                    Self::check_error(raw_connection.env.error_handle, status)?;
+                    Self::check_error_sql(
+                        raw_connection.env.error_handle,
+                        status,
+                        &sql,
+                        "PREPARING STMT 2",
+                    )?;
                 }
             }
-
+            debug!("Executing {:?}", sql);
             stmt
         };
         Ok(Statement {
             connection: raw_connection.clone(),
             inner_statement: stmt,
             bind_index: 0,
-            // TODO: this can go wrong: `UPDATE table SET k='select';`
-            is_select: sql.contains("SELECT") || sql.contains("select"),
+            // TODO: this can go wrong, since where is also `WITH` and other SQL structures. before
+            // there was `sql.contains("SELECT")||sql.contains("select") which might fails on the
+            // following queries (meaning they will be identified as select clause even if they are
+            // not: `UPDATE table SET k='select';` OR
+            // ```
+            //            CREATE OR REPLACE FORCE VIEW full_bounding_boxes(id, o_c1, o_c2, o_c3, u_c1, u_c2, u_c3, v_c1, v_c2, v_c3, w_c1, w_c2, w_c3)
+            //            AS
+            //            SELECT bbox.id as id,
+            //            o.c1 as o_c1, o.c2 as o_c2, o.c3 as o_c3,
+            //            u.c1 as u_c1, u.c2 as u_c2, u.c3 as u_c3,
+            //            v.c1 as v_c1, v.c2 as v_c2, v.c3 as v_c3,
+            //            w.c1 as w_c1, w.c2 as w_c2, w.c3 as w_c3
+            //            FROM bounding_boxes bbox
+            //            INNER JOIN geo_points o ON bbox.o = o.id
+            //            INNER JOIN geo_points u ON bbox.u = u.id
+            //            INNER JOIN geo_points v ON bbox.v = v.id
+            //            INNER JOIN geo_points w ON bbox.w = w.id
+            // ```
+            is_select: sql.starts_with("SELECT") || sql.starts_with("select"),
+            is_returning: (sql.starts_with("INSERT") || sql.starts_with("insert"))
+                && sql.contains("RETURNING"),
             buffers: Vec::with_capacity(NUM_ELEMENTS),
             sizes: Vec::with_capacity(NUM_ELEMENTS),
             indicators: Vec::with_capacity(NUM_ELEMENTS),
+            mysql: sql.to_owned(),
+            returning_contexts: Vec::new(),
         })
     }
 
@@ -122,8 +156,99 @@ impl Statement {
         }
     }
 
-    pub fn run(&self) -> QueryResult<()> {
+    pub fn check_error_sql(
+        error_handle: *mut ffi::OCIError,
+        status: i32,
+        sql: &str,
+        action: &str,
+    ) -> Result<(), Error> {
+        let check = Self::check_error(error_handle, status);
+        if check.is_err() {
+            debug!("{:?} while {:?}", sql, action);
+        }
+        check
+    }
+
+    pub fn run(&mut self, auto_commit: bool, metadata: &[OciDataType]) -> QueryResult<()> {
         let iters = if self.is_select { 0 } else { 1 };
+
+        if self.is_returning {
+            self.returning_contexts.reserve_exact(metadata.len());
+            for tpe in metadata {
+                self.bind_index += 1;
+                self.returning_contexts
+                    .push(BindContext::new(self.connection.env.error_handle, tpe));
+                let octx = self
+                    .returning_contexts
+                    .last_mut()
+                    .expect("We pushed it above");
+                let mut bndp = ptr::null_mut() as *mut ffi::OCIBind;
+
+                unsafe {
+                    // read https://docs.oracle.com/database/121/LNOCI/oci16rel003.htm#LNOCI153
+                    // read it again, then you will understand why the parameters are set like that
+                    // make sure to read it again
+                    // otherwise you may enter the ORA-03106: fatal two-task communication protocol error-hell
+                    let status = ffi::OCIBindByPos(
+                        self.inner_statement,
+                        &mut bndp,
+                        self.connection.env.error_handle,
+                        self.bind_index,
+                        ptr::null_mut(),
+                        NUM_ELEMENTS as i32,
+                        tpe.bind_type() as u16,
+                        ptr::null_mut(),
+                        ptr::null_mut(),
+                        ptr::null_mut(),
+                        0,
+                        ptr::null_mut(),
+                        ffi::OCI_DATA_AT_EXEC,
+                    );
+
+                    Self::check_error_sql(
+                        self.connection.env.error_handle,
+                        status,
+                        &self.mysql,
+                        "RETURNING BINDING",
+                    )?;
+
+                    if tpe.is_text() {
+                        let mut cs_id = self.connection.env.cs_id;
+                        ffi::OCIAttrSet(
+                            bndp as *mut c_void,
+                            ffi::OCI_HTYPE_BIND,
+                            &mut cs_id as *mut u16 as *mut c_void,
+                            0,
+                            ffi::OCI_ATTR_CHARSET_ID,
+                            self.connection.env.error_handle,
+                        );
+                    }
+                }
+                // bind_dynamic
+
+                // TODO: this was more less taken from:
+                // https://github.com/Mingun/rust-oci/blob/2b06c2564cf529db6b9cafa9eea3f764fb981f27/src/stmt/mod.rs
+                // https://github.com/Mingun/rust-oci/blob/2b06c2564cf529db6b9cafa9eea3f764fb981f27/src/ffi/native/bind.rs
+                // we need to get this to compile and "just" define the callback properly
+                let mut ictx = BindContext::new(self.connection.env.error_handle, tpe);
+
+                unsafe {
+                    ffi::OCIBindDynamic(
+                        bndp,
+                        self.connection.env.error_handle,
+                        &mut ictx as *mut _ as *mut c_void, // this can be a number
+                        Some(super::bind_context::empty_data),
+                        octx as *mut _ as *mut c_void, // this can be a number
+                        Some(super::bind_context::on_receive_data),
+                    )
+                };
+            }
+        }
+        let mode = if !self.is_select && auto_commit {
+            ffi::OCI_COMMIT_ON_SUCCESS
+        } else {
+            ffi::OCI_DEFAULT
+        };
         unsafe {
             let status = ffi::OCIStmtExecute(
                 self.connection.service_handle,
@@ -133,10 +258,18 @@ impl Statement {
                 0,
                 ptr::null(),
                 ptr::null_mut(),
-                ffi::OCI_DEFAULT,
+                mode,
             );
-            Self::check_error(self.connection.env.error_handle, status)?;
+            Self::check_error_sql(
+                self.connection.env.error_handle,
+                status,
+                &self.mysql,
+                "EXECUTING STMT",
+            )?;
         }
+        // the bind index is required to start by zero. if a statement is
+        // executed more than once we need to reset the index here
+        //self.bind_index = 0;
         Ok(())
     }
 
@@ -151,202 +284,190 @@ impl Statement {
                 ffi::OCI_ATTR_ROW_COUNT,
                 self.connection.env.error_handle,
             );
-            Self::check_error(self.connection.env.error_handle, status)?;
+            Self::check_error_sql(
+                self.connection.env.error_handle,
+                status,
+                &self.mysql,
+                "GET AFFECTED ROWS",
+            )?;
         }
         Ok(affected_rows as usize)
     }
 
-    fn get_column_count(&self) -> QueryResult<u32> {
-        let mut col_count: u32 = 0;
-        unsafe {
-            let status = ffi::OCIAttrGet(
+    fn get_column_param(&self, col_number: u32) -> QueryResult<*mut ffi::OCIParam> {
+        let mut col_param: *mut ffi::OCIParam = ptr::null_mut();
+        let status = unsafe {
+            ffi::OCIParamGet(
                 self.inner_statement as *const _,
                 ffi::OCI_HTYPE_STMT,
-                (&mut col_count as *mut u32) as *mut _,
-                &mut 0,
-                ffi::OCI_ATTR_PARAM_COUNT,
                 self.connection.env.error_handle,
-            );
-
-            Self::check_error(self.connection.env.error_handle, status)?;
-        }
-        Ok(col_count)
+                (&mut col_param as *mut *mut ffi::OCIParam) as *mut _,
+                col_number,
+            )
+        };
+        Self::check_error_sql(
+            self.connection.env.error_handle,
+            status,
+            &self.mysql,
+            "RETRIEVING PARAM HANDLE",
+        )?;
+        Ok(col_param)
     }
 
-    fn get_attr_type_and_size(&self, col_handle: *mut ffi::OCIStmt) -> QueryResult<(u32, u32)> {
-        let mut tpe: u32 = 0;
-        let mut tpe_size: u32 = 0;
-        unsafe {
-            let status = ffi::OCIAttrGet(
-                col_handle as *mut _,
+    fn get_column_data_type(&self, col_param: *mut ffi::OCIParam) -> QueryResult<u32> {
+        let mut column_type: u32 = 0;
+        let status = unsafe {
+            ffi::OCIAttrGet(
+                col_param as *mut _,
                 ffi::OCI_DTYPE_PARAM,
-                (&mut tpe as *mut u32) as *mut _,
-                &mut 0,
+                (&mut column_type as *mut u32) as *mut _,
+                ptr::null_mut(),
                 ffi::OCI_ATTR_DATA_TYPE,
                 self.connection.env.error_handle,
-            );
-            Self::check_error(self.connection.env.error_handle, status)?;
-
-            match tpe {
-                ffi::SQLT_INT | ffi::SQLT_UIN => {
-                    tpe_size = 8;
-                }
-                ffi::SQLT_NUM => {
-                    let mut attributesize = 16u32; //sb2
-                    let mut scale = 0i8;
-                    let mut precision = 0i16;
-                    let status = ffi::OCIAttrGet(
-                        col_handle as *mut _,
-                        ffi::OCI_DTYPE_PARAM,
-                        (&mut precision as *mut i16) as *mut _,
-                        &mut attributesize as *mut u32,
-                        ffi::OCI_ATTR_PRECISION,
-                        self.connection.env.error_handle,
-                    );
-                    Self::check_error(self.connection.env.error_handle, status)?;
-                    let mut attributesize = 8u32; // sb1
-                    let status = ffi::OCIAttrGet(
-                        col_handle as *mut _,
-                        ffi::OCI_DTYPE_PARAM,
-                        (&mut scale as *mut i8) as *mut _,
-                        &mut attributesize as *mut u32,
-                        ffi::OCI_ATTR_SCALE,
-                        self.connection.env.error_handle,
-                    );
-                    Self::check_error(self.connection.env.error_handle, status)?;
-                    if scale == 0 {
-                        tpe_size = match precision {
-                            5 => 2,  // number(5) -> smallint
-                            10 => 4, // number(10) -> int
-                            19 => 8, // number(19) -> bigint
-                            _ => 21, // number(38) -> consume_all
-                        };
-                        tpe = ffi::SQLT_INT;
-                    } else {
-                        tpe = ffi::SQLT_FLT;
-                        tpe_size = 8;
-                    }
-                }
-                ffi::SQLT_BDOUBLE | ffi::SQLT_LNG | ffi::SQLT_IBDOUBLE => {
-                    tpe_size = 8;
-                    tpe = ffi::SQLT_BDOUBLE;
-                }
-                ffi::SQLT_FLT | ffi::SQLT_BFLOAT | ffi::SQLT_IBFLOAT => {
-                    tpe_size = 4;
-                    tpe = ffi::SQLT_BFLOAT;
-                }
-                ffi::SQLT_CHR
-                | ffi::SQLT_VCS
-                | ffi::SQLT_LVC
-                | ffi::SQLT_AFC
-                | ffi::SQLT_VST
-                | ffi::SQLT_ODT
-                | ffi::SQLT_DATE
-                | ffi::SQLT_TIMESTAMP
-                | ffi::SQLT_TIMESTAMP_TZ
-                | ffi::SQLT_TIMESTAMP_LTZ => {
-                    let mut length = 0u32;
-                    let status = ffi::OCIAttrGet(
-                        col_handle as *mut _,
-                        ffi::OCI_DTYPE_PARAM,
-                        (&mut tpe_size as *mut u32) as *mut _,
-                        &mut length as *mut u32,
-                        ffi::OCI_ATTR_CHAR_SIZE,
-                        self.connection.env.error_handle,
-                    );
-                    Self::check_error(self.connection.env.error_handle, status)?;
-                    //tpe_size += 1;
-                    tpe = ffi::SQLT_STR;
-                }
-                _ => {
-                    return Err(Error::DatabaseError(
-                        DatabaseErrorKind::__Unknown,
-                        Box::new(format!("unsupported type {}", tpe)),
-                    ))
-                }
-            }
-        }
-        Ok((tpe, tpe_size))
+            )
+        };
+        Self::check_error_sql(
+            self.connection.env.error_handle,
+            status,
+            &self.mysql,
+            "RETRIEVING DATA_TYPE",
+        )?;
+        Ok(column_type)
     }
 
-    pub fn define(
+    fn get_column_char_size(&self, col_param: *mut ffi::OCIParam) -> QueryResult<u32> {
+        let mut type_size: u32 = 0;
+        let status = unsafe {
+            ffi::OCIAttrGet(
+                col_param as *mut _,
+                ffi::OCI_DTYPE_PARAM,
+                (&mut type_size as *mut u32) as *mut _,
+                ptr::null_mut(),
+                ffi::OCI_ATTR_CHAR_SIZE,
+                self.connection.env.error_handle,
+            )
+        };
+        Self::check_error_sql(
+            self.connection.env.error_handle,
+            status,
+            &self.mysql,
+            "RETRIEVING CHAR_SIZE",
+        )?;
+        Ok(type_size)
+    }
+
+    fn get_define_buffer_size(
         &self,
-        fields: &mut Vec<Field>,
-        tpe: u32,
-        tpe_size: u32,
-        col_number: usize,
-    ) -> QueryResult<()> {
-        let mut v = Vec::with_capacity(tpe_size as usize);
-        v.resize(tpe_size as usize, 0);
+        col_param: *mut ffi::OCIParam,
+        col_type: OciDataType,
+    ) -> QueryResult<usize> {
+        // TODO: FIXME: proper CLOB and BLOB handling
+
+        // Improvement for text:
+        //
+        // We can check the column type and see if it is varchar.
+        // If yes, we use the column char size as buffer size.
+        // Otherwise we use the default size.
+        match col_type {
+            OciDataType::Text => {
+                let column_type = self.get_column_data_type(col_param)?;
+                match column_type {
+                    ffi::SQLT_CHR => {
+                        let char_size = self.get_column_char_size(col_param)?;
+                        // + 1 accounts for the extra 0 byte we need,
+                        // because we define with SQLT_STR i.e. 0-terminated string.
+                        Ok((char_size + 1) as usize)
+                    }
+                    _ => Ok(col_type.byte_size()),
+                }
+            }
+            _ => Ok(col_type.byte_size()),
+        }
+    }
+
+    fn define_column(&self, col_number: usize, col_type: OciDataType) -> QueryResult<Field> {
+        let param = self.get_column_param(col_number as u32)?;
+        let buf_size = self.get_define_buffer_size(param, col_type)?;
+
+        let buf = vec![0; buf_size as usize];
         let mut null_indicator: Box<i16> = Box::new(-1);
-        let def = unsafe {
-            let mut def = ptr::null_mut();
-            let status = ffi::OCIDefineByPos(
+        let mut define_handle = ptr::null_mut();
+        let status = unsafe {
+            ffi::OCIDefineByPos(
                 self.inner_statement,
-                &mut def,
+                &mut define_handle,
                 self.connection.env.error_handle,
                 col_number as u32,
-                v.as_ptr() as *mut _,
-                v.len() as i32,
-                tpe as libc::c_ushort,
+                buf.as_ptr() as *mut _,
+                buf.len() as i32,
+                col_type.define_type() as libc::c_ushort,
                 &mut *null_indicator as *mut i16 as *mut c_void,
                 ptr::null_mut(),
                 ptr::null_mut(),
                 ffi::OCI_DEFAULT,
-            );
-            Self::check_error(self.connection.env.error_handle, status)?;
-            def
+            )
         };
-        if let Some(tpe) = ::oracle::types::OCIDataType::from_raw(tpe) {
-            fields.push(Field::new(def, v, null_indicator, tpe));
+        Self::check_error_sql(
+            self.connection.env.error_handle,
+            status,
+            &self.mysql,
+            "DEFINING",
+        )?;
+
+        if col_type == OciDataType::Text {
+            let mut cs_id = self.connection.env.cs_id;
+            unsafe {
+                ffi::OCIAttrSet(
+                    define_handle as *mut c_void,
+                    ffi::OCI_HTYPE_DEFINE,
+                    &mut cs_id as *mut u16 as *mut c_void,
+                    0,
+                    ffi::OCI_ATTR_CHARSET_ID,
+                    self.connection.env.error_handle,
+                );
+            }
+        }
+
+        Ok(Field::new(define_handle, buf, null_indicator, col_type))
+    }
+
+    fn define_all_columns(&self, row: &[OciDataType]) -> QueryResult<Vec<Field>> {
+        row.iter()
+            .enumerate()
+            .map(|(i, tpe)| self.define_column(i + 1, *tpe))
+            .collect()
+    }
+
+    pub fn run_with_cursor<ST, T>(
+        &mut self,
+        auto_commit: bool,
+        metadata: Vec<OciDataType>,
+    ) -> QueryResult<Cursor<ST, T>> {
+        self.run(auto_commit, &metadata)?;
+        self.bind_index = 0;
+        if self.is_returning {
+            let fields = self
+                .returning_contexts
+                .iter()
+                .zip(metadata.into_iter())
+                .map(|(buffer, tpe)| {
+                    let null_indicator: Box<i16> = Box::new(buffer.is_null);
+                    Field::new(
+                        ptr::null_mut(),
+                        buffer.store.to_owned(),
+                        null_indicator,
+                        tpe,
+                    )
+                })
+                .collect();
+            Ok(Cursor::new(self, fields))
         } else {
-            return Err(Error::DatabaseError(
-                DatabaseErrorKind::__Unknown,
-                Box::new(format!("unsupported type {}", tpe)),
-            ));
+            let fields = self.define_all_columns(&metadata)?;
+            Ok(Cursor::new(self, fields))
         }
-
-        Ok(())
     }
 
-    fn define_column(&self, mut fields: &mut Vec<Field>, col_number: usize) -> QueryResult<()> {
-        let col_handle = unsafe {
-            let mut parameter_descriptor: *mut ffi::OCIStmt = ptr::null_mut();
-            let status = ffi::OCIParamGet(
-                self.inner_statement as *const _,
-                ffi::OCI_HTYPE_STMT,
-                self.connection.env.error_handle,
-                (&mut parameter_descriptor as *mut *mut ffi::OCIStmt) as *mut _,
-                col_number as u32,
-            );
-            Self::check_error(self.connection.env.error_handle, status)?;
-            parameter_descriptor
-        };
-
-        let (tpe, tpe_size): (u32, u32) = self.get_attr_type_and_size(col_handle)?;
-
-        self.define(&mut fields, tpe, tpe_size, col_number)?;
-        Ok(())
-    }
-
-    fn define_all_columns(&self) -> QueryResult<Vec<Field>> {
-        let col_count = self.get_column_count()?;
-        let mut fields = Vec::<Field>::with_capacity(col_count as usize);
-        for i in 0..col_count as usize {
-            let col_number = i + 1;
-            self.define_column(&mut fields, col_number)?;
-        }
-        Ok(fields)
-    }
-
-    pub fn run_with_cursor<ST, T>(&self) -> QueryResult<Cursor<ST, T>> {
-        self.run()?;
-        let fields = self.define_all_columns()?;
-
-        Ok(Cursor::new(self, fields))
-    }
-
-    pub fn bind(&mut self, tpe: OCIDataType, value: Option<Vec<u8>>) -> QueryResult<()> {
+    pub fn bind(&mut self, tpe: OciDataType, value: Option<Vec<u8>>) -> QueryResult<()> {
         self.bind_index += 1;
         let mut bndp = ptr::null_mut() as *mut ffi::OCIBind;
         let mut is_null = false;
@@ -369,11 +490,7 @@ impl Statement {
                 self.bind_index,
                 buf.as_mut_ptr() as *mut c_void,
                 buf.len() as i32,
-                if size == 4 && tpe == OCIDataType::Float {
-                    ffi::SQLT_BFLOAT as u16
-                } else {
-                    tpe.to_raw() as u16
-                },
+                tpe.bind_type() as u16,
                 &mut *nullind as *mut i16 as *mut c_void,
                 ptr::null_mut(),
                 ptr::null_mut(),
@@ -386,9 +503,14 @@ impl Statement {
             self.sizes.push(size);
             self.indicators.push(nullind);
 
-            Self::check_error(self.connection.env.error_handle, status)?;
+            Self::check_error_sql(
+                self.connection.env.error_handle,
+                status,
+                &self.mysql,
+                "BINDING",
+            )?;
 
-            if tpe == OCIDataType::Char {
+            if tpe.is_text() {
                 let mut cs_id = self.connection.env.cs_id;
                 ffi::OCIAttrSet(
                     bndp as *mut c_void,
@@ -414,8 +536,15 @@ impl Drop for Statement {
                 0,
                 ffi::OCI_DEFAULT,
             );
-            if let Some(err) = Self::check_error(self.connection.env.error_handle, status).err() {
-                println!("{:?}", err);
+            if let Some(err) = Self::check_error_sql(
+                self.connection.env.error_handle,
+                status,
+                &self.mysql,
+                "DROPPING STMT",
+            )
+            .err()
+            {
+                debug!("{:?}", err);
             }
         }
     }

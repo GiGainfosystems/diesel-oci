@@ -20,7 +20,7 @@ impl ConnectionEnviroment {
             let mut handle: *mut ffi::OCIEnv = ptr::null_mut();
             let code = ffi::OCIEnvNlsCreate(
                 &mut handle as *mut _,
-                ffi::OCI_DEFAULT,
+                ffi::OCI_THREADED,
                 ptr::null_mut(),
                 None,
                 None,
@@ -42,7 +42,7 @@ impl ConnectionEnviroment {
             unsafe { alloc_handle::<ffi::OCIError>(env_handle, ffi::OCI_HTYPE_ERROR) };
         // we are certain that our string doesn't have 0 bytes in the middle,
         // so we can .unwrap()
-        let enc = CString::new("UTF8").unwrap();
+        let enc = CString::new("AL32UTF8").unwrap();
         let cs_id = unsafe {
             ffi::OCINlsCharSetNameToId(
                 env_handle as *mut libc::c_void,
@@ -114,18 +114,14 @@ impl RawConnection {
 
         unsafe {
             // Allocate the server handle
-            let server_handle =
-                alloc_handle(env.handle, ffi::OCI_HTYPE_SERVER);
+            let server_handle = alloc_handle(env.handle, ffi::OCI_HTYPE_SERVER);
             // Allocate the service context handle
-            let service_handle =
-                alloc_handle(env.handle, ffi::OCI_HTYPE_SVCCTX);
+            let service_handle = alloc_handle(env.handle, ffi::OCI_HTYPE_SVCCTX);
 
             // Allocate the session handle
-            let session_handle =
-                alloc_handle(env.handle, ffi::OCI_HTYPE_SESSION);
+            let session_handle = alloc_handle(env.handle, ffi::OCI_HTYPE_SESSION);
 
-            let transaction_handle =
-                alloc_handle(env.handle, ffi::OCI_HTYPE_TRANS);
+            let transaction_handle = alloc_handle(env.handle, ffi::OCI_HTYPE_TRANS);
 
             let status = ffi::OCIServerAttach(
                 server_handle,

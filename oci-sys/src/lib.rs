@@ -4679,8 +4679,10 @@ extern "C" {
         svc: *const OCISvcCtx,
         context: *mut ::std::os::raw::c_void,
         get: ::std::option::Option<
-            unsafe extern "C" fn(context: *mut ::std::os::raw::c_void, last: *mut ub1)
-                -> *mut OCIRef,
+            unsafe extern "C" fn(
+                context: *mut ::std::os::raw::c_void,
+                last: *mut ub1,
+            ) -> *mut OCIRef,
         >,
         ref_: *mut *mut OCIRef,
     ) -> sword;
@@ -4809,8 +4811,10 @@ extern "C" {
         svc: *const OCISvcCtx,
         context: *mut ::std::os::raw::c_void,
         get: ::std::option::Option<
-            unsafe extern "C" fn(context: *mut ::std::os::raw::c_void, last: *mut ub1)
-                -> *mut OCIRef,
+            unsafe extern "C" fn(
+                context: *mut ::std::os::raw::c_void,
+                last: *mut ub1,
+            ) -> *mut OCIRef,
         >,
         ref_: *mut *mut OCIRef,
     ) -> sword;
@@ -14446,8 +14450,10 @@ extern "C" {
         mode: ub4,
         ctxp: *mut ::std::os::raw::c_void,
         malocfp: ::std::option::Option<
-            unsafe extern "C" fn(ctxp: *mut ::std::os::raw::c_void, size: usize)
-                -> *mut ::std::os::raw::c_void,
+            unsafe extern "C" fn(
+                ctxp: *mut ::std::os::raw::c_void,
+                size: usize,
+            ) -> *mut ::std::os::raw::c_void,
         >,
         ralocfp: ::std::option::Option<
             unsafe extern "C" fn(
@@ -14473,8 +14479,10 @@ extern "C" {
         mode: ub4,
         ctxp: *mut ::std::os::raw::c_void,
         malocfp: ::std::option::Option<
-            unsafe extern "C" fn(ctxp: *mut ::std::os::raw::c_void, size: usize)
-                -> *mut ::std::os::raw::c_void,
+            unsafe extern "C" fn(
+                ctxp: *mut ::std::os::raw::c_void,
+                size: usize,
+            ) -> *mut ::std::os::raw::c_void,
         >,
         ralocfp: ::std::option::Option<
             unsafe extern "C" fn(
@@ -14499,8 +14507,10 @@ extern "C" {
         mode: ub4,
         ctxp: *mut ::std::os::raw::c_void,
         malocfp: ::std::option::Option<
-            unsafe extern "C" fn(ctxp: *mut ::std::os::raw::c_void, size: usize)
-                -> *mut ::std::os::raw::c_void,
+            unsafe extern "C" fn(
+                ctxp: *mut ::std::os::raw::c_void,
+                size: usize,
+            ) -> *mut ::std::os::raw::c_void,
         >,
         ralocfp: ::std::option::Option<
             unsafe extern "C" fn(
@@ -14527,8 +14537,10 @@ extern "C" {
         mode: ub4,
         ctxp: *mut ::std::os::raw::c_void,
         malocfp: ::std::option::Option<
-            unsafe extern "C" fn(ctxp: *mut ::std::os::raw::c_void, size: usize)
-                -> *mut ::std::os::raw::c_void,
+            unsafe extern "C" fn(
+                ctxp: *mut ::std::os::raw::c_void,
+                size: usize,
+            ) -> *mut ::std::os::raw::c_void,
         >,
         ralocfp: ::std::option::Option<
             unsafe extern "C" fn(

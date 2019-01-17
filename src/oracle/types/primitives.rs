@@ -23,3 +23,16 @@ impl FromSql<Text, Oracle> for String {
             .to_owned())
     }
 }
+
+/// The returned pointer is *only* valid for the lifetime to the argument of
+/// `from_sql`. This impl is intended for uses where you want to write a new
+/// impl in terms of `Vec<u8>`, but don't want to allocate. We have to return a
+/// raw pointer instead of a reference with a lifetime due to the structure of
+/// `FromSql`
+impl FromSql<Binary, Oracle> for *const [u8] {
+    fn from_sql(bytes: Option<&OracleValue>) -> Result<Self, Box<Error + Send + Sync>> {
+        let bytes = not_none!(bytes);
+
+        Ok(&bytes.bytes as *const [u8])
+    }
+}

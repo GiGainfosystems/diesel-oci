@@ -3,13 +3,12 @@ use super::backend::Oracle;
 use diesel::query_builder::QueryBuilder;
 use diesel::result::Error as DieselError;
 
-//mod insert_statement;
 mod alias;
 mod exists;
 mod limit_clause;
+mod select_statement;
 
 pub use self::alias::Alias;
-pub use self::exists::exists;
 
 #[derive(Default)]
 pub struct OciQueryBuilder {

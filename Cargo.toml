@@ -42,5 +42,5 @@ chrono-time = ["chrono", "diesel/chrono"]
 default = ["chrono-time"]
 
 [replace]
-"diesel:1.4.1" = { git = "https://github.com/geomaniac/diesel", rev = "3d89b44c2d5ebb4" }
-"diesel_derives:1.4.0" = { git = "https://github.com/geomaniac/diesel", rev = "3d89b44c2d5ebb4" }
+"diesel:1.4.1" = { git = "https://github.com/GiGainfosystems/diesel", rev = "c82c3316" }
+"diesel_derives:1.4.0" = { git = "https://github.com/GiGainfosystems/diesel", rev = "c82c3316" }

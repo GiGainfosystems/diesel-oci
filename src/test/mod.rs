@@ -2128,3 +2128,22 @@ fn umlauts() {
         assert_eq!(tst_chr, v[i]);
     }
 }
+
+#[test]
+fn run_adhoc_procedure() {
+    use self::test;
+    use diesel::ExpressionMethods;
+    let conn = init_testing();
+
+    let proc = "BEGIN \
+    EXECUTE IMMEDIATE 'ALTER TABLE elements add (temp varchar2(2000))'; \
+    EXECUTE IMMEDIATE 'UPDATE elements SET temp=dbms_lob.substr(\"COMMENT\",2000,1)'; \
+    EXECUTE IMMEDIATE 'COMMIT'; \
+    EXECUTE IMMEDIATE 'ALTER TABLE elements DROP COLUMN \"COMMENT\"'; \
+    EXECUTE IMMEDIATE 'ALTER TABLE elements RENAME COLUMN temp to \"COMMENT\"'; \
+END;";
+
+    let ret = conn.execute(proc);
+    assert_result!(ret);
+
+}

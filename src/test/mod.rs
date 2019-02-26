@@ -2130,7 +2130,6 @@ fn umlauts() {
 use diesel::sql_types::Nullable;
 use diesel::sql_types::Text;
 #[derive(QueryableByName)]
-//#[table_name = "test"]
 struct FooAliased {
     #[column_name = "foo"]
     #[sql_type = "Nullable<Text>"]
@@ -2173,7 +2172,7 @@ fn use_named_queries_aliased() {
         assert_result!(ret);
     }
 
-    let ret = sql_query("SELECT TST_CHR foo FROM test").load::<FooAliased>(&conn);
+    let ret = sql_query("SELECT TST_CHR \"foo\" FROM test").load::<FooAliased>(&conn);
 
     assert_result!(ret);
     let ret = ret.unwrap();

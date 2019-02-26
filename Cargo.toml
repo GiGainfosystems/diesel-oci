@@ -27,7 +27,7 @@ version = "0.4"
 [dependencies.diesel]
 default-features = false
 features = ["with-deprecated"]
-version = "=1.3.3"
+version = "=1.4.1"
 
 [dependencies.oci-sys]
 path = "oci-sys"
@@ -42,5 +42,5 @@ chrono-time = ["chrono", "diesel/chrono"]
 default = ["chrono-time"]
 
 [replace]
-"diesel:1.3.3" = { git = "https://github.com/GiGainfosystems/diesel", rev = "0d6a5d419" }
-"diesel_derives:1.3.0" = { git = "https://github.com/GiGainfosystems/diesel", rev = "0d6a5d419" }
+"diesel:1.4.1" = { git = "https://github.com/GiGainfosystems/diesel", rev = "c82c3316" }
+"diesel_derives:1.4.0" = { git = "https://github.com/GiGainfosystems/diesel", rev = "c82c3316" }

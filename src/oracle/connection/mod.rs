@@ -11,7 +11,7 @@ use diesel::query_builder::{AsQuery, QueryFragment};
 use diesel::result::*;
 use diesel::sql_types::HasSqlType;
 
-use self::cursor::Cursor;
+use self::cursor::{Cursor, NamedCursor};
 use self::stmt::Statement;
 use self::transaction::OCITransactionManager;
 use super::backend::Oracle;
@@ -141,12 +141,18 @@ impl Connection for OciConnection {
         cursor.collect()
     }
 
-    fn query_by_name<T, U>(&self, _source: &T) -> QueryResult<Vec<U>>
+    fn query_by_name<T, U>(&self, source: &T) -> QueryResult<Vec<U>>
     where
         T: QueryFragment<Self::Backend> + QueryId,
         U: QueryableByName<Self::Backend>,
     {
-        unimplemented!()
+        let mut stmt = self.prepare_query(&source)?;
+        let mut metadata = Vec::new();
+        // TODO: FIXME: Georg will check if this can get un-deprecated.
+        //#[allow(deprecated)]
+        //    Oracle::row_metadata(&mut metadata, &());
+        let mut cursor: NamedCursor = NamedCursor::from(stmt.run_with_cursor(self.auto_commit(), metadata)?);
+        cursor.collect()
     }
 }
 

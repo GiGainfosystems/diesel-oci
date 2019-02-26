@@ -344,6 +344,30 @@ impl Statement {
         Ok(column_type)
     }
 
+    fn get_column_name(&self, col_param: *mut ffi::OCIParam) -> QueryResult<String> {
+        let mut column_name: String = String::from("");
+        column_name.reserve_exact(256);
+        let mut len : u32 = 0;
+        let status = unsafe {
+            ffi::OCIAttrGet(
+                col_param as *mut _,
+                ffi::OCI_DTYPE_PARAM,
+                column_name.as_ptr() as *mut c_void,
+                (&mut len as *mut u32) as *mut _,
+                ffi::OCI_ATTR_NAME,
+                self.connection.env.error_handle,
+            )
+        };
+        Self::check_error_sql(
+            self.connection.env.error_handle,
+            status,
+            &self.mysql,
+            "RETRIEVING COLUMN_NAME",
+        )?;
+        column_name.truncate(len as usize);
+        Ok(column_name)
+    }
+
     fn get_column_char_size(&self, col_param: *mut ffi::OCIParam) -> QueryResult<u32> {
         let mut type_size: u32 = 0;
         let status = unsafe {
@@ -436,8 +460,9 @@ impl Statement {
                 );
             }
         }
+        let name = self.get_column_name(param)?;
 
-        Ok(Field::new(define_handle, buf, null_indicator, col_type))
+        Ok(Field::new(define_handle, buf, null_indicator, col_type, name))
     }
 
     fn define_all_columns(&self, row: &[OciDataType]) -> QueryResult<Vec<Field>> {
@@ -466,6 +491,7 @@ impl Statement {
                         buffer.store.to_owned(),
                         null_indicator,
                         tpe,
+                        String::from("")
                     )
                 })
                 .collect();

@@ -1,5 +1,5 @@
 use super::super::backend::Oracle;
-use diesel::row::{Row, NamedRow};
+use diesel::row::{NamedRow, Row};
 
 use super::oracle_value::OracleValue;
 

@@ -5,7 +5,7 @@ use diesel::sql_types::HasSqlType;
 use oci_sys as ffi;
 use std::marker::PhantomData;
 
-use super::row::{OciRow, NamedOciRow};
+use super::row::{NamedOciRow, OciRow};
 use super::stmt::Statement;
 use oracle::backend::Oracle;
 use oracle::types::OciDataType;
@@ -139,8 +139,8 @@ impl<'a, ST, T> From<Cursor<'a, ST, T>> for NamedCursor<'a>
 impl<'a> NamedCursor<'a> {
     pub fn new(stmt: &'a Statement, binds: Vec<Field>) -> NamedCursor<'a> {
         let mut lut = HashMap::new();
-        binds.iter().enumerate().for_each(|(i ,b)| {
-            lut.insert(b.name, i);
+        binds.iter().enumerate().for_each(|(i, b)| {
+            lut.insert(b.name.clone(), i);
         });
         NamedCursor {
             stmt,
@@ -150,53 +150,54 @@ impl<'a> NamedCursor<'a> {
     }
 
     pub fn collect<T>(&mut self) -> QueryResult<Vec<T>>
-        where
-            T: QueryableByName<Oracle>,
+    where
+        T: QueryableByName<Oracle>,
     {
-        (0..self.stmt.get_affected_rows()?)
-            .map(|i| {
-                unsafe {
-                    let status = ffi::OCIStmtFetch2(
-                        self.stmt.inner_statement,
-                        self.stmt.connection.env.error_handle,
-                        1,
-                        ffi::OCI_FETCH_NEXT as u16,
-                        0,
-                        ffi::OCI_DEFAULT,
-                    );
-                    if let Some(err) =
-                    Statement::check_error(self.stmt.connection.env.error_handle, status).err()
-                    {
-                        debug!("{:?}", self.stmt.mysql);
-                        return Err(err);
-                    }
-                    //if status as u32 == ffi::OCI_NO_DATA {
-                    //    return None;
-                    //}
-                }
-
-                let null_indicators = self.results.iter().map(|r| r.is_null()).collect();
-                let mut row = NamedOciRow::new(
-                    self.results
-                        .iter_mut()
-                        .map(|r: &mut Field| &r.buffer[..])
-                        .collect::<Vec<&[u8]>>(),
-                    null_indicators,
-                    self.lut.clone(),
+        let mut status = ffi::OCI_SUCCESS as i32;
+        let mut ret = Vec::new();
+        while status as u32 != ffi::OCI_NO_DATA {
+            unsafe {
+                status = ffi::OCIStmtFetch2(
+                    self.stmt.inner_statement,
+                    self.stmt.connection.env.error_handle,
+                    1,
+                    ffi::OCI_FETCH_NEXT as u16,
+                    0,
+                    ffi::OCI_DEFAULT,
                 );
+                if let Some(err) =
+                    Statement::check_error(self.stmt.connection.env.error_handle, status).err()
+                {
+                    debug!("{:?}", self.stmt.mysql);
+                    return Err(err);
+                }
+                if status as u32 == ffi::OCI_NO_DATA {
+                    break;
+                }
+            }
+            let null_indicators = self.results.iter().map(|r| r.is_null()).collect();
+            let row = NamedOciRow::new(
+                self.results
+                    .iter_mut()
+                    .map(|r: &mut Field| &r.buffer[..])
+                    .collect::<Vec<&[u8]>>(),
+                null_indicators,
+                self.lut.clone(),
+            );
 
-                T::build(&row).map_err(DeserializationError)
-            })
-            .collect()
+            ret.push(T::build(&row).map_err(DeserializationError)?);
+        }
+
+        Ok(ret)
     }
 
+    #[allow(dead_code)]
     pub fn index_of_column(&self, column_name: &str) -> Option<usize> {
-       //self.results.field_number(column_name)
         self.lut.get(column_name).map(|ci| *ci as usize)
     }
 
-    pub fn get_value(&self, row: usize, column: usize) -> Option<&[u8]> {
-        //self.results.get(row, column)
+    #[allow(dead_code)]
+    pub fn get_value(&self, _row: usize, _column: usize) -> Option<&[u8]> {
         unimplemented!()
     }
 }

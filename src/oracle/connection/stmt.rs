@@ -1,5 +1,5 @@
 use super::bind_context::BindContext;
-use super::cursor::{Cursor, Field};
+use super::cursor::{Cursor, Field, NamedCursor};
 use super::raw::RawConnection;
 use diesel::result::Error;
 use diesel::result::*;
@@ -345,14 +345,18 @@ impl Statement {
     }
 
     fn get_column_name(&self, col_param: *mut ffi::OCIParam) -> QueryResult<String> {
+        use std::slice;
+        use std::str;
+
         let mut column_name: String = String::from("");
-        column_name.reserve_exact(256);
-        let mut len : u32 = 0;
+        column_name.reserve_exact(20);
+        let mut col_n = ptr::null_mut() as *mut u8;
+        let mut len: u32 = 0;
         let status = unsafe {
             ffi::OCIAttrGet(
                 col_param as *mut _,
                 ffi::OCI_DTYPE_PARAM,
-                column_name.as_ptr() as *mut c_void,
+                &mut col_n as *mut *mut u8 as *mut _,
                 (&mut len as *mut u32) as *mut _,
                 ffi::OCI_ATTR_NAME,
                 self.connection.env.error_handle,
@@ -364,8 +368,14 @@ impl Statement {
             &self.mysql,
             "RETRIEVING COLUMN_NAME",
         )?;
-        column_name.truncate(len as usize);
-        Ok(column_name)
+        let s = unsafe { slice::from_raw_parts(col_n, len as usize) };
+        let n = str::from_utf8(s).map_err(|_| {
+            Error::DatabaseError(
+                DatabaseErrorKind::UnableToSendCommand,
+                Box::new(String::from("Invalid UTF-8 from OCIAttrGet")),
+            )
+        })?;
+        Ok(n.to_string())
     }
 
     fn get_column_char_size(&self, col_param: *mut ffi::OCIParam) -> QueryResult<u32> {
@@ -462,7 +472,13 @@ impl Statement {
         }
         let name = self.get_column_name(param)?;
 
-        Ok(Field::new(define_handle, buf, null_indicator, col_type, name))
+        Ok(Field::new(
+            define_handle,
+            buf,
+            null_indicator,
+            col_type,
+            name,
+        ))
     }
 
     fn define_all_columns(&self, row: &[OciDataType]) -> QueryResult<Vec<Field>> {
@@ -491,7 +507,7 @@ impl Statement {
                         buffer.store.to_owned(),
                         null_indicator,
                         tpe,
-                        String::from("")
+                        String::from(""),
                     )
                 })
                 .collect();
@@ -499,6 +515,36 @@ impl Statement {
         } else {
             let fields = self.define_all_columns(&metadata)?;
             Ok(Cursor::new(self, fields))
+        }
+    }
+
+    pub fn run_with_named_cursor(
+        &mut self,
+        auto_commit: bool,
+        metadata: Vec<OciDataType>,
+    ) -> QueryResult<NamedCursor> {
+        self.run(auto_commit, &metadata)?;
+        self.bind_index = 0;
+        if self.is_returning {
+            let fields = self
+                .returning_contexts
+                .iter()
+                .zip(metadata.into_iter())
+                .map(|(buffer, tpe)| {
+                    let null_indicator: Box<i16> = Box::new(buffer.is_null);
+                    Field::new(
+                        ptr::null_mut(),
+                        buffer.store.to_owned(),
+                        null_indicator,
+                        tpe,
+                        String::from(""),
+                    )
+                })
+                .collect();
+            Ok(NamedCursor::new(self, fields))
+        } else {
+            let fields = self.define_all_columns(&metadata)?;
+            Ok(NamedCursor::new(self, fields))
         }
     }
 
@@ -576,7 +622,8 @@ impl Drop for Statement {
                 status,
                 &self.mysql,
                 "DROPPING STMT",
-            ).err()
+            )
+            .err()
             {
                 debug!("{:?}", err);
             }

@@ -2082,3 +2082,115 @@ fn umlauts() {
         assert_eq!(tst_chr, v[i]);
     }
 }
+
+use diesel::sql_types::Nullable;
+use diesel::sql_types::Text;
+#[derive(QueryableByName)]
+//#[table_name = "test"]
+struct FooAliased {
+    #[column_name = "foo"]
+    #[sql_type = "Nullable<Text>"]
+    TST_CHR: Option<String>,
+}
+
+#[test]
+fn use_named_queries_aliased() {
+    let conn = init_testing();
+
+    clean_test(&conn);
+
+    use self::test::columns::TST_CHR;
+    use self::test::dsl::test;
+    use diesel::sql_query;
+    use diesel::ExpressionMethods;
+    use diesel::QueryDsl;
+
+    let ret = conn.execute(CREATE_TEST_TABLE);
+    assert_result!(ret);
+
+    let mut v = Vec::new();
+    v.push(String::from("äöüß"));
+    v.push(String::from("السلام عليكم"));
+    v.push(String::from("Dobrý den"));
+    v.push(String::from("Hello"));
+    v.push(String::from("שָׁלוֹם"));
+    v.push(String::from("नमस्ते"));
+    v.push(String::from("こんにちは"));
+    v.push(String::from("안녕하세요"));
+    v.push(String::from("你好"));
+    v.push(String::from("Olá"));
+    v.push(String::from("Здравствуйте"));
+    v.push(String::from("Hola"));
+    v.push(String::from("🎉🦀"));
+    for hello in &v {
+        let ret = ::diesel::insert_into(test)
+            .values(TST_CHR.eq(&hello))
+            .execute(&conn);
+        assert_result!(ret);
+    }
+
+    let ret = sql_query("SELECT TST_CHR foo FROM test").load::<FooAliased>(&conn);
+
+    assert_result!(ret);
+    let ret = ret.unwrap();
+    assert_eq!(ret.len(), v.len());
+    for (i, r) in ret.iter().enumerate() {
+        assert!(r.TST_CHR.is_some());
+        let tst_chr = r.TST_CHR.clone().unwrap();
+        assert_eq!(tst_chr, v[i]);
+    }
+}
+
+#[derive(QueryableByName)]
+#[table_name = "test"]
+struct Foo {
+    TST_CHR: Option<String>,
+}
+
+#[test]
+fn use_named_queries() {
+    let conn = init_testing();
+
+    clean_test(&conn);
+
+    use self::test::columns::TST_CHR;
+    use self::test::dsl::test;
+    use diesel::sql_query;
+    use diesel::ExpressionMethods;
+    use diesel::QueryDsl;
+
+    let ret = conn.execute(CREATE_TEST_TABLE);
+    assert_result!(ret);
+
+    let mut v = Vec::new();
+    v.push(String::from("äöüß"));
+    v.push(String::from("السلام عليكم"));
+    v.push(String::from("Dobrý den"));
+    v.push(String::from("Hello"));
+    v.push(String::from("שָׁלוֹם"));
+    v.push(String::from("नमस्ते"));
+    v.push(String::from("こんにちは"));
+    v.push(String::from("안녕하세요"));
+    v.push(String::from("你好"));
+    v.push(String::from("Olá"));
+    v.push(String::from("Здравствуйте"));
+    v.push(String::from("Hola"));
+    v.push(String::from("🎉🦀"));
+    for hello in &v {
+        let ret = ::diesel::insert_into(test)
+            .values(TST_CHR.eq(&hello))
+            .execute(&conn);
+        assert_result!(ret);
+    }
+
+    let ret = sql_query("SELECT TST_CHR FROM test").load::<Foo>(&conn);
+
+    assert_result!(ret);
+    let ret = ret.unwrap();
+    assert_eq!(ret.len(), v.len());
+    for (i, r) in ret.iter().enumerate() {
+        assert!(r.TST_CHR.is_some());
+        let tst_chr = r.TST_CHR.clone().unwrap();
+        assert_eq!(tst_chr, v[i]);
+    }
+}

@@ -151,7 +151,10 @@ impl Connection for OciConnection {
         // TODO: FIXME: Georg will check if this can get un-deprecated.
         //#[allow(deprecated)]
         //    Oracle::row_metadata(&mut metadata, &());
-        let mut cursor: NamedCursor = NamedCursor::from(stmt.run_with_cursor(self.auto_commit(), metadata)?);
+        use super::types::OciDataType;
+        metadata.push(OciDataType::Text);
+        let mut cursor: NamedCursor =
+            NamedCursor::from(stmt.run_with_named_cursor(self.auto_commit(), metadata)?);
         cursor.collect()
     }
 }

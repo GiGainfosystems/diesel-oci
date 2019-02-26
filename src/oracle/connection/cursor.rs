@@ -3,6 +3,7 @@ use diesel::result::Error::DeserializationError;
 use diesel::result::QueryResult;
 use diesel::sql_types::HasSqlType;
 use oci_sys as ffi;
+use std::collections::HashMap;
 use std::marker::PhantomData;
 
 use super::row::{NamedOciRow, OciRow};
@@ -16,7 +17,6 @@ pub struct Field {
     null_indicator: Box<i16>,
     #[allow(dead_code)]
     typ: OciDataType,
-    #[allow(dead_code)]
     name: String,
 }
 
@@ -119,29 +119,20 @@ where
         Some(value)
     }
 }
-use std::collections::HashMap;
+
 pub struct NamedCursor<'a> {
     stmt: &'a Statement,
     results: Vec<Field>,
     lut: HashMap<String, usize>,
 }
 
-impl<'a, ST, T> From<Cursor<'a, ST, T>> for NamedCursor<'a>
-//where
-//    Oracle: HasSqlType<ST>,
-//    T: Queryable<ST, Oracle>,
-{
-    fn from(cur: Cursor<'a, ST, T>) -> Self {
-        NamedCursor::new(cur.stmt, cur.results)
-    }
-}
-
 impl<'a> NamedCursor<'a> {
     pub fn new(stmt: &'a Statement, binds: Vec<Field>) -> NamedCursor<'a> {
-        let mut lut = HashMap::new();
-        binds.iter().enumerate().for_each(|(i, b)| {
-            lut.insert(b.name.clone(), i);
-        });
+        let lut = binds
+            .iter()
+            .enumerate()
+            .map(|(i, b)| (b.name.clone(), i))
+            .collect();
         NamedCursor {
             stmt,
             results: binds,
@@ -182,22 +173,12 @@ impl<'a> NamedCursor<'a> {
                     .map(|r: &mut Field| &r.buffer[..])
                     .collect::<Vec<&[u8]>>(),
                 null_indicators,
-                self.lut.clone(),
+                &self.lut,
             );
 
             ret.push(T::build(&row).map_err(DeserializationError)?);
         }
 
         Ok(ret)
-    }
-
-    #[allow(dead_code)]
-    pub fn index_of_column(&self, column_name: &str) -> Option<usize> {
-        self.lut.get(column_name).map(|ci| *ci as usize)
-    }
-
-    #[allow(dead_code)]
-    pub fn get_value(&self, _row: usize, _column: usize) -> Option<&[u8]> {
-        unimplemented!()
     }
 }

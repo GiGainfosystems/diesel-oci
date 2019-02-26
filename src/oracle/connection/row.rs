@@ -1,5 +1,6 @@
 use super::super::backend::Oracle;
 use diesel::row::{NamedRow, Row};
+use std::collections::HashMap;
 
 use super::oracle_value::OracleValue;
 
@@ -39,15 +40,18 @@ impl<'a> Row<Oracle> for OciRow<'a> {
     }
 }
 
-use std::collections::HashMap;
 pub struct NamedOciRow<'a> {
     buf: Vec<&'a [u8]>,
     is_null: Vec<bool>,
-    lut: HashMap<String, usize>,
+    lut: &'a HashMap<String, usize>,
 }
 
 impl<'a> NamedOciRow<'a> {
-    pub fn new(row_buf: Vec<&'a [u8]>, is_null: Vec<bool>, lut: HashMap<String, usize>) -> Self {
+    pub fn new(
+        row_buf: Vec<&'a [u8]>,
+        is_null: Vec<bool>,
+        lut: &'a HashMap<String, usize>,
+    ) -> Self {
         NamedOciRow {
             buf: row_buf,
             is_null,

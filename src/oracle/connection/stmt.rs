@@ -282,6 +282,30 @@ impl Statement {
         Ok(())
     }
 
+    fn run_describe(&mut self) -> QueryResult<()> {
+        let iters = if self.is_select { 0 } else { 1 };
+
+        unsafe {
+            let status = ffi::OCIStmtExecute(
+                self.connection.service_handle,
+                self.inner_statement,
+                self.connection.env.error_handle,
+                iters,
+                0,
+                ptr::null(),
+                ptr::null_mut(),
+                ffi::OCI_DESCRIBE_ONLY,
+            );
+            Self::check_error_sql(
+                self.connection.env.error_handle,
+                status,
+                &self.mysql,
+                "EXECUTING DESCRIBE STMT",
+            )?;
+        }
+        Ok(())
+    }
+
     pub fn get_affected_rows(&self) -> QueryResult<usize> {
         let mut affected_rows: u32 = 0;
         unsafe {
@@ -515,6 +539,27 @@ impl Statement {
         } else {
             let fields = self.define_all_columns(&metadata)?;
             Ok(Cursor::new(self, fields))
+        }
+    }
+
+    pub fn get_metadata(&mut self, metadata: &mut Vec<OciDataType>) {
+        let desc = self.run_describe();
+        if desc.is_ok() {
+            let mut cnt = 1;
+            let mut param = self.get_column_param(cnt);
+            while param.is_ok() {
+                let data_type =
+                    self.get_column_data_type(param.expect("We test a line before that it is Ok"));
+                if data_type.is_ok() {
+                    metadata.push(OciDataType::from_sqlt(
+                        data_type.expect("We test a line before that it is Ok"),
+                    ));
+                }
+                cnt = cnt + 1;
+                param = self.get_column_param(cnt);
+            }
+        } else {
+            debug!("{:?}", desc.err());
         }
     }
 

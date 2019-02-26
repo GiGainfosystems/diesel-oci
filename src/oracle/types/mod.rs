@@ -6,6 +6,7 @@ use diesel::deserialize::FromSql;
 use diesel::serialize::{IsNull, Output, ToSql};
 use diesel::sql_types::*;
 use oci_sys as ffi;
+use std::collections::btree_map::Entry::Occupied;
 use std::error::Error;
 use std::io::Write;
 
@@ -48,6 +49,16 @@ impl OciDataType {
             Text => ffi::SQLT_CHR,
             Binary => ffi::SQLT_BIN,
             Date | Time | Timestamp => ffi::SQLT_DAT,
+        }
+    }
+
+    pub fn from_sqlt(sqlt: u32) -> Self {
+        match sqlt {
+            ffi::SQLT_CHR => OciDataType::Text,
+            ffi::SQLT_INT => OciDataType::Integer,
+            ffi::SQLT_IBDOUBLE => OciDataType::Double,
+            ffi::SQLT_IBFLOAT => OciDataType::Float,
+            _ => unreachable!("Found type {}. Either add it or this is an error", sqlt),
         }
     }
 

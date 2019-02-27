@@ -148,7 +148,7 @@ impl Connection for OciConnection {
     {
         let mut stmt = self.prepare_query(&source)?;
         let mut metadata = Vec::new();
-        stmt.get_metadata(&mut metadata);
+        stmt.get_metadata(&mut metadata)?;
         let mut cursor: NamedCursor =
             NamedCursor::from(stmt.run_with_named_cursor(self.auto_commit(), metadata)?);
         cursor.collect()

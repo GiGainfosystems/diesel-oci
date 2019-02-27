@@ -423,6 +423,52 @@ impl Statement {
         Ok(type_size)
     }
 
+    fn get_column_precision(&self, col_param: *mut ffi::OCIParam) -> QueryResult<i16> {
+        let mut attributesize = 16u32; //sb2
+        let mut precision = 0i16;
+
+        let status = unsafe {
+            ffi::OCIAttrGet(
+                col_param as *mut _,
+                ffi::OCI_DTYPE_PARAM,
+                (&mut precision as *mut i16) as *mut _,
+                &mut attributesize as *mut u32,
+                ffi::OCI_ATTR_PRECISION,
+                self.connection.env.error_handle,
+            )
+        };
+        Self::check_error_sql(
+            self.connection.env.error_handle,
+            status,
+            &self.mysql,
+            "RETRIEVING PRECISION",
+        )?;
+        Ok(precision)
+    }
+
+    fn get_column_scale(&self, col_param: *mut ffi::OCIParam) -> QueryResult<i8> {
+        let mut attributesize = 8u32; // sb1
+        let mut scale = 0i8;
+
+        let status = unsafe {
+            ffi::OCIAttrGet(
+                col_param as *mut _,
+                ffi::OCI_DTYPE_PARAM,
+                (&mut scale as *mut i8) as *mut _,
+                &mut attributesize as *mut u32,
+                ffi::OCI_ATTR_SCALE,
+                self.connection.env.error_handle,
+            )
+        };
+        Self::check_error_sql(
+            self.connection.env.error_handle,
+            status,
+            &self.mysql,
+            "RETRIEVING SCALE",
+        )?;
+        Ok(scale)
+    }
+
     fn get_define_buffer_size(
         &self,
         col_param: *mut ffi::OCIParam,
@@ -542,25 +588,71 @@ impl Statement {
         }
     }
 
-    pub fn get_metadata(&mut self, metadata: &mut Vec<OciDataType>) {
-        let desc = self.run_describe();
-        if desc.is_ok() {
-            let mut cnt = 1;
-            let mut param = self.get_column_param(cnt);
-            while param.is_ok() {
-                let data_type =
-                    self.get_column_data_type(param.expect("We test a line before that it is Ok"));
-                if data_type.is_ok() {
-                    metadata.push(OciDataType::from_sqlt(
-                        data_type.expect("We test a line before that it is Ok"),
-                    ));
+    pub fn get_metadata(&mut self, metadata: &mut Vec<OciDataType>) -> QueryResult<()> {
+        let desc = self.run_describe()?;
+
+        let mut cnt = 1;
+        let mut param = self.get_column_param(cnt);
+        // we don't use ? below since we don't know the number of columns and therefore
+        // call `get_column_param` until it returns an error and then stop. this was
+        // seen in the original OCI examples from documentation
+        while param.is_ok() {
+            let col_handle = param.expect("We test a line before that it is Ok");
+            let mut tpe = self.get_column_data_type(col_handle)?;
+            let mut tpe_size = 0;
+            match tpe {
+                ffi::SQLT_INT | ffi::SQLT_UIN => {
+                    tpe_size = 8;
+                    tpe = ffi::SQLT_INT;
                 }
-                cnt = cnt + 1;
-                param = self.get_column_param(cnt);
+                ffi::SQLT_NUM => {
+                    let scale = self.get_column_scale(col_handle)?;
+                    let precision = self.get_column_precision(col_handle)?;
+                    if scale == 0 {
+                        tpe_size = match precision {
+                            5 => 2,  // number(5) -> smallint
+                            10 => 4, // number(10) -> int
+                            19 => 8, // number(19) -> bigint
+                            _ => 21, // number(38) -> consume_all
+                        };
+                        tpe = ffi::SQLT_INT;
+                    } else {
+                        tpe = ffi::SQLT_FLT;
+                        tpe_size = 8;
+                    }
+                }
+                ffi::SQLT_BDOUBLE | ffi::SQLT_LNG | ffi::SQLT_IBDOUBLE => {
+                    tpe_size = 8;
+                    tpe = ffi::SQLT_BDOUBLE;
+                }
+                ffi::SQLT_FLT | ffi::SQLT_BFLOAT | ffi::SQLT_IBFLOAT => {
+                    tpe_size = 4;
+                    tpe = ffi::SQLT_BFLOAT;
+                }
+                ffi::SQLT_CHR | ffi::SQLT_VCS | ffi::SQLT_LVC | ffi::SQLT_AFC | ffi::SQLT_VST => {
+                    tpe = ffi::SQLT_STR;
+                }
+                ffi::SQLT_ODT
+                | ffi::SQLT_DATE
+                | ffi::SQLT_TIMESTAMP
+                | ffi::SQLT_TIMESTAMP_TZ
+                | ffi::SQLT_TIMESTAMP_LTZ => {
+                    tpe = ffi::SQLT_DAT;
+                }
+                ffi::SQLT_BLOB => {
+                    tpe = ffi::SQLT_BIN;
+                }
+                ffi::SQLT_CLOB => {
+                    tpe = ffi::SQLT_STR;
+                }
+                _ => panic!("Unknown Type: {}. Aborting", tpe),
             }
-        } else {
-            debug!("{:?}", desc.err());
+
+            metadata.push(OciDataType::from_sqlt(tpe, tpe_size));
+            cnt = cnt + 1;
+            param = self.get_column_param(cnt);
         }
+        Ok(())
     }
 
     pub fn run_with_named_cursor(

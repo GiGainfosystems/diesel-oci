@@ -52,12 +52,17 @@ impl OciDataType {
         }
     }
 
-    pub fn from_sqlt(sqlt: u32) -> Self {
+    pub fn from_sqlt(sqlt: u32, tpe_size: i32) -> Self {
         match sqlt {
-            ffi::SQLT_CHR => OciDataType::Text,
-            ffi::SQLT_INT => OciDataType::Integer,
-            ffi::SQLT_IBDOUBLE => OciDataType::Double,
-            ffi::SQLT_IBFLOAT => OciDataType::Float,
+            ffi::SQLT_STR => OciDataType::Text,
+            ffi::SQLT_INT => match tpe_size {
+                2 => OciDataType::SmallInt,
+                4 => OciDataType::Integer,
+                8 => OciDataType::BigInt,
+                _ => unreachable!("Found size {}. Either add it or this is an error", tpe_size),
+            },
+            ffi::SQLT_FLT | ffi::SQLT_BDOUBLE => OciDataType::Double,
+            ffi::SQLT_BFLOAT => OciDataType::Float,
             _ => unreachable!("Found type {}. Either add it or this is an error", sqlt),
         }
     }

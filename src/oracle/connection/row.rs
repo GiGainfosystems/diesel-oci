@@ -65,7 +65,7 @@ impl<'a> NamedRow<Oracle> for NamedOciRow<'a> {
         self.lut.get(column_name).map(|ci| *ci as usize)
     }
     fn get_raw_value(&self, index: usize) -> Option<&OracleValue> {
-        let ret = if index < self.buf.len() {
+        if index < self.buf.len() {
             if self.is_null[index] {
                 None
             } else {
@@ -73,7 +73,6 @@ impl<'a> NamedRow<Oracle> for NamedOciRow<'a> {
             }
         } else {
             None
-        };
-        ret
+        }
     }
 }

@@ -692,7 +692,7 @@ impl Statement {
             }
 
             metadata.push(OciDataType::from_sqlt(tpe, tpe_size));
-            cnt = cnt + 1;
+            cnt += 1;
             param = self.get_column_param(cnt);
         }
         Ok(())

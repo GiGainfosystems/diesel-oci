@@ -56,17 +56,15 @@ impl ToSql<Timestamp, Oracle> for NaiveDateTime {
         if year > 0 {
             let c: u8 = (year / 100 + 100) as u8;
             let y: u8 = (year % 100 + 100) as u8;
-            try!(
-                out.write(&[c, y])
-                    .map_err(|e| Box::new(e) as Box<Error + Send + Sync>)
-            );
+            try!(out
+                .write(&[c, y])
+                .map_err(|e| Box::new(e) as Box<Error + Send + Sync>));
         } else {
             let c: u8 = (year / 100) as u8;
             let y: u8 = (year % 100) as u8;
-            try!(
-                out.write(&[c, y])
-                    .map_err(|e| Box::new(e) as Box<Error + Send + Sync>)
-            );
+            try!(out
+                .write(&[c, y])
+                .map_err(|e| Box::new(e) as Box<Error + Send + Sync>));
         }
         let mo = self.month() as u8;
         let d = self.day() as u8;
@@ -108,17 +106,15 @@ impl ToSql<Date, Oracle> for NaiveDate {
         if year > 0 {
             let c: u8 = (year / 100 + 100) as u8;
             let y: u8 = (year % 100 + 100) as u8;
-            try!(
-                out.write(&[c, y])
-                    .map_err(|e| Box::new(e) as Box<Error + Send + Sync>)
-            );
+            try!(out
+                .write(&[c, y])
+                .map_err(|e| Box::new(e) as Box<Error + Send + Sync>));
         } else {
             let c: u8 = (year / 100) as u8;
             let y: u8 = (year % 100) as u8;
-            try!(
-                out.write(&[c, y])
-                    .map_err(|e| Box::new(e) as Box<Error + Send + Sync>)
-            );
+            try!(out
+                .write(&[c, y])
+                .map_err(|e| Box::new(e) as Box<Error + Send + Sync>));
         }
         let mo = self.month() as u8;
         let d = self.day() as u8;

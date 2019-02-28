@@ -36,8 +36,7 @@ impl Statement {
         }
         debug!("SQL Statement {}", mysql);
         let mut is_select = false;
-        let mut is_returning = false;
-        let stmt = unsafe {
+        let (stmt, is_returning) = unsafe {
             let mut stmt: *mut ffi::OCIStmt = ptr::null_mut();
             let status = ffi::OCIStmtPrepare2(
                 raw_connection.service_handle,
@@ -60,7 +59,7 @@ impl Statement {
 
             let stmt_type =
                 Self::get_statement_type(stmt, raw_connection.env.error_handle, &mysql)?;
-            is_returning = Self::is_returning(stmt, raw_connection.env.error_handle, &mysql)?;
+            let is_returning = Self::is_returning(stmt, raw_connection.env.error_handle, &mysql)?;
 
             // c.f. https://docs.oracle.com/database/121/LNOCI/oci04sql.htm#GUID-91AF021D-9FCD-4A4D-A647-2F2AB5B448B8__CIHEHCEJ
             // c.f. https://stackoverflow.com/a/53390359/698496
@@ -104,7 +103,7 @@ impl Statement {
             }
 
             debug!("Executing {:?}", mysql);
-            stmt
+            (stmt, is_returning)
         };
 
         Ok(Statement {
@@ -633,7 +632,7 @@ impl Statement {
     }
 
     pub fn get_metadata(&mut self, metadata: &mut Vec<OciDataType>) -> QueryResult<()> {
-        let desc = self.run_describe()?;
+        self.run_describe()?;
 
         let mut cnt = 1;
         let mut param = self.get_column_param(cnt);

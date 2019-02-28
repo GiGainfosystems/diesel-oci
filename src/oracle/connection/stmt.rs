@@ -35,8 +35,8 @@ impl Statement {
             mysql = mysql + &format!("OFFSET 0 ROWS FETCH NEXT {} ROWS ONLY", place_holder);
         }
         debug!("SQL Statement {}", mysql);
-        let mut is_select = false;
-        let (stmt, is_returning) = unsafe {
+
+        let stmt= unsafe {
             let mut stmt: *mut ffi::OCIStmt = ptr::null_mut();
             let status = ffi::OCIStmtPrepare2(
                 raw_connection.service_handle,
@@ -57,54 +57,16 @@ impl Statement {
                 "PREPARING STMT",
             )?;
 
-            let stmt_type =
-                Self::get_statement_type(stmt, raw_connection.env.error_handle, &mysql)?;
-            let is_returning = Self::is_returning(stmt, raw_connection.env.error_handle, &mysql)?;
-
-            // c.f. https://docs.oracle.com/database/121/LNOCI/oci04sql.htm#GUID-91AF021D-9FCD-4A4D-A647-2F2AB5B448B8__CIHEHCEJ
-            // c.f. https://stackoverflow.com/a/53390359/698496
-            match stmt_type as u32 {
-                ffi::OCI_STMT_SELECT => is_select = true,
-                ffi::OCI_STMT_UPDATE
-                | ffi::OCI_STMT_DELETE
-                | ffi::OCI_STMT_INSERT
-                | ffi::OCI_STMT_BEGIN
-                | ffi::OCI_STMT_DECLARE
-                | 15
-                | 16
-                | 17
-                | 21
-                | ffi::OCI_ATTR_STMT_IS_RETURNING => is_select = false,
-                ffi::OCI_STMT_CREATE | ffi::OCI_STMT_DROP | ffi::OCI_STMT_ALTER => {
-                    // for create statements we need to run OCIStmtPrepare2 twice
-                    // c.f. https://docs.oracle.com/database/121/LNOCI/oci17msc001.htm#LNOCI17165
-                    // "To reexecute a DDL statement, you must prepare the statement again using OCIStmtPrepare2()."
-
-                    let status = ffi::OCIStmtPrepare2(
-                        raw_connection.service_handle,
-                        &mut stmt,
-                        raw_connection.env.error_handle,
-                        mysql.as_ptr(),
-                        mysql.len() as u32,
-                        ptr::null(),
-                        0,
-                        ffi::OCI_NTV_SYNTAX,
-                        ffi::OCI_DEFAULT,
-                    );
-
-                    Self::check_error_sql(
-                        raw_connection.env.error_handle,
-                        status,
-                        &mysql,
-                        "PREPARING STMT 2",
-                    )?;
-                }
-                _ => unreachable!("Statement type {} unknown", stmt_type),
-            }
-
-            debug!("Executing {:?}", mysql);
-            (stmt, is_returning)
+            stmt
         };
+
+        // c.f. https://docs.oracle.com/database/121/LNOCI/oci04sql.htm#GUID-91AF021D-9FCD-4A4D-A647-2F2AB5B448B8__CIHEHCEJ
+        // c.f. https://stackoverflow.com/a/53390359/698496
+        let stmt_type =
+            u32::from(Self::get_statement_type(stmt, raw_connection.env.error_handle, &mysql)?);
+        let is_select = stmt_type == ffi::OCI_STMT_SELECT;
+        let is_returning = Self::is_returning(stmt, raw_connection.env.error_handle, &mysql)?;
+
 
         Ok(Statement {
             connection: raw_connection.clone(),

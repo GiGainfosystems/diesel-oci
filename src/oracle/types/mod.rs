@@ -6,7 +6,6 @@ use diesel::deserialize::FromSql;
 use diesel::serialize::{IsNull, Output, ToSql};
 use diesel::sql_types::*;
 use oci_sys as ffi;
-use std::collections::btree_map::Entry::Occupied;
 use std::error::Error;
 use std::io::Write;
 

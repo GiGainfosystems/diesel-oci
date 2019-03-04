@@ -34,11 +34,9 @@ impl Statement {
             let place_holder = limit_clause.split_off(String::from("LIMIT ").len());
             mysql = mysql + &format!("OFFSET 0 ROWS FETCH NEXT {} ROWS ONLY", place_holder);
         }
-        // TODO: this is bad, things will break
-        let is_returning =
-            (sql.starts_with("INSERT") || sql.starts_with("insert")) && sql.contains("RETURNING");
         debug!("SQL Statement {}", mysql);
-        let stmt = unsafe {
+
+        let stmt= unsafe {
             let mut stmt: *mut ffi::OCIStmt = ptr::null_mut();
             let status = ffi::OCIStmtPrepare2(
                 raw_connection.service_handle,
@@ -59,57 +57,22 @@ impl Statement {
                 "PREPARING STMT",
             )?;
 
-            // for create statements we need to run OCIStmtPrepare2 twice
-            // c.f. https://docs.oracle.com/database/121/LNOCI/oci17msc001.htm#LNOCI17165
-            // "To reexecute a DDL statement, you must prepare the statement again using OCIStmtPrepare2()."
-            if let Some(u) = mysql.to_string().find("CREATE") {
-                if u < 10 {
-                    let status = ffi::OCIStmtPrepare2(
-                        raw_connection.service_handle,
-                        &mut stmt,
-                        raw_connection.env.error_handle,
-                        mysql.as_ptr(),
-                        mysql.len() as u32,
-                        ptr::null(),
-                        0,
-                        ffi::OCI_NTV_SYNTAX,
-                        ffi::OCI_DEFAULT,
-                    );
-
-                    Self::check_error_sql(
-                        raw_connection.env.error_handle,
-                        status,
-                        &mysql,
-                        "PREPARING STMT 2",
-                    )?;
-                }
-            }
-            debug!("Executing {:?}", mysql);
             stmt
         };
+
+        // c.f. https://docs.oracle.com/database/121/LNOCI/oci04sql.htm#GUID-91AF021D-9FCD-4A4D-A647-2F2AB5B448B8__CIHEHCEJ
+        // c.f. https://stackoverflow.com/a/53390359/698496
+        let stmt_type =
+            u32::from(Self::get_statement_type(stmt, raw_connection.env.error_handle, &mysql)?);
+        let is_select = stmt_type == ffi::OCI_STMT_SELECT;
+        let is_returning = Self::is_returning(stmt, raw_connection.env.error_handle, &mysql)?;
+
+
         Ok(Statement {
             connection: raw_connection.clone(),
             inner_statement: stmt,
             bind_index: 0,
-            // TODO: this can go wrong, since where is also `WITH` and other SQL structures. before
-            // there was `sql.contains("SELECT")||sql.contains("select") which might fails on the
-            // following queries (meaning they will be identified as select clause even if they are
-            // not: `UPDATE table SET k='select';` OR
-            // ```
-            //            CREATE OR REPLACE FORCE VIEW full_bounding_boxes(id, o_c1, o_c2, o_c3, u_c1, u_c2, u_c3, v_c1, v_c2, v_c3, w_c1, w_c2, w_c3)
-            //            AS
-            //            SELECT bbox.id as id,
-            //            o.c1 as o_c1, o.c2 as o_c2, o.c3 as o_c3,
-            //            u.c1 as u_c1, u.c2 as u_c2, u.c3 as u_c3,
-            //            v.c1 as v_c1, v.c2 as v_c2, v.c3 as v_c3,
-            //            w.c1 as w_c1, w.c2 as w_c2, w.c3 as w_c3
-            //            FROM bounding_boxes bbox
-            //            INNER JOIN geo_points o ON bbox.o = o.id
-            //            INNER JOIN geo_points u ON bbox.u = u.id
-            //            INNER JOIN geo_points v ON bbox.v = v.id
-            //            INNER JOIN geo_points w ON bbox.w = w.id
-            // ```
-            is_select: sql.starts_with("SELECT") || sql.starts_with("select"),
+            is_select,
             is_returning,
             buffers: Vec::with_capacity(NUM_ELEMENTS),
             sizes: Vec::with_capacity(NUM_ELEMENTS),
@@ -469,6 +432,48 @@ impl Statement {
         Ok(scale)
     }
 
+    fn get_statement_type(
+        stmt: *mut ffi::OCIStmt,
+        error_handle: *mut ffi::OCIError,
+        sql: &String,
+    ) -> QueryResult<u16> {
+        let mut stmt_type = 0u16;
+
+        let status = unsafe {
+            ffi::OCIAttrGet(
+                stmt as *mut _,
+                ffi::OCI_HTYPE_STMT,
+                (&mut stmt_type as *mut u16) as *mut _,
+                ptr::null_mut(),
+                ffi::OCI_ATTR_STMT_TYPE,
+                error_handle,
+            )
+        };
+        Self::check_error_sql(error_handle, status, sql, "RETRIEVING STATEMENT TYPE")?;
+        Ok(stmt_type)
+    }
+
+    fn is_returning(
+        stmt: *mut ffi::OCIStmt,
+        error_handle: *mut ffi::OCIError,
+        sql: &String,
+    ) -> QueryResult<bool> {
+        let mut is_returning = 0u8;
+        let status = unsafe {
+            ffi::OCIAttrGet(
+                stmt as *mut _,
+                ffi::OCI_HTYPE_STMT,
+                (&mut is_returning as *mut u8) as *mut _,
+                ptr::null_mut(),
+                ffi::OCI_ATTR_STMT_IS_RETURNING,
+                error_handle,
+            )
+        };
+        Self::check_error_sql(error_handle, status, sql, "RETRIEVING RETURNING STATE")?;
+        // 0 == false
+        Ok(is_returning != 0)
+    }
+
     fn get_define_buffer_size(
         &self,
         col_param: *mut ffi::OCIParam,
@@ -589,7 +594,7 @@ impl Statement {
     }
 
     pub fn get_metadata(&mut self, metadata: &mut Vec<OciDataType>) -> QueryResult<()> {
-        let desc = self.run_describe()?;
+        self.run_describe()?;
 
         let mut cnt = 1;
         let mut param = self.get_column_param(cnt);
@@ -649,7 +654,7 @@ impl Statement {
             }
 
             metadata.push(OciDataType::from_sqlt(tpe, tpe_size));
-            cnt = cnt + 1;
+            cnt += 1;
             param = self.get_column_param(cnt);
         }
         Ok(())

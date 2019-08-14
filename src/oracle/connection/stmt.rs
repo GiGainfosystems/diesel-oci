@@ -27,7 +27,19 @@ const NUM_ELEMENTS: usize = 40;
 
 impl Statement {
     pub fn prepare(raw_connection: &Rc<RawConnection>, sql: &str) -> QueryResult<Self> {
-        let mut mysql = sql.to_string();
+        // Workaround for diesel / r2d2 broken connection check.
+        //
+        // Diesel has this check coded as `"SELECT 1"` and we are not able to
+        // override this otherwise.
+        //
+        // - See r2d2::ManageConnection. 
+        // - See
+        //   https://github.com/diesel-rs/diesel/blob/v1.4.2/diesel/src/r2d2.rs#L89.
+        let mut mysql = if sql == "SELECT 1" {
+            "SELECT 1 FROM DUAL".to_string()
+        } else {
+            sql.to_string()
+        };
         // TODO: this can go wrong: `UPDATE table SET k='LIMIT';`
         if let Some(pos) = mysql.find("LIMIT") {
             let mut limit_clause = mysql.split_off(pos);

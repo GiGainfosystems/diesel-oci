@@ -27,23 +27,15 @@ const NUM_ELEMENTS: usize = 40;
 
 impl Statement {
     pub fn prepare(raw_connection: &Rc<RawConnection>, sql: &str) -> QueryResult<Self> {
-        let mut mysql = sql.to_string();
-        // TODO: this can go wrong: `UPDATE table SET k='LIMIT';`
-        if let Some(pos) = mysql.find("LIMIT") {
-            let mut limit_clause = mysql.split_off(pos);
-            let place_holder = limit_clause.split_off(String::from("LIMIT ").len());
-            mysql = mysql + &format!("OFFSET 0 ROWS FETCH NEXT {} ROWS ONLY", place_holder);
-        }
-        debug!("SQL Statement {}", mysql);
-
-        let stmt= unsafe {
+        debug!("SQL Statement {}", sql);
+        let stmt = unsafe {
             let mut stmt: *mut ffi::OCIStmt = ptr::null_mut();
             let status = ffi::OCIStmtPrepare2(
                 raw_connection.service_handle,
                 &mut stmt,
                 raw_connection.env.error_handle,
-                mysql.as_ptr(),
-                mysql.len() as u32,
+                sql.as_ptr(),
+                sql.len() as u32,
                 ptr::null(),
                 0,
                 ffi::OCI_NTV_SYNTAX,
@@ -53,7 +45,7 @@ impl Statement {
             Self::check_error_sql(
                 raw_connection.env.error_handle,
                 status,
-                &mysql,
+                &sql,
                 "PREPARING STMT",
             )?;
 
@@ -62,11 +54,13 @@ impl Statement {
 
         // c.f. https://docs.oracle.com/database/121/LNOCI/oci04sql.htm#GUID-91AF021D-9FCD-4A4D-A647-2F2AB5B448B8__CIHEHCEJ
         // c.f. https://stackoverflow.com/a/53390359/698496
-        let stmt_type =
-            u32::from(Self::get_statement_type(stmt, raw_connection.env.error_handle, &mysql)?);
+        let stmt_type = u32::from(Self::get_statement_type(
+            stmt,
+            raw_connection.env.error_handle,
+            sql,
+        )?);
         let is_select = stmt_type == ffi::OCI_STMT_SELECT;
-        let is_returning = Self::is_returning(stmt, raw_connection.env.error_handle, &mysql)?;
-
+        let is_returning = Self::is_returning(stmt, raw_connection.env.error_handle, sql)?;
 
         Ok(Statement {
             connection: raw_connection.clone(),
@@ -77,7 +71,7 @@ impl Statement {
             buffers: Vec::with_capacity(NUM_ELEMENTS),
             sizes: Vec::with_capacity(NUM_ELEMENTS),
             indicators: Vec::with_capacity(NUM_ELEMENTS),
-            mysql,
+            mysql: sql.to_owned(),
             returning_contexts: Vec::new(),
         })
     }
@@ -131,7 +125,7 @@ impl Statement {
     pub fn check_error_sql(
         error_handle: *mut ffi::OCIError,
         status: i32,
-        sql: &String,
+        sql: &str,
         action: &str,
     ) -> Result<(), Error> {
         let check = Self::check_error(error_handle, status);
@@ -435,7 +429,7 @@ impl Statement {
     fn get_statement_type(
         stmt: *mut ffi::OCIStmt,
         error_handle: *mut ffi::OCIError,
-        sql: &String,
+        sql: &str,
     ) -> QueryResult<u16> {
         let mut stmt_type = 0u16;
 
@@ -456,7 +450,7 @@ impl Statement {
     fn is_returning(
         stmt: *mut ffi::OCIStmt,
         error_handle: *mut ffi::OCIError,
-        sql: &String,
+        sql: &str,
     ) -> QueryResult<bool> {
         let mut is_returning = 0u8;
         let status = unsafe {

@@ -364,14 +364,13 @@ fn test_diesel_migration() {
     use std::collections::HashSet;
     use std::iter::FromIterator;
 
-    let migrations = vec!["00000000000000", "20151219180527", "20160107090901"];
+    let expected = vec!["00000000000000", "20151219180527", "20160107090901"];
+    let migrations = expected.iter().map(|m| version.eq(*m)).collect::<Vec<_>>();
 
-    for mig in &migrations {
-        let ret = ::diesel::insert_into(__diesel_schema_migrations)
-            .values(&version.eq(mig))
-            .execute(&conn);
-        assert_result!(ret);
-    }
+    let ret = ::diesel::insert_into(__diesel_schema_migrations)
+        .values(&migrations)
+        .execute(&conn);
+    assert_result!(ret);
 
     let _already_run: HashSet<String> =
         self::__diesel_schema_migrations::dsl::__diesel_schema_migrations
@@ -385,7 +384,7 @@ fn test_diesel_migration() {
         .load(&conn);
     let already_run: HashSet<String> = ret.map(FromIterator::from_iter).unwrap();
 
-    let pending_migrations: Vec<_> = migrations
+    let pending_migrations: Vec<_> = expected
         .into_iter()
         .filter(|m| !already_run.contains(&m.to_string()))
         .collect();
@@ -1483,24 +1482,27 @@ fn exists() {
 
     use self::all_tables;
 
-    //use diesel::dsl::exists;
+    use diesel::dsl::exists;
     use diesel::query_dsl::filter_dsl::FilterDsl;
     use diesel::query_dsl::select_dsl::SelectDsl;
     use diesel::ExpressionMethods;
-    use oracle::query_builder::exists;
 
-    let q = all_tables::table
-        .filter(all_tables::table_name.eq("GEOMETRIES"))
-        .select(all_tables::owner);
-    let ret = exists::<_, String>(q, &conn);
+    let ret = diesel::select(exists(
+        all_tables::table
+            .filter(all_tables::table_name.eq("GEOMETRIES"))
+            .select(all_tables::owner),
+    ))
+    .get_result::<bool>(&conn);
     assert_result!(ret);
     let ret = ret.unwrap(); // has been asserted before ;)
     assert_eq!(ret, true);
 
-    let q = all_tables::table
-        .filter(all_tables::owner.eq("dieasel"))
-        .select(all_tables::owner);
-    let ret = exists::<_, String>(q, &conn);
+    let ret = diesel::select(exists(
+        all_tables::table
+            .filter(all_tables::owner.eq("dieasel"))
+            .select(all_tables::owner),
+    ))
+    .get_result::<bool>(&conn);
     assert_result!(ret);
     let ret = ret.unwrap(); // has been asserted before ;)
     assert_eq!(ret, false);

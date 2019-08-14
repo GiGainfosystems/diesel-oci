@@ -1,3 +1,5 @@
+#![feature(re_rebalance_coherence, specialization)]
+
 #[macro_use]
 extern crate diesel;
 extern crate byteorder;

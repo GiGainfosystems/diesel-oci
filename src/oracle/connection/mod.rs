@@ -194,3 +194,11 @@ impl Drop for OciConnection {
         }
     }
 }
+
+#[cfg(feature = "r2d2")]
+use diesel::r2d2::R2D2Connection;
+
+#[cfg(feature = "r2d2")]
+impl R2D2Connection for OciConnection {
+    const CHECK_QUERY_STRING: &'static str = "SELECT 1 FROM DUAL";
+}

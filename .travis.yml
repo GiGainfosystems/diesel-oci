@@ -1,10 +1,14 @@
 language: rust
 sudo: required
+cache: 
+  cargo
+  #directories:
 env:
-  - OCI_LIB_DIR=/u01/app/oracle/product/11.2.0/xe/lib LD_LIBRARY_PATH=/u01/app/oracle/product/11.2.0/xe/lib OCI_DATABASE_URL=oci:///@//localhost:1521/XE ORACLE_COOKIE=sqldev ORACLE_FILE=oracle11g/xe/oracle-xe-11.2.0-1.0.x86_64.rpm.zip ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe ORACLE_SID=XE
+  - OCI_LIB_DIR=/u01/app/oracle/product/11.2.0/xe/lib LD_LIBRARY_PATH=/u01/app/oracle/product/11.2.0/xe/lib OCI_DATABASE_URL=oci://SYSTEM/travis@//localhost:1521/travis 
 before_install:
-  - .travis/oracle/download.sh
-  - .travis/oracle/install.sh
+  - .travis/ora/wget_12c.sh
+  - .travis/ora/buildDocker.sh -v 12.2.0.1 -s
+  - docker run -d -p 127.0.0.1:1521:1521 -e ORACLE_SID=travis -e ORACLE_PWD=travis -e ORACLE_CHARACTERSET=utf-8 oracle/database:12.2.0.1-se2
 before_script:
   - export PATH=$HOME/.local/bin:$PATH
 rust:

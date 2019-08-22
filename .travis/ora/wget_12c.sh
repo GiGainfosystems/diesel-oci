@@ -35,7 +35,7 @@ fi
 echo "Created temporary cookie file $COOKIE_FILE" >> "$LOGFILE" 
 
 # Output directory and file
-OUTPUT_DIR=12.2.0.1
+OUTPUT_DIR=.travis/ora/12.2.0.1
 #
 # End of user configurable variable
 #

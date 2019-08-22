@@ -146,7 +146,7 @@ fi;
 IMAGE_NAME="oracle/database:$VERSION-$EDITION"
 
 # Go into version folder
-cd "$VERSION" || {
+cd .travis/ora/"$VERSION" || {
   echo "Could not find version directory '$VERSION'";
   exit 1;
 }

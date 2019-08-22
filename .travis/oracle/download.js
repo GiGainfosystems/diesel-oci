@@ -21,7 +21,7 @@ if (credentials.length <= 0) {
   process.exit(1);
 }
 
-Phantom.createAsync({ parameters: { 'ssl-protocol': 'tlsv1' } }).then(function (browser) {
+Phantom.createAsync({ parameters: { 'ssl-protocol': 'any' } }).then(function (browser) {
   browser = Promise.promisifyAll(browser, { suffix: 'Promise' });
   browser.addCookie({'name': 'oraclelicense', 'value': "accept-" + env['ORACLE_COOKIE'] + "-cookie", 'domain': '.oracle.com' });
 

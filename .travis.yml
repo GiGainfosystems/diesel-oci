@@ -6,7 +6,7 @@ cache:
 env:
   - OCI_LIB_DIR=/u01/app/oracle/product/11.2.0/xe/lib LD_LIBRARY_PATH=/u01/app/oracle/product/11.2.0/xe/lib OCI_DATABASE_URL=oci://SYSTEM/travis@//localhost:1521/travis 
 before_install:
-  - wget --http-user "$SSO_GIGA_USER" --http-password "$SSO_PWD" https://support.giga-infosystems.com/3rdparty/oracle/V839960-01.zip -O ".travis/ora/12.2.0.1/linuxx64_12201_database.zip"
+  - wget --http-user "$SSO_GIGA_USER" --http-password "$SSO_PWD" https://support.giga-infosystems.com/3rdparty/oracle/V839960-01.zip -q -O ".travis/ora/12.2.0.1/linuxx64_12201_database.zip"
   - .travis/ora/buildDocker.sh -v 12.2.0.1 -s
   - docker run -d -p 127.0.0.1:1521:1521 -e ORACLE_SID=travis -e ORACLE_PWD=travis -e ORACLE_CHARACTERSET=utf-8 oracle/database:12.2.0.1-se2
 before_script:

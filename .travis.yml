@@ -20,6 +20,7 @@ before_install:
   - cp "./download/linuxx64_12201_database.zip" ".travis/ora/12.2.0.1/linuxx64_12201_database.zip"
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - .travis/ora/buildDocker.sh -v 12.2.0.1 -s
+  - docker tag oracle/database:12.2.0.1-se2 pgab/oracle:12.2.0.1-se2
   - docker push pgab/oracle:12.2.0.1-se2
   - docker run -d -p 127.0.0.1:1521:1521 -e ORACLE_SID=travis -e ORACLE_PWD=travis -e ORACLE_CHARACTERSET=utf-8 oracle/database:12.2.0.1-se2
 before_script:

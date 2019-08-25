@@ -18,7 +18,7 @@ before_install:
       wget --http-user "$SSO_GIGA_USER" --http-password "$SSO_PWD" https://support.giga-infosystems.com/3rdparty/oracle/V839960-01.zip -q -O "./download/linuxx64_12201_database.zip";
     fi
   - cp "./download/linuxx64_12201_database.zip" ".travis/ora/12.2.0.1/linuxx64_12201_database.zip"
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
   - .travis/ora/buildDocker.sh -v 12.2.0.1 -s
   - docker tag oracle/database:12.2.0.1-se2 pgab/oracle:12.2.0.1-se2
   - docker push pgab/oracle:12.2.0.1-se2

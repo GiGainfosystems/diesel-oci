@@ -14,6 +14,7 @@ before_install:
   - wget --http-user "$SSO_GIGA_USER" --http-password "$SSO_PWD" https://support.giga-infosystems.com/3rdparty/oracle/instantclient-basiclite-linux.x64-12.2.0.1.0.zip -q -O "./download/instantclient-basiclite-linux.x64-12.2.0.1.0.zip" && unzip "./download/instantclient-basiclite-linux.x64-12.2.0.1.0.zip"
   - ln -s instantclient_12_2/libclntsh.so.12.1 instantclient_12_2/libclntsh.so
   - ln -s instantclient_12_2/libocci.so.12.1 instantclient_12_2/libocci.so
+  - sudo cp instantclient_12_2/* /usr/lib/
   - if ! [ -f ./download/linuxx64_12201_database.zip ]; then
       wget --http-user "$SSO_GIGA_USER" --http-password "$SSO_PWD" https://support.giga-infosystems.com/3rdparty/oracle/V839960-01.zip -q -O "./download/linuxx64_12201_database.zip";
     fi

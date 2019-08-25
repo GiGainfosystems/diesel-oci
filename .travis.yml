@@ -15,15 +15,15 @@ before_install:
   - ln -s instantclient_12_2/libclntsh.so.12.1 instantclient_12_2/libclntsh.so
   - ln -s instantclient_12_2/libocci.so.12.1 instantclient_12_2/libocci.so
   - sudo cp instantclient_12_2/* /usr/lib/
-  - if ! [ -f ./download/linuxx64_12201_database.zip ]; then
-      wget --http-user "$SSO_GIGA_USER" --http-password "$SSO_PWD" https://support.giga-infosystems.com/3rdparty/oracle/V839960-01.zip -q -O "./download/linuxx64_12201_database.zip";
-    fi
-  - cp "./download/linuxx64_12201_database.zip" ".travis/ora/12.2.0.1/linuxx64_12201_database.zip"
+#  - if ! [ -f ./download/linuxx64_12201_database.zip ]; then
+#      wget --http-user "$SSO_GIGA_USER" --http-password "$SSO_PWD" https://support.giga-infosystems.com/3rdparty/oracle/V839960-01.zip -q -O "./download/linuxx64_12201_database.zip";
+#    fi
+#  - cp "./download/linuxx64_12201_database.zip" ".travis/ora/12.2.0.1/linuxx64_12201_database.zip"
   - echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
-  - .travis/ora/buildDocker.sh -v 12.2.0.1 -s
-  - docker tag oracle/database:12.2.0.1-se2 pgab/oracle:12.2.0.1-se2
-  - docker push pgab/oracle:12.2.0.1-se2
-  - docker run -d -p 127.0.0.1:1521:1521 -e ORACLE_SID=travis -e ORACLE_PWD=travis -e ORACLE_CHARACTERSET=utf-8 oracle/database:12.2.0.1-se2
+#  - .travis/ora/buildDocker.sh -v 12.2.0.1 -s
+#  - docker tag oracle/database:12.2.0.1-se2 pgab/oracle:12.2.0.1-se2
+  - docker pull pgab/oracle:12.2.0.1-se2
+  - docker run -d -p 127.0.0.1:1521:1521 -e ORACLE_SID=travis -e ORACLE_PWD=travis -e ORACLE_CHARACTERSET=utf-8 pgab/oracle:12.2.0.1-se2
 before_script:
   - export PATH=$HOME/.local/bin:$PATH
 rust:

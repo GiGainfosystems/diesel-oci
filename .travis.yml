@@ -12,11 +12,16 @@ before_install:
   - mkdir download || true
   - wget --http-user "$SSO_GIGA_USER" --http-password "$SSO_PWD" https://support.giga-infosystems.com/3rdparty/oracle/instantclient-sdk-linux.x64-12.2.0.1.0.zip -q -O "./download/instantclient-sdk-linux.x64-12.2.0.1.0.zip && unzip ./download/instantclient-sdk-linux.x64-12.2.0.1.0.zip"
   - wget --http-user "$SSO_GIGA_USER" --http-password "$SSO_PWD" https://support.giga-infosystems.com/3rdparty/oracle/instantclient-basiclite-linux.x64-12.2.0.1.0.zip -q -O "./download/instantclient-basiclite-linux.x64-12.2.0.1.0.zip && unzip ./download/instantclient-basiclite-linux.x64-12.2.0.1.0.zip"
+  - ln -s instantclient_12_2/lib/libclntsh.so.12.1 instantclient_12_2/lib/libclntsh.so.12
+  - ln -s instantclient_12_2/lib/libocci.so.12.1 instantclient_12_2/lib/libocci.so
+  - ln -s instantclient_12_2/lib/libocci.so.12.1 instantclient_12_2/lib/libocci.so.12
   - if ! [ -f ./download/linuxx64_12201_database.zip ]; then
     wget --http-user "$SSO_GIGA_USER" --http-password "$SSO_PWD" https://support.giga-infosystems.com/3rdparty/oracle/V839960-01.zip -q -O "./download/linuxx64_12201_database.zip"
     fi
   - cp "./download/linuxx64_12201_database.zip" ".travis/ora/12.2.0.1/linuxx64_12201_database.zip"
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - .travis/ora/buildDocker.sh -v 12.2.0.1 -s
+  - docker push pgab/oracle:12.2.0.1-se2
   - docker run -d -p 127.0.0.1:1521:1521 -e ORACLE_SID=travis -e ORACLE_PWD=travis -e ORACLE_CHARACTERSET=utf-8 oracle/database:12.2.0.1-se2
 before_script:
   - export PATH=$HOME/.local/bin:$PATH

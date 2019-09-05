@@ -161,7 +161,7 @@ impl Statement {
                         self.connection.env.error_handle,
                         self.bind_index,
                         ptr::null_mut(),
-                        NUM_ELEMENTS as i32,
+                        tpe.byte_size() as i32,
                         tpe.bind_type() as u16,
                         ptr::null_mut(),
                         ptr::null_mut(),

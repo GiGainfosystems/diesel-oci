@@ -10,6 +10,9 @@ use std::os::raw::{c_int, c_void};
 use std::ptr;
 use std::rc::Rc;
 
+const PREFETCH_ROWS: u32 = 5_000;
+const NUM_ELEMENTS: usize = 40;
+
 pub struct Statement {
     pub connection: Rc<RawConnection>,
     pub inner_statement: *mut ffi::OCIStmt,
@@ -22,8 +25,6 @@ pub struct Statement {
     pub(crate) mysql: String,
     pub(crate) returning_contexts: Vec<BindContext>,
 }
-
-const NUM_ELEMENTS: usize = 40;
 
 impl Statement {
     pub fn prepare(raw_connection: &Rc<RawConnection>, sql: &str) -> QueryResult<Self> {
@@ -61,6 +62,33 @@ impl Statement {
         )?);
         let is_select = stmt_type == ffi::OCI_STMT_SELECT;
         let is_returning = Self::is_returning(stmt, raw_connection.env.error_handle, sql)?;
+
+        if is_select {
+            // Setting Prefetch Count
+            //
+            // Default is 1, potentially causing many server round-trips for large result sets.
+            //
+            // 5000 is arbitrary, but it seems to a good trade-off between RAM and speed.
+            // 
+            // See https://docs.oracle.com/database/121/LNOCI/oci04sql.htm#LNOCI16355
+            let mut prefetch_rows: u32 = PREFETCH_ROWS;
+            let status = unsafe {
+                ffi::OCIAttrSet(
+                    stmt as *mut c_void,
+                    ffi::OCI_HTYPE_STMT,
+                    &mut prefetch_rows as *mut u32 as *mut c_void,
+                    0,
+                    ffi::OCI_ATTR_PREFETCH_ROWS,
+                    raw_connection.env.error_handle,
+                )
+            };
+            Self::check_error_sql(
+                raw_connection.env.error_handle,
+                status,
+                &sql,
+                "Set OCI_ATTR_PREFETCH_ROWS",
+            )?;
+        }
 
         Ok(Statement {
             connection: raw_connection.clone(),

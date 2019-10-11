@@ -5,8 +5,7 @@ use diesel::result::Error as DieselError;
 
 mod alias;
 mod exists;
-mod limit_clause;
-mod select_statement;
+mod limit_offset;
 
 pub use self::alias::Alias;
 

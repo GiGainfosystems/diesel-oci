@@ -21,7 +21,7 @@ impl<'a> OciRow<'a> {
 }
 
 impl<'a> Row<Oracle> for OciRow<'a> {
-    fn take(&mut self) -> Option<&OracleValue> {
+    fn take(&'_ mut self) -> Option<OracleValue<'_>> {
         let ret = if self.col_idx < self.buf.len() {
             if self.is_null[self.col_idx] {
                 None
@@ -64,7 +64,7 @@ impl<'a> NamedRow<Oracle> for NamedOciRow<'a> {
     fn index_of(&self, column_name: &str) -> Option<usize> {
         self.lut.get(column_name).map(|ci| *ci as usize)
     }
-    fn get_raw_value(&self, index: usize) -> Option<&OracleValue> {
+    fn get_raw_value(&self, index: usize) -> Option<OracleValue<'_>> {
         if index < self.buf.len() {
             if self.is_null[index] {
                 None

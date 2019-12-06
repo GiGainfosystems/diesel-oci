@@ -4,17 +4,17 @@ use std::rc::Rc;
 use diesel::connection::StatementCache;
 use diesel::connection::{Connection, MaybeCached, SimpleConnection, TransactionManager};
 use diesel::deserialize::{Queryable, QueryableByName};
+use diesel::migration::MigrationConnection;
 use diesel::query_builder::bind_collector::RawBytesBindCollector;
 use diesel::query_builder::QueryId;
 use diesel::query_builder::{AsQuery, QueryFragment};
 use diesel::result::*;
 use diesel::sql_types::HasSqlType;
-use diesel::migration::MigrationConnection;
 
 use self::cursor::{Cursor, NamedCursor};
 use self::stmt::Statement;
 use self::transaction::OCITransactionManager;
-use super::backend::Oracle;
+use super::backend::{HasSqlTypeExt, Oracle};
 use diesel::RunQueryDsl;
 
 mod oracle_value;
@@ -37,7 +37,7 @@ pub struct OciConnection {
 impl MigrationConnection for OciConnection {
     fn setup(&self) -> QueryResult<usize> {
         diesel::sql_query(
-         r#"create or replace procedure create_if_not_exists(input_sql varchar2)
+            r#"create or replace procedure create_if_not_exists(input_sql varchar2)
           as
           begin
               execute immediate input_sql;
@@ -48,8 +48,9 @@ impl MigrationConnection for OciConnection {
               else
                   raise;
               end if;
-          end;"#
-        ).execute(self)?;
+          end;"#,
+        )
+        .execute(self)?;
         diesel::sql_query(
             r#"declare
                begin
@@ -57,8 +58,9 @@ impl MigrationConnection for OciConnection {
                        "VERSION" VARCHAR2(50) PRIMARY KEY NOT NULL,
                        "RUN_ON" TIMESTAMP with time zone DEFAULT sysdate not null\
                     )');
-         end; "#
-        ).execute(self)
+         end; "#,
+        )
+        .execute(self)
     }
 }
 
@@ -137,7 +139,7 @@ impl Connection for OciConnection {
     {
         let mut stmt = self.prepare_query(&source.as_query())?;
         let mut metadata = Vec::new();
-        Oracle::row_metadata(&mut metadata, &());
+        Oracle::oci_row_metadata(&mut metadata);
         let cursor: Cursor<T::SqlType, U> = stmt.run_with_cursor(self.auto_commit(), metadata)?;
         cursor.collect()
     }

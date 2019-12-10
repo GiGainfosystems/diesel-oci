@@ -1,7 +1,6 @@
 use super::cursor::Field;
 use diesel::row::{NamedRow, Row};
 use oracle::backend::Oracle;
-use std::collections::HashMap;
 
 use super::oracle_value::OracleValue;
 
@@ -22,7 +21,10 @@ impl<'a> Row<Oracle> for OciRow<'a> {
             if self.binds[self.col_idx].is_null() {
                 None
             } else {
-                Some(OracleValue::new(self.binds[self.col_idx].buffer()))
+                Some(OracleValue::new(
+                    self.binds[self.col_idx].buffer(),
+                    self.binds[self.col_idx].datatype(),
+                ))
             }
         } else {
             None
@@ -45,36 +47,33 @@ impl<'a> Row<Oracle> for OciRow<'a> {
 }
 
 pub struct NamedOciRow<'a> {
-    buf: Vec<&'a [u8]>,
-    is_null: Vec<bool>,
-    lut: &'a HashMap<String, usize>,
+    binds: &'a [Field],
 }
 
 impl<'a> NamedOciRow<'a> {
-    pub fn new(
-        row_buf: Vec<&'a [u8]>,
-        is_null: Vec<bool>,
-        lut: &'a HashMap<String, usize>,
-    ) -> Self {
-        NamedOciRow {
-            buf: row_buf,
-            is_null,
-            lut,
-        }
+    pub fn new(binds: &'a [Field]) -> Self {
+        NamedOciRow { binds }
     }
 }
 
 impl<'a> NamedRow<Oracle> for NamedOciRow<'a> {
     fn index_of(&self, column_name: &str) -> Option<usize> {
-        self.lut.get(column_name).map(|ci| *ci as usize)
+        self.binds
+            .iter()
+            .enumerate()
+            .find(|(_, b)| b.name() == column_name)
+            .map(|(i, _)| i)
     }
 
     fn get_raw_value(&self, index: usize) -> Option<OracleValue<'_>> {
-        if index < self.buf.len() {
-            if self.is_null[index] {
+        if index < self.binds.len() {
+            if self.binds[index].is_null() {
                 None
             } else {
-                Some(OracleValue::new(self.buf[index]))
+                Some(OracleValue::new(
+                    self.binds[index].buffer(),
+                    self.binds[index].datatype(),
+                ))
             }
         } else {
             None

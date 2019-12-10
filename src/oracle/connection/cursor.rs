@@ -3,7 +3,6 @@ use diesel::result::Error::DeserializationError;
 use diesel::result::QueryResult;
 use diesel::sql_types::HasSqlType;
 use oci_sys as ffi;
-use std::collections::HashMap;
 use std::marker::PhantomData;
 
 use super::row::{NamedOciRow, OciRow};
@@ -47,6 +46,10 @@ impl Field {
 
     pub fn name(&self) -> &str {
         &self.name
+    }
+
+    pub fn datatype(&self) -> OciDataType {
+        self.typ
     }
 }
 
@@ -122,20 +125,13 @@ where
 pub struct NamedCursor<'a> {
     stmt: &'a Statement,
     results: Vec<Field>,
-    lut: HashMap<String, usize>,
 }
 
 impl<'a> NamedCursor<'a> {
     pub fn new(stmt: &'a Statement, binds: Vec<Field>) -> NamedCursor<'a> {
-        let lut = binds
-            .iter()
-            .enumerate()
-            .map(|(i, b)| (b.name.clone(), i))
-            .collect();
         NamedCursor {
             stmt,
             results: binds,
-            lut,
         }
     }
 
@@ -165,15 +161,7 @@ impl<'a> NamedCursor<'a> {
                     break;
                 }
             }
-            let null_indicators = self.results.iter().map(|r| r.is_null()).collect();
-            let row = NamedOciRow::new(
-                self.results
-                    .iter_mut()
-                    .map(|r: &mut Field| &r.buffer[..])
-                    .collect::<Vec<&[u8]>>(),
-                null_indicators,
-                &self.lut,
-            );
+            let row = NamedOciRow::new(&self.results);
 
             ret.push(T::build(&row).map_err(DeserializationError)?);
         }

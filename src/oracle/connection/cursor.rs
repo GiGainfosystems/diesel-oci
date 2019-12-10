@@ -40,6 +40,14 @@ impl Field {
     pub fn is_null(&self) -> bool {
         *self.null_indicator == -1
     }
+
+    pub fn buffer(&self) -> &[u8] {
+        &self.buffer
+    }
+
+    pub fn name(&self) -> &str {
+        &self.name
+    }
 }
 
 impl Drop for Field {
@@ -103,14 +111,7 @@ where
         }
 
         self.current_row += 1;
-        let null_indicators = self.results.iter().map(|r| r.is_null()).collect();
-        let mut row = OciRow::new(
-            self.results
-                .iter_mut()
-                .map(|r: &mut Field| &r.buffer[..])
-                .collect::<Vec<&[u8]>>(),
-            null_indicators,
-        );
+        let mut row = OciRow::new(&self.results);
         let value = T::Row::build_from_row(&mut row)
             .map(T::build)
             .map_err(DeserializationError);

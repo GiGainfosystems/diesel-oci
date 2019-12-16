@@ -6,6 +6,7 @@ use diesel::sql_types::*;
 use oci_sys as ffi;
 use std::error::Error;
 use std::io::Write;
+use std::str;
 
 pub type FromSqlResult<T> = Result<T, ErrorType>;
 pub type ErrorType = Box<dyn Error + Send + Sync>;
@@ -172,6 +173,22 @@ impl FromSql<Bool, Oracle> for bool {
 impl ToSql<Bool, Oracle> for bool {
     fn to_sql<W: Write>(&self, out: &mut Output<W, Oracle>) -> ToSqlResult {
         <i16 as ToSql<SmallInt, Oracle>>::to_sql(&if *self { 1 } else { 0 }, out)
+    }
+}
+
+impl FromSql<Text, Oracle> for *const str {
+    fn from_sql(bytes: Option<OracleValue<'_>>) -> FromSqlResult<Self> {
+        use diesel::result::Error as DieselError;
+        let bytes = not_none!(bytes);
+        let pos = bytes
+            .bytes
+            .iter()
+            .position(|&b| b == 0)
+            .ok_or(Box::new(DieselError::DeserializationError(
+                "Expected at least one null byte".into(),
+            )) as Box<dyn Error + Send + Sync>)?;
+        let string = str::from_utf8(&bytes.bytes[..pos])?;
+        Ok(string as *const _)
     }
 }
 

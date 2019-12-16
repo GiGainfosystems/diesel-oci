@@ -36,31 +36,8 @@ pub struct OciConnection {
 
 impl MigrationConnection for OciConnection {
     fn setup(&self) -> QueryResult<usize> {
-        diesel::sql_query(
-            r#"create or replace procedure create_if_not_exists(input_sql varchar2)
-          as
-          begin
-              execute immediate input_sql;
-              exception
-              when others then
-              if sqlcode = -955 then
-                  NULL;
-              else
-                  raise;
-              end if;
-          end;"#,
-        )
-        .execute(self)?;
-        diesel::sql_query(
-            r#"declare
-               begin
-                   create_if_not_exists('CREATE TABLE "__DIESEL_SCHEMA_MIGRATIONS" (
-                       "VERSION" VARCHAR2(50) PRIMARY KEY NOT NULL,
-                       "RUN_ON" TIMESTAMP with time zone DEFAULT sysdate not null\
-                    )');
-         end; "#,
-        )
-        .execute(self)
+        diesel::sql_query(include_str!("define_create_if_not_exists.sql")).execute(self)?;
+        diesel::sql_query(include_str!("create_migration_table.sql")).execute(self)
     }
 }
 

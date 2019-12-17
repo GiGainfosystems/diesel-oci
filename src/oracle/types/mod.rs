@@ -1,16 +1,15 @@
 use super::backend::*;
 use super::connection::OracleValue;
-use byteorder::WriteBytesExt;
-use diesel::backend::*;
 use diesel::deserialize::FromSql;
 use diesel::serialize::{IsNull, Output, ToSql};
 use diesel::sql_types::*;
 use oci_sys as ffi;
 use std::error::Error;
 use std::io::Write;
+use std::str;
 
 pub type FromSqlResult<T> = Result<T, ErrorType>;
-pub type ErrorType = Box<Error + Send + Sync>;
+pub type ErrorType = Box<dyn Error + Send + Sync>;
 pub type ToSqlResult = FromSqlResult<IsNull>;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
@@ -166,22 +165,32 @@ impl HasSqlType<Bool> for Oracle {
 }
 
 impl FromSql<Bool, Oracle> for bool {
-    fn from_sql(bytes: Option<&OracleValue>) -> FromSqlResult<Self> {
+    fn from_sql(bytes: Option<OracleValue<'_>>) -> FromSqlResult<Self> {
         FromSql::<SmallInt, Oracle>::from_sql(bytes).map(|v: i16| v != 0)
     }
 }
 
 impl ToSql<Bool, Oracle> for bool {
     fn to_sql<W: Write>(&self, out: &mut Output<W, Oracle>) -> ToSqlResult {
-        out.write_i16::<<Oracle as Backend>::ByteOrder>(if *self { 1 } else { 0 })
-            .map(|_| IsNull::No)
-            .map_err(|e| Box::new(e) as ErrorType)
+        <i16 as ToSql<SmallInt, Oracle>>::to_sql(&if *self { 1 } else { 0 }, out)
+    }
+}
+
+impl FromSql<Text, Oracle> for *const str {
+    fn from_sql(bytes: Option<OracleValue<'_>>) -> FromSqlResult<Self> {
+        use diesel::result::Error as DieselError;
+        let bytes = not_none!(bytes);
+        let pos = bytes
+            .bytes
+            .iter()
+            .position(|&b| b == 0)
+            .ok_or(Box::new(DieselError::DeserializationError(
+                "Expected at least one null byte".into(),
+            )) as Box<dyn Error + Send + Sync>)?;
+        let string = str::from_utf8(&bytes.bytes[..pos])?;
+        Ok(string as *const _)
     }
 }
 
 #[cfg(feature = "chrono-time")]
 mod chrono_date_time;
-
-mod decimal;
-mod integers;
-mod primitives;

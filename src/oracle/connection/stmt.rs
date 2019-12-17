@@ -690,7 +690,7 @@ impl Statement {
         let mut is_null = false;
         // using a box here otherwise the string will be deleted before
         // reaching OCIBindByPos
-        let (mut buf, size): (Box<[u8]>, i32) = if let Some(mut value) = value {
+        let (mut buf, size): (Box<[u8]>, i32) = if let Some(value) = value {
             let len = value.len() as i32;
             (value.into_boxed_slice(), len)
         } else {

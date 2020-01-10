@@ -43,5 +43,5 @@ r2d2 = ["diesel/r2d2"]
 default = ["chrono-time", "r2d2"]
 
 [replace]
-"diesel:1.4.3" = { git = "https://github.com/GiGainfosystems/diesel", rev = "700171d1e607c6675d105fdaa02753e448d216fa" }
-"diesel_derives:1.4.1" = { git = "https://github.com/GiGainfosystems/diesel", rev = "700171d1e607c6675d105fdaa02753e448d216fa" }
+"diesel:1.4.3" = { git = "https://github.com/GiGainfosystems/diesel", rev = "d41d9d4bf08f7dcf578518019d0ddddb532cf51d" }
+"diesel_derives:1.4.1" = { git = "https://github.com/GiGainfosystems/diesel", rev = "d41d9d4bf08f7dcf578518019d0ddddb532cf51d" }

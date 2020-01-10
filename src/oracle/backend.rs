@@ -14,6 +14,7 @@ pub struct Oracle;
 impl Backend for Oracle {
     type QueryBuilder = OciQueryBuilder;
     type BindCollector = RawBytesBindCollector<Oracle>;
+    type ByteOrder = byteorder::NativeEndian;
 }
 
 impl<'a> HasRawValue<'a> for Oracle {
@@ -21,7 +22,6 @@ impl<'a> HasRawValue<'a> for Oracle {
 }
 
 impl<'a> BinaryRawValue<'a> for Oracle {
-    type ByteOrder = byteorder::NativeEndian;
 
     fn as_bytes(value: Self::RawValue) -> &'a [u8] {
         value.bytes

@@ -20,14 +20,20 @@ byteorder = "1"
 libc = "0.2"
 log = "0.3"
 
-[dependencies.chrono]
+[dependencies.chrono-time]
 optional = true
 version = "0.4"
+package = "chrono"
 
 [dependencies.diesel]
 default-features = false
 features = ["with-deprecated", "unstable"]
 version = "=1.4.3"
+
+[dependencies.diesel-dynamic-schema]
+optional = true
+rev = "7bf1b32b5fe577cbf225d1b2aa4ec7d5c7f2c7c4"
+git = "https://github.com/GiGainfosystems/diesel-dynamic-schema"
 
 [dependencies.oci-sys]
 path = "oci-sys"
@@ -38,10 +44,11 @@ num = { version = "0.1", default-features = false }
 num-derive = "0.1"
 
 [features]
-chrono-time = ["chrono", "diesel/chrono"]
+default = ["chrono", "r2d2", "dynamic-schema"]
+chrono = ["chrono-time", "diesel/chrono"]
 r2d2 = ["diesel/r2d2"]
-default = ["chrono-time", "r2d2"]
+dynamic-schema = ["diesel-dynamic-schema"]
 
-[replace]
-"diesel:1.4.3" = { git = "https://github.com/GiGainfosystems/diesel", rev = "d41d9d4bf08f7dcf578518019d0ddddb532cf51d" }
-"diesel_derives:1.4.1" = { git = "https://github.com/GiGainfosystems/diesel", rev = "d41d9d4bf08f7dcf578518019d0ddddb532cf51d" }
+[patch.crates-io]
+diesel = {git = "https://github.com/GiGainfosystems/diesel", rev = "819ab862c2286ff08725ac3800722228a90b71e6"}
+diesel_derives = {git = "https://github.com/GiGainfosystems/diesel", rev = "819ab862c2286ff08725ac3800722228a90b71e6"}

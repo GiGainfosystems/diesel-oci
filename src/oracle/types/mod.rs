@@ -1,3 +1,6 @@
+#[cfg(feature = "dynamic-schema")]
+extern crate diesel_dynamic_schema;
+
 use super::backend::*;
 use super::connection::OracleValue;
 use diesel::deserialize::FromSql;
@@ -13,6 +16,7 @@ pub type ErrorType = Box<dyn Error + Send + Sync>;
 pub type ToSqlResult = FromSqlResult<IsNull>;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[non_exhaustive]
 pub enum OciDataType {
     Bool,
     SmallInt,
@@ -28,14 +32,14 @@ pub enum OciDataType {
 }
 
 impl OciDataType {
-    pub fn is_text(&self) -> bool {
+    pub(crate) fn is_text(&self) -> bool {
         match *self {
             OciDataType::Text => true,
             _ => false,
         }
     }
 
-    pub fn bind_type(&self) -> u32 {
+    pub(crate) fn bind_type(&self) -> u32 {
         use self::OciDataType::*;
         match *self {
             Bool => ffi::SQLT_INT,
@@ -50,7 +54,7 @@ impl OciDataType {
         }
     }
 
-    pub fn from_sqlt(sqlt: u32, tpe_size: i32) -> Self {
+    pub(crate) fn from_sqlt(sqlt: u32, tpe_size: i32) -> Self {
         match sqlt {
             ffi::SQLT_STR => OciDataType::Text,
             ffi::SQLT_INT => match tpe_size {
@@ -65,7 +69,7 @@ impl OciDataType {
         }
     }
 
-    pub fn define_type(&self) -> u32 {
+    pub(crate) fn define_type(&self) -> u32 {
         use self::OciDataType::*;
         match *self {
             Text => ffi::SQLT_STR,
@@ -73,7 +77,7 @@ impl OciDataType {
         }
     }
 
-    pub fn byte_size(&self) -> usize {
+    pub(crate) fn byte_size(&self) -> usize {
         use self::OciDataType::*;
         match *self {
             Bool => 2,
@@ -100,67 +104,74 @@ macro_rules! not_none {
 
 impl HasSqlType<SmallInt> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::SmallInt
+        Some(OciDataType::SmallInt)
     }
 }
 
 impl HasSqlType<Integer> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Integer
+        Some(OciDataType::Integer)
     }
 }
 
 impl HasSqlType<BigInt> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::BigInt
+        Some(OciDataType::BigInt)
     }
 }
 
 impl HasSqlType<Float> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Float
+        Some(OciDataType::Float)
     }
 }
 
 impl HasSqlType<Double> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Double
+        Some(OciDataType::Double)
     }
 }
 
 impl HasSqlType<Text> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Text
+        Some(OciDataType::Text)
     }
 }
 
 impl HasSqlType<Binary> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Binary
+        Some(OciDataType::Binary)
     }
 }
 
 impl HasSqlType<Date> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Date
+        Some(OciDataType::Date)
     }
 }
 
 impl HasSqlType<Time> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Time
+        Some(OciDataType::Time)
     }
 }
 
 impl HasSqlType<Timestamp> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Timestamp
+        Some(OciDataType::Timestamp)
     }
 }
 
 impl HasSqlType<Bool> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Bool
+        Some(OciDataType::Bool)
+    }
+}
+
+#[cfg(feature = "dynamic-schema")]
+impl HasSqlType<self::diesel_dynamic_schema::dynamic_value::Any> for Oracle {
+    fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
+        None
     }
 }
 
@@ -189,6 +200,23 @@ impl FromSql<Text, Oracle> for *const str {
             )) as Box<dyn Error + Send + Sync>)?;
         let string = str::from_utf8(&bytes.bytes[..pos])?;
         Ok(string as *const _)
+    }
+}
+
+#[cfg(feature = "dynamic-schema")]
+impl<I> diesel::deserialize::FromSqlRow<self::diesel_dynamic_schema::dynamic_value::Any, Oracle>
+    for self::diesel_dynamic_schema::dynamic_value::DynamicRow<I>
+where
+    I: FromSql<self::diesel_dynamic_schema::dynamic_value::Any, Oracle>,
+{
+    const FIELDS_NEEDED: usize = 1;
+
+    fn build_from_row<T: diesel::row::Row<Oracle>>(
+        row: &mut T,
+    ) -> diesel::deserialize::Result<Self> {
+        (0..row.column_count())
+            .map(|_| I::from_sql(row.take()))
+            .collect::<diesel::deserialize::Result<_>>()
     }
 }
 

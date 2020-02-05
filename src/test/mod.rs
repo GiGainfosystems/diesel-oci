@@ -1,4 +1,4 @@
-extern crate chrono;
+extern crate chrono_time as chrono;
 extern crate dotenv;
 use self::chrono::{NaiveDateTime, Utc};
 use self::dotenv::dotenv;
@@ -998,7 +998,7 @@ where
     }
 }
 
-pub fn make_err<E>(e: E) -> Box<StdError + Send + Sync>
+pub fn make_err<E>(e: E) -> Box<dyn StdError + Send + Sync>
 where
     E: StdError + Send + Sync + 'static,
 {
@@ -1027,7 +1027,7 @@ impl ToSql<SmallInt, Oracle> for CoordinateSystemType {
 }
 
 impl FromSql<SmallInt, Oracle> for CoordinateSystemType {
-    fn from_sql(bytes: Option<&OracleValue>) -> deserialize::Result<Self> {
+    fn from_sql(bytes: Option<OracleValue<'_>>) -> deserialize::Result<Self> {
         let value = <i16 as FromSql<SmallInt, Oracle>>::from_sql(bytes)?;
         CoordinateSystemType::from_i16(value).ok_or_else(|| {
             error!("Invalid value for coordinate system type found: {}", value);
@@ -1337,7 +1337,7 @@ impl ToSql<SmallInt, Oracle> for PropertyDataType {
 }
 
 impl FromSql<SmallInt, Oracle> for PropertyDataType {
-    fn from_sql(bytes: Option<&OracleValue>) -> deserialize::Result<Self> {
+    fn from_sql(bytes: Option<OracleValue<'_>>) -> deserialize::Result<Self> {
         let value = <i16 as FromSql<SmallInt, Oracle>>::from_sql(bytes)?;
         PropertyDataType::from_i16(value).ok_or_else(|| {
             error!("Invalid value for property data type found: {}", value);
@@ -1942,7 +1942,7 @@ fn updateing_unique_constraint() {
     let sql = "SELECT * FROM geometries";
     let ret = conn.execute(sql);
     if ret.is_ok() {
-        let _ret = conn.execute(DROP_GEOMETRIES);;
+        let _ret = conn.execute(DROP_GEOMETRIES);
     }
     let ret = conn.execute(CREATE_GEOMETRIES);
     assert_result!(ret);
@@ -1998,7 +1998,7 @@ fn insert_returning() {
     let sql = "SELECT * FROM geometries";
     let ret = conn.execute(sql);
     if ret.is_ok() {
-        let _ret = conn.execute(DROP_GEOMETRIES);;
+        let _ret = conn.execute(DROP_GEOMETRIES);
     }
     let ret = conn.execute(CREATE_GEOMETRIES);
     assert_result!(ret);
@@ -2269,3 +2269,6 @@ fn insert_returning_gst_types() {
     assert_eq!(result.text, Some(text_val));
     // No tz test, because we don't store the subsec part.
 }
+
+#[cfg(feature = "dynamic-schema")]
+mod dynamic_select;

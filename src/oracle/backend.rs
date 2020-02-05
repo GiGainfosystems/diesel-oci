@@ -29,7 +29,7 @@ impl<'a> BinaryRawValue<'a> for Oracle {
 }
 
 impl TypeMetadata for Oracle {
-    type TypeMetadata = OciDataType;
+    type TypeMetadata = Option<OciDataType>;
     type MetadataLookup = ();
 }
 

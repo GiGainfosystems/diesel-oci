@@ -27,6 +27,7 @@ before_install:
   - docker run -d -p 127.0.0.1:1521:1521 -e ORACLE_SID=travis -e ORACLE_PWD=travis -e ORACLE_CHARACTERSET=UTF8 pgab/oracle:12.2.0.1-se2
 before_script:
   - export PATH=$HOME/.local/bin:$PATH
+  - sleep 600
 rust:
   - nightly-2019-11-16
 script:

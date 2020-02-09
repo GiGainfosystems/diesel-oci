@@ -13,7 +13,6 @@ before_install:
   - mkdir download || true
   - wget --http-user "$SSO_GIGA_USER" --http-password "$SSO_PWD" https://support.giga-infosystems.com/3rdparty/oracle/instantclient-sdk-linux.x64-12.2.0.1.0.zip -q -O "./download/instantclient-sdk-linux.x64-12.2.0.1.0.zip" && unzip "./download/instantclient-sdk-linux.x64-12.2.0.1.0.zip"
   - wget --http-user "$SSO_GIGA_USER" --http-password "$SSO_PWD" https://support.giga-infosystems.com/3rdparty/oracle/instantclient-basiclite-linux.x64-12.2.0.1.0.zip -q -O "./download/instantclient-basiclite-linux.x64-12.2.0.1.0.zip" && unzip "./download/instantclient-basiclite-linux.x64-12.2.0.1.0.zip"
-  - wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh -q -O "./download/wait-for-it.sh" && chmod +x "./download/wait-for-it.sh"
   - sudo cp -R instantclient_12_2/* /usr/lib/
   - sudo ln -s /usr/lib/libclntsh.so.12.1 /usr/lib/libclntsh.so
   - sudo ln -s /usr/lib/libocci.so.12.1 /usr/lib/libocci.so
@@ -28,7 +27,7 @@ before_install:
   - docker run -d -p 127.0.0.1:1521:1521 -e ORACLE_SID=travis -e ORACLE_PWD=travis -e ORACLE_CHARACTERSET=UTF8 pgab/oracle:12.2.0.1-se2
 before_script:
   - export PATH=$HOME/.local/bin:$PATH
-  - ./download/wait-for-it.sh localhost:1521 -t 600 -s -- echo "yay"
+  - ./wait-for-oralce.sh
 rust:
   - nightly-2019-11-16
 script:

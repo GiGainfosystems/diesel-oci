@@ -832,6 +832,7 @@ table! {
 
 allow_tables_to_appear_in_same_query!(elements, element_rights, node_links);
 
+#[cfg(feature = "gst")]
 #[test]
 fn moma_elem() {
     let conn = init_testing();
@@ -1098,6 +1099,7 @@ pub struct CoordinateSystemDescription {
     srs_type: CoordinateSystemType,
 }
 
+#[cfg(feature = "gst")]
 #[test]
 fn coordinatesys() {
     let conn = init_testing();
@@ -1373,6 +1375,7 @@ pub struct Property {
     pub feature_class: i64,
 }
 
+#[cfg(feature = "gst")]
 #[test]
 fn props() {
     let conn = init_testing();
@@ -1476,6 +1479,8 @@ fn systable() {
     let _ = ret.unwrap();
 }
 
+// TODO: adjust this test to be more generic and dependent on GST
+#[cfg(feature = "gst")]
 #[test]
 fn exists() {
     let conn = init_testing();
@@ -2129,6 +2134,8 @@ fn umlauts() {
     }
 }
 
+// TODO: make this less GST dependent
+#[cfg(feature = "gst")]
 #[test]
 fn run_adhoc_procedure() {
     use self::test;

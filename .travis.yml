@@ -28,11 +28,7 @@ before_install:
 before_script:
   - export PATH=$HOME/.local/bin:$PATH
 rust:
-  - nightly-2020-01-30
-jobs:
-  allow_failures:
-    - rust: stable
-  fast_finish: true
+  - nightly-2019-11-16
 script:
   - |
     cargo test --package diesel-oci -- --exact --test-threads=1

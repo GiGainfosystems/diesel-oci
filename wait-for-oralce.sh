@@ -7,6 +7,6 @@ do
     break
   fi
   echo "generic wait"
-  sleep 1
+  sleep 60
   k=$k+1
 done

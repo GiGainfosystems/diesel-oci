@@ -29,6 +29,10 @@ before_script:
   - export PATH=$HOME/.local/bin:$PATH
 rust:
   - nightly-2019-01-07
+jobs:
+  allow_failures:
+    - rust: stable
+  fast_finish: true
 script:
   - |
     cargo test --package diesel-oci -- --exact --test-threads=1

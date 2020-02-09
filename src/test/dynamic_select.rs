@@ -37,7 +37,10 @@ fn dynamic_query() {
     sql_query("CREATE TABLE users (id NUMBER(10) NOT NULL PRIMARY KEY, name VARCHAR(50) NOT NULL, hair_color VARCHAR(50))")
         .execute(&connection)
         .unwrap();
-    sql_query("INSERT INTO users (name) VALUES ('Sean'), ('Tess')")
+    sql_query("INSERT ALL
+    INTO users (id, name) VALUES (3, 'Sean')
+    INTO users (id, name) VALUES (2, 'Tess')
+SELECT * FROM DUAL")
         .execute(&connection)
         .unwrap();
 

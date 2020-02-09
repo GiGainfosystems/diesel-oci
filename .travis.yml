@@ -28,7 +28,7 @@ before_install:
 before_script:
   - export PATH=$HOME/.local/bin:$PATH
 rust:
-  - nightly-2019-01-07
+  - nightly-2020-01-30
 jobs:
   allow_failures:
     - rust: stable

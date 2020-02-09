@@ -23,7 +23,7 @@ before_install:
 #  - .travis/ora/buildDocker.sh -v 12.2.0.1 -s
 #  - docker tag oracle/database:12.2.0.1-se2 pgab/oracle:12.2.0.1-se2
   - docker pull pgab/oracle:12.2.0.1-se2
-  - docker run -d -p 127.0.0.1:1521:1521 -e ORACLE_SID=travis -e ORACLE_PWD=travis -e ORACLE_CHARACTERSET=utf-8 pgab/oracle:12.2.0.1-se2
+  - docker run -d -p 127.0.0.1:1521:1521 -e ORACLE_SID=travis -e ORACLE_PWD=travis -e ORACLE_CHARACTERSET=UTF8 pgab/oracle:12.2.0.1-se2
 before_script:
   - export PATH=$HOME/.local/bin:$PATH
 rust:

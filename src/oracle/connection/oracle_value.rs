@@ -1,10 +1,17 @@
+use oracle::types::OciDataType;
+
 #[derive(Debug)]
-pub struct OracleValue {
-    pub(crate) bytes: [u8],
+pub struct OracleValue<'a> {
+    pub(crate) bytes: &'a [u8],
+    tpe: OciDataType,
 }
 
-impl OracleValue {
-    pub fn new(bytes: &[u8]) -> &Self {
-        unsafe { &*(bytes as *const [u8] as *const Self) }
+impl<'a> OracleValue<'a> {
+    pub fn new(bytes: &'a [u8], tpe: OciDataType) -> Self {
+        Self { bytes, tpe }
+    }
+
+    pub fn value_type(&self) -> OciDataType {
+        self.tpe
     }
 }

@@ -1,6 +1,6 @@
-extern crate chrono;
+extern crate chrono_time as chrono;
 extern crate dotenv;
-use self::chrono::NaiveDateTime;
+use self::chrono::{NaiveDateTime, Utc};
 use self::dotenv::dotenv;
 use super::oracle::connection::OciConnection;
 use diesel::deserialize::{self, FromSql};
@@ -48,6 +48,19 @@ const CREATE_TEST_TABLE: &str = "CREATE TABLE test (\
 const DROP_TEST_TABLE: &str = "DROP TABLE test";
 
 const TEST_VARCHAR: &str = "'blabla'";
+
+const CREATE_GST_TYPE_TABLE: &'static str = "CREATE TABLE gst_types (\
+        big NUMBER(19),
+        big2 NUMBER(19),
+        small NUMBER(5),
+        normal NUMBER(10),
+        tz timestamp default sysdate,
+        text clob,
+        byte blob,
+        d binary_double,
+        r binary_float,
+        v VARCHAR2(50)
+    )";
 
 macro_rules! assert_result {
     ($r:expr) => {{
@@ -97,6 +110,12 @@ fn create_test_table(conn: &OciConnection) -> usize {
     let ret = conn.execute(CREATE_TEST_TABLE);
     assert_result!(ret);
     ret.unwrap()
+}
+
+fn create_gst_types_table(conn: &OciConnection) {
+    drop_table(&conn, "GST_TYPES");
+    let ret = conn.execute(CREATE_GST_TYPE_TABLE);
+    assert_result!(ret);
 }
 
 fn drop_test_table(conn: &OciConnection) -> usize {
@@ -516,25 +535,9 @@ fn gst_compat() {
     // real	1E-37 to 1E+37 http://wiki.ispirer.com/sqlways/postgresql/data-types/real
 
     // https://docs.oracle.com/cd/B19306_01/gateways.102/b14270/apa.htm
-    const CREATE_GST_TYPE_TABLE: &'static str = "CREATE TABLE gst_types (\
-            big NUMBER(19),
-            big2 NUMBER(19),
-            small NUMBER(5),
-            normal NUMBER(10),
-            tz timestamp default sysdate,
-            text clob,
-            byte blob,
-            d binary_double,
-            r binary_float,
-            v VARCHAR2(50)
-     )";
 
     let conn = init_testing();
-
-    drop_table(&conn, "GST_TYPES");
-
-    let ret = conn.execute(CREATE_GST_TYPE_TABLE);
-    assert_result!(ret);
+    create_gst_types_table(&conn);
 
     use self::gst_types::columns::{big, big2, byte, d, normal, r, small, v};
     use self::gst_types::dsl::gst_types;
@@ -888,25 +891,8 @@ fn moma_elem() {
 
 #[test]
 fn limit() {
-    const CREATE_GST_TYPE_TABLE: &'static str = "CREATE TABLE gst_types (\
-            big NUMBER(19),
-            big2 NUMBER(19),
-            small NUMBER(5),
-            normal NUMBER(10),
-            tz timestamp default sysdate,
-            text clob,
-            byte blob,
-            d binary_double,
-            r binary_float,
-            v VARCHAR2(50)
-     )";
-
     let conn = init_testing();
-
-    drop_table(&conn, "GST_TYPES");
-
-    let ret = conn.execute(CREATE_GST_TYPE_TABLE);
-    assert_result!(ret);
+    create_gst_types_table(&conn);
 
     use self::gst_types::columns::{big, big2, byte, d, normal, r, small, v};
     use self::gst_types::dsl::gst_types;
@@ -1013,7 +999,7 @@ where
     }
 }
 
-pub fn make_err<E>(e: E) -> Box<StdError + Send + Sync>
+pub fn make_err<E>(e: E) -> Box<dyn StdError + Send + Sync>
 where
     E: StdError + Send + Sync + 'static,
 {
@@ -1042,7 +1028,7 @@ impl ToSql<SmallInt, Oracle> for CoordinateSystemType {
 }
 
 impl FromSql<SmallInt, Oracle> for CoordinateSystemType {
-    fn from_sql(bytes: Option<&OracleValue>) -> deserialize::Result<Self> {
+    fn from_sql(bytes: Option<OracleValue<'_>>) -> deserialize::Result<Self> {
         let value = <i16 as FromSql<SmallInt, Oracle>>::from_sql(bytes)?;
         CoordinateSystemType::from_i16(value).ok_or_else(|| {
             error!("Invalid value for coordinate system type found: {}", value);
@@ -1265,7 +1251,6 @@ fn timestamp() {
     let ret = conn.execute(CREATE_TS);
     assert_result!(ret);
 
-    use self::chrono::{NaiveDateTime, Utc};
     use self::ts;
     use diesel::ExpressionMethods;
 
@@ -1354,7 +1339,7 @@ impl ToSql<SmallInt, Oracle> for PropertyDataType {
 }
 
 impl FromSql<SmallInt, Oracle> for PropertyDataType {
-    fn from_sql(bytes: Option<&OracleValue>) -> deserialize::Result<Self> {
+    fn from_sql(bytes: Option<OracleValue<'_>>) -> deserialize::Result<Self> {
         let value = <i16 as FromSql<SmallInt, Oracle>>::from_sql(bytes)?;
         PropertyDataType::from_i16(value).ok_or_else(|| {
             error!("Invalid value for property data type found: {}", value);
@@ -1962,12 +1947,11 @@ fn updateing_unique_constraint() {
     let sql = "SELECT * FROM geometries";
     let ret = conn.execute(sql);
     if ret.is_ok() {
-        let _ret = conn.execute(DROP_GEOMETRIES);;
+        let _ret = conn.execute(DROP_GEOMETRIES);
     }
     let ret = conn.execute(CREATE_GEOMETRIES);
     assert_result!(ret);
 
-    use self::chrono::Utc;
     use self::geometries;
     use diesel::query_dsl::filter_dsl::FindDsl;
     use diesel::ExpressionMethods;
@@ -2019,12 +2003,11 @@ fn insert_returning() {
     let sql = "SELECT * FROM geometries";
     let ret = conn.execute(sql);
     if ret.is_ok() {
-        let _ret = conn.execute(DROP_GEOMETRIES);;
+        let _ret = conn.execute(DROP_GEOMETRIES);
     }
     let ret = conn.execute(CREATE_GEOMETRIES);
     assert_result!(ret);
 
-    use self::chrono::Utc;
     use self::geometries;
     use diesel::ExpressionMethods;
 
@@ -2154,3 +2137,164 @@ END;";
     assert_result!(ret);
 
 }
+
+use diesel::sql_types::Nullable;
+use diesel::sql_types::Text;
+#[derive(QueryableByName)]
+#[allow(non_snake_case)]
+struct FooAliased {
+    #[column_name = "foo"]
+    #[sql_type = "Nullable<Text>"]
+    TST_CHR: Option<String>,
+}
+
+#[test]
+fn use_named_queries_aliased() {
+    let conn = init_testing();
+
+    clean_test(&conn);
+
+    use self::test::columns::TST_CHR;
+    use self::test::dsl::test;
+    use diesel::sql_query;
+    use diesel::ExpressionMethods;
+
+    let ret = conn.execute(CREATE_TEST_TABLE);
+    assert_result!(ret);
+
+    let mut v = Vec::new();
+    v.push(String::from("äöüß"));
+    v.push(String::from("السلام عليكم"));
+    v.push(String::from("Dobrý den"));
+    v.push(String::from("Hello"));
+    v.push(String::from("שָׁלוֹם"));
+    v.push(String::from("नमस्ते"));
+    v.push(String::from("こんにちは"));
+    v.push(String::from("안녕하세요"));
+    v.push(String::from("你好"));
+    v.push(String::from("Olá"));
+    v.push(String::from("Здравствуйте"));
+    v.push(String::from("Hola"));
+    v.push(String::from("🎉🦀"));
+    for hello in &v {
+        let ret = ::diesel::insert_into(test)
+            .values(TST_CHR.eq(&hello))
+            .execute(&conn);
+        assert_result!(ret);
+    }
+
+    let ret = sql_query("SELECT TST_CHR \"foo\" FROM test").load::<FooAliased>(&conn);
+
+    assert_result!(ret);
+    let ret = ret.unwrap();
+    assert_eq!(ret.len(), v.len());
+    for (i, r) in ret.iter().enumerate() {
+        assert!(r.TST_CHR.is_some());
+        let tst_chr = r.TST_CHR.clone().unwrap();
+        assert_eq!(tst_chr, v[i]);
+    }
+}
+
+#[derive(QueryableByName)]
+#[table_name = "test"]
+#[allow(non_snake_case)]
+struct Foo {
+    TST_CHR: Option<String>,
+}
+
+#[test]
+fn use_named_queries() {
+    let conn = init_testing();
+
+    clean_test(&conn);
+
+    use self::test::columns::TST_CHR;
+    use self::test::dsl::test;
+    use diesel::sql_query;
+    use diesel::ExpressionMethods;
+
+    let ret = conn.execute(CREATE_TEST_TABLE);
+    assert_result!(ret);
+
+    let mut v = Vec::new();
+    v.push(String::from("äöüß"));
+    v.push(String::from("السلام عليكم"));
+    v.push(String::from("Dobrý den"));
+    v.push(String::from("Hello"));
+    v.push(String::from("שָׁלוֹם"));
+    v.push(String::from("नमस्ते"));
+    v.push(String::from("こんにちは"));
+    v.push(String::from("안녕하세요"));
+    v.push(String::from("你好"));
+    v.push(String::from("Olá"));
+    v.push(String::from("Здравствуйте"));
+    v.push(String::from("Hola"));
+    v.push(String::from("🎉🦀"));
+    for hello in &v {
+        let ret = ::diesel::insert_into(test)
+            .values(TST_CHR.eq(&hello))
+            .execute(&conn);
+        assert_result!(ret);
+    }
+
+    let ret = sql_query("SELECT TST_CHR FROM test").load::<Foo>(&conn);
+
+    assert_result!(ret);
+    let ret = ret.unwrap();
+    assert_eq!(ret.len(), v.len());
+    for (i, r) in ret.iter().enumerate() {
+        assert!(r.TST_CHR.is_some());
+        let tst_chr = r.TST_CHR.clone().unwrap();
+        assert_eq!(tst_chr, v[i]);
+    }
+}
+
+#[test]
+fn insert_returning_gst_types() {
+    let conn = init_testing();
+    create_gst_types_table(&conn);
+    let big_val = 42i64;
+    let big2_val = 420i64;
+    let small_val = 5i16;
+    let normal_val = 25i32;
+    let v_val = "test".to_string();
+    let d_val = 42.12345f64;
+    let r_val = 1.23f32;
+    let tz_val = Utc::now().naive_utc();
+    let text_val = "Some longer text".to_string();
+    let mut byte_val: Vec<u8> = Vec::new();
+    for i in 0..88 {
+        byte_val.push(i as u8 % 128u8);
+    }
+
+    let new_row = Newgst_types{
+        big: Some(big_val),
+        big2: Some(big2_val),
+        small: Some(small_val),
+        normal: Some(normal_val),
+        v: Some(v_val.clone()),
+        d: Some(d_val),
+        r: Some(r_val),
+        byte: Some(byte_val.clone()),
+        text: Some(text_val.clone()),
+        tz: Some(tz_val),
+    };
+    let result = ::diesel::insert_into(gst_types::table)
+        .values(&new_row)
+        .oci_returning()
+        .get_result::<GSTTypes>(&conn)
+        .unwrap();
+    assert_eq!(result.big, Some(big_val));
+    assert_eq!(result.big2, Some(big2_val));
+    assert_eq!(result.small, Some(small_val));
+    assert_eq!(result.normal, Some(normal_val));
+    assert_eq!(result.v, Some(v_val));
+    assert_eq!(result.d, Some(d_val));
+    assert_eq!(result.r, Some(r_val));
+    assert_eq!(result.byte, Some(byte_val));
+    assert_eq!(result.text, Some(text_val));
+    // No tz test, because we don't store the subsec part.
+}
+
+#[cfg(feature = "dynamic-schema")]
+mod dynamic_select;

@@ -1,8 +1,9 @@
-extern crate chrono;
+extern crate chrono_time as chrono;
 use std::error::Error;
 use std::io::Write;
 
 use diesel::deserialize::FromSql;
+use diesel::result;
 use diesel::serialize::{IsNull, Output, ToSql};
 use diesel::sql_types::*;
 
@@ -13,7 +14,7 @@ use self::chrono::{Datelike, NaiveDate, NaiveDateTime, Timelike};
 use super::super::connection::OracleValue;
 
 impl FromSql<Timestamp, Oracle> for NaiveDateTime {
-    fn from_sql(bytes: Option<&OracleValue>) -> Result<Self, Box<Error + Send + Sync>> {
+    fn from_sql(bytes: Option<OracleValue<'_>>) -> Result<Self, Box<dyn Error + Send + Sync>> {
         let bytes = not_none!(bytes);
         let bytes = &bytes.bytes;
         let sec = u32::from(bytes[6]) - 1;
@@ -24,25 +25,29 @@ impl FromSql<Timestamp, Oracle> for NaiveDateTime {
         let year = i32::from(bytes[1]);
         let century = i32::from(bytes[0]);
         if century > 100 && year > 100 {
-            // TODO: error handling
-            let d =
-                NaiveDate::from_ymd_opt((century - 100) * 100 + year - 100, month, day).unwrap();
-            // ok_or(Box::new(
-            //     result::Error::DatabaseError(
-            //         result::DatabaseErrorKind::__Unknown,
-            //         Box::new(String::from("could not parse timestamp"))))));
+            let d = NaiveDate::from_ymd_opt((century - 100) * 100 + year - 100, month, day).ok_or(
+                Box::new(result::Error::DeserializationError(
+                    "could not parse timestamp".into(),
+                )),
+            )?;
 
             Ok(d.and_hms_opt(hr, min, sec).unwrap())
         } else if century < 100 && year < 100 {
-            // TODO: error handling
-            let d = NaiveDate::from_ymd_opt(century * -100 + year, month, day).unwrap();
-            // .ok_or(Box::new(result::Error::DatabaseError("could not parse \
-            //                                               timestamp"
-            //                                                  .to_owned()))));
+            let d = NaiveDate::from_ymd_opt(century * -100 + year, month, day).ok_or(Box::new(
+                result::Error::DeserializationError("could not parse timestamp".into()),
+            ))?;
 
             Ok(d.and_hms_opt(hr, min, sec).unwrap())
         } else {
-            unreachable!()
+            Err(Box::new(result::Error::DeserializationError(
+                concat!(
+                    "reached a unreachable state while parsing timestamp: ",
+                    file!(),
+                    ":",
+                    line!()
+                )
+                .into(),
+            )))
         }
     }
 }
@@ -51,22 +56,18 @@ impl ToSql<Timestamp, Oracle> for NaiveDateTime {
     fn to_sql<W: Write>(
         &self,
         out: &mut Output<W, Oracle>,
-    ) -> Result<IsNull, Box<Error + Send + Sync>> {
+    ) -> Result<IsNull, Box<dyn Error + Send + Sync>> {
         let year = self.year();
         if year > 0 {
             let c: u8 = (year / 100 + 100) as u8;
             let y: u8 = (year % 100 + 100) as u8;
-            try!(
-                out.write(&[c, y])
-                    .map_err(|e| Box::new(e) as Box<Error + Send + Sync>)
-            );
+            out.write(&[c, y])
+                .map_err(|e| result::Error::SerializationError(Box::new(e)))?;
         } else {
             let c: u8 = (year / 100) as u8;
             let y: u8 = (year % 100) as u8;
-            try!(
-                out.write(&[c, y])
-                    .map_err(|e| Box::new(e) as Box<Error + Send + Sync>)
-            );
+            out.write(&[c, y])
+                .map_err(|e| result::Error::SerializationError(Box::new(e)))?;
         }
         let mo = self.month() as u8;
         let d = self.day() as u8;
@@ -74,13 +75,13 @@ impl ToSql<Timestamp, Oracle> for NaiveDateTime {
         let mi = (self.minute() + 1) as u8;
         let s = (self.second() + 1) as u8;
         out.write(&[mo, d, h, mi, s])
-            .map_err(|e| Box::new(e) as Box<Error + Send + Sync>)
+            .map_err(|e| Box::new(e) as Box<dyn Error + Send + Sync>)
             .map(|_| IsNull::No)
     }
 }
 
 impl FromSql<Date, Oracle> for NaiveDate {
-    fn from_sql(bytes: Option<&OracleValue>) -> Result<Self, Box<Error + Send + Sync>> {
+    fn from_sql(bytes: Option<OracleValue<'_>>) -> Result<Self, Box<dyn Error + Send + Sync>> {
         let bytes = not_none!(bytes);
         let bytes = &bytes.bytes;
         let d = u32::from(bytes[3]);
@@ -88,13 +89,27 @@ impl FromSql<Date, Oracle> for NaiveDate {
         let y = i32::from(bytes[1]);
         let c = i32::from(bytes[0]);
         if c > 100 && y > 100 {
-            // TODO: error handling
-            Ok(NaiveDate::from_ymd_opt((c - 100) * 100 + y - 100, mo, d).unwrap())
+            NaiveDate::from_ymd_opt((c - 100) * 100 + y - 100, mo, d).ok_or_else(|| {
+                Box::new(result::Error::DeserializationError(
+                    "Unable to parse timestamp".into(),
+                )) as Box<dyn Error + Send + Sync>
+            })
         } else if c < 100 && y < 100 {
-            // TODO: error handling
-            Ok(NaiveDate::from_ymd_opt(c * -100 + y - 100, mo, d).unwrap())
+            NaiveDate::from_ymd_opt(c * -100 + y - 100, mo, d).ok_or_else(|| {
+                Box::new(result::Error::DeserializationError(
+                    "Unable to parse timestamp".into(),
+                )) as _
+            })
         } else {
-            unreachable!()
+            Err(Box::new(result::Error::DeserializationError(
+                concat!(
+                    "reached a unreachable state while parsing timestamp: ",
+                    file!(),
+                    ":",
+                    line!()
+                )
+                .into(),
+            )))
         }
     }
 }
@@ -103,27 +118,23 @@ impl ToSql<Date, Oracle> for NaiveDate {
     fn to_sql<W: Write>(
         &self,
         out: &mut Output<W, Oracle>,
-    ) -> Result<IsNull, Box<Error + Send + Sync>> {
+    ) -> Result<IsNull, Box<dyn Error + Send + Sync>> {
         let year = self.year();
         if year > 0 {
             let c: u8 = (year / 100 + 100) as u8;
             let y: u8 = (year % 100 + 100) as u8;
-            try!(
-                out.write(&[c, y])
-                    .map_err(|e| Box::new(e) as Box<Error + Send + Sync>)
-            );
+            out.write(&[c, y])
+                .map_err(|e| result::Error::SerializationError(Box::new(e)))?;
         } else {
             let c: u8 = (year / 100) as u8;
             let y: u8 = (year % 100) as u8;
-            try!(
-                out.write(&[c, y])
-                    .map_err(|e| Box::new(e) as Box<Error + Send + Sync>)
-            );
+            out.write(&[c, y])
+                .map_err(|e| result::Error::SerializationError(Box::new(e)))?;
         }
         let mo = self.month() as u8;
         let d = self.day() as u8;
         out.write(&[mo, d, 1, 1, 1])
-            .map_err(|e| Box::new(e) as Box<Error + Send + Sync>)
+            .map_err(|e| Box::new(e) as Box<dyn Error + Send + Sync>)
             .map(|_| IsNull::No)
     }
 }

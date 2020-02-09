@@ -11,10 +11,11 @@ use diesel::query_builder::{AsQuery, QueryFragment};
 use diesel::result::*;
 use diesel::sql_types::HasSqlType;
 
-use self::cursor::Cursor;
+use self::cursor::{Cursor, NamedCursor};
 use self::stmt::Statement;
 use self::transaction::OCITransactionManager;
-use super::backend::Oracle;
+use super::backend::{HasSqlTypeExt, Oracle};
+use diesel::RunQueryDsl;
 
 mod oracle_value;
 pub use self::oracle_value::OracleValue;
@@ -34,29 +35,10 @@ pub struct OciConnection {
 }
 
 impl MigrationConnection for OciConnection {
-    #[cfg(ka)]
-    const CREATE_MIGRATIONS_FUNCTION: &'static str =
-        "create or replace procedure create_if_not_exists(input_sql varchar2) \
-         as \
-         begin \
-         execute immediate input_sql; \
-         exception \
-         when others then \
-         if sqlcode = -955 then \
-         NULL; \
-         else \
-         raise; \
-         end if; \
-         end; \n ";
-
-    const CREATE_MIGRATIONS_TABLE: &'static str = "
-    declare \
-    begin \
-    create_if_not_exists('CREATE TABLE \"__DIESEL_SCHEMA_MIGRATIONS\" (\
-         \"VERSION\" VARCHAR2(50) PRIMARY KEY NOT NULL,\
-         \"RUN_ON\" TIMESTAMP with time zone DEFAULT sysdate not null\
-         )'); \
-        end; \n";
+    fn setup(&self) -> QueryResult<usize> {
+        diesel::sql_query(include_str!("define_create_if_not_exists.sql")).execute(self)?;
+        diesel::sql_query(include_str!("create_migration_table.sql")).execute(self)
+    }
 }
 
 // This relies on the invariant that RawConnection or Statement are never
@@ -67,8 +49,8 @@ unsafe impl Send for OciConnection {}
 
 impl SimpleConnection for OciConnection {
     fn batch_execute(&self, query: &str) -> QueryResult<()> {
-        let mut stmt = try!(Statement::prepare(&self.raw, query));
-        try!(stmt.run(self.auto_commit(), &[]));
+        let mut stmt = Statement::prepare(&self.raw, query)?;
+        stmt.run(self.auto_commit(), &[])?;
         stmt.bind_index = 0;
         Ok(())
     }
@@ -82,7 +64,7 @@ impl Connection for OciConnection {
     /// should be a valid connection string for a given backend. See the
     /// documentation for the specific backend for specifics.
     fn establish(database_url: &str) -> ConnectionResult<Self> {
-        let r = try!(raw::RawConnection::establish(database_url));
+        let r = raw::RawConnection::establish(database_url)?;
         let ret = OciConnection {
             raw: Rc::new(r),
             transaction_manager: OCITransactionManager::new(),
@@ -103,10 +85,10 @@ impl Connection for OciConnection {
 
     #[doc(hidden)]
     fn execute(&self, query: &str) -> QueryResult<usize> {
-        let mut stmt = try!(Statement::prepare(&self.raw, query));
-        try!(stmt.run(self.auto_commit(), &[]));
+        let mut stmt = Statement::prepare(&self.raw, query)?;
+        stmt.run(self.auto_commit(), &[])?;
         stmt.bind_index = 0;
-        Ok(try!(stmt.get_affected_rows()))
+        Ok(stmt.get_affected_rows()?)
     }
 
     #[doc(hidden)]
@@ -115,10 +97,10 @@ impl Connection for OciConnection {
         T: QueryFragment<Self::Backend> + QueryId,
     {
         // TODO: FIXME: this always returns 0 whereas the code looks proper
-        let mut stmt = try!(self.prepare_query(source));
-        try!(stmt.run(self.auto_commit(), &[]));
+        let mut stmt = self.prepare_query(source)?;
+        stmt.run(self.auto_commit(), &[])?;
         stmt.bind_index = 0;
-        Ok(try!(stmt.get_affected_rows()))
+        Ok(stmt.get_affected_rows()?)
     }
 
     fn transaction_manager(&self) -> &Self::TransactionManager {
@@ -134,19 +116,21 @@ impl Connection for OciConnection {
     {
         let mut stmt = self.prepare_query(&source.as_query())?;
         let mut metadata = Vec::new();
-        // TODO: FIXME: Georg will check if this can get un-deprecated.
-        #[allow(deprecated)]
-        Oracle::row_metadata(&mut metadata, &());
+        Oracle::oci_row_metadata(&mut metadata);
         let cursor: Cursor<T::SqlType, U> = stmt.run_with_cursor(self.auto_commit(), metadata)?;
         cursor.collect()
     }
 
-    fn query_by_name<T, U>(&self, _source: &T) -> QueryResult<Vec<U>>
+    fn query_by_name<T, U>(&self, source: &T) -> QueryResult<Vec<U>>
     where
         T: QueryFragment<Self::Backend> + QueryId,
         U: QueryableByName<Self::Backend>,
     {
-        unimplemented!()
+        let mut stmt = self.prepare_query(&source)?;
+        let mut metadata = Vec::new();
+        stmt.get_metadata(&mut metadata)?;
+        let mut cursor: NamedCursor = stmt.run_with_named_cursor(self.auto_commit(), metadata)?;
+        cursor.collect()
     }
 }
 
@@ -155,14 +139,17 @@ impl OciConnection {
         &self,
         source: &T,
     ) -> QueryResult<MaybeCached<Statement>> {
-        let mut statement = try!(self.cached_prepared_statement(source));
+        let mut statement = self.cached_prepared_statement(source)?;
 
         let mut bind_collector = RawBytesBindCollector::<Oracle>::new();
-        try!(source.collect_binds(&mut bind_collector, &()));
+        source.collect_binds(&mut bind_collector, &())?;
         let metadata = bind_collector.metadata;
         let binds = bind_collector.binds;
         for (tpe, value) in metadata.into_iter().zip(binds) {
-            try!(statement.bind(tpe, value));
+            let tpe = tpe.ok_or_else(|| diesel::result::Error::QueryBuilderError(
+                "Input binds need type information".into(),
+            ))?;
+            statement.bind(tpe, value)?;
         }
 
         Ok(statement)
@@ -188,5 +175,15 @@ impl Drop for OciConnection {
             tm.rollback_transaction(&self)
                 .expect("This return Ok() for all paths anyway");
         }
+    }
+}
+
+#[cfg(feature = "r2d2")]
+use diesel::r2d2::R2D2Connection;
+
+#[cfg(feature = "r2d2")]
+impl R2D2Connection for OciConnection {
+    fn ping(&self) -> QueryResult<()> {
+        self.execute("SELECT 1 FROM DUAL").map(|_| ())
     }
 }

@@ -40,7 +40,7 @@ where
     }
 }
 
-impl<Tab, Inner> QueryFragment<Oracle> for OwnedBatchInsert<ValuesClause<Inner, Tab>>
+impl<Tab, Inner> QueryFragment<Oracle> for OwnedBatchInsert<ValuesClause<Inner, Tab>, Tab>
 where
     ValuesClause<Inner, Tab>: QueryFragment<Oracle>,
     Inner: QueryFragment<Oracle> + InsertValues<Tab, Oracle>,
@@ -71,7 +71,7 @@ impl<'a, T, Tab> CanInsertInSingleQuery<Oracle> for BatchInsert<'a, T, Tab> {
     }
 }
 
-impl<T> CanInsertInSingleQuery<Oracle> for OwnedBatchInsert<T> {
+impl<T, Tab> CanInsertInSingleQuery<Oracle> for OwnedBatchInsert<T, Tab> {
     fn rows_to_insert(&self) -> Option<usize> {
         Some(self.values.len())
     }

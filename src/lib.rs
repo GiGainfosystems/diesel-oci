@@ -1,4 +1,4 @@
-#![feature(re_rebalance_coherence, specialization)]
+#![feature(specialization)]
 
 #[macro_use]
 extern crate diesel;

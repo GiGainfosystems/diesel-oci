@@ -27,7 +27,7 @@ before_install:
 before_script:
   - export PATH=$HOME/.local/bin:$PATH
 rust:
-  - nightly
+  - nightly-2019-01-07
 script:
   - |
     cargo test --package diesel-oci -- --exact --test-threads=1

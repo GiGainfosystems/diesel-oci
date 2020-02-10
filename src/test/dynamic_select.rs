@@ -37,7 +37,10 @@ fn dynamic_query() {
     sql_query("CREATE TABLE users (id NUMBER(10) NOT NULL PRIMARY KEY, name VARCHAR(50) NOT NULL, hair_color VARCHAR(50))")
         .execute(&connection)
         .unwrap();
-    sql_query("INSERT INTO users (name) VALUES ('Sean'), ('Tess')")
+    sql_query("INSERT ALL
+    INTO users (id, name) VALUES (3, 'Sean')
+    INTO users (id, name) VALUES (2, 'Tess')
+SELECT * FROM DUAL")
         .execute(&connection)
         .unwrap();
 
@@ -56,40 +59,40 @@ fn dynamic_query() {
         users.select(select).load(&connection).unwrap();
 
     assert_eq!(
-        actual_data[0]["name"],
+        actual_data[0]["NAME"],
         MyDynamicValue::String("Sean".into())
     );
     assert_eq!(
         actual_data[0][1],
         NamedField {
-            name: "name".into(),
+            name: "NAME".into(),
             value: MyDynamicValue::String("Sean".into())
         }
     );
     assert_eq!(
-        actual_data[1]["name"],
+        actual_data[1]["NAME"],
         MyDynamicValue::String("Tess".into())
     );
     assert_eq!(
         actual_data[1][1],
         NamedField {
-            name: "name".into(),
+            name: "NAME".into(),
             value: MyDynamicValue::String("Tess".into())
         }
     );
-    assert_eq!(actual_data[0]["hair_color"], MyDynamicValue::Null);
+    assert_eq!(actual_data[0]["HAIR_COLOR"], MyDynamicValue::Null);
     assert_eq!(
         actual_data[0][2],
         NamedField {
-            name: "hair_color".into(),
+            name: "HAIR_COLOR".into(),
             value: MyDynamicValue::Null
         }
     );
-    assert_eq!(actual_data[1]["hair_color"], MyDynamicValue::Null);
+    assert_eq!(actual_data[1]["HAIR_COLOR"], MyDynamicValue::Null);
     assert_eq!(
         actual_data[1][2],
         NamedField {
-            name: "hair_color".into(),
+            name: "HAIR_COLOR".into(),
             value: MyDynamicValue::Null
         }
     );

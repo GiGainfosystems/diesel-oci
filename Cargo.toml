@@ -48,6 +48,7 @@ default = ["chrono", "r2d2", "dynamic-schema"]
 chrono = ["chrono-time", "diesel/chrono"]
 r2d2 = ["diesel/r2d2"]
 dynamic-schema = ["diesel-dynamic-schema"]
+gst = []
 
 [patch.crates-io]
 diesel = {git = "https://github.com/GiGainfosystems/diesel", rev = "bbc1fc40c60555afaaed9b42284dcf141a4dfec4"}

@@ -1,4 +1,4 @@
-extern crate chrono;
+extern crate chrono_time as chrono;
 use std::error::Error;
 use std::io::Write;
 

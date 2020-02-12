@@ -11,7 +11,7 @@ impl<'a> OracleValue<'a> {
         Self { bytes, tpe }
     }
 
-    pub fn datatype(&self) -> OciDataType {
+    pub fn value_type(&self) -> OciDataType {
         self.tpe
     }
 }

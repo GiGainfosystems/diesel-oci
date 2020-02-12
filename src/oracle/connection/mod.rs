@@ -146,6 +146,9 @@ impl OciConnection {
         let metadata = bind_collector.metadata;
         let binds = bind_collector.binds;
         for (tpe, value) in metadata.into_iter().zip(binds) {
+            let tpe = tpe.ok_or_else(|| diesel::result::Error::QueryBuilderError(
+                "Input binds need type information".into(),
+            ))?;
             statement.bind(tpe, value)?;
         }
 

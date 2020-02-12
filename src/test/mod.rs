@@ -1,4 +1,4 @@
-extern crate chrono;
+extern crate chrono_time as chrono;
 extern crate dotenv;
 use self::chrono::{NaiveDateTime, Utc};
 use self::dotenv::dotenv;
@@ -835,6 +835,7 @@ table! {
 
 allow_tables_to_appear_in_same_query!(elements, element_rights, node_links);
 
+#[cfg(feature = "gst")]
 #[test]
 fn moma_elem() {
     let conn = init_testing();
@@ -1027,7 +1028,7 @@ impl ToSql<SmallInt, Oracle> for CoordinateSystemType {
 }
 
 impl FromSql<SmallInt, Oracle> for CoordinateSystemType {
-    fn from_sql(bytes: Option<OracleValue>) -> deserialize::Result<Self> {
+    fn from_sql(bytes: Option<OracleValue<'_>>) -> deserialize::Result<Self> {
         let value = <i16 as FromSql<SmallInt, Oracle>>::from_sql(bytes)?;
         CoordinateSystemType::from_i16(value).ok_or_else(|| {
             error!("Invalid value for coordinate system type found: {}", value);
@@ -1084,6 +1085,7 @@ pub struct CoordinateSystemDescription {
     srs_type: CoordinateSystemType,
 }
 
+#[cfg(feature = "gst")]
 #[test]
 fn coordinatesys() {
     let conn = init_testing();
@@ -1337,7 +1339,7 @@ impl ToSql<SmallInt, Oracle> for PropertyDataType {
 }
 
 impl FromSql<SmallInt, Oracle> for PropertyDataType {
-    fn from_sql(bytes: Option<OracleValue>) -> deserialize::Result<Self> {
+    fn from_sql(bytes: Option<OracleValue<'_>>) -> deserialize::Result<Self> {
         let value = <i16 as FromSql<SmallInt, Oracle>>::from_sql(bytes)?;
         PropertyDataType::from_i16(value).ok_or_else(|| {
             error!("Invalid value for property data type found: {}", value);
@@ -1358,6 +1360,7 @@ pub struct Property {
     pub feature_class: i64,
 }
 
+#[cfg(feature = "gst")]
 #[test]
 fn props() {
     let conn = init_testing();
@@ -1461,6 +1464,8 @@ fn systable() {
     let _ = ret.unwrap();
 }
 
+// TODO: adjust this test to be more generic and dependent on GST
+#[cfg(feature = "gst")]
 #[test]
 fn exists() {
     let conn = init_testing();
@@ -2112,6 +2117,27 @@ fn umlauts() {
     }
 }
 
+// TODO: make this less GST dependent
+#[cfg(feature = "gst")]
+#[test]
+fn run_adhoc_procedure() {
+    use self::test;
+    use diesel::ExpressionMethods;
+    let conn = init_testing();
+
+    let proc = "BEGIN \
+    EXECUTE IMMEDIATE 'ALTER TABLE elements add (temp varchar2(2000))'; \
+    EXECUTE IMMEDIATE 'UPDATE elements SET temp=dbms_lob.substr(\"COMMENT\",2000,1)'; \
+    EXECUTE IMMEDIATE 'COMMIT'; \
+    EXECUTE IMMEDIATE 'ALTER TABLE elements DROP COLUMN \"COMMENT\"'; \
+    EXECUTE IMMEDIATE 'ALTER TABLE elements RENAME COLUMN temp to \"COMMENT\"'; \
+END;";
+
+    let ret = conn.execute(proc);
+    assert_result!(ret);
+
+}
+
 use diesel::sql_types::Nullable;
 use diesel::sql_types::Text;
 #[derive(QueryableByName)]
@@ -2269,3 +2295,6 @@ fn insert_returning_gst_types() {
     assert_eq!(result.text, Some(text_val));
     // No tz test, because we don't store the subsec part.
 }
+
+#[cfg(feature = "dynamic-schema")]
+mod dynamic_select;

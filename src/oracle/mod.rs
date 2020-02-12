@@ -6,3 +6,5 @@ pub mod query_dsl;
 pub mod types;
 
 pub use self::backend::Oracle;
+pub use self::connection::OracleValue;
+pub use self::types::OciDataType;

@@ -560,8 +560,18 @@ impl Statement {
     pub fn run_with_cursor<ST, T>(
         &mut self,
         auto_commit: bool,
-        metadata: Vec<OciDataType>,
+        metadata: Vec<Option<OciDataType>>,
     ) -> QueryResult<Cursor<ST, T>> {
+        let metadata: Vec<_> = if metadata.iter().any(Option::is_none) {
+            let mut metadata = Vec::new();
+            self.get_metadata(&mut metadata)?;
+            metadata
+        } else {
+            metadata
+                .into_iter()
+                .map(|m| m.expect("It's there"))
+                .collect()
+        };
         self.run(auto_commit, &metadata)?;
         self.bind_index = 0;
         if self.is_returning {

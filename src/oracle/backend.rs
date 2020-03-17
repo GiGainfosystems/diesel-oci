@@ -1,8 +1,7 @@
 use diesel::backend::UsesAnsiSavepointSyntax;
 use diesel::backend::*;
 use diesel::query_builder::bind_collector::RawBytesBindCollector;
-use diesel::sql_types::HasSqlType;
-use diesel::sql_types::TypeMetadata;
+use diesel::sql_types::{HasSqlType, NotNull, Nullable, TypeMetadata};
 
 use super::connection::OracleValue;
 use super::query_builder::OciQueryBuilder;
@@ -22,7 +21,6 @@ impl<'a> HasRawValue<'a> for Oracle {
 }
 
 impl<'a> BinaryRawValue<'a> for Oracle {
-
     fn as_bytes(value: Self::RawValue) -> &'a [u8] {
         value.bytes
     }
@@ -49,6 +47,18 @@ where
 {
     default fn oci_row_metadata(out: &mut Vec<Self::TypeMetadata>) {
         out.push(Self::metadata(&()))
+    }
+}
+
+// We need a specialized impl for `Nullable<ST>`
+// because otherwise we cannot support `Nullable<(T1, T2, …)>`
+impl<ST> HasSqlTypeExt<Nullable<ST>> for Oracle
+where
+    Oracle: HasSqlTypeExt<ST>,
+    ST: NotNull,
+{
+    fn oci_row_metadata(out: &mut Vec<Self::TypeMetadata>) {
+        <Oracle as HasSqlTypeExt<ST>>::oci_row_metadata(out)
     }
 }
 

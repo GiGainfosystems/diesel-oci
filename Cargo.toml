@@ -28,7 +28,7 @@ package = "chrono"
 [dependencies.diesel]
 default-features = false
 features = ["with-deprecated", "unstable"]
-version = "=1.4.3"
+version = "=1.4.4"
 
 [dependencies.diesel-dynamic-schema]
 optional = true

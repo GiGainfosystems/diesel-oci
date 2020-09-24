@@ -30,8 +30,14 @@ impl<QS, T: Expression> AppearsOnTable<QS> for As<T> {}
 use diesel::expression::SelectableExpression;
 impl<T, QS> SelectableExpression<QS> for As<T> where T: SelectableExpression<QS> {}
 
-use diesel::expression::NonAggregate;
-impl<T> NonAggregate for As<T> {}
+use diesel::expression::ValidGrouping;
+
+impl<T, G> ValidGrouping<G> for As<T>
+where
+    T: ValidGrouping<G>,
+{
+    type IsAggregate = T::IsAggregate;
+}
 
 impl<T> QueryFragment<Oracle> for As<T>
 where

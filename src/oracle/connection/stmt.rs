@@ -1,5 +1,5 @@
 use super::bind_context::BindContext;
-use super::cursor::{Cursor, Field, NamedCursor};
+use super::cursor::{Cursor, Field};
 use super::raw::RawConnection;
 use diesel::result::Error;
 use diesel::result::*;
@@ -562,16 +562,13 @@ impl Statement {
         auto_commit: bool,
         metadata: Vec<Option<OciDataType>>,
     ) -> QueryResult<Cursor<ST, T>> {
-        let metadata: Vec<_> = if metadata.iter().any(Option::is_none) {
-            let mut metadata = Vec::new();
-            self.get_metadata(&mut metadata)?;
-            metadata
-        } else {
-            metadata
-                .into_iter()
-                .map(|m| m.expect("It's there"))
-                .collect()
-        };
+        let mut query_metadata = Vec::new();
+        self.get_metadata(&mut query_metadata)?;
+        let metadata = query_metadata
+            .into_iter()
+            .zip(metadata.into_iter().chain(std::iter::repeat(None)))
+            .map(|(query_metadata, type_metadata)| type_metadata.unwrap_or(query_metadata))
+            .collect::<Vec<_>>();
         self.run(auto_commit, &metadata)?;
         self.bind_index = 0;
         if self.is_returning {
@@ -662,36 +659,6 @@ impl Statement {
             param = self.get_column_param(cnt);
         }
         Ok(())
-    }
-
-    pub fn run_with_named_cursor(
-        &mut self,
-        auto_commit: bool,
-        metadata: Vec<OciDataType>,
-    ) -> QueryResult<NamedCursor> {
-        self.run(auto_commit, &metadata)?;
-        self.bind_index = 0;
-        if self.is_returning {
-            let fields = self
-                .returning_contexts
-                .iter()
-                .zip(metadata.into_iter())
-                .map(|(buffer, tpe)| {
-                    let null_indicator: Box<i16> = Box::new(buffer.is_null);
-                    Field::new(
-                        ptr::null_mut(),
-                        buffer.store.to_owned(),
-                        null_indicator,
-                        tpe,
-                        String::from(""),
-                    )
-                })
-                .collect();
-            Ok(NamedCursor::new(self, fields))
-        } else {
-            let fields = self.define_all_columns(&metadata)?;
-            Ok(NamedCursor::new(self, fields))
-        }
     }
 
     pub fn bind(&mut self, tpe: OciDataType, value: Option<Vec<u8>>) -> QueryResult<()> {

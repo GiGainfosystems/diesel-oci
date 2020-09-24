@@ -14,8 +14,7 @@ use self::chrono::{Datelike, NaiveDate, NaiveDateTime, Timelike};
 use super::super::connection::OracleValue;
 
 impl FromSql<Timestamp, Oracle> for NaiveDateTime {
-    fn from_sql(bytes: Option<OracleValue<'_>>) -> Result<Self, Box<dyn Error + Send + Sync>> {
-        let bytes = not_none!(bytes);
+    fn from_sql(bytes: OracleValue<'_>) -> Result<Self, Box<dyn Error + Send + Sync>> {
         let bytes = &bytes.bytes;
         let sec = u32::from(bytes[6]) - 1;
         let min = u32::from(bytes[5]) - 1;
@@ -81,8 +80,7 @@ impl ToSql<Timestamp, Oracle> for NaiveDateTime {
 }
 
 impl FromSql<Date, Oracle> for NaiveDate {
-    fn from_sql(bytes: Option<OracleValue<'_>>) -> Result<Self, Box<dyn Error + Send + Sync>> {
-        let bytes = not_none!(bytes);
+    fn from_sql(bytes: OracleValue<'_>) -> Result<Self, Box<dyn Error + Send + Sync>> {
         let bytes = &bytes.bytes;
         let d = u32::from(bytes[3]);
         let mo = u32::from(bytes[2]);

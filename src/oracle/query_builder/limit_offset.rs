@@ -89,7 +89,7 @@ impl<'a> IntoBoxedClause<'a, Oracle> for LimitOffsetClause<NoLimitClause, NoOffs
 
 impl<'a, L> IntoBoxedClause<'a, Oracle> for LimitOffsetClause<LimitClause<L>, NoOffsetClause>
 where
-    L: QueryFragment<Oracle> + 'a,
+    L: QueryFragment<Oracle> + Send + 'a,
 {
     type BoxedClause = BoxedLimitOffsetClause<'a, Oracle>;
 
@@ -103,7 +103,7 @@ where
 
 impl<'a, O> IntoBoxedClause<'a, Oracle> for LimitOffsetClause<NoLimitClause, OffsetClause<O>>
 where
-    O: QueryFragment<Oracle> + 'a,
+    O: QueryFragment<Oracle> + Send + 'a,
 {
     type BoxedClause = BoxedLimitOffsetClause<'a, Oracle>;
 
@@ -117,8 +117,8 @@ where
 
 impl<'a, L, O> IntoBoxedClause<'a, Oracle> for LimitOffsetClause<LimitClause<L>, OffsetClause<O>>
 where
-    L: QueryFragment<Oracle> + 'a,
-    O: QueryFragment<Oracle> + 'a,
+    L: QueryFragment<Oracle> + Send + 'a,
+    O: QueryFragment<Oracle> + Send + 'a,
 {
     type BoxedClause = BoxedLimitOffsetClause<'a, Oracle>;
 

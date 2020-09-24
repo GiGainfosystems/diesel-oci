@@ -1,82 +1,79 @@
 use super::cursor::Field;
-use diesel::row::{NamedRow, Row};
+use diesel::row::{self, Row, RowIndex};
 use oracle::backend::Oracle;
 
 use super::oracle_value::OracleValue;
 
 pub struct OciRow<'a> {
     binds: &'a [Field],
-    col_idx: usize,
 }
 
 impl<'a> OciRow<'a> {
     pub fn new(binds: &'a [Field]) -> Self {
-        OciRow { col_idx: 0, binds }
+        OciRow { binds }
     }
 }
 
-impl<'a> Row<Oracle> for OciRow<'a> {
-    fn take(&'_ mut self) -> Option<OracleValue<'_>> {
-        let ret = if self.col_idx < self.binds.len() {
-            if self.binds[self.col_idx].is_null() {
-                None
-            } else {
-                Some(OracleValue::new(
-                    self.binds[self.col_idx].buffer(),
-                    self.binds[self.col_idx].datatype(),
-                ))
-            }
-        } else {
-            None
-        };
-        self.col_idx += 1;
-        ret
-    }
-
-    fn next_is_null(&self, count: usize) -> bool {
-        (0..count).all(|i| self.binds[i + self.col_idx].is_null())
-    }
-
-    fn column_count(&self) -> usize {
-        self.binds.len()
-    }
-
-    fn column_name(&self) -> Option<&str> {
-        Some(self.binds[self.col_idx].name())
-    }
-}
-
-pub struct NamedOciRow<'a> {
-    binds: &'a [Field],
-}
-
-impl<'a> NamedOciRow<'a> {
-    pub fn new(binds: &'a [Field]) -> Self {
-        NamedOciRow { binds }
-    }
-}
-
-impl<'a> NamedRow<Oracle> for NamedOciRow<'a> {
-    fn index_of(&self, column_name: &str) -> Option<usize> {
-        self.binds
-            .iter()
-            .enumerate()
-            .find(|(_, b)| b.name() == column_name)
-            .map(|(i, _)| i)
-    }
-
-    fn get_raw_value(&self, index: usize) -> Option<OracleValue<'_>> {
-        if index < self.binds.len() {
-            if self.binds[index].is_null() {
-                None
-            } else {
-                Some(OracleValue::new(
-                    self.binds[index].buffer(),
-                    self.binds[index].datatype(),
-                ))
-            }
+impl<'a> RowIndex<usize> for OciRow<'a> {
+    fn idx(&self, idx: usize) -> Option<usize> {
+        if idx < self.binds.len() {
+            Some(idx)
         } else {
             None
         }
+    }
+}
+
+impl<'a, 'b> RowIndex<&'a str> for OciRow<'b> {
+    fn idx(&self, field_name: &'a str) -> Option<usize> {
+        self.binds
+            .iter()
+            .enumerate()
+            .find(|(_, f)| f.name() == field_name)
+            .map(|(idx, _)| idx)
+    }
+}
+
+impl<'a> Row<'a, Oracle> for OciRow<'a> {
+    type Field = OciField<'a>;
+    type InnerPartialRow = Self;
+
+    fn field_count(&self) -> usize {
+        self.binds.len()
+    }
+
+    fn get<I>(&self, idx: I) -> Option<Self::Field>
+    where
+        Self: diesel::row::RowIndex<I>,
+    {
+        let idx = self.idx(idx)?;
+        Some(OciField(&self.binds[idx]))
+    }
+
+    fn partial_row(
+        &self,
+        range: std::ops::Range<usize>,
+    ) -> diesel::row::PartialRow<Self::InnerPartialRow> {
+        diesel::row::PartialRow::new(self, range)
+    }
+}
+
+pub struct OciField<'a>(&'a Field);
+
+impl<'a> row::Field<'a, Oracle> for OciField<'a> {
+    fn field_name(&self) -> Option<&'a str> {
+        Some(self.0.name())
+    }
+
+    fn value(&self) -> Option<diesel::backend::RawValue<'a, Oracle>> {
+        if self.0.is_null() {
+            None
+        } else {
+            Some(OracleValue::new(self.0.buffer(), self.0.datatype()))
+        }
+    }
+
+    fn is_null(&self) -> bool {
+        self.0.is_null()
     }
 }

@@ -1,11 +1,10 @@
-use diesel::deserialize::{FromSqlRow, Queryable, QueryableByName};
+use diesel::deserialize::FromSqlRow;
 use diesel::result::Error::DeserializationError;
 use diesel::result::QueryResult;
-use diesel::sql_types::HasSqlType;
 use oci_sys as ffi;
 use std::marker::PhantomData;
 
-use super::row::{NamedOciRow, OciRow};
+use super::row::OciRow;
 use super::stmt::Statement;
 use oracle::backend::Oracle;
 use oracle::types::OciDataType;
@@ -83,8 +82,7 @@ impl<'a, ST, T> Cursor<'a, ST, T> {
 
 impl<'a, ST, T> Iterator for Cursor<'a, ST, T>
 where
-    Oracle: HasSqlType<ST>,
-    T: Queryable<ST, Oracle>,
+    T: FromSqlRow<ST, Oracle>,
 {
     type Item = QueryResult<T>;
 
@@ -114,58 +112,8 @@ where
         }
 
         self.current_row += 1;
-        let mut row = OciRow::new(&self.results);
-        let value = T::Row::build_from_row(&mut row)
-            .map(T::build)
-            .map_err(DeserializationError);
+        let row = OciRow::new(&self.results);
+        let value = T::build_from_row(&row).map_err(DeserializationError);
         Some(value)
-    }
-}
-
-pub struct NamedCursor<'a> {
-    stmt: &'a Statement,
-    results: Vec<Field>,
-}
-
-impl<'a> NamedCursor<'a> {
-    pub fn new(stmt: &'a Statement, binds: Vec<Field>) -> NamedCursor<'a> {
-        NamedCursor {
-            stmt,
-            results: binds,
-        }
-    }
-
-    pub fn collect<T>(&mut self) -> QueryResult<Vec<T>>
-    where
-        T: QueryableByName<Oracle>,
-    {
-        let mut status = ffi::OCI_SUCCESS as i32;
-        let mut ret = Vec::new();
-        while status as u32 != ffi::OCI_NO_DATA {
-            unsafe {
-                status = ffi::OCIStmtFetch2(
-                    self.stmt.inner_statement,
-                    self.stmt.connection.env.error_handle,
-                    1,
-                    ffi::OCI_FETCH_NEXT as u16,
-                    0,
-                    ffi::OCI_DEFAULT,
-                );
-                if let Some(err) =
-                    Statement::check_error(self.stmt.connection.env.error_handle, status).err()
-                {
-                    debug!("{:?}", self.stmt.mysql);
-                    return Err(err);
-                }
-                if status as u32 == ffi::OCI_NO_DATA {
-                    break;
-                }
-            }
-            let row = NamedOciRow::new(&self.results);
-
-            ret.push(T::build(&row).map_err(DeserializationError)?);
-        }
-
-        Ok(ret)
     }
 }

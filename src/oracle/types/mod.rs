@@ -93,90 +93,74 @@ impl OciDataType {
     }
 }
 
-macro_rules! not_none {
-    ($bytes:expr) => {
-        match $bytes {
-            Some(bytes) => bytes,
-            None => panic!("Unexpected null for non-null column"),
-        }
-    };
-}
-
 impl HasSqlType<SmallInt> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        Some(OciDataType::SmallInt)
+        OciDataType::SmallInt
     }
 }
 
 impl HasSqlType<Integer> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        Some(OciDataType::Integer)
+        OciDataType::Integer
     }
 }
 
 impl HasSqlType<BigInt> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        Some(OciDataType::BigInt)
+        OciDataType::BigInt
     }
 }
 
 impl HasSqlType<Float> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        Some(OciDataType::Float)
+        OciDataType::Float
     }
 }
 
 impl HasSqlType<Double> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        Some(OciDataType::Double)
+        OciDataType::Double
     }
 }
 
 impl HasSqlType<Text> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        Some(OciDataType::Text)
+        OciDataType::Text
     }
 }
 
 impl HasSqlType<Binary> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        Some(OciDataType::Binary)
+        OciDataType::Binary
     }
 }
 
 impl HasSqlType<Date> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        Some(OciDataType::Date)
+        OciDataType::Date
     }
 }
 
 impl HasSqlType<Time> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        Some(OciDataType::Time)
+        OciDataType::Time
     }
 }
 
 impl HasSqlType<Timestamp> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        Some(OciDataType::Timestamp)
+        OciDataType::Timestamp
     }
 }
 
 impl HasSqlType<Bool> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        Some(OciDataType::Bool)
-    }
-}
-
-#[cfg(feature = "dynamic-schema")]
-impl HasSqlType<self::diesel_dynamic_schema::dynamic_value::Any> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        None
+        OciDataType::Bool
     }
 }
 
 impl FromSql<Bool, Oracle> for bool {
-    fn from_sql(bytes: Option<OracleValue<'_>>) -> FromSqlResult<Self> {
+    fn from_sql(bytes: OracleValue<'_>) -> FromSqlResult<Self> {
         FromSql::<SmallInt, Oracle>::from_sql(bytes).map(|v: i16| v != 0)
     }
 }
@@ -188,9 +172,8 @@ impl ToSql<Bool, Oracle> for bool {
 }
 
 impl FromSql<Text, Oracle> for *const str {
-    fn from_sql(bytes: Option<OracleValue<'_>>) -> FromSqlResult<Self> {
+    fn from_sql(bytes: OracleValue<'_>) -> FromSqlResult<Self> {
         use diesel::result::Error as DieselError;
-        let bytes = not_none!(bytes);
         let pos = bytes
             .bytes
             .iter()
@@ -204,19 +187,35 @@ impl FromSql<Text, Oracle> for *const str {
 }
 
 #[cfg(feature = "dynamic-schema")]
-impl<I> diesel::deserialize::FromSqlRow<self::diesel_dynamic_schema::dynamic_value::Any, Oracle>
-    for self::diesel_dynamic_schema::dynamic_value::DynamicRow<I>
-where
-    I: FromSql<self::diesel_dynamic_schema::dynamic_value::Any, Oracle>,
-{
-    const FIELDS_NEEDED: usize = 1;
+mod dynamic_schema_impls {
+    use super::diesel_dynamic_schema::dynamic_value::{Any, DynamicRow, NamedField};
+    use crate::oracle::Oracle;
+    use diesel::deserialize::{self, FromSql, QueryableByName};
+    use diesel::expression::QueryMetadata;
+    use diesel::row::NamedRow;
 
-    fn build_from_row<T: diesel::row::Row<Oracle>>(
-        row: &mut T,
-    ) -> diesel::deserialize::Result<Self> {
-        (0..row.column_count())
-            .map(|_| I::from_sql(row.take()))
-            .collect::<diesel::deserialize::Result<_>>()
+    impl<I> QueryableByName<Oracle> for DynamicRow<I>
+    where
+        I: FromSql<Any, Oracle>,
+    {
+        fn build<'a>(row: &impl NamedRow<'a, Oracle>) -> deserialize::Result<Self> {
+            Self::from_row(row)
+        }
+    }
+
+    impl<I> QueryableByName<Oracle> for DynamicRow<NamedField<Option<I>>>
+    where
+        I: FromSql<Any, Oracle>,
+    {
+        fn build<'a>(row: &impl NamedRow<'a, Oracle>) -> deserialize::Result<Self> {
+            Self::from_nullable_row(row)
+        }
+    }
+
+    impl QueryMetadata<Any> for Oracle {
+        fn row_metadata(_lookup: &Self::MetadataLookup, out: &mut Vec<Option<Self::TypeMetadata>>) {
+            out.push(None)
+        }
     }
 }
 

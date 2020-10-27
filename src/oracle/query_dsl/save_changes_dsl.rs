@@ -2,7 +2,7 @@ use diesel::associations::HasTable;
 use diesel::associations::Identifiable;
 use diesel::dsl::Find;
 use diesel::dsl::Update;
-use diesel::query_builder::{AsChangeset, IntoUpdateTarget};
+use diesel::query_builder::{AsChangeset, AsQuery, IntoUpdateTarget};
 use diesel::query_dsl::methods::{ExecuteDsl, FindDsl};
 use diesel::query_dsl::{LoadQuery, RunQueryDsl};
 use diesel::result::QueryResult;
@@ -17,7 +17,7 @@ where
     Changes: Copy + Identifiable,
     Changes: AsChangeset<Target = <Changes as HasTable>::Table> + IntoUpdateTarget,
     Changes::Table: FindDsl<Changes::Id>,
-    Update<Changes, Changes>: ExecuteDsl<OciConnection>,
+    Update<Changes, Changes>: ExecuteDsl<OciConnection> + AsQuery,
     Find<Changes::Table, Changes::Id>: LoadQuery<OciConnection, Output>,
 {
     fn update_and_fetch(&self, changeset: Changes) -> QueryResult<Output> {
@@ -25,17 +25,3 @@ where
         Changes::table().find(changeset.id()).get_result(self)
     }
 }
-
-//use diesel::Connection;
-//
-//impl<Conn> RunQueryDsl<Conn> for OciConnection
-//where
-//    Conn: Connection
-//{
-//    fn get_result<U>(self, conn: &Conn) -> QueryResult<U>
-//        where
-//            Self: LoadQuery<Conn, U>,
-//    {
-//        self.load(conn)
-//    }
-//}

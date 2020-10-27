@@ -1,22 +1,43 @@
-use super::cursor::Field;
+use crate::oracle::backend::Oracle;
 use diesel::row::{self, Row, RowIndex};
-use oracle::backend::Oracle;
 
 use super::oracle_value::OracleValue;
 
 pub struct OciRow<'a> {
-    binds: &'a [Field],
+    values: Vec<Option<OracleValue<'a>>>,
+    column_infos: &'a [oracle::ColumnInfo],
 }
 
 impl<'a> OciRow<'a> {
-    pub fn new(binds: &'a [Field]) -> Self {
-        OciRow { binds }
+    pub fn new(values: &'a [oracle::SqlValue], column_infos: &'a [oracle::ColumnInfo]) -> Self {
+        let values = values
+            .iter()
+            .zip(column_infos)
+            .map(|(v, c)| {
+                if v.is_null().unwrap_or(true) {
+                    None
+                } else {
+                    Some(OracleValue::new(v, c.oracle_type()))
+                }
+            })
+            .collect();
+        OciRow {
+            values,
+            column_infos,
+        }
+    }
+
+    pub fn new_from_value(values: Vec<Option<OracleValue<'a>>>) -> Self {
+        Self {
+            values,
+            column_infos: &[],
+        }
     }
 }
 
 impl<'a> RowIndex<usize> for OciRow<'a> {
     fn idx(&self, idx: usize) -> Option<usize> {
-        if idx < self.binds.len() {
+        if idx < self.values.len() {
             Some(idx)
         } else {
             None
@@ -26,10 +47,10 @@ impl<'a> RowIndex<usize> for OciRow<'a> {
 
 impl<'a, 'b> RowIndex<&'a str> for OciRow<'b> {
     fn idx(&self, field_name: &'a str) -> Option<usize> {
-        self.binds
+        self.column_infos
             .iter()
             .enumerate()
-            .find(|(_, f)| f.name() == field_name)
+            .find(|(_, c)| c.name() == field_name)
             .map(|(idx, _)| idx)
     }
 }
@@ -39,7 +60,7 @@ impl<'a> Row<'a, Oracle> for OciRow<'a> {
     type InnerPartialRow = Self;
 
     fn field_count(&self) -> usize {
-        self.binds.len()
+        self.values.len()
     }
 
     fn get<I>(&self, idx: I) -> Option<Self::Field>
@@ -47,7 +68,10 @@ impl<'a> Row<'a, Oracle> for OciRow<'a> {
         Self: diesel::row::RowIndex<I>,
     {
         let idx = self.idx(idx)?;
-        Some(OciField(&self.binds[idx]))
+        Some(OciField {
+            field_value: self.values[idx].clone(),
+            column_info: self.column_infos.get(idx),
+        })
     }
 
     fn partial_row(
@@ -58,22 +82,21 @@ impl<'a> Row<'a, Oracle> for OciRow<'a> {
     }
 }
 
-pub struct OciField<'a>(&'a Field);
+pub struct OciField<'a> {
+    field_value: Option<OracleValue<'a>>,
+    column_info: Option<&'a oracle::ColumnInfo>,
+}
 
 impl<'a> row::Field<'a, Oracle> for OciField<'a> {
     fn field_name(&self) -> Option<&'a str> {
-        Some(self.0.name())
+        self.column_info.map(|c| c.name())
     }
 
     fn value(&self) -> Option<diesel::backend::RawValue<'a, Oracle>> {
-        if self.0.is_null() {
-            None
-        } else {
-            Some(OracleValue::new(self.0.buffer(), self.0.datatype()))
-        }
+        self.field_value.clone()
     }
 
     fn is_null(&self) -> bool {
-        self.0.is_null()
+        self.field_value.is_none()
     }
 }

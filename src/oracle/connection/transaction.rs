@@ -1,8 +1,8 @@
+use super::ErrorHelper;
 use super::OciConnection;
 use diesel::connection::SimpleConnection;
 use diesel::connection::TransactionManager;
 use diesel::result::QueryResult;
-use oci_sys as ffi;
 use std::cell::Cell;
 
 /// An implementation of `TransactionManager` which can be used for oracle
@@ -50,14 +50,7 @@ impl TransactionManager<OciConnection> for OCITransactionManager {
     fn begin_transaction(&self, conn: &OciConnection) -> QueryResult<()> {
         let transaction_depth = self.transaction_depth.get();
         let query = if transaction_depth == 0 {
-            let _status = unsafe {
-                ffi::OCITransStart(
-                    conn.raw.service_handle,
-                    conn.raw.env.error_handle,
-                    0,
-                    ffi::OCI_TRANS_NEW,
-                )
-            };
+            conn.raw.borrow_mut().set_autocommit(false);
             Ok(())
         } else {
             conn.batch_execute(&format!("SAVEPOINT diesel_savepoint_{}", transaction_depth))
@@ -71,14 +64,15 @@ impl TransactionManager<OciConnection> for OCITransactionManager {
         // c.f. https://docs.oracle.com/cd/E25054_01/server.1111/e25789/transact.htm#sthref1318
         let transaction_depth = self.transaction_depth.get();
         let query = if transaction_depth == 1 {
-            let _status = unsafe {
-                ffi::OCITransRollback(
-                    conn.raw.service_handle,
-                    conn.raw.env.error_handle,
-                    ffi::OCI_DEFAULT,
-                )
-            };
-            Ok(())
+            let res = conn
+                .raw
+                .borrow()
+                .rollback()
+                .map_err(ErrorHelper::from)
+                .map_err(Into::into);
+
+            conn.raw.borrow_mut().set_autocommit(true);
+            res
         } else {
             conn.batch_execute(&format!(
                 "ROLLBACK TO SAVEPOINT diesel_savepoint_{}",
@@ -95,13 +89,8 @@ impl TransactionManager<OciConnection> for OCITransactionManager {
         // rolled back, every inner transaction can fail, but no be committed since it doesn't make
         // sense to commit the inner ones
         if transaction_depth <= 1 {
-            let _status = unsafe {
-                ffi::OCITransCommit(
-                    conn.raw.service_handle,
-                    conn.raw.env.error_handle,
-                    ffi::OCI_DEFAULT,
-                )
-            };
+            conn.raw.borrow().commit().map_err(ErrorHelper::from)?;
+            conn.raw.borrow_mut().set_autocommit(true);
         };
         self.change_transaction_depth(-1, Ok(()))
     }

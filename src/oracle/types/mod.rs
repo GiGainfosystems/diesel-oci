@@ -3,17 +3,36 @@ extern crate diesel_dynamic_schema;
 
 use super::backend::*;
 use super::connection::OracleValue;
-use diesel::deserialize::FromSql;
-use diesel::serialize::{IsNull, Output, ToSql};
+use byteorder::{ByteOrder, NativeEndian};
+use diesel::deserialize::{self, FromSql};
+use diesel::serialize::{self, IsNull, Output, ToSql};
 use diesel::sql_types::*;
-use oci_sys as ffi;
 use std::error::Error;
+use std::hash::Hash;
 use std::io::Write;
 use std::str;
 
-pub type FromSqlResult<T> = Result<T, ErrorType>;
-pub type ErrorType = Box<dyn Error + Send + Sync>;
-pub type ToSqlResult = FromSqlResult<IsNull>;
+mod primitives;
+
+#[derive(Clone, Copy)]
+pub struct OciTypeMetadata {
+    pub(crate) tpe: OciDataType,
+    pub(crate) handler: fn(Vec<u8>) -> Box<dyn oracle::sql_type::ToSql>,
+}
+
+impl PartialEq for OciTypeMetadata {
+    fn eq(&self, other: &Self) -> bool {
+        self.tpe.eq(&other.tpe)
+    }
+}
+
+impl Eq for OciTypeMetadata {}
+
+impl Hash for OciTypeMetadata {
+    fn hash<H: std::hash::Hasher>(&self, hasher: &mut H) {
+        self.tpe.hash(hasher)
+    }
+}
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 #[non_exhaustive]
@@ -31,163 +50,176 @@ pub enum OciDataType {
     Timestamp,
 }
 
-impl OciDataType {
-    pub(crate) fn is_text(&self) -> bool {
-        match *self {
-            OciDataType::Text => true,
-            _ => false,
-        }
+fn i16_handler(bytes: Vec<u8>) -> Box<dyn oracle::sql_type::ToSql> {
+    if bytes.is_empty() {
+        Box::new(oracle::sql_type::OracleType::Number(0, 0))
+    } else {
+        let v = NativeEndian::read_i16(&bytes);
+        Box::new(v)
+    }
+}
+
+fn i32_handler(bytes: Vec<u8>) -> Box<dyn oracle::sql_type::ToSql> {
+    if bytes.is_empty() {
+        Box::new(oracle::sql_type::OracleType::Number(0, 0))
+    } else {
+        let v = NativeEndian::read_i32(&bytes);
+        Box::new(v)
+    }
+}
+
+fn i64_handler(bytes: Vec<u8>) -> Box<dyn oracle::sql_type::ToSql> {
+    if bytes.is_empty() {
+        Box::new(oracle::sql_type::OracleType::Number(0, 0))
+    } else {
+        let v = NativeEndian::read_i64(&bytes);
+        Box::new(v)
+    }
+}
+
+fn f32_handler(bytes: Vec<u8>) -> Box<dyn oracle::sql_type::ToSql> {
+    if bytes.is_empty() {
+        Box::new(oracle::sql_type::OracleType::Number(0, 0))
+    } else {
+        let v = NativeEndian::read_f32(&bytes);
+        Box::new(v)
+    }
+}
+
+struct BinaryDoubleHandler(f64);
+
+impl oracle::sql_type::ToSql for BinaryDoubleHandler {
+    fn oratype(
+        &self,
+        conn: &oracle::Connection,
+    ) -> Result<oracle::sql_type::OracleType, oracle::Error> {
+        Ok(oracle::sql_type::OracleType::BinaryDouble)
     }
 
-    pub(crate) fn bind_type(&self) -> u32 {
-        use self::OciDataType::*;
-        match *self {
-            Bool => ffi::SQLT_INT,
-            SmallInt => ffi::SQLT_INT,
-            Integer => ffi::SQLT_INT,
-            BigInt => ffi::SQLT_INT,
-            Float => ffi::SQLT_BFLOAT,
-            Double => ffi::SQLT_BDOUBLE,
-            Text => ffi::SQLT_CHR,
-            Binary => ffi::SQLT_BIN,
-            Date | Time | Timestamp => ffi::SQLT_DAT,
-        }
+    fn to_sql(&self, v: &mut oracle::SqlValue) -> std::result::Result<(), oracle::Error> {
+        v.set(&self.0)
     }
+}
 
-    pub(crate) fn from_sqlt(sqlt: u32, tpe_size: i32) -> Self {
-        match sqlt {
-            ffi::SQLT_STR => OciDataType::Text,
-            ffi::SQLT_INT => match tpe_size {
-                2 => OciDataType::SmallInt,
-                4 => OciDataType::Integer,
-                8 => OciDataType::BigInt,
-                _ => unreachable!("Found size {}. Either add it or this is an error", tpe_size),
-            },
-            ffi::SQLT_FLT | ffi::SQLT_BDOUBLE => OciDataType::Double,
-            ffi::SQLT_BFLOAT => OciDataType::Float,
-            _ => unreachable!("Found type {}. Either add it or this is an error", sqlt),
-        }
+fn f64_handler(bytes: Vec<u8>) -> Box<dyn oracle::sql_type::ToSql> {
+    if bytes.is_empty() {
+        Box::new(oracle::sql_type::OracleType::BinaryDouble)
+    } else {
+        let v = NativeEndian::read_f64(&bytes);
+        Box::new(BinaryDoubleHandler(v))
     }
+}
 
-    pub(crate) fn define_type(&self) -> u32 {
-        use self::OciDataType::*;
-        match *self {
-            Text => ffi::SQLT_STR,
-            _ => self.bind_type(),
-        }
-    }
+fn string_handler(bytes: Vec<u8>) -> Box<dyn oracle::sql_type::ToSql> {
+    Box::new(String::from_utf8(bytes).expect("Parse does not fail"))
+}
 
-    pub(crate) fn byte_size(&self) -> usize {
-        use self::OciDataType::*;
-        match *self {
-            Bool => 2,
-            SmallInt => 2,
-            Integer => 4,
-            BigInt => 8,
-            Float => 4,
-            Double => 8,
-            Text => 2_000_000,
-            Binary => 88,
-            Date | Time | Timestamp => 7,
-        }
-    }
+fn blob_handler(bytes: Vec<u8>) -> Box<dyn oracle::sql_type::ToSql> {
+    Box::new(bytes)
+}
+
+fn bool_handler(bytes: Vec<u8>) -> Box<dyn oracle::sql_type::ToSql> {
+    Box::new(bytes[0])
+}
+
+fn foo(bytes: Vec<u8>) -> Box<dyn oracle::sql_type::ToSql> {
+    todo!()
 }
 
 impl HasSqlType<SmallInt> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::SmallInt
+        OciTypeMetadata {
+            tpe: OciDataType::SmallInt,
+            handler: i16_handler,
+        }
     }
 }
 
 impl HasSqlType<Integer> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Integer
+        OciTypeMetadata {
+            tpe: OciDataType::Integer,
+            handler: i32_handler,
+        }
     }
 }
 
 impl HasSqlType<BigInt> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::BigInt
+        OciTypeMetadata {
+            tpe: OciDataType::BigInt,
+            handler: i64_handler,
+        }
     }
 }
 
 impl HasSqlType<Float> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Float
+        OciTypeMetadata {
+            tpe: OciDataType::Float,
+            handler: f32_handler,
+        }
     }
 }
 
 impl HasSqlType<Double> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Double
+        OciTypeMetadata {
+            tpe: OciDataType::Double,
+            handler: f64_handler,
+        }
     }
 }
 
 impl HasSqlType<Text> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Text
+        OciTypeMetadata {
+            tpe: OciDataType::Text,
+            handler: string_handler,
+        }
     }
 }
 
 impl HasSqlType<Binary> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Binary
-    }
-}
-
-impl HasSqlType<Date> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Date
+        OciTypeMetadata {
+            tpe: OciDataType::Binary,
+            handler: blob_handler,
+        }
     }
 }
 
 impl HasSqlType<Time> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Time
+        OciTypeMetadata {
+            tpe: OciDataType::Time,
+            handler: foo,
+        }
     }
 }
 
 impl HasSqlType<Timestamp> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Timestamp
+        OciTypeMetadata {
+            tpe: OciDataType::Timestamp,
+            #[cfg(feature = "chrono")]
+            handler: self::chrono_date_time::timestamp_handler,
+        }
     }
 }
 
 impl HasSqlType<Bool> for Oracle {
     fn metadata(_: &Self::MetadataLookup) -> Self::TypeMetadata {
-        OciDataType::Bool
-    }
-}
-
-impl FromSql<Bool, Oracle> for bool {
-    fn from_sql(bytes: OracleValue<'_>) -> FromSqlResult<Self> {
-        FromSql::<SmallInt, Oracle>::from_sql(bytes).map(|v: i16| v != 0)
-    }
-}
-
-impl ToSql<Bool, Oracle> for bool {
-    fn to_sql<W: Write>(&self, out: &mut Output<W, Oracle>) -> ToSqlResult {
-        <i16 as ToSql<SmallInt, Oracle>>::to_sql(&if *self { 1 } else { 0 }, out)
-    }
-}
-
-impl FromSql<Text, Oracle> for *const str {
-    fn from_sql(bytes: OracleValue<'_>) -> FromSqlResult<Self> {
-        use diesel::result::Error as DieselError;
-        let pos = bytes
-            .bytes
-            .iter()
-            .position(|&b| b == 0)
-            .ok_or(Box::new(DieselError::DeserializationError(
-                "Expected at least one null byte".into(),
-            )) as Box<dyn Error + Send + Sync>)?;
-        let string = str::from_utf8(&bytes.bytes[..pos])?;
-        Ok(string as *const _)
+        OciTypeMetadata {
+            tpe: OciDataType::Bool,
+            handler: bool_handler,
+        }
     }
 }
 
 #[cfg(feature = "dynamic-schema")]
 mod dynamic_schema_impls {
+
     use super::diesel_dynamic_schema::dynamic_value::{Any, DynamicRow, NamedField};
     use crate::oracle::Oracle;
     use diesel::deserialize::{self, FromSql, QueryableByName};

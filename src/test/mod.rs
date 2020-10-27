@@ -609,8 +609,10 @@ fn gst_compat() {
             assert_eq!(val[1].5, "test");
         }
         Way::Diesel => {
+            const BINARY_LENGHT: usize = 1234;
+
             let mut bin: Vec<u8> = Vec::new();
-            for i in 0..88 {
+            for i in 0..BINARY_LENGHT {
                 bin.push(i as u8 % 128u8);
             }
 
@@ -632,7 +634,7 @@ fn gst_compat() {
             //            assert_result!(new_row);
 
             let mut bin: Vec<u8> = Vec::new();
-            for i in 0..88 {
+            for i in 0..BINARY_LENGHT {
                 bin.push(i as u8 % 128u8);
             }
 
@@ -720,6 +722,7 @@ fn gst_compat() {
             assert_eq!(val[2].5, None);
 
             assert_ne!(val[0].6, None);
+            assert_eq!(val[0].6.as_ref().unwrap().len(), BINARY_LENGHT);
             assert_eq!(val[1].6, None);
             assert_eq!(val[2].6, None);
 
@@ -1028,7 +1031,7 @@ impl ToSql<SmallInt, Oracle> for CoordinateSystemType {
 }
 
 impl FromSql<SmallInt, Oracle> for CoordinateSystemType {
-    fn from_sql(bytes: Option<OracleValue<'_>>) -> deserialize::Result<Self> {
+    fn from_sql(bytes: OracleValue<'_>) -> deserialize::Result<Self> {
         let value = <i16 as FromSql<SmallInt, Oracle>>::from_sql(bytes)?;
         CoordinateSystemType::from_i16(value).ok_or_else(|| {
             error!("Invalid value for coordinate system type found: {}", value);
@@ -1339,7 +1342,7 @@ impl ToSql<SmallInt, Oracle> for PropertyDataType {
 }
 
 impl FromSql<SmallInt, Oracle> for PropertyDataType {
-    fn from_sql(bytes: Option<OracleValue<'_>>) -> deserialize::Result<Self> {
+    fn from_sql(bytes: OracleValue<'_>) -> deserialize::Result<Self> {
         let value = <i16 as FromSql<SmallInt, Oracle>>::from_sql(bytes)?;
         PropertyDataType::from_i16(value).ok_or_else(|| {
             error!("Invalid value for property data type found: {}", value);
@@ -1461,7 +1464,6 @@ fn systable() {
 
     let ret: Result<Vec<(String, String)>, _> = all_tables::table.load(&conn);
     assert_result!(ret);
-    let _ = ret.unwrap();
 }
 
 // TODO: adjust this test to be more generic and dependent on GST
@@ -2126,16 +2128,15 @@ fn run_adhoc_procedure() {
     let conn = init_testing();
 
     let proc = "BEGIN \
-    EXECUTE IMMEDIATE 'ALTER TABLE elements add (temp varchar2(2000))'; \
-    EXECUTE IMMEDIATE 'UPDATE elements SET temp=dbms_lob.substr(\"COMMENT\",2000,1)'; \
-    EXECUTE IMMEDIATE 'COMMIT'; \
-    EXECUTE IMMEDIATE 'ALTER TABLE elements DROP COLUMN \"COMMENT\"'; \
-    EXECUTE IMMEDIATE 'ALTER TABLE elements RENAME COLUMN temp to \"COMMENT\"'; \
-END;";
+                EXECUTE IMMEDIATE 'ALTER TABLE elements add (temp varchar2(2000))'; \
+                EXECUTE IMMEDIATE 'UPDATE elements SET temp=dbms_lob.substr(\"COMMENT\",2000,1)'; \
+                EXECUTE IMMEDIATE 'COMMIT'; \
+                EXECUTE IMMEDIATE 'ALTER TABLE elements DROP COLUMN \"COMMENT\"'; \
+                EXECUTE IMMEDIATE 'ALTER TABLE elements RENAME COLUMN temp to \"COMMENT\"'; \
+                END;";
 
     let ret = conn.execute(proc);
     assert_result!(ret);
-
 }
 
 use diesel::sql_types::Nullable;
@@ -2267,7 +2268,7 @@ fn insert_returning_gst_types() {
         byte_val.push(i as u8 % 128u8);
     }
 
-    let new_row = Newgst_types{
+    let new_row = Newgst_types {
         big: Some(big_val),
         big2: Some(big2_val),
         small: Some(small_val),

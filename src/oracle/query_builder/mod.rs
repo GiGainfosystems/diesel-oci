@@ -38,8 +38,8 @@ impl QueryBuilder<Oracle> for OciQueryBuilder {
     }
 
     fn push_bind_param(&mut self) {
+        let sql = format!(":in{}", self.bind_idx);
         self.bind_idx += 1;
-        let sql = format!(":{}", self.bind_idx);
         self.push_sql(&sql);
     }
 

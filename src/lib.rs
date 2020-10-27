@@ -1,4 +1,5 @@
 #![feature(specialization)]
+#![allow(warnings)]
 
 #[macro_use]
 extern crate diesel;
@@ -6,7 +7,6 @@ extern crate byteorder;
 extern crate libc;
 #[macro_use]
 extern crate log;
-extern crate oci_sys;
 
 #[cfg(test)]
 extern crate num;

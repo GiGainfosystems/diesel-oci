@@ -34,6 +34,7 @@ rev = "ee00374f79d865e9d464517d603d0ed22d12be0d"
 
 [dependencies.diesel-dynamic-schema]
 optional = true
+default-features = false
 git = "https://github.com/diesel-rs/diesel"
 rev = "ee00374f79d865e9d464517d603d0ed22d12be0d"
 

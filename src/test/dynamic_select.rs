@@ -1,10 +1,10 @@
 extern crate diesel_dynamic_schema;
+use self::diesel_dynamic_schema::dynamic_value::*;
+use self::diesel_dynamic_schema::DynamicSelectClause;
 use diesel::deserialize::*;
 use diesel::prelude::*;
 use diesel::sql_query;
 use diesel::sql_types::*;
-use self::diesel_dynamic_schema::dynamic_select::DynamicSelectClause;
-use self::diesel_dynamic_schema::dynamic_value::*;
 use oracle::{OciDataType, Oracle, OracleValue};
 
 #[derive(PartialEq, Debug)]
@@ -15,15 +15,21 @@ enum MyDynamicValue {
 }
 
 impl FromSql<Any, Oracle> for MyDynamicValue {
-    fn from_sql(value: Option<OracleValue>) -> Result<Self> {
-        if let Some(value) = value {
-            match value.value_type() {
-                OciDataType::Integer => <i32 as FromSql<Integer, Oracle>>::from_sql(Some(value))
-                    .map(MyDynamicValue::Integer),
-                OciDataType::Text => <String as FromSql<Text, Oracle>>::from_sql(Some(value))
-                    .map(MyDynamicValue::String),
-                e => Err(format!("Unknown data type: {:?}", e).into()),
+    fn from_sql(value: OracleValue) -> Result<Self> {
+        match value.value_type() {
+            OciDataType::Integer => {
+                <i32 as FromSql<Integer, Oracle>>::from_sql(value).map(MyDynamicValue::Integer)
             }
+            OciDataType::Text => {
+                <String as FromSql<Text, Oracle>>::from_sql(value).map(MyDynamicValue::String)
+            }
+            e => Err(format!("Unknown data type: {:?}", e).into()),
+        }
+    }
+
+    fn from_nullable_sql(value: Option<OracleValue>) -> Result<Self> {
+        if let Some(value) = value {
+            Self::from_sql(value)
         } else {
             Ok(MyDynamicValue::Null)
         }
@@ -37,12 +43,14 @@ fn dynamic_query() {
     sql_query("CREATE TABLE users (id NUMBER(10) NOT NULL PRIMARY KEY, name VARCHAR(50) NOT NULL, hair_color VARCHAR(50))")
         .execute(&connection)
         .unwrap();
-    sql_query("INSERT ALL
+    sql_query(
+        "INSERT ALL
     INTO users (id, name) VALUES (3, 'Sean')
     INTO users (id, name) VALUES (2, 'Tess')
-SELECT * FROM DUAL")
-        .execute(&connection)
-        .unwrap();
+SELECT * FROM DUAL",
+    )
+    .execute(&connection)
+    .unwrap();
 
     let users = diesel_dynamic_schema::table("users");
     let id = users.column::<Integer, _>("id");

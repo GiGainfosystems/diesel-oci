@@ -29,6 +29,7 @@ pub enum OciDataType {
     Date,
     Time,
     Timestamp,
+    Number,
 }
 
 impl OciDataType {
@@ -46,6 +47,7 @@ impl OciDataType {
             SmallInt => ffi::SQLT_INT,
             Integer => ffi::SQLT_INT,
             BigInt => ffi::SQLT_INT,
+            Number => ffi::SQLT_INT,
             Float => ffi::SQLT_BFLOAT,
             Double => ffi::SQLT_BDOUBLE,
             Text => ffi::SQLT_CHR,
@@ -61,10 +63,13 @@ impl OciDataType {
                 2 => OciDataType::SmallInt,
                 4 => OciDataType::Integer,
                 8 => OciDataType::BigInt,
+                21 => OciDataType::Number,
                 _ => unreachable!("Found size {}. Either add it or this is an error", tpe_size),
             },
             ffi::SQLT_FLT | ffi::SQLT_BDOUBLE => OciDataType::Double,
             ffi::SQLT_BFLOAT => OciDataType::Float,
+            ffi::SQLT_DAT => OciDataType::Date,
+            ffi::SQLT_BIN => OciDataType::Binary,
             _ => unreachable!("Found type {}. Either add it or this is an error", sqlt),
         }
     }
@@ -89,6 +94,7 @@ impl OciDataType {
             Text => 2_000_000,
             Binary => 88,
             Date | Time | Timestamp => 7,
+            Number => 21,
         }
     }
 }

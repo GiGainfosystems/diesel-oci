@@ -563,12 +563,19 @@ impl Statement {
         metadata: Vec<Option<OciDataType>>,
     ) -> QueryResult<Cursor<ST, T>> {
         let mut query_metadata = Vec::new();
-        self.get_metadata(&mut query_metadata)?;
-        let metadata = query_metadata
-            .into_iter()
-            .zip(metadata.into_iter().chain(std::iter::repeat(None)))
-            .map(|(query_metadata, type_metadata)| type_metadata.unwrap_or(query_metadata))
-            .collect::<Vec<_>>();
+        let metadata = if metadata.iter().any(Option::is_none) {
+            self.get_metadata(&mut query_metadata)?;
+            let metadata = query_metadata
+                .into_iter()
+                .zip(metadata.into_iter().chain(std::iter::repeat(None)))
+                .map(|(query_metadata, type_metadata)| type_metadata.unwrap_or(query_metadata))
+                .collect::<Vec<_>>();
+            metadata
+        } else {
+            metadata.into_iter()
+                .map(|m| m.expect("It's there"))
+                .collect()
+        };
         self.run(auto_commit, &metadata)?;
         self.bind_index = 0;
         if self.is_returning {

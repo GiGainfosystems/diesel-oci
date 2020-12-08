@@ -98,9 +98,9 @@ impl FromSql<Bool, Oracle> for bool {
 impl ToSql<Bool, Oracle> for bool {
     fn to_sql<W: Write>(&self, out: &mut serialize::Output<W, Oracle>) -> serialize::Result {
         if *self {
-            out.write(&[1])?;
+            out.write_all(&[1])?;
         } else {
-            out.write(&[0])?;
+            out.write_all(&[0])?;
         }
         Ok(serialize::IsNull::No)
     }

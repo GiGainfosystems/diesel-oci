@@ -17,10 +17,12 @@ enum MyDynamicValue {
 impl FromSql<Any, Oracle> for MyDynamicValue {
     fn from_sql(value: OracleValue) -> Result<Self> {
         match value.value_type() {
-            OciDataType::Integer => <i32 as FromSql<Integer, Oracle>>::from_sql(value)
-                .map(MyDynamicValue::Integer),
-            OciDataType::Text => <String as FromSql<Text, Oracle>>::from_sql(value)
-                .map(MyDynamicValue::String),
+            OciDataType::Integer => {
+                <i32 as FromSql<Integer, Oracle>>::from_sql(value).map(MyDynamicValue::Integer)
+            }
+            OciDataType::Text => {
+                <String as FromSql<Text, Oracle>>::from_sql(value).map(MyDynamicValue::String)
+            }
             e => Err(format!("Unknown data type: {:?}", e).into()),
         }
     }
@@ -116,4 +118,35 @@ SELECT * FROM DUAL",
     assert_eq!(actual_data[1][1], MyDynamicValue::String("Tess".into()));
     assert_eq!(actual_data[0][2], MyDynamicValue::Null);
     assert_eq!(actual_data[1][2], MyDynamicValue::Null);
+}
+
+#[test]
+fn mixed_value_query() {
+    use diesel::dsl::sql;
+    let connection = super::init_testing();
+    let _ = sql_query("DROP TABLE users").execute(&connection);
+    sql_query("CREATE TABLE users (id NUMBER(10) NOT NULL PRIMARY KEY, name VARCHAR(50) NOT NULL, hair_color VARCHAR(50))")
+        .execute(&connection)
+        .unwrap();
+
+    sql_query(
+        "INSERT ALL
+    INTO users (id, name, hair_color) VALUES (42, 'Sean', 'black')
+    INTO users (id, name, hair_color) VALUES (43, 'Tess', 'black')
+SELECT * FROM DUAL",
+    )
+    .execute(&connection)
+    .unwrap();
+
+    let users = diesel_dynamic_schema::table("users");
+    let id = users.column::<Integer, _>("id");
+
+    let (id, row) = users
+        .select((id, sql::<Untyped>("name, hair_color")))
+        .first::<(i32, DynamicRow<NamedField<MyDynamicValue>>)>(&connection)
+        .unwrap();
+
+    assert_eq!(id, 42);
+    assert_eq!(row["NAME"], MyDynamicValue::String("Sean".into()));
+    assert_eq!(row["HAIR_COLOR"], MyDynamicValue::String("black".into()));
 }

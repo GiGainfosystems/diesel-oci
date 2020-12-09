@@ -360,7 +360,7 @@ impl OciConnection {
                         .enumerate()
                     {
                         data[idx].push(v.map(|v| OracleValue {
-                            inner: InnerValue::Bool(v != 0),
+                            inner: InnerValue::SmallInt(v),
                         }));
                     }
                 }

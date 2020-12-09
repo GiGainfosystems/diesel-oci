@@ -354,13 +354,13 @@ impl OciConnection {
             let idx = &format!("out{}", idx) as &str;
             match m.as_ref().unwrap().tpe {
                 OciDataType::Bool => {
-                    for (idx, v) in (stmt.returned_values::<_, Option<bool>>(idx))
+                    for (idx, v) in (stmt.returned_values::<_, Option<i16>>(idx))
                         .map_err(ErrorHelper::from)?
                         .into_iter()
                         .enumerate()
                     {
                         data[idx].push(v.map(|v| OracleValue {
-                            inner: InnerValue::Bool(v),
+                            inner: InnerValue::Bool(v != 0),
                         }));
                     }
                 }

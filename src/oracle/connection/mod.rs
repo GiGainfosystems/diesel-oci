@@ -140,6 +140,14 @@ impl Connection for OciConnection {
                 "Username not set".into(),
             ));
         }
+        let user = match percent_encoding::percent_decode_str(url.username()).decode_utf8() {
+            Ok(username) => username,
+            Err(e) => {
+                return Err(ConnectionError::InvalidConnectionUrl(
+                    "Username could not be percent decoded".into(),
+                ))
+            }
+        };
         let password = url
             .password()
             .ok_or_else(|| ConnectionError::InvalidConnectionUrl("Password not set".into()))?;

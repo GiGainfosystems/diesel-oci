@@ -164,9 +164,11 @@ impl Connection for OciConnection {
         }
         url += path;
 
-        let raw = oracle::Connection::connect(user, password, url)
+        let mut raw = oracle::Connection::connect(user, password, url)
             .map_err(ErrorHelper::from)
             .map_err(|e| ConnectionError::CouldntSetupConfiguration(e.into()))?;
+
+        raw.set_autocommit(true);
 
         Ok(Self {
             statement_cache: StatementCache::new(),

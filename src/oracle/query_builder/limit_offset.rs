@@ -1,9 +1,9 @@
+use crate::oracle::Oracle;
 use diesel::query_builder::{AstPass, QueryFragment};
 use diesel::query_builder::{BoxedLimitOffsetClause, IntoBoxedClause, LimitOffsetClause};
 use diesel::query_builder::{LimitClause, NoLimitClause};
 use diesel::query_builder::{NoOffsetClause, OffsetClause};
 use diesel::result::QueryResult;
-use oracle::Oracle;
 
 impl QueryFragment<Oracle> for LimitOffsetClause<NoLimitClause, NoOffsetClause> {
     fn walk_ast(&self, _out: AstPass<Oracle>) -> QueryResult<()> {

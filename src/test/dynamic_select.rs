@@ -1,11 +1,11 @@
 extern crate diesel_dynamic_schema;
 use self::diesel_dynamic_schema::dynamic_value::*;
 use self::diesel_dynamic_schema::DynamicSelectClause;
+use crate::oracle::{OciDataType, Oracle, OracleValue};
 use diesel::deserialize::*;
 use diesel::prelude::*;
 use diesel::sql_query;
 use diesel::sql_types::*;
-use oracle::{OciDataType, Oracle, OracleValue};
 
 #[derive(PartialEq, Debug)]
 enum MyDynamicValue {

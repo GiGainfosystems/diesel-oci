@@ -1,14 +1,3 @@
-#[macro_use]
-extern crate diesel;
-#[cfg_attr(test, macro_use)]
-extern crate log;
-
-#[cfg(test)]
-extern crate num;
-#[cfg(test)]
-#[macro_use]
-extern crate num_derive;
-
 pub mod oracle;
 
 #[cfg(test)]

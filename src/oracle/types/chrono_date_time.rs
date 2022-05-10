@@ -4,7 +4,7 @@ use diesel::serialize::{IsNull, Output, ToSql};
 use diesel::sql_types::*;
 use std::error::Error;
 
-use oracle::backend::Oracle;
+use crate::oracle::backend::Oracle;
 
 use crate::oracle::connection::bind_collector::BindValue;
 

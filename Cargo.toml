@@ -11,9 +11,9 @@ description = "A oci database adapter for diesel"
 readme = "README.md"
 keywords = ["diesel", "oci", "oracle", "sql"]
 categories = ["database"]
+edition = "2021"
 
 [dependencies]
-log = "0.3"
 oracle = {version = "0.5", features = ["chrono"]}
 url = "2"
 percent-encoding = "2"
@@ -37,6 +37,7 @@ default-features = false
 version = "0.2.0-rc.0"
 
 [dev-dependencies]
+log = "0.4"
 dotenv = ">=0.8, <0.11"
 num = { version = "0.1", default-features = false }
 num-derive = "0.1"

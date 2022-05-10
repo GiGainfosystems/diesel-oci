@@ -1,6 +1,6 @@
 use super::Oracle;
 
-use diesel::query_builder::{AstPass, QueryFragment};
+use diesel::query_builder::{AstPass, QueryFragment, QueryId};
 use diesel::result::QueryResult;
 
 pub trait Alias: Sized {

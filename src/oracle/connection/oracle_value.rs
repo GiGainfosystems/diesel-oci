@@ -1,4 +1,4 @@
-use oracle::types::OciDataType;
+use crate::oracle::types::OciDataType;
 
 #[derive(Debug, Clone)]
 pub struct OracleValue<'a> {

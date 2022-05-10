@@ -1,19 +1,24 @@
 extern crate chrono_time as chrono;
 extern crate dotenv;
+
 use crate::oracle::connection::bind_collector::BindValue;
 
 use self::chrono::{NaiveDateTime, Utc};
 use self::dotenv::dotenv;
 use super::oracle::connection::OciConnection;
-use diesel::deserialize::{self, FromSql};
+use crate::oracle::backend::Oracle;
+use crate::oracle::connection::OracleValue;
+use diesel::deserialize::{self, FromSql, FromSqlRow};
+use diesel::expression::AsExpression;
+use diesel::prelude::*;
 use diesel::result::Error;
 use diesel::serialize::{self, ToSql};
 use diesel::sql_types::SmallInt;
 use diesel::Connection;
 use diesel::RunQueryDsl;
+use log::error;
 use num::FromPrimitive;
-use oracle::backend::Oracle;
-use oracle::connection::OracleValue;
+use num_derive::FromPrimitive;
 use std::env;
 use std::error::Error as StdError;
 
@@ -1024,7 +1029,7 @@ impl FromSql<SmallInt, Oracle> for CoordinateSystemType {
     fn from_sql(bytes: OracleValue<'_>) -> deserialize::Result<Self> {
         let value = <i16 as FromSql<SmallInt, Oracle>>::from_sql(bytes)?;
         CoordinateSystemType::from_i16(value).ok_or_else(|| {
-            log::error!("Invalid value for coordinate system type found: {}", value);
+            error!("Invalid value for coordinate system type found: {}", value);
             make_err(InvalidEnumValueError(value))
         })
     }
@@ -1174,10 +1179,10 @@ fn ambigious_col_names() {
 
     use self::t1;
     use self::t2;
+    use crate::oracle::query_builder::Alias;
     use diesel::ExpressionMethods;
     use diesel::JoinOnDsl;
     use diesel::QueryDsl;
-    use oracle::query_builder::Alias;
 
     let mut bin: Vec<u8> = Vec::new();
     for i in 0..88 {
@@ -1467,8 +1472,6 @@ fn exists() {
     use self::all_tables;
 
     use diesel::dsl::exists;
-    use diesel::query_dsl::filter_dsl::FilterDsl;
-    use diesel::query_dsl::select_dsl::SelectDsl;
     use diesel::ExpressionMethods;
 
     let ret = diesel::select(exists(
@@ -1931,7 +1934,6 @@ fn updateing_unique_constraint() {
     assert_result!(ret);
 
     use self::geometries;
-    use diesel::query_dsl::filter_dsl::FindDsl;
     use diesel::ExpressionMethods;
 
     let n = Utc::now().naive_utc();

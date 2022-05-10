@@ -15,7 +15,7 @@ impl<L> QueryFragment<Oracle> for LimitOffsetClause<LimitClause<L>, NoOffsetClau
 where
     L: QueryFragment<Oracle>,
 {
-    fn walk_ast(&self, mut out: AstPass<Oracle>) -> QueryResult<()> {
+    fn walk_ast<'b>(&'b self, mut out: AstPass<'_, 'b, Oracle>) -> QueryResult<()> {
         out.push_sql(" FETCH FIRST ");
         self.limit_clause.0.walk_ast(out.reborrow())?;
         out.push_sql(" ROWS ONLY ");
@@ -27,7 +27,7 @@ impl<O> QueryFragment<Oracle> for LimitOffsetClause<NoLimitClause, OffsetClause<
 where
     O: QueryFragment<Oracle>,
 {
-    fn walk_ast(&self, mut out: AstPass<Oracle>) -> QueryResult<()> {
+    fn walk_ast<'b>(&'b self, mut out: AstPass<'_, 'b, Oracle>) -> QueryResult<()> {
         out.push_sql(" OFFSET ");
         self.offset_clause.0.walk_ast(out.reborrow())?;
         out.push_sql(" ROWS ");
@@ -40,7 +40,7 @@ where
     L: QueryFragment<Oracle>,
     O: QueryFragment<Oracle>,
 {
-    fn walk_ast(&self, mut out: AstPass<Oracle>) -> QueryResult<()> {
+    fn walk_ast<'b>(&'b self, mut out: AstPass<'_, 'b, Oracle>) -> QueryResult<()> {
         out.push_sql(" OFFSET ");
         self.offset_clause.0.walk_ast(out.reborrow())?;
         out.push_sql(" ROWS FETCH NEXT ");
@@ -51,7 +51,7 @@ where
 }
 
 impl<'a> QueryFragment<Oracle> for BoxedLimitOffsetClause<'a, Oracle> {
-    fn walk_ast(&self, mut out: AstPass<Oracle>) -> QueryResult<()> {
+    fn walk_ast<'b>(&'b self, mut out: AstPass<'_, 'b, Oracle>) -> QueryResult<()> {
         match (self.limit.as_ref(), self.offset.as_ref()) {
             (Some(limit), Some(offset)) => {
                 out.push_sql(" OFFSET ");

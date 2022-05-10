@@ -38,10 +38,10 @@ impl FromSql<Any, Oracle> for MyDynamicValue {
 
 #[test]
 fn dynamic_query() {
-    let connection = super::init_testing();
-    let _ = sql_query("DROP TABLE users").execute(&connection);
+    let mut connection = super::init_testing();
+    let _ = sql_query("DROP TABLE users").execute(&mut connection);
     sql_query("CREATE TABLE users (id NUMBER(10) NOT NULL PRIMARY KEY, name VARCHAR(50) NOT NULL, hair_color VARCHAR(50))")
-        .execute(&connection)
+        .execute(&mut connection)
         .unwrap();
     sql_query(
         "INSERT ALL
@@ -49,7 +49,7 @@ fn dynamic_query() {
     INTO users (id, name) VALUES (2, 'Tess')
 SELECT * FROM DUAL",
     )
-    .execute(&connection)
+    .execute(&mut connection)
     .unwrap();
 
     let users = diesel_dynamic_schema::table("users");
@@ -64,7 +64,7 @@ SELECT * FROM DUAL",
     select.add_field(hair_color);
 
     let actual_data: Vec<DynamicRow<NamedField<MyDynamicValue>>> =
-        users.select(select).load(&connection).unwrap();
+        users.select(select).load(&mut connection).unwrap();
 
     assert_eq!(
         actual_data[0]["NAME"],
@@ -112,7 +112,7 @@ SELECT * FROM DUAL",
     select.add_field(hair_color);
 
     let actual_data: Vec<DynamicRow<MyDynamicValue>> =
-        users.select(select).load(&connection).unwrap();
+        users.select(select).load(&mut connection).unwrap();
 
     assert_eq!(actual_data[0][1], MyDynamicValue::String("Sean".into()));
     assert_eq!(actual_data[1][1], MyDynamicValue::String("Tess".into()));
@@ -123,10 +123,10 @@ SELECT * FROM DUAL",
 #[test]
 fn mixed_value_query() {
     use diesel::dsl::sql;
-    let connection = super::init_testing();
-    let _ = sql_query("DROP TABLE users").execute(&connection);
+    let mut connection = super::init_testing();
+    let _ = sql_query("DROP TABLE users").execute(&mut connection);
     sql_query("CREATE TABLE users (id NUMBER(10) NOT NULL PRIMARY KEY, name VARCHAR(50) NOT NULL, hair_color VARCHAR(50))")
-        .execute(&connection)
+        .execute(&mut connection)
         .unwrap();
 
     sql_query(
@@ -135,7 +135,7 @@ fn mixed_value_query() {
     INTO users (id, name, hair_color) VALUES (43, 'Tess', 'black')
 SELECT * FROM DUAL",
     )
-    .execute(&connection)
+    .execute(&mut connection)
     .unwrap();
 
     let users = diesel_dynamic_schema::table("users");
@@ -143,7 +143,7 @@ SELECT * FROM DUAL",
 
     let (id, row) = users
         .select((id, sql::<Untyped>("name, hair_color")))
-        .first::<(i32, DynamicRow<NamedField<MyDynamicValue>>)>(&connection)
+        .first::<(i32, DynamicRow<NamedField<MyDynamicValue>>)>(&mut connection)
         .unwrap();
 
     assert_eq!(id, 42);

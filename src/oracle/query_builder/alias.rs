@@ -43,7 +43,7 @@ impl<T> QueryFragment<Oracle> for As<T>
 where
     T: QueryFragment<Oracle>,
 {
-    fn walk_ast(&self, mut out: AstPass<Oracle>) -> QueryResult<()> {
+    fn walk_ast<'b>(&'b self, mut out: AstPass<'_, 'b, Oracle>) -> QueryResult<()> {
         self.query.walk_ast(out.reborrow())?;
         out.push_sql(" ");
         out.push_identifier(&self.alias)

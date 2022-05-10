@@ -1,43 +1,39 @@
+use std::rc::Rc;
+
 use crate::oracle::backend::Oracle;
-use diesel::row::{self, Row, RowIndex};
+use diesel::row::{self, Row, RowGatWorkaround, RowIndex};
 
 use super::oracle_value::OracleValue;
 
-pub struct OciRow<'a> {
-    values: Vec<Option<OracleValue<'a>>>,
-    column_infos: &'a [oracle::ColumnInfo],
+pub struct OciRow {
+    row: InnerOciRow,
+    column_infos: Rc<Vec<oracle::ColumnInfo>>,
 }
 
-impl<'a> OciRow<'a> {
-    pub fn new(values: &'a [oracle::SqlValue], column_infos: &'a [oracle::ColumnInfo]) -> Self {
-        let values = values
-            .iter()
-            .zip(column_infos)
-            .map(|(v, c)| {
-                if v.is_null().unwrap_or(true) {
-                    None
-                } else {
-                    Some(OracleValue::new(v, c.oracle_type()))
-                }
-            })
-            .collect();
+enum InnerOciRow {
+    Row(oracle::Row),
+    Values(Vec<Option<OracleValue<'static>>>),
+}
+
+impl OciRow {
+    pub fn new(row: oracle::Row, column_infos: Rc<Vec<oracle::ColumnInfo>>) -> Self {
         OciRow {
-            values,
+            row: InnerOciRow::Row(row),
             column_infos,
         }
     }
 
-    pub fn new_from_value(values: Vec<Option<OracleValue<'a>>>) -> Self {
+    pub fn new_from_value(values: Vec<Option<OracleValue<'static>>>) -> Self {
         Self {
-            values,
-            column_infos: &[],
+            row: InnerOciRow::Values(values),
+            column_infos: Rc::new(Vec::new()),
         }
     }
 }
 
-impl<'a> RowIndex<usize> for OciRow<'a> {
+impl RowIndex<usize> for OciRow {
     fn idx(&self, idx: usize) -> Option<usize> {
-        if idx < self.values.len() {
+        if idx < self.row.len() {
             Some(idx)
         } else {
             None
@@ -45,7 +41,7 @@ impl<'a> RowIndex<usize> for OciRow<'a> {
     }
 }
 
-impl<'a, 'b> RowIndex<&'a str> for OciRow<'b> {
+impl<'a> RowIndex<&'a str> for OciRow {
     fn idx(&self, field_name: &'a str) -> Option<usize> {
         self.column_infos
             .iter()
@@ -55,21 +51,25 @@ impl<'a, 'b> RowIndex<&'a str> for OciRow<'b> {
     }
 }
 
-impl<'a> Row<'a, Oracle> for OciRow<'a> {
+impl<'a> RowGatWorkaround<'a, Oracle> for OciRow {
     type Field = OciField<'a>;
+}
+
+impl<'a> Row<'a, Oracle> for OciRow {
     type InnerPartialRow = Self;
 
     fn field_count(&self) -> usize {
-        self.values.len()
+        self.row.len()
     }
 
-    fn get<I>(&self, idx: I) -> Option<Self::Field>
+    fn get<'row, I>(&'row self, idx: I) -> Option<<Self as RowGatWorkaround<'row, Oracle>>::Field>
     where
+        'a: 'row,
         Self: diesel::row::RowIndex<I>,
     {
         let idx = self.idx(idx)?;
         Some(OciField {
-            field_value: self.values[idx].clone(),
+            field_value: self.row.value_at(idx, &self.column_infos),
             column_info: self.column_infos.get(idx),
         })
     }
@@ -98,5 +98,29 @@ impl<'a> row::Field<'a, Oracle> for OciField<'a> {
 
     fn is_null(&self) -> bool {
         self.field_value.is_none()
+    }
+}
+
+impl InnerOciRow {
+    fn value_at(&self, idx: usize, col_infos: &[oracle::ColumnInfo]) -> Option<OracleValue<'_>> {
+        match self {
+            InnerOciRow::Row(row) => {
+                let sql = &row.sql_values()[idx];
+                if sql.is_null().unwrap_or(true) {
+                    None
+                } else {
+                    let tpe = col_infos[idx].oracle_type().clone();
+                    Some(OracleValue::new(sql, tpe))
+                }
+            }
+            InnerOciRow::Values(ref v) => v[idx].clone(),
+        }
+    }
+
+    fn len(&self) -> usize {
+        match self {
+            InnerOciRow::Row(row) => row.sql_values().len(),
+            InnerOciRow::Values(v) => v.len(),
+        }
     }
 }

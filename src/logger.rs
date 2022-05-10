@@ -22,6 +22,7 @@ pub(crate) fn init() {
         ::log::set_logger(|max_log_level| {
             max_log_level.set(LogLevelFilter::Debug);
             Box::new(SimpleLogger)
-        }).expect("This logger needs to be present");
+        })
+        .expect("This logger needs to be present");
     });
 }

@@ -166,7 +166,7 @@ impl Connection for OciConnection {
         }
         url += path;
 
-        let mut raw = oracle::Connection::connect(dbg!(user), dbg!(password), dbg!(url))
+        let mut raw = oracle::Connection::connect(user, password, url)
             .map_err(ErrorHelper::from)
             .map_err(|e| ConnectionError::CouldntSetupConfiguration(e.into()))?;
 

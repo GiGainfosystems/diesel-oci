@@ -1,21 +1,26 @@
 extern crate chrono_time as chrono;
 extern crate dotenv;
+
+use crate::oracle::connection::bind_collector::BindValue;
+
 use self::chrono::{NaiveDateTime, Utc};
 use self::dotenv::dotenv;
 use super::oracle::connection::OciConnection;
-use diesel::deserialize::{self, FromSql};
+use crate::oracle::backend::Oracle;
+use crate::oracle::connection::OracleValue;
+use diesel::deserialize::{self, FromSql, FromSqlRow};
+use diesel::expression::AsExpression;
+use diesel::prelude::*;
 use diesel::result::Error;
 use diesel::serialize::{self, ToSql};
 use diesel::sql_types::SmallInt;
 use diesel::Connection;
 use diesel::RunQueryDsl;
+use log::error;
 use num::FromPrimitive;
-use oracle::backend::Oracle;
-use oracle::connection::OracleValue;
-use oracle::query_dsl::OciReturningDsl;
+use num_derive::FromPrimitive;
 use std::env;
 use std::error::Error as StdError;
-use std::io::Write;
 
 fn init_testing() -> OciConnection {
     use super::logger::init;
@@ -64,7 +69,7 @@ const CREATE_GST_TYPE_TABLE: &'static str = "CREATE TABLE gst_types (\
 
 macro_rules! assert_result {
     ($r:expr) => {{
-        assert!($r.is_ok() && !$r.is_err(), format!("{:?}", $r.err()));
+        assert!($r.is_ok() && !$r.is_err(), "{:?}", $r.err());
     }};
 }
 
@@ -93,8 +98,7 @@ table! {
 
 const DROP_DIESEL_TABLE: &str = "DROP TABLE \"__DIESEL_SCHEMA_MIGRATIONS\"";
 
-const CREATE_DIESEL_MIGRATIONS_TABLE: &str =
-    "CREATE TABLE \"__DIESEL_SCHEMA_MIGRATIONS\" (\
+const CREATE_DIESEL_MIGRATIONS_TABLE: &str = "CREATE TABLE \"__DIESEL_SCHEMA_MIGRATIONS\" (\
      VERSION VARCHAR(50) PRIMARY KEY NOT NULL,\
      RUN_ON TIMESTAMP with time zone DEFAULT sysdate not null\
      )";
@@ -106,61 +110,61 @@ table! {
     }
 }
 
-fn create_test_table(conn: &OciConnection) -> usize {
-    let ret = conn.execute(CREATE_TEST_TABLE);
+fn create_test_table(conn: &mut OciConnection) -> usize {
+    let ret = diesel::sql_query(CREATE_TEST_TABLE).execute(conn);
     assert_result!(ret);
     ret.unwrap()
 }
 
-fn create_gst_types_table(conn: &OciConnection) {
-    drop_table(&conn, "GST_TYPES");
-    let ret = conn.execute(CREATE_GST_TYPE_TABLE);
+fn create_gst_types_table(conn: &mut OciConnection) {
+    drop_table(conn, "GST_TYPES");
+    let ret = diesel::sql_query(CREATE_GST_TYPE_TABLE).execute(conn);
     assert_result!(ret);
 }
 
-fn drop_test_table(conn: &OciConnection) -> usize {
-    let ret = conn.execute(DROP_TEST_TABLE);
+fn drop_test_table(conn: &mut OciConnection) -> usize {
+    let ret = diesel::sql_query(DROP_TEST_TABLE).execute(conn);
     assert_result!(ret);
     ret.unwrap()
 }
 
-fn drop_diesel_table(conn: &OciConnection) -> usize {
-    let ret = conn.execute(DROP_DIESEL_TABLE);
+fn drop_diesel_table(conn: &mut OciConnection) -> usize {
+    let ret = diesel::sql_query(DROP_DIESEL_TABLE).execute(conn);
     assert_result!(ret);
     ret.unwrap()
 }
 
 #[allow(dead_code)]
-fn execute_sql_or_rollback(conn: &OciConnection, sql: &str, rollback_sql: &str) -> usize {
-    let ret = conn.execute(&*sql);
+fn execute_sql_or_rollback(conn: &mut OciConnection, sql: &str, rollback_sql: &str) -> usize {
+    let ret = diesel::sql_query(&*sql).execute(conn);
     if ret.is_err() {
-        let inner = conn.execute(&*rollback_sql);
+        let inner = diesel::sql_query(&*rollback_sql).execute(conn);
         assert_result!(inner)
     }
     assert_result!(ret);
     ret.unwrap()
 }
 
-fn clean_test(conn: &OciConnection) {
+fn clean_test(conn: &mut OciConnection) {
     let sql = "SELECT * FROM test";
-    let ret = conn.execute(sql);
+    let ret = diesel::sql_query(sql).execute(conn);
     if ret.is_ok() {
         let _ret = drop_test_table(conn);
     }
     let sql = "SELECT * FROM \"__DIESEL_SCHEMA_MIGRATIONS\"";
-    let ret = conn.execute(sql);
+    let ret = diesel::sql_query(sql).execute(conn);
     if ret.is_ok() {
         let _ret = drop_diesel_table(conn);
     }
 }
 
-fn drop_table(conn: &OciConnection, tbl: &str) {
+fn drop_table(conn: &mut OciConnection, tbl: &str) {
     let sql = format!("SELECT * FROM {:?}", tbl);
     let sql = sql.replace("\"", "");
-    let ret = conn.execute(&sql);
+    let ret = diesel::sql_query(&sql).execute(conn);
     if ret.is_ok() {
         let sql = format!("drop table {:?}", tbl);
-        let _ret = conn.execute(&sql);
+        let _ret = diesel::sql_query(&sql).execute(conn);
     }
 }
 
@@ -174,207 +178,197 @@ fn connect() {
 
 #[test]
 fn transaction_commit() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
-    clean_test(&conn);
+    clean_test(&mut conn);
 
-    let ret = conn.execute(CREATE_TEST_TABLE);
+    let ret = diesel::sql_query(CREATE_TEST_TABLE).execute(&mut conn);
     assert_result!(ret);
-    let out = conn.transaction::<_, Error, _>(|| {
+    let out = conn.transaction::<_, Error, _>(|conn| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-        let _ret = conn.execute(&*sql)?;
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let _ret = diesel::sql_query(&*sql).execute(conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 1);
         Ok(())
     });
     assert_result!(out);
-    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn);
+    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&mut conn);
     assert_result!(ret);
     assert_eq!(ret.unwrap().len(), 1);
 }
 
 #[test]
 fn transaction_rollback() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
-    clean_test(&conn);
+    clean_test(&mut conn);
 
-    let ret = conn.execute(CREATE_TEST_TABLE);
+    let ret = diesel::sql_query(CREATE_TEST_TABLE).execute(&mut conn);
     assert_result!(ret);
-    let out = conn.transaction::<i32, Error, _>(|| {
+    let out = conn.transaction::<i32, Error, _>(|conn| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-        let _ret = conn.execute(&*sql)?;
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let _ret = diesel::sql_query(&*sql).execute(conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 1);
         Err(Error::NotFound)
     });
     assert!(out.is_err() && !out.is_ok(), "What :shrug:?");
-    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn);
+    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&mut conn);
     assert_result!(ret);
     assert_eq!(ret.unwrap().len(), 0);
 }
 
 #[test]
 fn transaction_nested_rollback_rollback() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
-    clean_test(&conn);
+    clean_test(&mut conn);
 
-    let ret = conn.execute(CREATE_TEST_TABLE);
+    let ret = diesel::sql_query(CREATE_TEST_TABLE).execute(&mut conn);
     assert_result!(ret);
-    let out = conn.transaction::<i32, Error, _>(|| {
+    let out = conn.transaction::<i32, Error, _>(|conn| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-        let _ret = conn.execute(&*sql)?;
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let _ret = diesel::sql_query(&*sql).execute(conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 1);
 
-        let out_inner = conn.transaction::<i32, Error, _>(|| {
+        let out_inner = conn.transaction::<i32, Error, _>(|conn| {
             let sql_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-            let _ret_inner = conn.execute(&*sql_inner)?;
+            let _ret_inner = diesel::sql_query(&*sql_inner).execute(conn)?;
             let ret_inner =
-                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
             assert_eq!(ret_inner.len(), 2);
             Err(Error::NotFound)
         });
         assert!(out_inner.is_err() && !out_inner.is_ok(), "What :shrug:?");
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 1);
 
         Err(Error::NotFound)
     });
     assert!(out.is_err() && !out.is_ok(), "What :shrug:?");
-    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn);
+    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&mut conn);
     assert_result!(ret);
     assert_eq!(ret.unwrap().len(), 0);
 }
 
 #[test]
 fn transaction_nested_commit_commit() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
-    clean_test(&conn);
+    clean_test(&mut conn);
 
-    let ret = conn.execute(CREATE_TEST_TABLE);
+    let ret = diesel::sql_query(CREATE_TEST_TABLE).execute(&mut conn);
     assert_result!(ret);
-    let out = conn.transaction::<_, Error, _>(|| {
+    let out = conn.transaction::<_, Error, _>(|conn| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-        let _ret = conn.execute(&*sql)?;
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let _ret = diesel::sql_query(&*sql).execute(conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 1);
 
-        let out_inner = conn.transaction::<_, Error, _>(|| {
+        let out_inner = conn.transaction::<_, Error, _>(|conn| {
             let sql_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-            let _ret_inner = conn.execute(&*sql_inner)?;
+            let _ret_inner = diesel::sql_query(&*sql_inner).execute(conn)?;
             let ret_inner =
-                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
             assert_eq!(ret_inner.len(), 2);
             Ok(())
         });
         assert_result!(out_inner);
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 2);
         Ok(())
     });
     assert_result!(out);
-    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn);
+    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&mut conn);
     assert_result!(ret);
     assert_eq!(ret.unwrap().len(), 2);
 }
 
 #[test]
 fn transaction_nested_commit_rollback() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
-    clean_test(&conn);
+    clean_test(&mut conn);
 
-    let ret = conn.execute(CREATE_TEST_TABLE);
+    let ret = diesel::sql_query(CREATE_TEST_TABLE).execute(&mut conn);
     assert_result!(ret);
-    let out = conn.transaction::<_, Error, _>(|| {
+    let out = conn.transaction::<_, Error, _>(|conn| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-        let _ret = conn.execute(&*sql)?;
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let _ret = diesel::sql_query(&*sql).execute(conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 1);
 
-        let out_inner = conn.transaction::<i32, Error, _>(|| {
+        let out_inner = conn.transaction::<i32, Error, _>(|conn| {
             let sql_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-            let _ret_inner = conn.execute(&*sql_inner)?;
+            let _ret_inner = diesel::sql_query(&*sql_inner).execute(conn)?;
             let ret_inner =
-                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
             assert_eq!(ret_inner.len(), 2);
             Err(Error::NotFound)
         });
         assert!(out_inner.is_err() && !out_inner.is_ok(), "What :shrug:?");
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 1);
         Ok(())
     });
     assert_result!(out);
-    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn);
+    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&mut conn);
     assert_result!(ret);
     assert_eq!(ret.unwrap().len(), 1);
 }
 
 #[test]
 fn transaction_nested_rollback_commit() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
-    clean_test(&conn);
+    clean_test(&mut conn);
 
-    let ret = conn.execute(CREATE_TEST_TABLE);
+    let ret = diesel::sql_query(CREATE_TEST_TABLE).execute(&mut conn);
     assert_result!(ret);
-    let out = conn.transaction::<i32, Error, _>(|| {
+    let out = conn.transaction::<i32, Error, _>(|conn| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-        let _ret = conn.execute(&*sql)?;
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let _ret = diesel::sql_query(&*sql).execute(conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 1);
 
-        let out_inner = conn.transaction::<_, Error, _>(|| {
+        let out_inner = conn.transaction::<_, Error, _>(|conn| {
             let sql_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-            let _ret_inner = conn.execute(&*sql_inner)?;
+            let _ret_inner = diesel::sql_query(&*sql_inner).execute(conn)?;
             let ret_inner =
-                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
             assert_eq!(ret_inner.len(), 2);
             Ok(())
         });
         assert_result!(out_inner);
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 2);
 
         Err(Error::NotFound)
     });
     assert!(out.is_err() && !out.is_ok(), "What :shrug:?");
-    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn);
+    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&mut conn);
     assert_result!(ret);
     assert_eq!(ret.unwrap().len(), 0);
 }
 
 #[test]
 fn create_table() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
-    clean_test(&conn);
+    clean_test(&mut conn);
 
-    let _u = create_test_table(&conn);
-    let _u = drop_test_table(&conn);
+    let _u = create_test_table(&mut conn);
+    let _u = drop_test_table(&mut conn);
 }
 
 #[test]
 fn test_diesel_migration() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
-    clean_test(&conn);
+    clean_test(&mut conn);
 
-    let ret = conn.execute(CREATE_DIESEL_MIGRATIONS_TABLE);
+    let ret = diesel::sql_query(CREATE_DIESEL_MIGRATIONS_TABLE).execute(&mut conn);
     assert_result!(ret);
 
     use self::__diesel_schema_migrations::dsl::*;
@@ -386,21 +380,21 @@ fn test_diesel_migration() {
     let expected = vec!["00000000000000", "20151219180527", "20160107090901"];
     let migrations = expected.iter().map(|m| version.eq(*m)).collect::<Vec<_>>();
 
-    let ret = ::diesel::insert_into(__diesel_schema_migrations)
-        .values(&migrations)
-        .execute(&conn);
+    let ret = ::diesel::insert_into(__diesel_schema_migrations).values(&migrations);
+    dbg!(diesel::debug_query::<Oracle, _>(&ret));
+    let ret = ret.execute(&mut conn);
     assert_result!(ret);
 
     let _already_run: HashSet<String> =
         self::__diesel_schema_migrations::dsl::__diesel_schema_migrations
             .select(version)
-            .load(&conn)
+            .load(&mut conn)
             .map(FromIterator::from_iter)
             .unwrap();
 
     let ret = self::__diesel_schema_migrations::dsl::__diesel_schema_migrations
         .select(version)
-        .load(&conn);
+        .load(&mut conn);
     let already_run: HashSet<String> = ret.map(FromIterator::from_iter).unwrap();
 
     let pending_migrations: Vec<_> = expected
@@ -414,7 +408,7 @@ fn test_diesel_migration() {
 #[cfg(this_test_doesnt_work)]
 #[test]
 fn test_multi_insert() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
     clean_test(&conn);
 
@@ -479,7 +473,7 @@ pub struct GSTTypes {
 
 #[allow(non_camel_case_types)]
 #[derive(Debug, Insertable)]
-#[table_name = "gst_types"]
+#[diesel(table_name = gst_types)]
 pub struct Newgst_types {
     pub big: Option<i64>,
     pub big2: Option<i64>,
@@ -536,8 +530,8 @@ fn gst_compat() {
 
     // https://docs.oracle.com/cd/B19306_01/gateways.102/b14270/apa.htm
 
-    let conn = init_testing();
-    create_gst_types_table(&conn);
+    let mut conn = init_testing();
+    create_gst_types_table(&mut conn);
 
     use self::gst_types::columns::{big, big2, byte, d, normal, r, small, v};
     use self::gst_types::dsl::gst_types;
@@ -564,7 +558,7 @@ fn gst_compat() {
                 "1e-37",
                 "'test'"
             );
-            let ret = conn.execute(&*sqls);
+            let ret = diesel::sql_query(&*sqls).execute(&mut conn);
             assert_result!(ret);
             let sqls = format!(
                 "INSERT INTO gst_types ({}) VALUES ({},{},{},{},{}d,{},{})",
@@ -577,7 +571,7 @@ fn gst_compat() {
                 "1e37",
                 "'test'"
             );
-            let ret = conn.execute(&*sqls);
+            let ret = diesel::sql_query(&*sqls).execute(&mut conn);
             assert_result!(ret);
 
             let sqls = "SELECT big, small, normal, d, r, v from gst_types";
@@ -589,7 +583,7 @@ fn gst_compat() {
                 f32,
                 String,
             )>(
-                &conn
+                &mut conn
             );
             assert_result!(ret);
             let val = ret.unwrap();
@@ -650,7 +644,7 @@ fn gst_compat() {
             );
             let ret = ::diesel::insert_into(gst_types)
                 .values(&new_row)
-                .execute(&conn);
+                .execute(&mut conn);
             assert_result!(ret);
 
             let new_row = (
@@ -664,12 +658,12 @@ fn gst_compat() {
             );
             let ret = ::diesel::insert_into(gst_types)
                 .values(&new_row)
-                .execute(&conn);
+                .execute(&mut conn);
             assert_result!(ret);
 
             let ret = ::diesel::insert_into(gst_types)
                 .values(big.eq::<Option<i64>>(None))
-                .execute(&conn);
+                .execute(&mut conn);
             assert_result!(ret);
 
             let ret: Result<
@@ -685,7 +679,7 @@ fn gst_compat() {
                 Error,
             > = gst_types
                 .select((big, small, normal, d, r, v, byte))
-                .load(&conn);
+                .load(&mut conn);
             assert_result!(ret);
             let val = ret.unwrap();
             assert_eq!(val.len(), 3);
@@ -740,7 +734,7 @@ fn gst_compat() {
             > = gst_types
                 .filter(big.eq(i64::MAX))
                 .select((big, small, normal, d, r, v, byte))
-                .load(&conn);
+                .load(&mut conn);
             assert_result!(ret);
         }
     }
@@ -841,11 +835,10 @@ allow_tables_to_appear_in_same_query!(elements, element_rights, node_links);
 #[cfg(feature = "gst")]
 #[test]
 fn moma_elem() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
     use diesel::BoolExpressionMethods;
     use diesel::ExpressionMethods;
-    use diesel::GroupByDsl;
     use diesel::QueryDsl;
 
     let groupby = (
@@ -856,7 +849,8 @@ fn moma_elem() {
         elements::level_id,
     );
 
-    let ret = conn.execute("alter session set \"_optimizer_reduce_groupby_key\" = false");
+    let ret = diesel::sql_query("alter session set \"_optimizer_reduce_groupby_key\" = false")
+        .execute(&mut conn);
     assert_result!(ret);
 
     let ret = conn.begin_test_transaction();
@@ -884,7 +878,7 @@ fn moma_elem() {
             ),
         ))
         .order(elements::label.asc())
-        .load(&conn);
+        .load(&mut conn);
     assert_result!(k);
 
     //let tm = conn.transaction_manager();
@@ -894,8 +888,8 @@ fn moma_elem() {
 
 #[test]
 fn limit() {
-    let conn = init_testing();
-    create_gst_types_table(&conn);
+    let mut conn = init_testing();
+    create_gst_types_table(&mut conn);
 
     use self::gst_types::columns::{big, big2, byte, d, normal, r, small, v};
     use self::gst_types::dsl::gst_types;
@@ -942,7 +936,7 @@ fn limit() {
     );
     let ret = ::diesel::insert_into(gst_types)
         .values(&new_row)
-        .execute(&conn);
+        .execute(&mut conn);
     assert_result!(ret);
 
     let new_row = (
@@ -956,12 +950,12 @@ fn limit() {
     );
     let ret = ::diesel::insert_into(gst_types)
         .values(&new_row)
-        .execute(&conn);
+        .execute(&mut conn);
     assert_result!(ret);
 
     let ret = ::diesel::insert_into(gst_types)
         .values(big.eq::<Option<i64>>(None))
-        .execute(&conn);
+        .execute(&mut conn);
     assert_result!(ret);
 
     let ret: Result<
@@ -977,7 +971,7 @@ fn limit() {
         Error,
     > = gst_types
         .select((big, small, normal, d, r, v, byte))
-        .first(&conn);
+        .first(&mut conn);
     assert_result!(ret);
 }
 
@@ -1011,7 +1005,7 @@ where
 
 /// The type of a coordinate system
 #[derive(FromPrimitive, Debug, PartialEq, Clone, Copy, FromSqlRow, AsExpression)]
-#[sql_type = "SmallInt"]
+#[diesel(sql_type = SmallInt)]
 pub enum CoordinateSystemType {
     /// The coordinate system is cartesian,
     /// that means there are 3 perpendicular axes
@@ -1025,8 +1019,9 @@ pub enum CoordinateSystemType {
 }
 
 impl ToSql<SmallInt, Oracle> for CoordinateSystemType {
-    fn to_sql<W: Write>(&self, out: &mut serialize::Output<W, Oracle>) -> serialize::Result {
-        <i16 as ToSql<SmallInt, _>>::to_sql(&(*self as i16), out)
+    fn to_sql(&self, out: &mut serialize::Output<'_, '_, Oracle>) -> serialize::Result {
+        out.set_value(BindValue::Owned(Box::new(*self as i16)));
+        Ok(serialize::IsNull::No)
     }
 }
 
@@ -1091,7 +1086,7 @@ pub struct CoordinateSystemDescription {
 #[cfg(feature = "gst")]
 #[test]
 fn coordinatesys() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
     use self::coordinate_system_descriptions::columns::{
         c1_label, c1_reversed, c1_unit, c2_label, c2_reversed, c2_unit, c3_label, c3_reversed,
@@ -1131,7 +1126,7 @@ fn coordinatesys() {
             c3_unit,
             srs_type,
         ))
-        .load(&conn);
+        .load(&mut conn);
 
     assert_result!(coord);
 }
@@ -1172,22 +1167,22 @@ fn ambigious_col_names() {
             name VARCHAR2(50)
      )";
 
-    let conn = init_testing();
+    let mut conn = init_testing();
 
-    drop_table(&conn, "T1");
-    drop_table(&conn, "T2");
+    drop_table(&mut conn, "T1");
+    drop_table(&mut conn, "T2");
 
-    let ret = conn.execute(CREATE_T1);
+    let ret = diesel::sql_query(CREATE_T1).execute(&mut conn);
     assert_result!(ret);
-    let ret = conn.execute(CREATE_T2);
+    let ret = diesel::sql_query(CREATE_T2).execute(&mut conn);
     assert_result!(ret);
 
     use self::t1;
     use self::t2;
+    use crate::oracle::query_builder::Alias;
     use diesel::ExpressionMethods;
     use diesel::JoinOnDsl;
     use diesel::QueryDsl;
-    use oracle::query_builder::Alias;
 
     let mut bin: Vec<u8> = Vec::new();
     for i in 0..88 {
@@ -1204,12 +1199,12 @@ fn ambigious_col_names() {
     );
     let ret = ::diesel::insert_into(t1::table)
         .values(&new_row)
-        .execute(&conn);
+        .execute(&mut conn);
     assert_result!(ret);
     let new_row = (t2::id.eq(1), t2::name.eq("test2"));
     let ret = ::diesel::insert_into(t2::table)
         .values(&new_row)
-        .execute(&conn);
+        .execute(&mut conn);
     assert_result!(ret);
 
     let col = t1::name.alias("da".to_string());
@@ -1228,7 +1223,7 @@ fn ambigious_col_names() {
                 t1::si,
             ))
             .limit(1) // this is the crucial part!
-            .first(&conn);
+            .first(&mut conn);
 
     assert_result!(ambigious);
 }
@@ -1247,11 +1242,11 @@ fn timestamp() {
             tis TIMESTAMP
      )";
 
-    let conn = init_testing();
+    let mut conn = init_testing();
 
-    drop_table(&conn, "TS");
+    drop_table(&mut conn, "TS");
 
-    let ret = conn.execute(CREATE_TS);
+    let ret = diesel::sql_query(CREATE_TS).execute(&mut conn);
     assert_result!(ret);
 
     use self::ts;
@@ -1261,10 +1256,10 @@ fn timestamp() {
 
     let new_row = (ts::id.eq(1), ts::tis.eq(n));
     let query = ::diesel::insert_into(ts::table).values(&new_row);
-    let ret = query.execute(&conn);
+    let ret = query.execute(&mut conn);
     assert_result!(ret);
 
-    let ret: Result<Vec<(i32, NaiveDateTime)>, _> = ts::table.load(&conn);
+    let ret: Result<Vec<(i32, NaiveDateTime)>, _> = ts::table.load(&mut conn);
     assert_result!(ret);
 }
 
@@ -1284,11 +1279,11 @@ fn clob() {
             tis CLOB
      )";
 
-    let conn = init_testing();
+    let mut conn = init_testing();
 
-    drop_table(&conn, "CLOBBER");
+    drop_table(&mut conn, "CLOBBER");
 
-    let ret = conn.execute(CREATE_CLOBBER);
+    let ret = diesel::sql_query(CREATE_CLOBBER).execute(&mut conn);
     assert_result!(ret);
 
     use self::clobber;
@@ -1300,10 +1295,10 @@ fn clob() {
         clobber::tis.eq("This is a test"),
     );
     let query = ::diesel::insert_into(clobber::table).values(&new_row);
-    let ret = query.execute(&conn);
+    let ret = query.execute(&mut conn);
     assert_result!(ret);
 
-    let ret: Result<Vec<(i32, String, String)>, _> = clobber::table.load(&conn);
+    let ret: Result<Vec<(i32, String, String)>, _> = clobber::table.load(&mut conn);
     assert_result!(ret);
 }
 
@@ -1327,7 +1322,7 @@ table! {
 }
 
 #[derive(FromPrimitive, Debug, PartialEq, Clone, Copy, Eq, Hash, FromSqlRow, AsExpression)]
-#[sql_type = "SmallInt"]
+#[diesel(sql_type = SmallInt)]
 pub enum PropertyDataType {
     Int = 0,
     Float = 1,
@@ -1336,8 +1331,9 @@ pub enum PropertyDataType {
 }
 
 impl ToSql<SmallInt, Oracle> for PropertyDataType {
-    fn to_sql<W: Write>(&self, out: &mut serialize::Output<W, Oracle>) -> serialize::Result {
-        <i16 as ToSql<SmallInt, _>>::to_sql(&(*self as i16), out)
+    fn to_sql(&self, out: &mut serialize::Output<'_, '_, Oracle>) -> serialize::Result {
+        out.set_value(BindValue::Owned(Box::new(*self as i16)));
+        Ok(serialize::IsNull::No)
     }
 }
 
@@ -1351,8 +1347,8 @@ impl FromSql<SmallInt, Oracle> for PropertyDataType {
     }
 }
 
-#[derive(PartialEq, Hash, Eq, Debug, Clone, Queryable, Associations, Identifiable)]
-#[table_name = "properties"]
+#[derive(PartialEq, Hash, Eq, Debug, Clone, Queryable, Identifiable)]
+#[diesel(table_name = properties)]
 pub struct Property {
     pub id: i64,
     pub name: String,
@@ -1366,7 +1362,7 @@ pub struct Property {
 #[cfg(feature = "gst")]
 #[test]
 fn props() {
-    let conn = init_testing();
+    let mut conn = init_testing();
     use self::properties::dsl::*;
     use diesel::debug_query;
     use diesel::ExpressionMethods;
@@ -1376,25 +1372,25 @@ fn props() {
     let query = properties.filter(feature_class.eq(ids));
     let dbg = debug_query::<Oracle, _>(&query);
     println!("{:?}", dbg.to_string());
-    let ret: Result<Vec<Property>, _> = query.load(&conn);
+    let ret: Result<Vec<Property>, _> = query.load(&mut conn);
     assert_result!(ret);
 
     let query = properties.filter(feature_class.eq(ids));
     let dbg = debug_query::<Oracle, _>(&query);
     println!("{:?}", dbg.to_string());
-    let ret: Result<Vec<Property>, _> = query.load(&conn);
+    let ret: Result<Vec<Property>, _> = query.load(&mut conn);
     assert_result!(ret);
 
     let query = properties.filter(feature_class.eq(ids));
     let dbg = debug_query::<Oracle, _>(&query);
     println!("{:?}", dbg.to_string());
-    let ret: Result<Vec<Property>, _> = query.load(&conn);
+    let ret: Result<Vec<Property>, _> = query.load(&mut conn);
     assert_result!(ret);
 
     let query = properties.filter(feature_class.eq(ids));
     let dbg = debug_query::<Oracle, _>(&query);
     println!("{:?}", dbg.to_string());
-    let ret: Result<Vec<Property>, _> = query.load(&conn);
+    let ret: Result<Vec<Property>, _> = query.load(&mut conn);
     assert_result!(ret);
 }
 
@@ -1405,11 +1401,11 @@ fn props_orig() {
             is_based NUMBER(5)
      )";
 
-    let conn = init_testing();
+    let mut conn = init_testing();
 
-    drop_table(&conn, "PROPS");
+    drop_table(&mut conn, "PROPS");
 
-    let ret = conn.execute(CREATE_TESTT);
+    let ret = diesel::sql_query(CREATE_TESTT).execute(&mut conn);
     assert_result!(ret);
 
     use self::props;
@@ -1418,20 +1414,20 @@ fn props_orig() {
 
     let new_row = (props::id.eq(1), props::is_based.eq(true));
     let query = ::diesel::insert_into(props::table).values(&new_row);
-    let ret = query.execute(&conn);
+    let ret = query.execute(&mut conn);
     assert_result!(ret);
 
     let new_row = (props::id.eq(2), props::is_based.eq(false));
     let query = ::diesel::insert_into(props::table).values(&new_row);
-    let ret = query.execute(&conn);
+    let ret = query.execute(&mut conn);
     assert_result!(ret);
 
     let new_row = (props::id.eq(3),);
     let query = ::diesel::insert_into(props::table).values(&new_row);
-    let ret = query.execute(&conn);
+    let ret = query.execute(&mut conn);
     assert_result!(ret);
 
-    let ret: Result<Vec<(i32, Option<bool>)>, _> = props::table.load(&conn);
+    let ret: Result<Vec<(i32, Option<bool>)>, _> = props::table.load(&mut conn);
     assert_result!(ret);
     let ret = ret.unwrap();
     assert_eq!(ret.len(), 3);
@@ -1439,7 +1435,8 @@ fn props_orig() {
     assert_eq!(ret[1].1, Some(false));
     assert_eq!(ret[2].1, None);
 
-    let ret: Result<Vec<(i32, Option<bool>)>, _> = props::table.filter(props::id.eq(2)).load(&conn);
+    let ret: Result<Vec<(i32, Option<bool>)>, _> =
+        props::table.filter(props::id.eq(2)).load(&mut conn);
     assert_result!(ret);
     let ret = ret.unwrap();
     assert_eq!(ret.len(), 1);
@@ -1458,33 +1455,32 @@ table! {
 
 #[test]
 fn systable() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
     use self::all_tables;
 
-    let ret: Result<Vec<(String, String)>, _> = all_tables::table.load(&conn);
+    let ret: Result<Vec<(String, String)>, _> = all_tables::table.load(&mut conn);
     assert_result!(ret);
 }
 
 // TODO: adjust this test to be more generic and dependent on GST
-#[cfg(feature = "gst")]
+//#[cfg(feature = "gst")]
 #[test]
 fn exists() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
     use self::all_tables;
 
     use diesel::dsl::exists;
-    use diesel::query_dsl::filter_dsl::FilterDsl;
-    use diesel::query_dsl::select_dsl::SelectDsl;
     use diesel::ExpressionMethods;
 
     let ret = diesel::select(exists(
         all_tables::table
             .filter(all_tables::table_name.eq("GEOMETRIES"))
             .select(all_tables::owner),
-    ))
-    .get_result::<bool>(&conn);
+    ));
+    dbg!(diesel::debug_query::<Oracle, _>(&ret));
+    let ret = ret.get_result::<bool>(&mut conn);
     assert_result!(ret);
     let ret = ret.unwrap(); // has been asserted before ;)
     assert_eq!(ret, true);
@@ -1494,7 +1490,7 @@ fn exists() {
             .filter(all_tables::owner.eq("dieasel"))
             .select(all_tables::owner),
     ))
-    .get_result::<bool>(&conn);
+    .get_result::<bool>(&mut conn);
     assert_result!(ret);
     let ret = ret.unwrap(); // has been asserted before ;)
     assert_eq!(ret, false);
@@ -1502,418 +1498,401 @@ fn exists() {
 
 #[test]
 fn transaction_nested_rollback_rollback_rollback() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
-    clean_test(&conn);
+    clean_test(&mut conn);
 
-    let ret = conn.execute(CREATE_TEST_TABLE);
+    let ret = diesel::sql_query(CREATE_TEST_TABLE).execute(&mut conn);
     assert_result!(ret);
-    let out = conn.transaction::<i32, Error, _>(|| {
+    let out = conn.transaction::<i32, Error, _>(|conn| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-        let _ret = conn.execute(&*sql)?;
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let _ret = diesel::sql_query(&*sql).execute(conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 1);
 
-        let out_inner = conn.transaction::<i32, Error, _>(|| {
+        let out_inner = conn.transaction::<i32, Error, _>(|conn| {
             let sql_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-            let _ret_inner = conn.execute(&*sql_inner)?;
+            let _ret_inner = diesel::sql_query(&*sql_inner).execute(conn)?;
             let ret_inner =
-                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
             assert_eq!(ret_inner.len(), 2);
 
-            let _inner_inner = conn.transaction::<i32, Error, _>(|| {
+            let _inner_inner = conn.transaction::<i32, Error, _>(|conn| {
                 let sql_inner_inner =
                     format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-                let _ret_inner_inner = conn.execute(&*sql_inner_inner)?;
+                let _ret_inner_inner = diesel::sql_query(&*sql_inner_inner).execute(conn)?;
                 let ret_inner_inner =
                     self::test::dsl::test
-                        .load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                        .load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
                 assert_eq!(ret_inner_inner.len(), 3);
                 Err(Error::NotFound)
             });
 
             let ret_inner =
-                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
             assert_eq!(ret_inner.len(), 2);
 
             Err(Error::NotFound)
         });
         assert!(out_inner.is_err() && !out_inner.is_ok(), "What :shrug:?");
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 1);
 
         Err(Error::NotFound)
     });
     assert!(out.is_err() && !out.is_ok(), "What :shrug:?");
-    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn);
+    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&mut conn);
     assert_result!(ret);
     assert_eq!(ret.unwrap().len(), 0);
 }
 
 #[test]
 fn transaction_nested_rollback_rollback_commit() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
-    clean_test(&conn);
+    clean_test(&mut conn);
 
-    let ret = conn.execute(CREATE_TEST_TABLE);
+    let ret = diesel::sql_query(CREATE_TEST_TABLE).execute(&mut conn);
     assert_result!(ret);
-    let out = conn.transaction::<i32, Error, _>(|| {
+    let out = conn.transaction::<i32, Error, _>(|conn| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-        let _ret = conn.execute(&*sql)?;
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let _ret = diesel::sql_query(&*sql).execute(conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 1);
 
-        let out_inner = conn.transaction::<i32, Error, _>(|| {
+        let out_inner = conn.transaction::<i32, Error, _>(|conn| {
             let sql_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-            let _ret_inner = conn.execute(&*sql_inner)?;
+            let _ret_inner = diesel::sql_query(&*sql_inner).execute(conn)?;
             let ret_inner =
-                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
             assert_eq!(ret_inner.len(), 2);
 
-            let _inner_inner = conn.transaction::<_, Error, _>(|| {
+            let _inner_inner = conn.transaction::<_, Error, _>(|conn| {
                 let sql_inner_inner =
                     format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-                let _ret_inner_inner = conn.execute(&*sql_inner_inner)?;
+                let _ret_inner_inner = diesel::sql_query(&*sql_inner_inner).execute(conn)?;
                 let ret_inner_inner =
                     self::test::dsl::test
-                        .load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                        .load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
                 assert_eq!(ret_inner_inner.len(), 3);
                 Ok(())
             });
 
             let ret_inner =
-                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
             assert_eq!(ret_inner.len(), 3);
 
             Err(Error::NotFound)
         });
         assert!(out_inner.is_err() && !out_inner.is_ok(), "What :shrug:?");
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 1);
 
         Err(Error::NotFound)
     });
     assert!(out.is_err() && !out.is_ok(), "What :shrug:?");
-    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn);
+    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&mut conn);
     assert_result!(ret);
     assert_eq!(ret.unwrap().len(), 0);
 }
 
 #[test]
 fn transaction_nested_commit_commit_commit() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
-    clean_test(&conn);
+    clean_test(&mut conn);
 
-    let ret = conn.execute(CREATE_TEST_TABLE);
+    let ret = diesel::sql_query(CREATE_TEST_TABLE).execute(&mut conn);
     assert_result!(ret);
-    let out = conn.transaction::<_, Error, _>(|| {
+    let out = conn.transaction::<_, Error, _>(|conn| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-        let _ret = conn.execute(&*sql)?;
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let _ret = diesel::sql_query(&*sql).execute(conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 1);
 
-        let out_inner = conn.transaction::<_, Error, _>(|| {
+        let out_inner = conn.transaction::<_, Error, _>(|conn| {
             let sql_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-            let _ret_inner = conn.execute(&*sql_inner)?;
+            let _ret_inner = diesel::sql_query(&*sql_inner).execute(conn)?;
             let ret_inner =
-                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
             assert_eq!(ret_inner.len(), 2);
 
-            let _inner_inner = conn.transaction::<_, Error, _>(|| {
+            let _inner_inner = conn.transaction::<_, Error, _>(|conn| {
                 let sql_inner_inner =
                     format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-                let _ret_inner_inner = conn.execute(&*sql_inner_inner)?;
+                let _ret_inner_inner = diesel::sql_query(&*sql_inner_inner).execute(conn)?;
                 let ret_inner_inner =
                     self::test::dsl::test
-                        .load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                        .load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
                 assert_eq!(ret_inner_inner.len(), 3);
                 Ok(())
             });
 
             let ret_inner =
-                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
             assert_eq!(ret_inner.len(), 3);
 
             Ok(())
         });
         assert_result!(out_inner);
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 3);
         Ok(())
     });
     assert_result!(out);
-    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn);
+    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&mut conn);
     assert_result!(ret);
     assert_eq!(ret.unwrap().len(), 3);
 }
 
 #[test]
 fn transaction_nested_commit_commit_rollback() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
-    clean_test(&conn);
+    clean_test(&mut conn);
 
-    let ret = conn.execute(CREATE_TEST_TABLE);
+    let ret = diesel::sql_query(CREATE_TEST_TABLE).execute(&mut conn);
     assert_result!(ret);
-    let out = conn.transaction::<_, Error, _>(|| {
+    let out = conn.transaction::<_, Error, _>(|conn| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-        let _ret = conn.execute(&*sql)?;
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let _ret = diesel::sql_query(&*sql).execute(conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 1);
 
-        let out_inner = conn.transaction::<_, Error, _>(|| {
+        let out_inner = conn.transaction::<_, Error, _>(|conn| {
             let sql_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-            let _ret_inner = conn.execute(&*sql_inner)?;
+            let _ret_inner = diesel::sql_query(&*sql_inner).execute(conn)?;
             let ret_inner =
-                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
             assert_eq!(ret_inner.len(), 2);
 
-            let _inner_inner = conn.transaction::<i32, Error, _>(|| {
+            let _inner_inner = conn.transaction::<i32, Error, _>(|conn| {
                 let sql_inner_inner =
                     format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-                let _ret_inner_inner = conn.execute(&*sql_inner_inner)?;
+                let _ret_inner_inner = diesel::sql_query(&*sql_inner_inner).execute(conn)?;
                 let ret_inner_inner =
                     self::test::dsl::test
-                        .load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                        .load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
                 assert_eq!(ret_inner_inner.len(), 3);
                 Err(Error::NotFound)
             });
 
             let ret_inner =
-                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
             assert_eq!(ret_inner.len(), 2);
 
             Ok(())
         });
         assert_result!(out_inner);
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 2);
         Ok(())
     });
     assert_result!(out);
-    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn);
+    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&mut conn);
     assert_result!(ret);
     assert_eq!(ret.unwrap().len(), 2);
 }
 
 #[test]
 fn transaction_nested_commit_rollback_rollback() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
-    clean_test(&conn);
+    clean_test(&mut conn);
 
-    let ret = conn.execute(CREATE_TEST_TABLE);
+    let ret = diesel::sql_query(CREATE_TEST_TABLE).execute(&mut conn);
     assert_result!(ret);
-    let out = conn.transaction::<_, Error, _>(|| {
+    let out = conn.transaction::<_, Error, _>(|conn| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-        let _ret = conn.execute(&*sql)?;
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let _ret = diesel::sql_query(&*sql).execute(conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 1);
 
-        let out_inner = conn.transaction::<i32, Error, _>(|| {
+        let out_inner = conn.transaction::<i32, Error, _>(|conn| {
             let sql_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-            let _ret_inner = conn.execute(&*sql_inner)?;
+            let _ret_inner = diesel::sql_query(&*sql_inner).execute(conn)?;
             let ret_inner =
-                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
             assert_eq!(ret_inner.len(), 2);
 
-            let _inner_inner = conn.transaction::<i32, Error, _>(|| {
+            let _inner_inner = conn.transaction::<i32, Error, _>(|conn| {
                 let sql_inner_inner =
                     format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-                let _ret_inner_inner = conn.execute(&*sql_inner_inner)?;
+                let _ret_inner_inner = diesel::sql_query(&*sql_inner_inner).execute(conn)?;
                 let ret_inner_inner =
                     self::test::dsl::test
-                        .load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                        .load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
                 assert_eq!(ret_inner_inner.len(), 3);
                 Err(Error::NotFound)
             });
 
             let ret_inner =
-                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
             assert_eq!(ret_inner.len(), 2);
 
             Err(Error::NotFound)
         });
         assert!(out_inner.is_err() && !out_inner.is_ok(), "What :shrug:?");
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 1);
         Ok(())
     });
     assert_result!(out);
-    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn);
+    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&mut conn);
     assert_result!(ret);
     assert_eq!(ret.unwrap().len(), 1);
 }
 
 #[test]
 fn transaction_nested_rollback_commit_commit() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
-    clean_test(&conn);
+    clean_test(&mut conn);
 
-    let ret = conn.execute(CREATE_TEST_TABLE);
+    let ret = diesel::sql_query(CREATE_TEST_TABLE).execute(&mut conn);
     assert_result!(ret);
-    let out = conn.transaction::<i32, Error, _>(|| {
+    let out = conn.transaction::<i32, Error, _>(|conn| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-        let _ret = conn.execute(&*sql)?;
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let _ret = diesel::sql_query(&*sql).execute(conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 1);
 
-        let out_inner = conn.transaction::<_, Error, _>(|| {
+        let out_inner = conn.transaction::<_, Error, _>(|conn| {
             let sql_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-            let _ret_inner = conn.execute(&*sql_inner)?;
+            let _ret_inner = diesel::sql_query(&*sql_inner).execute(conn)?;
             let ret_inner =
-                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
             assert_eq!(ret_inner.len(), 2);
 
-            let _inner_inner = conn.transaction::<_, Error, _>(|| {
+            let _inner_inner = conn.transaction::<_, Error, _>(|conn| {
                 let sql_inner_inner =
                     format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-                let _ret_inner_inner = conn.execute(&*sql_inner_inner)?;
+                let _ret_inner_inner = diesel::sql_query(&*sql_inner_inner).execute(conn)?;
                 let ret_inner_inner =
                     self::test::dsl::test
-                        .load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                        .load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
                 assert_eq!(ret_inner_inner.len(), 3);
                 Ok(())
             });
 
             let ret_inner =
-                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
             assert_eq!(ret_inner.len(), 3);
 
             Ok(())
         });
         assert_result!(out_inner);
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 3);
 
         Err(Error::NotFound)
     });
     assert!(out.is_err() && !out.is_ok(), "What :shrug:?");
-    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn);
+    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&mut conn);
     assert_result!(ret);
     assert_eq!(ret.unwrap().len(), 0);
 }
 
 #[test]
 fn transaction_nested_commit_rollback_commit() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
-    clean_test(&conn);
+    clean_test(&mut conn);
 
-    let ret = conn.execute(CREATE_TEST_TABLE);
+    let ret = diesel::sql_query(CREATE_TEST_TABLE).execute(&mut conn);
     assert_result!(ret);
-    let out = conn.transaction::<_, Error, _>(|| {
+    let out = conn.transaction::<_, Error, _>(|conn| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-        let _ret = conn.execute(&*sql)?;
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let _ret = diesel::sql_query(&*sql).execute(conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 1);
 
-        let out_inner = conn.transaction::<i32, Error, _>(|| {
+        let out_inner = conn.transaction::<i32, Error, _>(|conn| {
             let sql_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-            let _ret_inner = conn.execute(&*sql_inner)?;
+            let _ret_inner = diesel::sql_query(&*sql_inner).execute(conn)?;
             let ret_inner =
-                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
             assert_eq!(ret_inner.len(), 2);
 
-            let _inner_inner = conn.transaction::<_, Error, _>(|| {
+            let _inner_inner = conn.transaction::<_, Error, _>(|conn| {
                 let sql_inner_inner =
                     format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-                let _ret_inner_inner = conn.execute(&*sql_inner_inner)?;
+                let _ret_inner_inner = diesel::sql_query(&*sql_inner_inner).execute(conn)?;
                 let ret_inner_inner =
                     self::test::dsl::test
-                        .load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                        .load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
                 assert_eq!(ret_inner_inner.len(), 3);
                 Ok(())
             });
 
             let ret_inner =
-                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
             assert_eq!(ret_inner.len(), 3);
 
             Err(Error::NotFound)
         });
         assert!(out_inner.is_err() && !out_inner.is_ok(), "What :shrug:?");
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 1);
         Ok(())
     });
     assert_result!(out);
-    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn);
+    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&mut conn);
     assert_result!(ret);
     assert_eq!(ret.unwrap().len(), 1);
 }
 
 #[test]
 fn transaction_nested_rollback_commit_rollback() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
-    clean_test(&conn);
+    clean_test(&mut conn);
 
-    let ret = conn.execute(CREATE_TEST_TABLE);
+    let ret = diesel::sql_query(CREATE_TEST_TABLE).execute(&mut conn);
     assert_result!(ret);
-    let out = conn.transaction::<i32, Error, _>(|| {
+    let out = conn.transaction::<i32, Error, _>(|conn| {
         let sql = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-        let _ret = conn.execute(&*sql)?;
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let _ret = diesel::sql_query(&*sql).execute(conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 1);
 
-        let out_inner = conn.transaction::<_, Error, _>(|| {
+        let out_inner = conn.transaction::<_, Error, _>(|conn| {
             let sql_inner = format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-            let _ret_inner = conn.execute(&*sql_inner)?;
+            let _ret_inner = diesel::sql_query(&*sql_inner).execute(conn)?;
             let ret_inner =
-                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
             assert_eq!(ret_inner.len(), 2);
 
-            let _inner_inner = conn.transaction::<i32, Error, _>(|| {
+            let _inner_inner = conn.transaction::<i32, Error, _>(|conn| {
                 let sql_inner_inner =
                     format!("INSERT INTO test ({}) VALUES ({})", "TST_CHR", TEST_VARCHAR);
-                let _ret_inner_inner = conn.execute(&*sql_inner_inner)?;
+                let _ret_inner_inner = diesel::sql_query(&*sql_inner_inner).execute(conn)?;
                 let ret_inner_inner =
                     self::test::dsl::test
-                        .load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                        .load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
                 assert_eq!(ret_inner_inner.len(), 3);
                 Err(Error::NotFound)
             });
 
             let ret_inner =
-                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+                self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
             assert_eq!(ret_inner.len(), 2);
 
             Ok(())
         });
         assert_result!(out_inner);
-        let ret =
-            self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn)?;
+        let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(conn)?;
         assert_eq!(ret.len(), 2);
 
         Err(Error::NotFound)
     });
     assert!(out.is_err() && !out.is_ok(), "What :shrug:?");
-    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&conn);
+    let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&mut conn);
     assert_result!(ret);
     assert_eq!(ret.unwrap().len(), 0);
 }
 
-const CREATE_GEOMETRIES: &str =
-    "CREATE TABLE geometries( \
+const CREATE_GEOMETRIES: &str = "CREATE TABLE geometries( \
      id NUMBER(19) GENERATED BY DEFAULT as IDENTITY(START with 1 INCREMENT by 1) PRIMARY KEY, \
      name VARCHAR2(2000) NOT NULL, \
      geometry_type NUMBER(5) NOT NULL, \
@@ -1942,20 +1921,19 @@ table! {
 
 #[test]
 fn updateing_unique_constraint() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
-    clean_test(&conn);
+    clean_test(&mut conn);
 
     let sql = "SELECT * FROM geometries";
-    let ret = conn.execute(sql);
+    let ret = diesel::sql_query(sql).execute(&mut conn);
     if ret.is_ok() {
-        let _ret = conn.execute(DROP_GEOMETRIES);
+        let _ret = diesel::sql_query(DROP_GEOMETRIES).execute(&mut conn);
     }
-    let ret = conn.execute(CREATE_GEOMETRIES);
+    let ret = diesel::sql_query(CREATE_GEOMETRIES).execute(&mut conn);
     assert_result!(ret);
 
     use self::geometries;
-    use diesel::query_dsl::filter_dsl::FindDsl;
     use diesel::ExpressionMethods;
 
     let n = Utc::now().naive_utc();
@@ -1971,7 +1949,7 @@ fn updateing_unique_constraint() {
     );
     let ret = ::diesel::insert_into(geometries::table)
         .values(new_row)
-        .execute(&conn);
+        .execute(&mut conn);
     assert_result!(ret);
     assert_eq!(ret.unwrap(), 1);
 
@@ -1986,28 +1964,28 @@ fn updateing_unique_constraint() {
     );
     let ret = ::diesel::insert_into(geometries::table)
         .values(new_row)
-        .execute(&conn);
+        .execute(&mut conn);
     assert_result!(ret);
 
     let new_name = "test";
     let ret = ::diesel::update(geometries::table.find(1))
         .set(geometries::name.eq(new_name))
-        .execute(&conn);
+        .execute(&mut conn);
     assert_result!(ret);
 }
 
 #[test]
 fn insert_returning() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
-    clean_test(&conn);
+    clean_test(&mut conn);
 
     let sql = "SELECT * FROM geometries";
-    let ret = conn.execute(sql);
+    let ret = diesel::sql_query(sql).execute(&mut conn);
     if ret.is_ok() {
-        let _ret = conn.execute(DROP_GEOMETRIES);
+        let _ret = diesel::sql_query(DROP_GEOMETRIES).execute(&mut conn);
     }
-    let ret = conn.execute(CREATE_GEOMETRIES);
+    let ret = diesel::sql_query(CREATE_GEOMETRIES).execute(&mut conn);
     assert_result!(ret);
 
     use self::geometries;
@@ -2037,8 +2015,7 @@ fn insert_returning() {
         i64,
     )> = ::diesel::insert_into(geometries::table)
         .values(new_row)
-        .oci_returning()
-        .get_result(&conn);
+        .get_result(&mut conn);
     assert_result!(ret);
     let ret = ret.unwrap(); // asserted above ;)
     assert_eq!(ret.1, "test");
@@ -2057,34 +2034,33 @@ fn insert_returning() {
 fn insert_returning_with_nulls() {
     use self::test;
     use diesel::ExpressionMethods;
-    let conn = init_testing();
-    clean_test(&conn);
-    create_test_table(&conn);
+    let mut conn = init_testing();
+    clean_test(&mut conn);
+    create_test_table(&mut conn);
     type ResultType = ::diesel::QueryResult<(Option<i64>, Option<String>, Option<i64>)>;
     let result: ResultType = ::diesel::insert_into(test::table)
         .values(test::id.eq(1))
-        .oci_returning()
-        .get_result(&conn);
+        .get_result(&mut conn);
     assert_result!(result);
     let result = result.unwrap();
     assert_eq!(result.0, Some(1));
     assert_eq!(result.1, None);
     assert_eq!(result.2, None);
-    drop_test_table(&conn);
+    drop_test_table(&mut conn);
 }
 
 #[test]
 fn umlauts() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
-    clean_test(&conn);
+    clean_test(&mut conn);
 
     use self::test::columns::TST_CHR;
     use self::test::dsl::test;
     use diesel::ExpressionMethods;
     use diesel::QueryDsl;
 
-    let ret = conn.execute(CREATE_TEST_TABLE);
+    let ret = diesel::sql_query(CREATE_TEST_TABLE).execute(&mut conn);
     assert_result!(ret);
 
     let mut v = Vec::new();
@@ -2104,11 +2080,11 @@ fn umlauts() {
     for hello in &v {
         let ret = ::diesel::insert_into(test)
             .values(TST_CHR.eq(&hello))
-            .execute(&conn);
+            .execute(&mut conn);
         assert_result!(ret);
     }
 
-    let ret: Result<Vec<Option<String>>, _> = self::test::dsl::test.select(TST_CHR).load(&conn);
+    let ret: Result<Vec<Option<String>>, _> = self::test::dsl::test.select(TST_CHR).load(&mut conn);
     assert_result!(ret);
     let ret = ret.unwrap();
     assert_eq!(ret.len(), v.len());
@@ -2125,7 +2101,7 @@ fn umlauts() {
 fn run_adhoc_procedure() {
     use self::test;
     use diesel::ExpressionMethods;
-    let conn = init_testing();
+    let mut conn = init_testing();
 
     let proc = "BEGIN \
                 EXECUTE IMMEDIATE 'ALTER TABLE elements add (temp varchar2(2000))'; \
@@ -2135,7 +2111,7 @@ fn run_adhoc_procedure() {
                 EXECUTE IMMEDIATE 'ALTER TABLE elements RENAME COLUMN temp to \"COMMENT\"'; \
                 END;";
 
-    let ret = conn.execute(proc);
+    let ret = diesel::sql_query(proc).execute(&mut conn);
     assert_result!(ret);
 }
 
@@ -2144,23 +2120,22 @@ use diesel::sql_types::Text;
 #[derive(QueryableByName)]
 #[allow(non_snake_case)]
 struct FooAliased {
-    #[column_name = "foo"]
-    #[sql_type = "Nullable<Text>"]
-    TST_CHR: Option<String>,
+    #[diesel(column_name = foo, sql_type = Nullable<Text>)]
+    tst_chr: Option<String>,
 }
 
 #[test]
 fn use_named_queries_aliased() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
-    clean_test(&conn);
+    clean_test(&mut conn);
 
     use self::test::columns::TST_CHR;
     use self::test::dsl::test;
     use diesel::sql_query;
     use diesel::ExpressionMethods;
 
-    let ret = conn.execute(CREATE_TEST_TABLE);
+    let ret = diesel::sql_query(CREATE_TEST_TABLE).execute(&mut conn);
     assert_result!(ret);
 
     let mut v = Vec::new();
@@ -2180,24 +2155,24 @@ fn use_named_queries_aliased() {
     for hello in &v {
         let ret = ::diesel::insert_into(test)
             .values(TST_CHR.eq(&hello))
-            .execute(&conn);
+            .execute(&mut conn);
         assert_result!(ret);
     }
 
-    let ret = sql_query("SELECT TST_CHR \"foo\" FROM test").load::<FooAliased>(&conn);
+    let ret = sql_query("SELECT TST_CHR \"foo\" FROM test").load::<FooAliased>(&mut conn);
 
     assert_result!(ret);
     let ret = ret.unwrap();
     assert_eq!(ret.len(), v.len());
     for (i, r) in ret.iter().enumerate() {
-        assert!(r.TST_CHR.is_some());
-        let tst_chr = r.TST_CHR.clone().unwrap();
+        assert!(r.tst_chr.is_some());
+        let tst_chr = r.tst_chr.clone().unwrap();
         assert_eq!(tst_chr, v[i]);
     }
 }
 
 #[derive(QueryableByName)]
-#[table_name = "test"]
+#[diesel(table_name = test)]
 #[allow(non_snake_case)]
 struct Foo {
     TST_CHR: Option<String>,
@@ -2205,16 +2180,16 @@ struct Foo {
 
 #[test]
 fn use_named_queries() {
-    let conn = init_testing();
+    let mut conn = init_testing();
 
-    clean_test(&conn);
+    clean_test(&mut conn);
 
     use self::test::columns::TST_CHR;
     use self::test::dsl::test;
     use diesel::sql_query;
     use diesel::ExpressionMethods;
 
-    let ret = conn.execute(CREATE_TEST_TABLE);
+    let ret = diesel::sql_query(CREATE_TEST_TABLE).execute(&mut conn);
     assert_result!(ret);
 
     let mut v = Vec::new();
@@ -2234,11 +2209,11 @@ fn use_named_queries() {
     for hello in &v {
         let ret = ::diesel::insert_into(test)
             .values(TST_CHR.eq(&hello))
-            .execute(&conn);
+            .execute(&mut conn);
         assert_result!(ret);
     }
 
-    let ret = sql_query("SELECT TST_CHR FROM test").load::<Foo>(&conn);
+    let ret = sql_query("SELECT TST_CHR FROM test").load::<Foo>(&mut conn);
 
     assert_result!(ret);
     let ret = ret.unwrap();
@@ -2252,8 +2227,8 @@ fn use_named_queries() {
 
 #[test]
 fn insert_returning_gst_types() {
-    let conn = init_testing();
-    create_gst_types_table(&conn);
+    let mut conn = init_testing();
+    create_gst_types_table(&mut conn);
     let big_val = 42i64;
     let big2_val = 420i64;
     let small_val = 5i16;
@@ -2282,8 +2257,7 @@ fn insert_returning_gst_types() {
     };
     let result = ::diesel::insert_into(gst_types::table)
         .values(&new_row)
-        .oci_returning()
-        .get_result::<GSTTypes>(&conn)
+        .get_result::<GSTTypes>(&mut conn)
         .unwrap();
     assert_eq!(result.big, Some(big_val));
     assert_eq!(result.big2, Some(big2_val));

@@ -1,4 +1,4 @@
-use oracle::types::OciDataType;
+use crate::oracle::types::OciDataType;
 
 #[derive(Debug, Clone)]
 pub struct OracleValue<'a> {
@@ -9,12 +9,11 @@ pub struct OracleValue<'a> {
 pub(crate) enum InnerValue<'a> {
     Raw {
         raw_value: &'a oracle::SqlValue,
-        tpe: &'a oracle::sql_type::OracleType,
+        tpe: oracle::sql_type::OracleType,
     },
     SmallInt(i16),
     Integer(i32),
     BigInt(i64),
-    Bool(bool),
     Float(f32),
     Double(f64),
     Text(String),
@@ -26,10 +25,7 @@ pub(crate) enum InnerValue<'a> {
 }
 
 impl<'a> OracleValue<'a> {
-    pub(crate) fn new(
-        raw_value: &'a oracle::SqlValue,
-        tpe: &'a oracle::sql_type::OracleType,
-    ) -> Self {
+    pub(crate) fn new(raw_value: &'a oracle::SqlValue, tpe: oracle::sql_type::OracleType) -> Self {
         Self {
             inner: InnerValue::Raw { raw_value, tpe },
         }
@@ -42,7 +38,6 @@ impl<'a> OracleValue<'a> {
             SmallInt(_) => OciDataType::SmallInt,
             Integer(_) => OciDataType::Integer,
             BigInt(_) => OciDataType::BigInt,
-            Bool(_) => OciDataType::Bool,
             Float(_) => OciDataType::Float,
             Double(_) => OciDataType::Double,
             Text(_) => OciDataType::Text,
@@ -78,15 +73,15 @@ impl<'a> OracleValue<'a> {
             Raw {
                 tpe: oracle::sql_type::OracleType::Number(prec, 0),
                 ..
-            } if *prec == 5 => OciDataType::SmallInt,
+            } if prec == 5 => OciDataType::SmallInt,
             Raw {
                 tpe: oracle::sql_type::OracleType::Number(prec, 0),
                 ..
-            } if *prec == 10 => OciDataType::Integer,
+            } if prec == 10 => OciDataType::Integer,
             Raw {
                 tpe: oracle::sql_type::OracleType::Number(prec, 0),
                 ..
-            } if *prec == 19 => OciDataType::BigInt,
+            } if prec == 19 => OciDataType::BigInt,
             Raw {
                 tpe: oracle::sql_type::OracleType::Number(_, _),
                 ..
@@ -170,6 +165,10 @@ impl<'a> OracleValue<'a> {
             }
             | Raw {
                 tpe: oracle::sql_type::OracleType::Raw(_),
+                ..
+            }
+            | Raw {
+                tpe: oracle::sql_type::OracleType::Json,
                 ..
             } => unimplemented!(),
             // e =>

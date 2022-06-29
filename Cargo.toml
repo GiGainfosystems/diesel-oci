@@ -11,12 +11,10 @@ description = "A oci database adapter for diesel"
 readme = "README.md"
 keywords = ["diesel", "oci", "oracle", "sql"]
 categories = ["database"]
+edition = "2021"
 
 [dependencies]
-byteorder = "1"
-libc = "0.2"
-log = "0.3"
-oracle = {version = "0.3", features = ["chrono"]}
+oracle = {version = "0.5", features = ["chrono"]}
 url = "2"
 percent-encoding = "2"
 
@@ -27,17 +25,19 @@ package = "chrono"
 
 [dependencies.diesel]
 default-features = false
-features = ["with-deprecated", "unstable"]
-git = "https://github.com/diesel-rs/diesel"
-rev = "ee00374f79d865e9d464517d603d0ed22d12be0d"
+features = ["with-deprecated", "i-implement-a-third-party-backend-and-opt-into-breaking-changes"]
+version = "2.0.0-rc.0"
+
+[dependencies.diesel_derives]
+version = "2.0.0-rc.0"
 
 [dependencies.diesel-dynamic-schema]
 optional = true
 default-features = false
-git = "https://github.com/diesel-rs/diesel"
-rev = "ee00374f79d865e9d464517d603d0ed22d12be0d"
+version = "0.2.0-rc.0"
 
 [dev-dependencies]
+log = "0.4"
 dotenv = ">=0.8, <0.11"
 num = { version = "0.1", default-features = false }
 num-derive = "0.1"
@@ -48,3 +48,6 @@ chrono = ["chrono-time", "diesel/chrono"]
 r2d2 = ["diesel/r2d2"]
 dynamic-schema = ["diesel-dynamic-schema"]
 gst = []
+
+[patch.crates-io]
+diesel = { git = "https://github.com/weiznich/diesel", rev = "a69e8d461523b2fdbaee22dceeaa3f53ad3eca01" }

@@ -1,11 +1,15 @@
 use super::backend::Oracle;
+use super::backend::OracleDualForEmptySelectClause;
 
+use diesel::query_builder::NoFromClause;
 use diesel::query_builder::QueryBuilder;
+use diesel::query_builder::QueryFragment;
 use diesel::result::Error as DieselError;
 
 mod alias;
 mod exists;
 mod limit_offset;
+mod returning;
 
 pub use self::alias::Alias;
 
@@ -45,5 +49,12 @@ impl QueryBuilder<Oracle> for OciQueryBuilder {
 
     fn finish(self) -> String {
         self.sql
+    }
+}
+
+impl QueryFragment<Oracle, OracleDualForEmptySelectClause> for NoFromClause {
+    fn walk_ast(&self, mut out: diesel::query_builder::AstPass<Oracle>) -> diesel::QueryResult<()> {
+        out.push_sql(" FROM DUAL ");
+        Ok(())
     }
 }

@@ -9,8 +9,8 @@ use self::transaction::OCITransactionManager;
 use super::backend::Oracle;
 use super::query_builder::OciQueryBuilder;
 use super::OciDataType;
-use diesel::connection::ConnectionGatWorkaround;
 use diesel::connection::{Connection, SimpleConnection, TransactionManager};
+use diesel::connection::{ConnectionGatWorkaround, LoadConnection};
 use diesel::deserialize::FromSql;
 use diesel::expression::QueryMetadata;
 use diesel::migration::MigrationConnection;
@@ -29,6 +29,11 @@ mod row;
 mod stmt_iter;
 mod transaction;
 
+/// Database connection to an oracle database
+///
+/// This connectione expects database urls as following:
+///
+/// * `oracle://[user[:password]@]host/database_name`
 pub struct OciConnection {
     raw: oracle::Connection,
     transaction_manager: OCITransactionManager,
@@ -210,6 +215,14 @@ impl Connection for OciConnection {
         Ok(stmt.row_count().map_err(ErrorHelper::from)? as usize)
     }
 
+    fn transaction_state(
+        &mut self,
+    ) -> &mut <Self::TransactionManager as TransactionManager<Self>>::TransactionStateData {
+        &mut self.transaction_manager
+    }
+}
+
+impl LoadConnection for OciConnection {
     fn load<'conn, 'query, T>(
         &'conn mut self,
         source: T,
@@ -245,12 +258,6 @@ impl Connection for OciConnection {
                 unreachable!()
             }
         })
-    }
-
-    fn transaction_state(
-        &mut self,
-    ) -> &mut <Self::TransactionManager as TransactionManager<Self>>::TransactionStateData {
-        &mut self.transaction_manager
     }
 }
 

@@ -12,22 +12,10 @@ pub struct OciTypeMetadata {
     pub(crate) tpe: OciDataType,
 }
 
-impl PartialEq for OciTypeMetadata {
-    fn eq(&self, other: &Self) -> bool {
-        self.tpe.eq(&other.tpe)
-    }
-}
-
-impl Eq for OciTypeMetadata {}
-
-impl Hash for OciTypeMetadata {
-    fn hash<H: std::hash::Hasher>(&self, hasher: &mut H) {
-        self.tpe.hash(hasher)
-    }
-}
-
+/// Represents possible types that could be transmitted by oracle
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 #[non_exhaustive]
+#[allow(missing_docs)] // there is no need to document the variants
 pub enum OciDataType {
     Bool,
     SmallInt,

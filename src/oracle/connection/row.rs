@@ -1,40 +1,126 @@
-use super::super::backend::Oracle;
-use diesel::row::Row;
+use std::rc::Rc;
+
+use crate::oracle::backend::Oracle;
+use diesel::row::{self, Row, RowGatWorkaround, RowIndex};
 
 use super::oracle_value::OracleValue;
 
-pub struct OciRow<'a> {
-    buf: Vec<&'a [u8]>,
-    is_null: Vec<bool>,
-    col_idx: usize,
+pub struct OciRow {
+    row: InnerOciRow,
+    column_infos: Rc<Vec<oracle::ColumnInfo>>,
 }
 
-impl<'a> OciRow<'a> {
-    pub fn new(row_buf: Vec<&'a [u8]>, is_null: Vec<bool>) -> Self {
+enum InnerOciRow {
+    Row(oracle::Row),
+    Values(Vec<Option<OracleValue<'static>>>),
+}
+
+impl OciRow {
+    pub fn new(row: oracle::Row, column_infos: Rc<Vec<oracle::ColumnInfo>>) -> Self {
         OciRow {
-            buf: row_buf,
-            is_null,
-            col_idx: 0,
+            row: InnerOciRow::Row(row),
+            column_infos,
+        }
+    }
+
+    pub fn new_from_value(values: Vec<Option<OracleValue<'static>>>) -> Self {
+        Self {
+            row: InnerOciRow::Values(values),
+            column_infos: Rc::new(Vec::new()),
         }
     }
 }
 
-impl<'a> Row<Oracle> for OciRow<'a> {
-    fn take(&mut self) -> Option<&OracleValue> {
-        let ret = if self.col_idx < self.buf.len() {
-            if self.is_null[self.col_idx] {
-                None
-            } else {
-                Some(OracleValue::new(self.buf[self.col_idx]))
-            }
+impl RowIndex<usize> for OciRow {
+    fn idx(&self, idx: usize) -> Option<usize> {
+        if idx < self.row.len() {
+            Some(idx)
         } else {
             None
-        };
-        self.col_idx += 1;
-        ret
+        }
+    }
+}
+
+impl<'a> RowIndex<&'a str> for OciRow {
+    fn idx(&self, field_name: &'a str) -> Option<usize> {
+        self.column_infos
+            .iter()
+            .enumerate()
+            .find(|(_, c)| c.name() == field_name)
+            .map(|(idx, _)| idx)
+    }
+}
+
+impl<'a> RowGatWorkaround<'a, Oracle> for OciRow {
+    type Field = OciField<'a>;
+}
+
+impl<'a> Row<'a, Oracle> for OciRow {
+    type InnerPartialRow = Self;
+
+    fn field_count(&self) -> usize {
+        self.row.len()
     }
 
-    fn next_is_null(&self, count: usize) -> bool {
-        (0..count).all(|i| self.is_null[i + self.col_idx])
+    fn get<'row, I>(&'row self, idx: I) -> Option<<Self as RowGatWorkaround<'row, Oracle>>::Field>
+    where
+        'a: 'row,
+        Self: diesel::row::RowIndex<I>,
+    {
+        let idx = self.idx(idx)?;
+        Some(OciField {
+            field_value: self.row.value_at(idx, &self.column_infos),
+            column_info: self.column_infos.get(idx),
+        })
+    }
+
+    fn partial_row(
+        &self,
+        range: std::ops::Range<usize>,
+    ) -> diesel::row::PartialRow<Self::InnerPartialRow> {
+        diesel::row::PartialRow::new(self, range)
+    }
+}
+
+pub struct OciField<'a> {
+    field_value: Option<OracleValue<'a>>,
+    column_info: Option<&'a oracle::ColumnInfo>,
+}
+
+impl<'a> row::Field<'a, Oracle> for OciField<'a> {
+    fn field_name(&self) -> Option<&'a str> {
+        self.column_info.map(|c| c.name())
+    }
+
+    fn value(&self) -> Option<diesel::backend::RawValue<'a, Oracle>> {
+        self.field_value.clone()
+    }
+
+    fn is_null(&self) -> bool {
+        self.field_value.is_none()
+    }
+}
+
+impl InnerOciRow {
+    fn value_at(&self, idx: usize, col_infos: &[oracle::ColumnInfo]) -> Option<OracleValue<'_>> {
+        match self {
+            InnerOciRow::Row(row) => {
+                let sql = &row.sql_values()[idx];
+                if sql.is_null().unwrap_or(true) {
+                    None
+                } else {
+                    let tpe = col_infos[idx].oracle_type().clone();
+                    Some(OracleValue::new(sql, tpe))
+                }
+            }
+            InnerOciRow::Values(ref v) => v[idx].clone(),
+        }
+    }
+
+    fn len(&self) -> usize {
+        match self {
+            InnerOciRow::Row(row) => row.sql_values().len(),
+            InnerOciRow::Values(v) => v.len(),
+        }
     }
 }

@@ -1,196 +1,163 @@
+#[cfg(feature = "dynamic-schema")]
+extern crate diesel_dynamic_schema;
+
 use super::backend::*;
-use super::connection::OracleValue;
-use byteorder::WriteBytesExt;
-use diesel::backend::*;
-use diesel::deserialize::FromSql;
-use diesel::serialize::{IsNull, Output, ToSql};
 use diesel::sql_types::*;
-use oci_sys as ffi;
-use std::error::Error;
-use std::io::Write;
+use std::hash::Hash;
 
-pub type FromSqlResult<T> = Result<T, ErrorType>;
-pub type ErrorType = Box<Error + Send + Sync>;
-pub type ToSqlResult = FromSqlResult<IsNull>;
+mod primitives;
 
-#[allow(dead_code)]
-#[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Hash, Eq)]
-pub enum OCIDataType {
-    Char = ffi::SQLT_CHR,
-    Date = ffi::SQLT_DATE,
-    Time = ffi::SQLT_TIME,
-    Timestamp = ffi::SQLT_TIMESTAMP,
-    TimestampWithTz = ffi::SQLT_TIMESTAMP_TZ,
-    TimestampWithLocalTz = ffi::SQLT_TIMESTAMP_LTZ,
-    IntervalYearToMonth = ffi::SQLT_INTERVAL_YM,
-    IntervalDayToSecond = ffi::SQLT_INTERVAL_DS,
-    Clob = ffi::SQLT_CLOB,
-    Blob = ffi::SQLT_BLOB,
-    Int = ffi::SQLT_INT,
-    Uint = ffi::SQLT_UIN,
-    Float = ffi::SQLT_FLT,
-    PackedDecimalNumber = ffi::SQLT_PDN,
-    Binary = ffi::SQLT_BIN,
-    Numeric = ffi::SQLT_NUM,
-    NamedObject = ffi::SQLT_NTY,
-    Ref = ffi::SQLT_REF,
-    OCIString = ffi::SQLT_VST,
-    NumericWithLength = ffi::SQLT_VNU,
-    BFloat = ffi::SQLT_BFLOAT,
-    BDouble = ffi::SQLT_BDOUBLE,
-    IBFloat = ffi::SQLT_IBFLOAT,
-    IBDouble = ffi::SQLT_IBDOUBLE,
-    String = ffi::SQLT_STR,
-    AnsiChar = ffi::SQLT_AFC,
-    InternDate = ffi::SQLT_DAT,
+#[derive(Clone, Copy)]
+pub struct OciTypeMetadata {
+    pub(crate) tpe: OciDataType,
 }
 
-impl OCIDataType {
-    pub fn from_raw(n: u32) -> Option<OCIDataType> {
-        use self::OCIDataType::*;
-        match n {
-            ffi::SQLT_CHR => Some(Char),
-            ffi::SQLT_NUM => Some(Numeric),
-            ffi::SQLT_INT => Some(Int),
-            ffi::SQLT_FLT => Some(Float),
-            ffi::SQLT_STR => Some(String),
-            ffi::SQLT_VNU => Some(NumericWithLength),
-            ffi::SQLT_PDN => Some(PackedDecimalNumber),
-            ffi::SQLT_DAT => Some(InternDate),
-            ffi::SQLT_BFLOAT => Some(BFloat),
-            ffi::SQLT_BDOUBLE => Some(BDouble),
-            ffi::SQLT_BIN => Some(Binary),
-            ffi::SQLT_UIN => Some(Uint),
-            ffi::SQLT_AFC => Some(AnsiChar),
-            ffi::SQLT_IBFLOAT => Some(IBFloat),
-            ffi::SQLT_IBDOUBLE => Some(IBDouble),
-            ffi::SQLT_NTY => Some(NamedObject),
-            ffi::SQLT_REF => Some(Ref),
-            ffi::SQLT_CLOB => Some(Clob),
-            ffi::SQLT_BLOB => Some(Blob),
-            ffi::SQLT_VST => Some(OCIString),
-            ffi::SQLT_DATE => Some(Date),
-            ffi::SQLT_TIME => Some(Time),
-            ffi::SQLT_TIMESTAMP => Some(Timestamp),
-            ffi::SQLT_TIMESTAMP_TZ => Some(TimestampWithTz),
-            ffi::SQLT_INTERVAL_YM => Some(IntervalYearToMonth),
-            ffi::SQLT_INTERVAL_DS => Some(IntervalDayToSecond),
-            ffi::SQLT_TIMESTAMP_LTZ => Some(TimestampWithLocalTz),
-            _ => None,
-        }
-    }
-
-    pub fn to_raw(self) -> u32 {
-        use self::OCIDataType::*;
-        match self {
-            Int => ffi::SQLT_INT,
-            Float | BFloat | IBFloat => ffi::SQLT_BDOUBLE, // this should be SQLT_BFLOAT, but diesel comes with a float here
-            BDouble | IBDouble => ffi::SQLT_BDOUBLE,
-            Char | String => ffi::SQLT_CHR,
-            _ => 0u32,
-        }
+impl PartialEq for OciTypeMetadata {
+    fn eq(&self, other: &Self) -> bool {
+        self.tpe.eq(&other.tpe)
     }
 }
 
-macro_rules! not_none {
-    ($bytes:expr) => {
-        match $bytes {
-            Some(bytes) => bytes,
-            None => panic!("Unexpected null for non-null column"),
-        }
-    };
+impl Eq for OciTypeMetadata {}
+
+impl Hash for OciTypeMetadata {
+    fn hash<H: std::hash::Hasher>(&self, hasher: &mut H) {
+        self.tpe.hash(hasher)
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[non_exhaustive]
+pub enum OciDataType {
+    Bool,
+    SmallInt,
+    Integer,
+    BigInt,
+    Float,
+    Double,
+    Text,
+    Binary,
+    Date,
+    Time,
+    Timestamp,
 }
 
 impl HasSqlType<SmallInt> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::Int
+    fn metadata(_: &mut Self::MetadataLookup) -> Self::TypeMetadata {
+        OciTypeMetadata {
+            tpe: OciDataType::SmallInt,
+        }
     }
 }
 
 impl HasSqlType<Integer> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::Int
+    fn metadata(_: &mut Self::MetadataLookup) -> Self::TypeMetadata {
+        OciTypeMetadata {
+            tpe: OciDataType::Integer,
+        }
     }
 }
 
 impl HasSqlType<BigInt> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::Int
+    fn metadata(_: &mut Self::MetadataLookup) -> Self::TypeMetadata {
+        OciTypeMetadata {
+            tpe: OciDataType::BigInt,
+        }
     }
 }
 
 impl HasSqlType<Float> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::Float
+    fn metadata(_: &mut Self::MetadataLookup) -> Self::TypeMetadata {
+        OciTypeMetadata {
+            tpe: OciDataType::Float,
+        }
     }
 }
 
 impl HasSqlType<Double> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::Float
+    fn metadata(_: &mut Self::MetadataLookup) -> Self::TypeMetadata {
+        OciTypeMetadata {
+            tpe: OciDataType::Double,
+        }
     }
 }
 
-impl HasSqlType<Numeric> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::Float
-    }
-}
-
-impl HasSqlType<VarChar> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::Char
+impl HasSqlType<Text> for Oracle {
+    fn metadata(_: &mut Self::MetadataLookup) -> Self::TypeMetadata {
+        OciTypeMetadata {
+            tpe: OciDataType::Text,
+        }
     }
 }
 
 impl HasSqlType<Binary> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::Binary
-    }
-}
-
-impl HasSqlType<Date> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::InternDate
+    fn metadata(_: &mut Self::MetadataLookup) -> Self::TypeMetadata {
+        OciTypeMetadata {
+            tpe: OciDataType::Binary,
+        }
     }
 }
 
 impl HasSqlType<Time> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::Time
+    fn metadata(_: &mut Self::MetadataLookup) -> Self::TypeMetadata {
+        OciTypeMetadata {
+            tpe: OciDataType::Time,
+        }
     }
 }
 
 impl HasSqlType<Timestamp> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::InternDate
+    fn metadata(_: &mut Self::MetadataLookup) -> Self::TypeMetadata {
+        OciTypeMetadata {
+            tpe: OciDataType::Timestamp,
+        }
     }
 }
 
 impl HasSqlType<Bool> for Oracle {
-    fn metadata(_: &Self::MetadataLookup) -> OCIDataType {
-        OCIDataType::Int
+    fn metadata(_: &mut Self::MetadataLookup) -> Self::TypeMetadata {
+        OciTypeMetadata {
+            tpe: OciDataType::Bool,
+        }
     }
 }
 
-impl FromSql<Bool, Oracle> for bool {
-    fn from_sql(bytes: Option<&OracleValue>) -> FromSqlResult<Self> {
-        FromSql::<Double, Oracle>::from_sql(bytes).map(|v: f64| v != 0.0)
-    }
-}
+#[cfg(feature = "dynamic-schema")]
+mod dynamic_schema_impls {
 
-impl ToSql<Bool, Oracle> for bool {
-    fn to_sql<W: Write>(&self, out: &mut Output<W, Oracle>) -> ToSqlResult {
-        out.write_i16::<<Oracle as Backend>::ByteOrder>(if *self { 1 } else { 0 })
-            .map(|_| IsNull::No)
-            .map_err(|e| Box::new(e) as ErrorType)
+    use super::diesel_dynamic_schema::dynamic_value::{Any, DynamicRow, NamedField};
+    use crate::oracle::Oracle;
+    use diesel::deserialize::{self, FromSql, QueryableByName};
+    use diesel::expression::QueryMetadata;
+    use diesel::row::NamedRow;
+
+    impl<I> QueryableByName<Oracle> for DynamicRow<I>
+    where
+        I: FromSql<Any, Oracle>,
+    {
+        fn build<'a>(row: &impl NamedRow<'a, Oracle>) -> deserialize::Result<Self> {
+            Self::from_row(row)
+        }
+    }
+
+    impl<I> QueryableByName<Oracle> for DynamicRow<NamedField<Option<I>>>
+    where
+        I: FromSql<Any, Oracle>,
+    {
+        fn build<'a>(row: &impl NamedRow<'a, Oracle>) -> deserialize::Result<Self> {
+            Self::from_nullable_row(row)
+        }
+    }
+
+    impl QueryMetadata<Any> for Oracle {
+        fn row_metadata(
+            _lookup: &mut Self::MetadataLookup,
+            out: &mut Vec<Option<Self::TypeMetadata>>,
+        ) {
+            out.push(None)
+        }
     }
 }
 
 #[cfg(feature = "chrono-time")]
 mod chrono_date_time;
-
-mod decimal;
-mod integers;
-mod primitives;

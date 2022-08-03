@@ -1,30 +1,50 @@
-use byteorder::NativeEndian;
-use diesel::backend::UsesAnsiSavepointSyntax;
 use diesel::backend::*;
-use diesel::query_builder::bind_collector::RawBytesBindCollector;
 use diesel::sql_types::TypeMetadata;
-use oracle::types::OCIDataType;
 
+use super::connection::bind_collector::OracleBindCollector;
 use super::connection::OracleValue;
 use super::query_builder::OciQueryBuilder;
+use super::types::OciTypeMetadata;
 
-#[derive(Debug, Hash, PartialEq, Eq)]
+#[derive(Debug, Hash, PartialEq, Eq, Default)]
 pub struct Oracle;
 
 impl Backend for Oracle {
     type QueryBuilder = OciQueryBuilder;
-    type BindCollector = RawBytesBindCollector<Oracle>;
-    type RawValue = OracleValue;
-    type ByteOrder = NativeEndian;
+}
+
+impl<'a> HasBindCollector<'a> for Oracle {
+    type BindCollector = OracleBindCollector<'a>;
+}
+
+impl<'a> HasRawValue<'a> for Oracle {
+    type RawValue = OracleValue<'a>;
 }
 
 impl TypeMetadata for Oracle {
-    type TypeMetadata = OCIDataType;
+    type TypeMetadata = OciTypeMetadata;
     type MetadataLookup = ();
 }
 
-impl UsesAnsiSavepointSyntax for Oracle {}
+impl TrustedBackend for Oracle {}
+impl DieselReserveSpecialization for Oracle {}
 
-// TODO: check if Oracle supports this
-impl SupportsDefaultKeyword for Oracle {}
+impl SqlDialect for Oracle {
+    type ReturningClause = OracleReturningClause;
 
+    type OnConflictClause = sql_dialect::on_conflict_clause::DoesNotSupportOnConflictClause;
+
+    type InsertWithDefaultKeyword = sql_dialect::default_keyword_for_insert::IsoSqlDefaultKeyword;
+    type BatchInsertSupport = OracleStyleBatchInsert;
+    type DefaultValueClauseForInsert = sql_dialect::default_value_clause::AnsiDefaultValueClause;
+
+    type EmptyFromClauseSyntax = OracleDualForEmptySelectClause;
+    type ExistsSyntax = OracleExistsSyntax;
+
+    type ArrayComparision = sql_dialect::array_comparision::AnsiSqlArrayComparison;
+}
+
+pub struct OracleStyleBatchInsert;
+pub struct OracleReturningClause;
+pub struct OracleDualForEmptySelectClause;
+pub struct OracleExistsSyntax;

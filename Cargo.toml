@@ -1,5 +1,9 @@
 [package]
-authors = ["Georg Semmler <georg.semmler@giga-infosystems.com>"]
+authors = [
+    "Georg Semmler <georg.semmler@giga-infosystems.com>",
+    "Paul Gabriel <paul.gabriel@giga-infosystems.com>",
+    "Daniel Buse <daniel.buse@giga-infosystems.com>",
+]
 name = "diesel-oci"
 version = "0.1.0"
 license = "MIT OR Apache-2.0"
@@ -7,29 +11,43 @@ description = "A oci database adapter for diesel"
 readme = "README.md"
 keywords = ["diesel", "oci", "oracle", "sql"]
 categories = ["database"]
-
-[workspace]
-members = ["oci-sys"]
+edition = "2021"
 
 [dependencies]
-byteorder = "1"
-libc = "0.2"
-log = "0.3"
-dotenv = ">=0.8, <0.11"
-bigdecimal = { version = ">= 0.0.10, < 0.0.12"}
+oracle = {version = "0.5", features = ["chrono"]}
+url = "2"
+percent-encoding = "2"
 
-
-[dependencies.chrono]
+[dependencies.chrono-time]
 optional = true
 version = "0.4"
+package = "chrono"
 
 [dependencies.diesel]
 default-features = false
-version = "1.3.2"
+features = ["with-deprecated", "i-implement-a-third-party-backend-and-opt-into-breaking-changes"]
+version = "2.0.0-rc.0"
 
-[dependencies.oci-sys]
-path = "oci-sys"
+[dependencies.diesel_derives]
+version = "2.0.0-rc.0"
+
+[dependencies.diesel-dynamic-schema]
+optional = true
+default-features = false
+version = "0.2.0-rc.0"
+
+[dev-dependencies]
+log = "0.4"
+dotenv = ">=0.8, <0.11"
+num = { version = "0.1", default-features = false }
+num-derive = "0.1"
 
 [features]
-chrono-time = ["chrono", "diesel/chrono"]
-default = ["chrono-time"]
+default = ["chrono", "r2d2", "dynamic-schema"]
+chrono = ["chrono-time", "diesel/chrono"]
+r2d2 = ["diesel/r2d2"]
+dynamic-schema = ["diesel-dynamic-schema"]
+gst = []
+
+[patch.crates-io]
+diesel = { git = "https://github.com/weiznich/diesel", rev = "a69e8d461523b2fdbaee22dceeaa3f53ad3eca01" }

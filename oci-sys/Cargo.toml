@@ -1,7 +1,0 @@
-[package]
-name = "oci-sys"
-version = "0.1.0"
-authors = ["Georg Semmler <georg.semmler@giga-infosystems.com>"]
-links = "oci"
-build = "build.rs"
-license = "MIT OR Apache-2.0"

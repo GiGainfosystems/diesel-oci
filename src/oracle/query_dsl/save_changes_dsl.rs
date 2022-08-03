@@ -2,26 +2,24 @@ use diesel::associations::HasTable;
 use diesel::associations::Identifiable;
 use diesel::dsl::Find;
 use diesel::dsl::Update;
-use diesel::query_builder::{AsChangeset, IntoUpdateTarget};
+use diesel::query_builder::{AsChangeset, AsQuery, IntoUpdateTarget};
 use diesel::query_dsl::methods::{ExecuteDsl, FindDsl};
 use diesel::query_dsl::{LoadQuery, RunQueryDsl};
 use diesel::result::QueryResult;
 
-use super::super::OciConnection;
+use crate::oracle::connection::OciConnection;
+use diesel::query_dsl::UpdateAndFetchResults;
 
-use diesel::query_builder::functions::update;
-use diesel::query_dsl::save_changes_dsl::InternalSaveChangesDsl;
-
-impl<T, U> InternalSaveChangesDsl<OciConnection, U> for T
+impl<'query, Changes, Output> UpdateAndFetchResults<Changes, Output> for OciConnection
 where
-    T: Copy + Identifiable,
-    T: AsChangeset<Target = <T as HasTable>::Table> + IntoUpdateTarget,
-    T::Table: FindDsl<T::Id>,
-    Update<T, T>: ExecuteDsl<OciConnection>,
-    Find<T::Table, T::Id>: LoadQuery<OciConnection, U>,
+    Changes: Copy + Identifiable,
+    Changes: AsChangeset<Target = <Changes as HasTable>::Table> + IntoUpdateTarget,
+    Changes::Table: FindDsl<Changes::Id>,
+    Update<Changes, Changes>: ExecuteDsl<OciConnection> + AsQuery,
+    Find<Changes::Table, Changes::Id>: LoadQuery<'query, OciConnection, Output>,
 {
-    fn internal_save_changes(self, conn: &OciConnection) -> QueryResult<U> {
-        update(self).set(self).execute(conn)?;
-        T::table().find(self.id()).get_result(conn)
+    fn update_and_fetch(&mut self, changeset: Changes) -> QueryResult<Output> {
+        diesel::update(changeset).set(changeset).execute(self)?;
+        Changes::table().find(changeset.id()).get_result(self)
     }
 }

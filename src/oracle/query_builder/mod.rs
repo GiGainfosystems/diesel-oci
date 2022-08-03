@@ -1,9 +1,17 @@
 use super::backend::Oracle;
+use super::backend::OracleDualForEmptySelectClause;
 
+use diesel::query_builder::NoFromClause;
 use diesel::query_builder::QueryBuilder;
+use diesel::query_builder::QueryFragment;
 use diesel::result::Error as DieselError;
 
-//mod insert_statement;
+mod alias;
+mod exists;
+mod limit_offset;
+mod returning;
+
+pub use self::alias::Alias;
 
 #[derive(Default)]
 pub struct OciQueryBuilder {
@@ -34,12 +42,19 @@ impl QueryBuilder<Oracle> for OciQueryBuilder {
     }
 
     fn push_bind_param(&mut self) {
+        let sql = format!(":in{}", self.bind_idx);
         self.bind_idx += 1;
-        let sql = format!(":{}", self.bind_idx);
         self.push_sql(&sql);
     }
 
     fn finish(self) -> String {
         self.sql
+    }
+}
+
+impl QueryFragment<Oracle, OracleDualForEmptySelectClause> for NoFromClause {
+    fn walk_ast(&self, mut out: diesel::query_builder::AstPass<Oracle>) -> diesel::QueryResult<()> {
+        out.push_sql(" FROM DUAL ");
+        Ok(())
     }
 }

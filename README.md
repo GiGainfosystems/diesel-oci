@@ -1,19 +1,15 @@
 # Diesel-oci
 
-A backend implementation for [diesel](https://github.com/diesel-rs/diesel) for oracle sql database. **This crate is currently functional and only a proof of concept**.
+A Oracle SQL database backend implementation for
+[Diesel](https://github.com/diesel-rs/diesel).
 
 ## Status:
 
-- [x] Builds with diesel 1.3.2
-- [x] Able to execute simplest queries (`SELECT * from table;`)
-
-## Not working/TODO:
-
-- [ ] Check `FromSql`/`ToSql`
-- [ ] Fix generated sql
-- [ ] Port/use diesels test suite
-- [ ] Make everything work
-- [ ] Publish to crates.io
+- [x] Builds with Diesel 2.0.0-rc.1.
+- [x] Support for DML statements (`SELECT`, `INSERT`, `UPDATE`, `DELETE`).
+- [x] Support for Diesel `sql_types`: `Bool`, `SmallInt`,
+      `Integer`, `Bigint`, `Float`, `Double`, `Date`, `Time`, `Timestamp`.
+- [x] Support for diesel-dynamic-schema and diesel-migrations
 
 ## Code of conduct
 
@@ -24,10 +20,10 @@ this GitHub repository, must follow our [code of conduct](https://github.com/die
 
 Licensed under either of these:
 
- * Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or
-   http://www.apache.org/licenses/LICENSE-2.0)
- * MIT license ([LICENSE-MIT](LICENSE-MIT) or
-   http://opensource.org/licenses/MIT)
+- Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or
+  http://www.apache.org/licenses/LICENSE-2.0)
+- MIT license ([LICENSE-MIT](LICENSE-MIT) or
+  http://opensource.org/licenses/MIT)
 
 ### Contributing
 

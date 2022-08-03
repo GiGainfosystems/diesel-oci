@@ -1,26 +1,15 @@
 # Diesel-oci
 
-**Work in progress. Not ready for general consumption.**.
-
 A Oracle SQL database backend implementation for
 [Diesel](https://github.com/diesel-rs/diesel).
 
 ## Status:
 
-- [x] Builds with Diesel 1.3.2.
+- [x] Builds with Diesel 2.0.0-rc.1.
 - [x] Support for DML statements (`SELECT`, `INSERT`, `UPDATE`, `DELETE`).
 - [x] Support for Diesel `sql_types`: `Bool`, `SmallInt`,
-      `Integer`, `Bigint`, `Float`, `Double`.
-- [x] Limited Support for `Text`. Values up to `2 MB` are supported.
-- [x] Limited Support for `Date`, `Time`, `Timestamp`.
-      Currently no fractional second support.
-
-## Not working/TODO:
-
-- [ ] Support arbitrary sizes for `Binary`.
-- [ ] Support `String` values > `2 MB`.
-- [ ] Support fractional seconds for `Time` and `Timestamp`.
-- [ ] Publish to crates.io.
+      `Integer`, `Bigint`, `Float`, `Double`, `Date`, `Time`, `Timestamp`.
+- [x] Support for diesel-dynamic-schema and diesel-migrations
 
 ## Code of conduct
 

@@ -26,9 +26,16 @@ impl OCITransactionManager {
         by: TransactionDepthChange,
         query: QueryResult<()>,
     ) -> QueryResult<()> {
-        match Self::transaction_manager_status_mut(conn) {
-            TransactionManagerStatus::Valid(ref mut v) => v.change_transaction_depth(by, query),
-            TransactionManagerStatus::InError => Err(diesel::result::Error::BrokenTransaction),
+        let status = Self::transaction_manager_status_mut(conn);
+        if let Err(e) = query {
+            *status = TransactionManagerStatus::InError;
+            return Err(e);
+        }
+        match status {
+            TransactionManagerStatus::Valid(ref mut v) => v.change_transaction_depth(by),
+            TransactionManagerStatus::InError => {
+                Err(diesel::result::Error::BrokenTransactionManager)
+            }
         }
     }
 

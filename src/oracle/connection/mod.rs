@@ -525,7 +525,9 @@ impl OciConnection {
 }
 
 impl Drop for OciConnection {
-    fn drop(&mut self) {}
+    fn drop(&mut self) {
+        let _ = self.raw.borrow_mut().close();
+    }
 }
 
 #[cfg(feature = "r2d2")]

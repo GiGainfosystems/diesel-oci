@@ -24,11 +24,10 @@ impl OCITransactionManager {
     fn change_transaction_depth(
         conn: &mut OciConnection,
         by: TransactionDepthChange,
-        query: QueryResult<()>,
     ) -> QueryResult<()> {
         match Self::transaction_manager_status_mut(conn) {
-            TransactionManagerStatus::Valid(ref mut v) => v.change_transaction_depth(by, query),
-            TransactionManagerStatus::InError => Err(diesel::result::Error::BrokenTransaction),
+            TransactionManagerStatus::Valid(ref mut v) => v.change_transaction_depth(by),
+            TransactionManagerStatus::InError => Err(diesel::result::Error::BrokenTransactionManager),
         }
     }
 
@@ -42,8 +41,8 @@ impl OCITransactionManager {
         use diesel::result::Error::AlreadyInTransaction;
 
         if Self::get_transaction_depth(conn)?.is_none() {
-            let res = conn.batch_execute(sql);
-            Self::change_transaction_depth(conn, TransactionDepthChange::IncreaseDepth, res)
+            conn.batch_execute(sql)?;
+            Self::change_transaction_depth(conn, TransactionDepthChange::IncreaseDepth)
         } else {
             Err(AlreadyInTransaction)
         }
@@ -59,14 +58,14 @@ impl TransactionManager<OciConnection> for OCITransactionManager {
 
     fn begin_transaction(conn: &mut OciConnection) -> QueryResult<()> {
         let transaction_depth = Self::get_transaction_depth(conn)?;
-        let query = match transaction_depth {
+        match transaction_depth {
             None => {
                 conn.raw.set_autocommit(false);
                 Ok(())
             }
             Some(d) => conn.batch_execute(&format!("SAVEPOINT diesel_savepoint_{}", d)),
-        };
-        Self::change_transaction_depth(conn, TransactionDepthChange::IncreaseDepth, query)
+        }?;
+        Self::change_transaction_depth(conn, TransactionDepthChange::IncreaseDepth)
     }
 
     fn rollback_transaction(conn: &mut OciConnection) -> QueryResult<()> {
@@ -75,7 +74,7 @@ impl TransactionManager<OciConnection> for OCITransactionManager {
         // c.f. https://docs.oracle.com/cd/E25054_01/server.1111/e25789/transact.htm#sthref1318
         let transaction_depth = Self::get_transaction_depth(conn)?;
         let mut mark_as_broken = false;
-        let query = match transaction_depth.map(|d| d.into()) {
+        match transaction_depth.map(|d| d.into()) {
             Some(1) => {
                 let res = conn
                     .raw
@@ -93,9 +92,9 @@ impl TransactionManager<OciConnection> for OCITransactionManager {
                 conn.batch_execute(&format!("ROLLBACK TO SAVEPOINT diesel_savepoint_{}", d - 1))
             }
             None => Err(diesel::result::Error::NotInTransaction),
-        };
+        }?;
         let res =
-            Self::change_transaction_depth(conn, TransactionDepthChange::DecreaseDepth, query);
+            Self::change_transaction_depth(conn, TransactionDepthChange::DecreaseDepth);
         if mark_as_broken {
             let status = Self::transaction_manager_status_mut(conn);
             *status = diesel::connection::TransactionManagerStatus::InError;
@@ -123,7 +122,7 @@ impl TransactionManager<OciConnection> for OCITransactionManager {
             }
             None => return Err(diesel::result::Error::NotInTransaction),
         }
-        Self::change_transaction_depth(conn, TransactionDepthChange::DecreaseDepth, Ok(()))
+        Self::change_transaction_depth(conn, TransactionDepthChange::DecreaseDepth)
     }
 
     fn transaction_manager_status_mut(

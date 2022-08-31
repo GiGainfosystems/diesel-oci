@@ -9,8 +9,8 @@ use self::transaction::OCITransactionManager;
 use super::backend::Oracle;
 use super::query_builder::OciQueryBuilder;
 use super::OciDataType;
-use diesel::connection::ConnectionGatWorkaround;
 use diesel::connection::{Connection, SimpleConnection, TransactionManager};
+use diesel::connection::{ConnectionGatWorkaround, LoadConnection};
 use diesel::deserialize::FromSql;
 use diesel::expression::QueryMetadata;
 use diesel::migration::MigrationConnection;
@@ -188,8 +188,12 @@ impl Connection for OciConnection {
         source.to_sql(&mut qb, &Oracle)?;
 
         let conn = &self.raw;
-
-        let mut stmt = conn.prepare(&qb.finish(), &[]).map_err(ErrorHelper::from)?;
+        let sql = qb.finish();
+        let mut stmt = conn.statement(&sql);
+        if !source.is_safe_to_cache_prepared(&Oracle)? {
+            stmt.exclude_from_cache();
+        }
+        let mut stmt = stmt.build().map_err(ErrorHelper::from)?;
         let mut bind_collector = OracleBindCollector::default();
 
         source.collect_binds(&mut bind_collector, &mut (), &Oracle)?;
@@ -210,6 +214,14 @@ impl Connection for OciConnection {
         Ok(stmt.row_count().map_err(ErrorHelper::from)? as usize)
     }
 
+    fn transaction_state(
+        &mut self,
+    ) -> &mut <Self::TransactionManager as TransactionManager<Self>>::TransactionStateData {
+        &mut self.transaction_manager
+    }
+}
+
+impl LoadConnection for OciConnection {
     fn load<'conn, 'query, T>(
         &'conn mut self,
         source: T,
@@ -245,12 +257,6 @@ impl Connection for OciConnection {
                 unreachable!()
             }
         })
-    }
-
-    fn transaction_state(
-        &mut self,
-    ) -> &mut <Self::TransactionManager as TransactionManager<Self>>::TransactionStateData {
-        &mut self.transaction_manager
     }
 }
 

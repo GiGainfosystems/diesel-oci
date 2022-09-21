@@ -27,7 +27,9 @@ impl OCITransactionManager {
     ) -> QueryResult<()> {
         match Self::transaction_manager_status_mut(conn) {
             TransactionManagerStatus::Valid(ref mut v) => v.change_transaction_depth(by),
-            TransactionManagerStatus::InError => Err(diesel::result::Error::BrokenTransactionManager),
+            TransactionManagerStatus::InError => {
+                Err(diesel::result::Error::BrokenTransactionManager)
+            }
         }
     }
 
@@ -93,8 +95,7 @@ impl TransactionManager<OciConnection> for OCITransactionManager {
             }
             None => Err(diesel::result::Error::NotInTransaction),
         }?;
-        let res =
-            Self::change_transaction_depth(conn, TransactionDepthChange::DecreaseDepth);
+        let res = Self::change_transaction_depth(conn, TransactionDepthChange::DecreaseDepth);
         if mark_as_broken {
             let status = Self::transaction_manager_status_mut(conn);
             *status = diesel::connection::TransactionManagerStatus::InError;

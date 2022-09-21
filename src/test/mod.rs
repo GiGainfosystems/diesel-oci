@@ -2380,7 +2380,8 @@ fn batch_insert_1() {
             (gst_types::small.eq(6), gst_types::big.eq(5)),
             (gst_types::small.eq(42), gst_types::big.eq(-3)),
         ])
-        .execute(&mut conn).unwrap();
+        .execute(&mut conn)
+        .unwrap();
 
     assert_eq!(res, 2);
 

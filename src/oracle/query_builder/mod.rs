@@ -36,7 +36,7 @@ impl QueryBuilder<Oracle> for OciQueryBuilder {
     fn push_identifier(&mut self, identifier: &str) -> Result<(), DieselError> {
         // TODO: check if there is a better way for escaping strings
         self.push_sql("\"");
-        self.push_sql(&identifier.replace("`", "``").to_uppercase());
+        self.push_sql(&identifier.replace('`', "``").to_uppercase());
         self.push_sql("\"");
         Ok(())
     }

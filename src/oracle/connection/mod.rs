@@ -1,7 +1,6 @@
+use std::fmt::Write;
 use std::marker::PhantomData;
 use std::rc::Rc;
-
-use crate::oracle::connection::stmt_iter::RowIter;
 
 use self::bind_collector::OracleBindCollector;
 use self::row::OciRow;
@@ -9,6 +8,7 @@ use self::transaction::OCITransactionManager;
 use super::backend::Oracle;
 use super::query_builder::OciQueryBuilder;
 use super::OciDataType;
+use crate::oracle::connection::stmt_iter::RowIter;
 use diesel::connection::{Connection, SimpleConnection, TransactionManager};
 use diesel::connection::{ConnectionGatWorkaround, LoadConnection};
 use diesel::deserialize::FromSql;
@@ -109,7 +109,7 @@ unsafe impl Send for OciConnection {}
 
 impl SimpleConnection for OciConnection {
     fn batch_execute(&mut self, query: &str) -> QueryResult<()> {
-        self.raw.execute(&query, &[]).map_err(ErrorHelper::from)?;
+        self.raw.execute(query, &[]).map_err(ErrorHelper::from)?;
         Ok(())
     }
 }
@@ -162,7 +162,7 @@ impl Connection for OciConnection {
 
         let mut url = host.to_owned();
         if let Some(port) = port {
-            url += &format!(":{}", port);
+            write!(url, ":{}", port).expect("Write to string does not fail");
         }
         url += path;
 
@@ -341,7 +341,7 @@ impl OciConnection {
             .collect::<Vec<_>>();
 
         for (n, b) in &other_binds {
-            binds.push((&n, &*b));
+            binds.push((n, &*b));
         }
 
         stmt.execute_named(&binds).map_err(ErrorHelper::from)?;
@@ -472,10 +472,7 @@ impl OciConnection {
                 _ => unimplemented!(),
             }
         }
-        let data = data
-            .into_iter()
-            .map(|row| OciRow::new_from_value(row))
-            .collect();
+        let data = data.into_iter().map(OciRow::new_from_value).collect();
         Ok(RowIter::new(data))
     }
 }

@@ -292,11 +292,13 @@ impl OciConnection {
     {
         let mut qb = OciQueryBuilder::default();
         query.to_sql(&mut qb, &Oracle)?;
-        let conn = &self.raw;
-        let stmt = conn
-            .statement(&qb.finish())
-            .build()
-            .map_err(ErrorHelper::from)?;
+        let query_string = qb.finish();
+        let is_safe_to_cache = query.is_safe_to_cache_prepared(&Oracle)?;
+        let mut stmt = self.raw.statement(&query_string);
+        if !is_safe_to_cache {
+            stmt.exclude_from_cache();
+        }
+        let stmt = stmt.build().map_err(ErrorHelper::from)?;
         let mut bind_collector = OracleBindCollector::default();
         query.collect_binds(&mut bind_collector, &mut (), &Oracle)?;
         callback(stmt, bind_collector)

@@ -550,14 +550,18 @@ impl R2D2Connection for OciConnection {
     }
 
     fn is_broken(&mut self) -> bool {
-        match self.transaction_manager.status.transaction_depth() {
-            // all transactions are closed
-            // so we don't consider this connection broken
-            Ok(None) => false,
-            // The transaction manager is in an error state
-            // or contains an open transaction
-            // Therefore we consider this connection broken
-            Err(_) | Ok(Some(_)) => true,
-        }
+        // consider this connection as broken
+        // if the transaction manager is in an error state,
+        // contains an open transaction or the connection itself
+        // reports an open transaction
+        matches!(
+            self.transaction_manager.status.transaction_depth(),
+            Err(_) | Ok(Some(_))
+        ) || self
+            .raw
+            .oci_attr::<oracle::oci_attr::TransactionInProgress>()
+            .unwrap_or(true)
+    }
+}
     }
 }

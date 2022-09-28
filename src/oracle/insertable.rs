@@ -192,9 +192,7 @@ where
     V: InsertValues<T, Oracle> + CanInsertInSingleQuery<Oracle> + QueryId,
 {
     fn execute((Yes, query): Self, conn: &mut OciConnection) -> QueryResult<usize> {
-        conn.transaction(|conn| {
-            conn.batch_insert(query)
-        })
+        conn.transaction(|conn| conn.batch_insert(query))
     }
 }
 

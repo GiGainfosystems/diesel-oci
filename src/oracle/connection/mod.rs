@@ -563,5 +563,3 @@ impl R2D2Connection for OciConnection {
             .unwrap_or(true)
     }
 }
-    }
-}

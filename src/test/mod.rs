@@ -1468,7 +1468,7 @@ fn systable() {
 #[test]
 fn exists() {
     let mut conn = init_testing();
-
+    create_gst_types_table(&mut conn);
     use self::all_tables;
 
     use diesel::dsl::exists;
@@ -1476,7 +1476,7 @@ fn exists() {
 
     let ret = diesel::select(exists(
         all_tables::table
-            .filter(all_tables::table_name.eq("GEOMETRIES"))
+            .filter(all_tables::table_name.eq("GST_TYPES"))
             .select(all_tables::owner),
     ));
     dbg!(diesel::debug_query::<Oracle, _>(&ret));

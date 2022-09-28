@@ -13,12 +13,13 @@ use diesel::connection::{Connection, SimpleConnection, TransactionManager};
 use diesel::connection::{ConnectionGatWorkaround, LoadConnection};
 use diesel::deserialize::FromSql;
 use diesel::expression::QueryMetadata;
+use diesel::insertable::{CanInsertInSingleQuery, InsertValues};
 use diesel::migration::MigrationConnection;
-use diesel::query_builder::QueryId;
-use diesel::query_builder::{AsQuery, QueryBuilder, QueryFragment};
-use diesel::result::*;
+use diesel::query_builder::{AsQuery, BatchInsert, QueryBuilder, QueryFragment};
+use diesel::query_builder::{InsertStatement, QueryId, ValuesClause};
 use diesel::sql_types::HasSqlType;
 use diesel::RunQueryDsl;
+use diesel::{result::*, Table};
 
 mod oracle_value;
 pub(crate) use self::oracle_value::InnerValue;
@@ -475,6 +476,62 @@ impl OciConnection {
         let data = data.into_iter().map(OciRow::new_from_value).collect();
         Ok(RowIter::new(data))
     }
+
+    pub(crate) fn batch_insert<T, V, QId, Op, const STATIC_QUERY_ID: bool>(
+        &mut self,
+        stmt: InsertStatement<T, BatchInsert<Vec<ValuesClause<V, T>>, T, QId, STATIC_QUERY_ID>, Op>,
+    ) -> diesel::QueryResult<usize>
+    where
+        T: Table + Copy + QueryId + 'static,
+        T::FromClause: QueryFragment<Oracle>,
+        Op: Copy + QueryId + QueryFragment<Oracle>,
+        V: InsertValues<T, Oracle> + CanInsertInSingleQuery<Oracle> + QueryId,
+    {
+        let record_count = stmt.records.values.len();
+        let mut record_iter = stmt.records.values.iter().map(|records| {
+            InsertStatement::new(stmt.target, records, stmt.operator, stmt.returning)
+        });
+
+        if let Some(first_record) = record_iter.next() {
+            let mut qb = OciQueryBuilder::default();
+            first_record.to_sql(&mut qb, &Oracle)?;
+            let query_string = qb.finish();
+            let mut batch = self
+                .raw
+                .batch(&query_string, record_count)
+                .build()
+                .map_err(ErrorHelper::from)?;
+
+            bind_params_to_batch(first_record, &mut batch)?;
+            for record in record_iter {
+                bind_params_to_batch(record, &mut batch)?;
+            }
+            batch.execute().map_err(ErrorHelper::from)?;
+            Ok(record_count)
+        } else {
+            Ok(0)
+        }
+    }
+}
+
+fn bind_params_to_batch<'a, T, V, Op>(
+    record: InsertStatement<T, &'a ValuesClause<V, T>, Op>,
+    batch: &mut oracle::Batch,
+) -> Result<(), Error>
+where
+    T: Table + 'a,
+    V: 'a,
+    InsertStatement<T, &'a ValuesClause<V, T>, Op>: QueryFragment<Oracle>,
+{
+    let mut bind_collector = OracleBindCollector::default();
+    record.collect_binds(&mut bind_collector, &mut (), &Oracle)?;
+    let binds = bind_collector
+        .binds
+        .iter()
+        .map(|(n, b)| (n as &str, &**b))
+        .collect::<Vec<_>>();
+    batch.append_row_named(&binds).map_err(ErrorHelper::from)?;
+    Ok(())
 }
 
 impl Drop for OciConnection {

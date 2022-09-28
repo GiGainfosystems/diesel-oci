@@ -193,13 +193,7 @@ where
 {
     fn execute((Yes, query): Self, conn: &mut OciConnection) -> QueryResult<usize> {
         conn.transaction(|conn| {
-            let mut result = 0;
-            for record in &query.records.values {
-                let stmt =
-                    InsertStatement::new(query.target, record, query.operator, query.returning);
-                result += stmt.execute(conn)?;
-            }
-            Ok(result)
+            conn.batch_insert(query)
         })
     }
 }

@@ -26,7 +26,7 @@ package = "chrono"
 [dependencies.diesel]
 default-features = false
 features = ["i-implement-a-third-party-backend-and-opt-into-breaking-changes"]
-version = "2.0.0"
+version = "2.0.2"
 
 [dependencies.diesel_derives]
 version = "2.0.0"
@@ -50,5 +50,3 @@ dynamic-schema = ["diesel-dynamic-schema"]
 gst = []
 
 
-[patch.crates-io]
-diesel = {git = "https://github.com/weiznich/diesel", rev = "dcb9855bea673244a3861f31282db7ec68fcb8d9"}

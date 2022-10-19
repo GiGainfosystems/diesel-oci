@@ -71,3 +71,12 @@ impl<'a> BindCollector<'a, Oracle> for OracleBindCollector<'a> {
         Ok(())
     }
 }
+
+impl<'a, T> From<T> for BindValue<'a>
+where
+    T: oracle::sql_type::ToSql + 'static,
+{
+    fn from(t: T) -> Self {
+        Self::Owned(Box::new(t))
+    }
+}

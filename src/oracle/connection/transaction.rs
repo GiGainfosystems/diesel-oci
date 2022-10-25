@@ -13,6 +13,7 @@ use diesel::result::QueryResult;
 #[derive(Default)]
 pub struct OCITransactionManager {
     pub(super) status: TransactionManagerStatus,
+    pub(super) is_test_transaction: bool,
 }
 
 impl OCITransactionManager {

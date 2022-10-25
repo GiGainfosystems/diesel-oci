@@ -220,6 +220,20 @@ impl Connection for OciConnection {
     ) -> &mut <Self::TransactionManager as TransactionManager<Self>>::TransactionStateData {
         &mut self.transaction_manager
     }
+
+    fn begin_test_transaction(&mut self) -> QueryResult<()> {
+        match Self::TransactionManager::transaction_manager_status_mut(self) {
+            diesel::connection::TransactionManagerStatus::Valid(valid_status) => {
+                assert_eq!(None, valid_status.transaction_depth())
+            }
+            diesel::connection::TransactionManagerStatus::InError => {
+                panic!("Transaction manager in error")
+            }
+        };
+        Self::TransactionManager::begin_transaction(self)?;
+        self.transaction_manager.is_test_transaction = true;
+        Ok(())
+    }
 }
 
 impl LoadConnection for OciConnection {
@@ -556,12 +570,14 @@ impl R2D2Connection for OciConnection {
         // if the transaction manager is in an error state,
         // contains an open transaction or the connection itself
         // reports an open transaction
-        matches!(
-            self.transaction_manager.status.transaction_depth(),
-            Err(_) | Ok(Some(_))
-        ) || self
-            .raw
-            .oci_attr::<oracle::oci_attr::TransactionInProgress>()
-            .unwrap_or(true)
+        matches!(self.transaction_manager.status.transaction_depth(), Err(_))
+            || (matches!(
+                self.transaction_manager.status.transaction_depth(),
+                Ok(Some(_))
+            ) || self
+                .raw
+                .oci_attr::<oracle::oci_attr::TransactionInProgress>()
+                .unwrap_or(true))
+                && !self.transaction_manager.is_test_transaction
     }
 }

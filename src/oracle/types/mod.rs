@@ -137,6 +137,14 @@ impl HasSqlType<Bool> for Oracle {
     }
 }
 
+impl HasSqlType<Date> for Oracle {
+    fn metadata(_: &mut Self::MetadataLookup) -> Self::TypeMetadata {
+        OciTypeMetadata {
+            tpe: OciDataType::Date,
+        }
+    }
+}
+
 #[cfg(feature = "dynamic-schema")]
 mod dynamic_schema_impls {
 

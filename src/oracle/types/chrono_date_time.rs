@@ -57,11 +57,3 @@ impl ToSql<Date, Oracle> for NaiveDate {
         Ok(IsNull::No)
     }
 }
-
-impl HasSqlType<Date> for Oracle {
-    fn metadata(_: &mut Self::MetadataLookup) -> Self::TypeMetadata {
-        OciTypeMetadata {
-            tpe: OciDataType::Date,
-        }
-    }
-}

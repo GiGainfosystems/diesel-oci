@@ -26,6 +26,12 @@
 //! # Ok(())
 //! # }
 //! ```
+//!
+//! # Feature flags
+//!
+//! * `chrono` Enables support for the `chrono` crate
+//! * `r2d2` Enables support for r2d2 connection pooling
+//! * `dynamic-schema` Enables support for diesel-dynamic-schema
 
 pub mod oracle;
 

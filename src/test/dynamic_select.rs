@@ -39,20 +39,20 @@ impl FromSql<Any, Oracle> for MyDynamicValue {
 #[test]
 fn dynamic_query() {
     let mut connection = super::init_testing();
-    let _ = sql_query("DROP TABLE users").execute(&mut connection);
-    sql_query("CREATE TABLE users (id NUMBER(10) NOT NULL PRIMARY KEY, name VARCHAR(50) NOT NULL, hair_color VARCHAR(50))")
+    let _ = sql_query("DROP TABLE my_users").execute(&mut connection);
+    sql_query("CREATE TABLE my_users (id NUMBER(10) NOT NULL PRIMARY KEY, name VARCHAR(50) NOT NULL, hair_color VARCHAR(50))")
         .execute(&mut connection)
         .unwrap();
     sql_query(
         "INSERT ALL
-    INTO users (id, name) VALUES (3, 'Sean')
-    INTO users (id, name) VALUES (2, 'Tess')
+    INTO my_users (id, name) VALUES (3, 'Sean')
+    INTO my_users (id, name) VALUES (2, 'Tess')
 SELECT * FROM DUAL",
     )
     .execute(&mut connection)
     .unwrap();
 
-    let users = diesel_dynamic_schema::table("users");
+    let users = diesel_dynamic_schema::table("my_users");
     let id = users.column::<Integer, _>("id");
     let name = users.column::<Text, _>("name");
     let hair_color = users.column::<Nullable<Text>, _>("hair_color");
@@ -124,21 +124,21 @@ SELECT * FROM DUAL",
 fn mixed_value_query() {
     use diesel::dsl::sql;
     let mut connection = super::init_testing();
-    let _ = sql_query("DROP TABLE users").execute(&mut connection);
-    sql_query("CREATE TABLE users (id NUMBER(10) NOT NULL PRIMARY KEY, name VARCHAR(50) NOT NULL, hair_color VARCHAR(50))")
+    let _ = sql_query("DROP TABLE my_users").execute(&mut connection);
+    sql_query("CREATE TABLE my_users (id NUMBER(10) NOT NULL PRIMARY KEY, name VARCHAR(50) NOT NULL, hair_color VARCHAR(50))")
         .execute(&mut connection)
         .unwrap();
 
     sql_query(
         "INSERT ALL
-    INTO users (id, name, hair_color) VALUES (42, 'Sean', 'black')
-    INTO users (id, name, hair_color) VALUES (43, 'Tess', 'black')
+    INTO my_users (id, name, hair_color) VALUES (42, 'Sean', 'black')
+    INTO my_users (id, name, hair_color) VALUES (43, 'Tess', 'black')
 SELECT * FROM DUAL",
     )
     .execute(&mut connection)
     .unwrap();
 
-    let users = diesel_dynamic_schema::table("users");
+    let users = diesel_dynamic_schema::table("my_users");
     let id = users.column::<Integer, _>("id");
 
     let (id, row) = users

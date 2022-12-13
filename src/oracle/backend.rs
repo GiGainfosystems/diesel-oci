@@ -6,6 +6,7 @@ use super::connection::OracleValue;
 use super::query_builder::OciQueryBuilder;
 use super::types::OciTypeMetadata;
 
+/// The Oracle backend type
 #[derive(Debug, Hash, PartialEq, Eq, Default)]
 pub struct Oracle;
 

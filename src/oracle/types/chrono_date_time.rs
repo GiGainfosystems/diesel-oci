@@ -11,8 +11,6 @@ use crate::oracle::connection::bind_collector::BindValue;
 use self::chrono::{NaiveDate, NaiveDateTime};
 
 use super::super::connection::{InnerValue, OracleValue};
-use super::OciDataType;
-use super::OciTypeMetadata;
 
 impl FromSql<Timestamp, Oracle> for NaiveDateTime {
     fn from_sql(bytes: OracleValue<'_>) -> Result<Self, Box<dyn Error + Send + Sync>> {

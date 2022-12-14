@@ -30,6 +30,118 @@ mod row;
 mod stmt_iter;
 mod transaction;
 
+/// Connections for the Oracle backend. The following connection url schema is supported:
+///
+/// `oracle://user:password@host:[port]/database`
+///
+/// where:
+///
+///  * `user` is your username
+///  * `password` is the corresponding password
+///  * `host` is the hostname/ip address of the database server
+///  * `port` is an optional port number
+///  * `database` is your database name
+///
+/// # Supported loading model implementations
+///
+/// * [`DefaultLoadingMode`]
+///
+/// As `OciConnection` only supports a single loading mode implementation
+/// it is **not required** to explicitly specify a loading mode
+/// when calling [`RunQueryDsl::load_iter()`] or [`LoadConnection::load`]
+///
+/// [`RunQueryDsl::load_iter()`]: diesel::query_dsl::RunQueryDsl::load_iter
+///
+/// ## DefaultLoadingMode
+///
+/// `OciConnection` only supports a single loading mode, which internally loads
+/// all values at once.
+///
+/// ```no_run
+/// # use diesel_oci::OciConnection;
+/// # use diesel::prelude::*;
+/// #
+/// # fn establish_connection() -> OciConnection {
+/// #    OciConnection::establish("…").unwrap()
+/// # }
+/// #
+/// # table! {
+/// #    users {
+/// #        id -> Integer,
+/// #        name -> Text,
+/// #    }
+/// # }
+/// #
+/// # fn main() {
+/// #     run_test().unwrap();
+/// # }
+/// #
+/// # fn run_test() -> QueryResult<()> {
+/// #     use self::users;
+/// #     let connection = &mut establish_connection();
+/// use diesel::connection::DefaultLoadingMode;
+/// { // scope to restrict the lifetime of the iterator
+///     let iter1 = users::table.load_iter::<(i32, String), DefaultLoadingMode>(connection)?;
+///
+///     for r in iter1 {
+///         let (id, name) = r?;
+///         println!("Id: {} Name: {}", id, name);
+///     }
+/// }
+///
+/// // works without specifying the loading mode
+/// let iter2 = users::table.load_iter::<(i32, String), _>(connection)?;
+///
+/// for r in iter2 {
+///     let (id, name) = r?;
+///     println!("Id: {} Name: {}", id, name);
+/// }
+/// #   Ok(())
+/// # }
+/// ```
+///
+/// This mode does support creating
+/// multiple iterators using the same connection.
+///
+/// ```no_run
+/// # use diesel_oci::OciConnection;
+/// # use diesel::prelude::*;
+/// #
+/// # fn establish_connection() -> OciConnection {
+/// #    OciConnection::establish("…").unwrap()
+/// # }
+/// #
+/// # table! {
+/// #    users {
+/// #        id -> Integer,
+/// #        name -> Text,
+/// #    }
+/// # }
+/// #
+/// # fn main() {
+/// #     run_test().unwrap();
+/// # }
+/// #
+/// # fn run_test() -> QueryResult<()> {
+/// #     use self::users;
+/// #     let connection = &mut establish_connection();
+/// use diesel::connection::DefaultLoadingMode;
+///
+/// let iter1 = users::table.load_iter::<(i32, String), DefaultLoadingMode>(connection)?;
+/// let iter2 = users::table.load_iter::<(i32, String), DefaultLoadingMode>(connection)?;
+///
+/// for r in iter1 {
+///     let (id, name) = r?;
+///     println!("Id: {} Name: {}", id, name);
+/// }
+///
+/// for r in iter2 {
+///     let (id, name) = r?;
+///     println!("Id: {} Name: {}", id, name);
+/// }
+/// #   Ok(())
+/// # }
+/// ```
 pub struct OciConnection {
     raw: oracle::Connection,
     transaction_manager: OCITransactionManager,

@@ -20,16 +20,17 @@ percent-encoding = "2"
 
 [dependencies.chrono-time]
 optional = true
+default-features = false
 version = "0.4"
 package = "chrono"
 
 [dependencies.diesel]
 default-features = false
 features = ["i-implement-a-third-party-backend-and-opt-into-breaking-changes"]
-version = "2.0.2"
+version = "~2.0.2"
 
 [dependencies.diesel_derives]
-version = "2.0.0"
+version = "~2.0.0"
 
 [dependencies.diesel-dynamic-schema]
 optional = true
@@ -43,10 +44,9 @@ num = { version = "0.1", default-features = false }
 num-derive = "0.1"
 
 [features]
-default = ["chrono", "r2d2", "dynamic-schema"]
+default = []
 chrono = ["chrono-time", "diesel/chrono"]
 r2d2 = ["diesel/r2d2"]
 dynamic-schema = ["diesel-dynamic-schema"]
 gst = []
-
 

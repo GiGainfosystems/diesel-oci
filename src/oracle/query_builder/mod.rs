@@ -13,13 +13,15 @@ mod returning;
 
 pub use self::alias::Alias;
 
+/// The Oracle query builder
 #[derive(Default)]
 pub struct OciQueryBuilder {
-    pub sql: String,
+    pub(crate) sql: String,
     bind_idx: u32,
 }
 
 impl OciQueryBuilder {
+    /// Constructs a new query builder with an empty query
     pub fn new() -> Self {
         OciQueryBuilder {
             sql: String::new(),

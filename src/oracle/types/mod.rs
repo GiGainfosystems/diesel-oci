@@ -7,6 +7,7 @@ use std::hash::Hash;
 
 mod primitives;
 
+/// Oracle specfic metadata about the type of a bind value
 #[derive(Clone, Copy)]
 pub struct OciTypeMetadata {
     pub(crate) tpe: OciDataType,
@@ -26,19 +27,33 @@ impl Hash for OciTypeMetadata {
     }
 }
 
+/// A list of database side datatypes
+///
+/// This list closely mirrors the datatypes expected by diesel
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 #[non_exhaustive]
 pub enum OciDataType {
+    /// A boolean
     Bool,
+    /// A 2 byte integer
     SmallInt,
+    /// A 4 byte integer
     Integer,
+    /// A 8 byte integer
     BigInt,
+    /// A 4 byte floating point values
     Float,
+    /// A 8 byte floating point value
     Double,
+    /// A text value
     Text,
+    /// A binary value
     Binary,
+    /// A date value
     Date,
+    /// A time value
     Time,
+    /// A timestamp value
     Timestamp,
 }
 
@@ -118,6 +133,14 @@ impl HasSqlType<Bool> for Oracle {
     fn metadata(_: &mut Self::MetadataLookup) -> Self::TypeMetadata {
         OciTypeMetadata {
             tpe: OciDataType::Bool,
+        }
+    }
+}
+
+impl HasSqlType<Date> for Oracle {
+    fn metadata(_: &mut Self::MetadataLookup) -> Self::TypeMetadata {
+        OciTypeMetadata {
+            tpe: OciDataType::Date,
         }
     }
 }

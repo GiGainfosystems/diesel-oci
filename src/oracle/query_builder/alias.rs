@@ -3,7 +3,12 @@ use super::Oracle;
 use diesel::query_builder::{AstPass, QueryFragment, QueryId};
 use diesel::result::QueryResult;
 
+/// Create an alias for a given expression
+///
+/// This is a helper to provide aliasing support while it's not in diesel itself
+/// It probably needs improvements before something like this can be merged to diesel
 pub trait Alias: Sized {
+    /// Create an alias with the given name
     fn alias(self, alias: String) -> As<Self>;
 }
 

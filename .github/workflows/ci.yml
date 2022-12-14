@@ -91,4 +91,4 @@ jobs:
           toolchain: ${{ matrix.rust_toolchain }}
 
       - name: cargo test
-        run: cargo +${{ matrix.rust_toolchain }} test -- --test-threads=1
+        run: cargo +${{ matrix.rust_toolchain }} test --features "r2d2 chrono dynamic-schema" -- --test-threads=1

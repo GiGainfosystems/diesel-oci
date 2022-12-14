@@ -12,6 +12,8 @@ readme = "README.md"
 keywords = ["diesel", "oci", "oracle", "sql"]
 categories = ["database"]
 edition = "2021"
+repository = "https://github.com/GiGainfosystems/diesel-oci/"
+documentation = "https://docs.rs/diesel-oci"
 
 [dependencies]
 oracle = {version = "0.5.6", features = ["chrono"]}

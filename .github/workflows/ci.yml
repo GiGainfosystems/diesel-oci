@@ -1,0 +1,94 @@
+name: Run tests
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - master
+
+# See: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#concurrency.
+# This will ensure that only one commit will be running tests at a time on each PR.
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+
+jobs:
+  rustfmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+      - name: Rustfmt check
+        run: cargo +stable fmt --all -- --check
+  clippy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - name: Clippy
+        run: cargo +stable clippy --all-features
+  tests:
+    needs:
+      - rustfmt
+      - clippy
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        rust_toolchain: ["stable", "beta", "nightly"]
+
+    runs-on: ${{ matrix.os }}
+
+    services:
+      oracle:
+        image: gvenzl/oracle-xe:latest
+        env:
+          ORACLE_PASSWORD: sys_passwd
+          APP_USER: diesel_oci
+          APP_USER_PASSWORD: diesel_oci
+        ports:
+          - 1521:1521
+        options: >-
+          --health-cmd healthcheck.sh
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install the latest Oracle instant client
+        run: |
+          curl -Lo basic.zip https://download.oracle.com/otn_software/linux/instantclient/instantclient-basic-linuxx64.zip
+          curl -Lo sqlplus.zip https://download.oracle.com/otn_software/linux/instantclient/instantclient-sqlplus-linuxx64.zip
+          mkdir linux
+          unzip basic.zip -d linux
+          unzip sqlplus.zip -d linux
+          IC_DIR=$PWD/$(ls -d linux/instantclient*)
+          mkdir windows
+          echo LD_LIBRARY_PATH=$IC_DIR:$LD_LIBRARY_PATH >> $GITHUB_ENV
+          echo $IC_DIR >> $GITHUB_PATH
+      - name: Get the Oracle container IP address
+        env:
+          ORACLE_SERVICE_ID: ${{ job.services.oracle.id }}
+        run: |
+          ORACLE_IP_ADDRESS=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{println .IPAddress}}{{end}}' $ORACLE_SERVICE_ID)
+          if test -z "$ORACLE_IP_ADDRESS"; then
+              echo "Cannot get ORACLE_IP_ADDRESS."
+              docker inspect $ORACLE_SERVICE_ID
+              exit 1
+          fi
+          echo TWO_TASK=//$ORACLE_IP_ADDRESS:1521/XEPDB1 >> $GITHUB_ENV
+          echo ODPIC_TEST_CONNECT_STRING=//$ORACLE_IP_ADDRESS:1521/XEPDB1 >> $GITHUB_ENV
+          echo NLS_LANG=AMERICAN_AMERICA.AL32UTF8 >> $GITHUB_ENV
+          echo OCI_DATABASE_URL=oracle://diesel_oci:diesel_oci@$ORACLE_IP_ADDRESS:1521/XEPDB1 >> $GITHUB_ENV
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.rust_toolchain }}
+
+      - name: cargo test
+        run: cargo +${{ matrix.rust_toolchain }} test --features "r2d2 chrono dynamic-schema" -- --test-threads=1

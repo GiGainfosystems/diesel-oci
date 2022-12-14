@@ -1,7 +1,6 @@
+use std::fmt::Write;
 use std::marker::PhantomData;
 use std::rc::Rc;
-
-use crate::oracle::connection::stmt_iter::RowIter;
 
 use self::bind_collector::OracleBindCollector;
 use self::row::OciRow;
@@ -9,16 +8,18 @@ use self::transaction::OCITransactionManager;
 use super::backend::Oracle;
 use super::query_builder::OciQueryBuilder;
 use super::OciDataType;
-use diesel::connection::ConnectionGatWorkaround;
+use crate::oracle::connection::stmt_iter::RowIter;
 use diesel::connection::{Connection, SimpleConnection, TransactionManager};
+use diesel::connection::{ConnectionGatWorkaround, LoadConnection};
 use diesel::deserialize::FromSql;
 use diesel::expression::QueryMetadata;
+use diesel::insertable::{CanInsertInSingleQuery, InsertValues};
 use diesel::migration::MigrationConnection;
-use diesel::query_builder::QueryId;
-use diesel::query_builder::{AsQuery, QueryBuilder, QueryFragment};
-use diesel::result::*;
+use diesel::query_builder::{AsQuery, BatchInsert, QueryBuilder, QueryFragment};
+use diesel::query_builder::{InsertStatement, QueryId, ValuesClause};
 use diesel::sql_types::HasSqlType;
 use diesel::RunQueryDsl;
+use diesel::{result::*, Table};
 
 mod oracle_value;
 pub(crate) use self::oracle_value::InnerValue;
@@ -29,6 +30,118 @@ mod row;
 mod stmt_iter;
 mod transaction;
 
+/// Connections for the Oracle backend. The following connection url schema is supported:
+///
+/// `oracle://user:password@host:[port]/database`
+///
+/// where:
+///
+///  * `user` is your username
+///  * `password` is the corresponding password
+///  * `host` is the hostname/ip address of the database server
+///  * `port` is an optional port number
+///  * `database` is your database name
+///
+/// # Supported loading model implementations
+///
+/// * [`DefaultLoadingMode`]
+///
+/// As `OciConnection` only supports a single loading mode implementation
+/// it is **not required** to explicitly specify a loading mode
+/// when calling [`RunQueryDsl::load_iter()`] or [`LoadConnection::load`]
+///
+/// [`RunQueryDsl::load_iter()`]: diesel::query_dsl::RunQueryDsl::load_iter
+///
+/// ## DefaultLoadingMode
+///
+/// `OciConnection` only supports a single loading mode, which internally loads
+/// all values at once.
+///
+/// ```no_run
+/// # use diesel_oci::OciConnection;
+/// # use diesel::prelude::*;
+/// #
+/// # fn establish_connection() -> OciConnection {
+/// #    OciConnection::establish("…").unwrap()
+/// # }
+/// #
+/// # table! {
+/// #    users {
+/// #        id -> Integer,
+/// #        name -> Text,
+/// #    }
+/// # }
+/// #
+/// # fn main() {
+/// #     run_test().unwrap();
+/// # }
+/// #
+/// # fn run_test() -> QueryResult<()> {
+/// #     use self::users;
+/// #     let connection = &mut establish_connection();
+/// use diesel::connection::DefaultLoadingMode;
+/// { // scope to restrict the lifetime of the iterator
+///     let iter1 = users::table.load_iter::<(i32, String), DefaultLoadingMode>(connection)?;
+///
+///     for r in iter1 {
+///         let (id, name) = r?;
+///         println!("Id: {} Name: {}", id, name);
+///     }
+/// }
+///
+/// // works without specifying the loading mode
+/// let iter2 = users::table.load_iter::<(i32, String), _>(connection)?;
+///
+/// for r in iter2 {
+///     let (id, name) = r?;
+///     println!("Id: {} Name: {}", id, name);
+/// }
+/// #   Ok(())
+/// # }
+/// ```
+///
+/// This mode does support creating
+/// multiple iterators using the same connection.
+///
+/// ```no_run
+/// # use diesel_oci::OciConnection;
+/// # use diesel::prelude::*;
+/// #
+/// # fn establish_connection() -> OciConnection {
+/// #    OciConnection::establish("…").unwrap()
+/// # }
+/// #
+/// # table! {
+/// #    users {
+/// #        id -> Integer,
+/// #        name -> Text,
+/// #    }
+/// # }
+/// #
+/// # fn main() {
+/// #     run_test().unwrap();
+/// # }
+/// #
+/// # fn run_test() -> QueryResult<()> {
+/// #     use self::users;
+/// #     let connection = &mut establish_connection();
+/// use diesel::connection::DefaultLoadingMode;
+///
+/// let iter1 = users::table.load_iter::<(i32, String), DefaultLoadingMode>(connection)?;
+/// let iter2 = users::table.load_iter::<(i32, String), DefaultLoadingMode>(connection)?;
+///
+/// for r in iter1 {
+///     let (id, name) = r?;
+///     println!("Id: {} Name: {}", id, name);
+/// }
+///
+/// for r in iter2 {
+///     let (id, name) = r?;
+///     println!("Id: {} Name: {}", id, name);
+/// }
+/// #   Ok(())
+/// # }
+/// ```
 pub struct OciConnection {
     raw: oracle::Connection,
     transaction_manager: OCITransactionManager,
@@ -109,7 +222,7 @@ unsafe impl Send for OciConnection {}
 
 impl SimpleConnection for OciConnection {
     fn batch_execute(&mut self, query: &str) -> QueryResult<()> {
-        self.raw.execute(&query, &[]).map_err(ErrorHelper::from)?;
+        self.raw.execute(query, &[]).map_err(ErrorHelper::from)?;
         Ok(())
     }
 }
@@ -162,11 +275,11 @@ impl Connection for OciConnection {
 
         let mut url = host.to_owned();
         if let Some(port) = port {
-            url += &format!(":{}", port);
+            write!(url, ":{}", port).expect("Write to string does not fail");
         }
         url += path;
 
-        let mut raw = oracle::Connection::connect(dbg!(user), dbg!(password), dbg!(url))
+        let mut raw = oracle::Connection::connect(user, password, url)
             .map_err(ErrorHelper::from)
             .map_err(|e| ConnectionError::CouldntSetupConfiguration(e.into()))?;
 
@@ -188,8 +301,12 @@ impl Connection for OciConnection {
         source.to_sql(&mut qb, &Oracle)?;
 
         let conn = &self.raw;
-
-        let mut stmt = conn.prepare(&qb.finish(), &[]).map_err(ErrorHelper::from)?;
+        let sql = qb.finish();
+        let mut stmt = conn.statement(&sql);
+        if !source.is_safe_to_cache_prepared(&Oracle)? {
+            stmt.exclude_from_cache();
+        }
+        let mut stmt = stmt.build().map_err(ErrorHelper::from)?;
         let mut bind_collector = OracleBindCollector::default();
 
         source.collect_binds(&mut bind_collector, &mut (), &Oracle)?;
@@ -210,6 +327,28 @@ impl Connection for OciConnection {
         Ok(stmt.row_count().map_err(ErrorHelper::from)? as usize)
     }
 
+    fn transaction_state(
+        &mut self,
+    ) -> &mut <Self::TransactionManager as TransactionManager<Self>>::TransactionStateData {
+        &mut self.transaction_manager
+    }
+
+    fn begin_test_transaction(&mut self) -> QueryResult<()> {
+        match Self::TransactionManager::transaction_manager_status_mut(self) {
+            diesel::connection::TransactionManagerStatus::Valid(valid_status) => {
+                assert_eq!(None, valid_status.transaction_depth())
+            }
+            diesel::connection::TransactionManagerStatus::InError => {
+                panic!("Transaction manager in error")
+            }
+        };
+        Self::TransactionManager::begin_transaction(self)?;
+        self.transaction_manager.is_test_transaction = true;
+        Ok(())
+    }
+}
+
+impl LoadConnection for OciConnection {
     fn load<'conn, 'query, T>(
         &'conn mut self,
         source: T,
@@ -246,12 +385,6 @@ impl Connection for OciConnection {
             }
         })
     }
-
-    fn transaction_state(
-        &mut self,
-    ) -> &mut <Self::TransactionManager as TransactionManager<Self>>::TransactionStateData {
-        &mut self.transaction_manager
-    }
 }
 
 struct ReturningClauseFromSqlHelper<T, ST>(T, PhantomData<ST>);
@@ -285,11 +418,13 @@ impl OciConnection {
     {
         let mut qb = OciQueryBuilder::default();
         query.to_sql(&mut qb, &Oracle)?;
-        let conn = &self.raw;
-        let stmt = conn
-            .statement(&qb.finish())
-            .build()
-            .map_err(ErrorHelper::from)?;
+        let query_string = qb.finish();
+        let is_safe_to_cache = query.is_safe_to_cache_prepared(&Oracle)?;
+        let mut stmt = self.raw.statement(&query_string);
+        if !is_safe_to_cache {
+            stmt.exclude_from_cache();
+        }
+        let stmt = stmt.build().map_err(ErrorHelper::from)?;
         let mut bind_collector = OracleBindCollector::default();
         query.collect_binds(&mut bind_collector, &mut (), &Oracle)?;
         callback(stmt, bind_collector)
@@ -335,7 +470,7 @@ impl OciConnection {
             .collect::<Vec<_>>();
 
         for (n, b) in &other_binds {
-            binds.push((&n, &*b));
+            binds.push((n, &*b));
         }
 
         stmt.execute_named(&binds).map_err(ErrorHelper::from)?;
@@ -466,12 +601,65 @@ impl OciConnection {
                 _ => unimplemented!(),
             }
         }
-        let data = data
-            .into_iter()
-            .map(|row| OciRow::new_from_value(row))
-            .collect();
+        let data = data.into_iter().map(OciRow::new_from_value).collect();
         Ok(RowIter::new(data))
     }
+
+    pub(crate) fn batch_insert<T, V, QId, Op, const STATIC_QUERY_ID: bool>(
+        &mut self,
+        stmt: InsertStatement<T, BatchInsert<Vec<ValuesClause<V, T>>, T, QId, STATIC_QUERY_ID>, Op>,
+    ) -> diesel::QueryResult<usize>
+    where
+        T: Table + Copy + QueryId + 'static,
+        T::FromClause: QueryFragment<Oracle>,
+        Op: Copy + QueryId + QueryFragment<Oracle>,
+        V: InsertValues<T, Oracle> + CanInsertInSingleQuery<Oracle> + QueryId,
+    {
+        let record_count = stmt.records.values.len();
+        let mut record_iter = stmt.records.values.iter().map(|records| {
+            InsertStatement::new(stmt.target, records, stmt.operator, stmt.returning)
+        });
+
+        if let Some(first_record) = record_iter.next() {
+            let mut qb = OciQueryBuilder::default();
+            first_record.to_sql(&mut qb, &Oracle)?;
+            let query_string = qb.finish();
+            let mut batch = self
+                .raw
+                .batch(&query_string, record_count)
+                .build()
+                .map_err(ErrorHelper::from)?;
+
+            bind_params_to_batch(first_record, &mut batch)?;
+            for record in record_iter {
+                bind_params_to_batch(record, &mut batch)?;
+            }
+            batch.execute().map_err(ErrorHelper::from)?;
+            Ok(record_count)
+        } else {
+            Ok(0)
+        }
+    }
+}
+
+fn bind_params_to_batch<'a, T, V, Op>(
+    record: InsertStatement<T, &'a ValuesClause<V, T>, Op>,
+    batch: &mut oracle::Batch,
+) -> Result<(), Error>
+where
+    T: Table + 'a,
+    V: 'a,
+    InsertStatement<T, &'a ValuesClause<V, T>, Op>: QueryFragment<Oracle>,
+{
+    let mut bind_collector = OracleBindCollector::default();
+    record.collect_binds(&mut bind_collector, &mut (), &Oracle)?;
+    let binds = bind_collector
+        .binds
+        .iter()
+        .map(|(n, b)| (n as &str, &**b))
+        .collect::<Vec<_>>();
+    batch.append_row_named(&binds).map_err(ErrorHelper::from)?;
+    Ok(())
 }
 
 impl Drop for OciConnection {
@@ -490,14 +678,18 @@ impl R2D2Connection for OciConnection {
     }
 
     fn is_broken(&mut self) -> bool {
-        match self.transaction_manager.status.transaction_depth() {
-            // all transactions are closed
-            // so we don't consider this connection broken
-            Ok(None) => false,
-            // The transaction manager is in an error state
-            // or contains an open transaction
-            // Therefore we consider this connection broken
-            Err(_) | Ok(Some(_)) => true,
-        }
+        // consider this connection as broken
+        // if the transaction manager is in an error state,
+        // contains an open transaction or the connection itself
+        // reports an open transaction
+        matches!(self.transaction_manager.status.transaction_depth(), Err(_))
+            || (matches!(
+                self.transaction_manager.status.transaction_depth(),
+                Ok(Some(_))
+            ) || self
+                .raw
+                .oci_attr::<oracle::oci_attr::TransactionInProgress>()
+                .unwrap_or(true))
+                && !self.transaction_manager.is_test_transaction
     }
 }

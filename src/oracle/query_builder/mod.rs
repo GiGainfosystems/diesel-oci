@@ -13,13 +13,15 @@ mod returning;
 
 pub use self::alias::Alias;
 
+/// The Oracle query builder
 #[derive(Default)]
 pub struct OciQueryBuilder {
-    pub sql: String,
+    pub(crate) sql: String,
     bind_idx: u32,
 }
 
 impl OciQueryBuilder {
+    /// Constructs a new query builder with an empty query
     pub fn new() -> Self {
         OciQueryBuilder {
             sql: String::new(),
@@ -36,7 +38,7 @@ impl QueryBuilder<Oracle> for OciQueryBuilder {
     fn push_identifier(&mut self, identifier: &str) -> Result<(), DieselError> {
         // TODO: check if there is a better way for escaping strings
         self.push_sql("\"");
-        self.push_sql(&identifier.replace("`", "``").to_uppercase());
+        self.push_sql(&identifier.replace('`', "``").to_uppercase());
         self.push_sql("\"");
         Ok(())
     }

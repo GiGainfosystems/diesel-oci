@@ -6,6 +6,7 @@ use super::connection::OracleValue;
 use super::query_builder::OciQueryBuilder;
 use super::types::OciTypeMetadata;
 
+/// The Oracle backend type
 #[derive(Debug, Hash, PartialEq, Eq, Default)]
 pub struct Oracle;
 
@@ -41,7 +42,9 @@ impl SqlDialect for Oracle {
     type EmptyFromClauseSyntax = OracleDualForEmptySelectClause;
     type ExistsSyntax = OracleExistsSyntax;
 
-    type ArrayComparision = sql_dialect::array_comparision::AnsiSqlArrayComparison;
+    type ConcatClause = sql_dialect::concat_clause::ConcatWithPipesClause;
+    type ArrayComparison = sql_dialect::array_comparison::AnsiSqlArrayComparison;
+    type SelectStatementSyntax = sql_dialect::select_statement_syntax::AnsiSqlSelectStatement;
 }
 
 pub struct OracleStyleBatchInsert;

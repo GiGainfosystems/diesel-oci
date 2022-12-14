@@ -1,5 +1,6 @@
 use crate::oracle::types::OciDataType;
 
+/// A unserialized value as received from the database
 #[derive(Debug, Clone)]
 pub struct OracleValue<'a> {
     pub(crate) inner: InnerValue<'a>,
@@ -31,6 +32,7 @@ impl<'a> OracleValue<'a> {
         }
     }
 
+    /// Get the datatype of the underlying value
     pub fn value_type(&self) -> OciDataType {
         use self::InnerValue::*;
 

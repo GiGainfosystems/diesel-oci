@@ -14,27 +14,28 @@ categories = ["database"]
 edition = "2021"
 
 [dependencies]
-oracle = {version = "0.5", features = ["chrono"]}
+oracle = {version = "0.5.6", features = ["chrono"]}
 url = "2"
 percent-encoding = "2"
 
 [dependencies.chrono-time]
 optional = true
+default-features = false
 version = "0.4"
 package = "chrono"
 
 [dependencies.diesel]
 default-features = false
-features = ["with-deprecated", "i-implement-a-third-party-backend-and-opt-into-breaking-changes"]
-version = "2.0.0-rc.0"
+features = ["i-implement-a-third-party-backend-and-opt-into-breaking-changes"]
+version = "~2.0.2"
 
 [dependencies.diesel_derives]
-version = "2.0.0-rc.0"
+version = "~2.0.0"
 
 [dependencies.diesel-dynamic-schema]
 optional = true
 default-features = false
-version = "0.2.0-rc.0"
+version = "0.2.0"
 
 [dev-dependencies]
 log = "0.4"
@@ -43,11 +44,9 @@ num = { version = "0.1", default-features = false }
 num-derive = "0.1"
 
 [features]
-default = ["chrono", "r2d2", "dynamic-schema"]
+default = []
 chrono = ["chrono-time", "diesel/chrono"]
 r2d2 = ["diesel/r2d2"]
 dynamic-schema = ["diesel-dynamic-schema"]
 gst = []
 
-[patch.crates-io]
-diesel = { git = "https://github.com/weiznich/diesel", rev = "a69e8d461523b2fdbaee22dceeaa3f53ad3eca01" }

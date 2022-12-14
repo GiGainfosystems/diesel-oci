@@ -5,14 +5,9 @@ use diesel::query_builder::BindCollector;
 use diesel::sql_types::HasSqlType;
 use std::ops::Deref;
 
+#[derive(Default)]
 pub struct OracleBindCollector<'a> {
     pub(crate) binds: Vec<(String, BindValue<'a>)>,
-}
-
-impl<'a> Default for OracleBindCollector<'a> {
-    fn default() -> Self {
-        Self { binds: Vec::new() }
-    }
 }
 
 pub enum BindValue<'a> {
@@ -74,5 +69,14 @@ impl<'a> BindCollector<'a, Oracle> for OracleBindCollector<'a> {
         self.binds.push((format!("in{}", len), out));
 
         Ok(())
+    }
+}
+
+impl<'a, T> From<T> for BindValue<'a>
+where
+    T: oracle::sql_type::ToSql + 'static,
+{
+    fn from(t: T) -> Self {
+        Self::Owned(Box::new(t))
     }
 }

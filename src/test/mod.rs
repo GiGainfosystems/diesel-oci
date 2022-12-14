@@ -381,7 +381,7 @@ fn test_diesel_migration() {
     let migrations = expected.iter().map(|m| version.eq(*m)).collect::<Vec<_>>();
 
     let ret = ::diesel::insert_into(__diesel_schema_migrations).values(&migrations);
-    dbg!(diesel::debug_query::<Oracle, _>(&ret));
+
     let ret = ret.execute(&mut conn);
     assert_result!(ret);
 
@@ -1468,7 +1468,7 @@ fn systable() {
 #[test]
 fn exists() {
     let mut conn = init_testing();
-
+    create_gst_types_table(&mut conn);
     use self::all_tables;
 
     use diesel::dsl::exists;
@@ -1476,7 +1476,7 @@ fn exists() {
 
     let ret = diesel::select(exists(
         all_tables::table
-            .filter(all_tables::table_name.eq("GEOMETRIES"))
+            .filter(all_tables::table_name.eq("GST_TYPES"))
             .select(all_tables::owner),
     ));
     dbg!(diesel::debug_query::<Oracle, _>(&ret));
@@ -2173,9 +2173,9 @@ fn use_named_queries_aliased() {
 
 #[derive(QueryableByName)]
 #[diesel(table_name = test)]
-#[allow(non_snake_case)]
 struct Foo {
-    TST_CHR: Option<String>,
+    #[diesel(column_name = "TST_CHR")]
+    tst_chr: Option<String>,
 }
 
 #[test]
@@ -2219,8 +2219,8 @@ fn use_named_queries() {
     let ret = ret.unwrap();
     assert_eq!(ret.len(), v.len());
     for (i, r) in ret.iter().enumerate() {
-        assert!(r.TST_CHR.is_some());
-        let tst_chr = r.TST_CHR.clone().unwrap();
+        assert!(r.tst_chr.is_some());
+        let tst_chr = r.tst_chr.clone().unwrap();
         assert_eq!(tst_chr, v[i]);
     }
 }
@@ -2269,6 +2269,129 @@ fn insert_returning_gst_types() {
     assert_eq!(result.byte, Some(byte_val));
     assert_eq!(result.text, Some(text_val));
     // No tz test, because we don't store the subsec part.
+}
+
+#[test]
+fn batch_insert_1() {
+    let mut conn = init_testing();
+    create_gst_types_table(&mut conn);
+
+    let res = gst_types::table.load::<GSTTypes>(&mut conn).unwrap();
+
+    assert_eq!(res.len(), 0);
+
+    ::diesel::insert_into(gst_types::table)
+        .values(Newgst_types::new(
+            Some(1),
+            Some(2),
+            Some(3),
+            Some(4),
+            Some("foo".into()),
+            Some(b"bar".to_vec()),
+            Some(1.23),
+            Some(3.14),
+            Some("bac".into()),
+        ))
+        .execute(&mut conn)
+        .unwrap();
+
+    let res = gst_types::table.load::<GSTTypes>(&mut conn).unwrap();
+
+    assert_eq!(res.len(), 1);
+    assert_eq!(res[0].big, Some(1));
+    assert_eq!(res[0].big2, Some(2));
+    assert_eq!(res[0].small, Some(3));
+    assert_eq!(res[0].normal, Some(4));
+    assert_eq!(res[0].text, Some("foo".to_owned()));
+    assert_eq!(res[0].byte, Some(b"bar".to_vec()));
+    assert_eq!(res[0].d, Some(1.23));
+    assert_eq!(res[0].r, Some(3.14));
+    assert_eq!(res[0].v, Some("bac".to_owned()));
+
+    let res = ::diesel::delete(gst_types::table)
+        .execute(&mut conn)
+        .unwrap();
+
+    assert_eq!(res, 1);
+
+    let res = diesel::insert_into(gst_types::table)
+        .values(Vec::<Newgst_types>::new())
+        .execute(&mut conn)
+        .unwrap();
+
+    assert_eq!(res, 0);
+
+    let query = diesel::insert_into(gst_types::table).values(vec![
+        Newgst_types::new(
+            Some(1),
+            Some(2),
+            Some(3),
+            Some(4),
+            Some("foo".into()),
+            Some(b"bar".to_vec()),
+            Some(1.23),
+            Some(3.14),
+            Some("bac".into()),
+        ),
+        Newgst_types::new(
+            Some(5),
+            Some(6),
+            Some(7),
+            Some(8),
+            Some("foo1".into()),
+            Some(b"bar1".to_vec()),
+            Some(1.2367),
+            Some(3.14676),
+            Some("back".into()),
+        ),
+    ]);
+    let res = query.execute(&mut conn).unwrap();
+
+    assert_eq!(res, 2);
+
+    let res = gst_types::table.load::<GSTTypes>(&mut conn).unwrap();
+
+    assert_eq!(res.len(), 2);
+    assert_eq!(res[0].big, Some(1));
+    assert_eq!(res[0].big2, Some(2));
+    assert_eq!(res[0].small, Some(3));
+    assert_eq!(res[0].normal, Some(4));
+    assert_eq!(res[0].text, Some("foo".to_owned()));
+    assert_eq!(res[0].byte, Some(b"bar".to_vec()));
+    assert_eq!(res[0].d, Some(1.23));
+    assert_eq!(res[0].r, Some(3.14));
+    assert_eq!(res[0].v, Some("bac".to_owned()));
+
+    assert_eq!(res[1].big, Some(5));
+    assert_eq!(res[1].big2, Some(6));
+    assert_eq!(res[1].small, Some(7));
+    assert_eq!(res[1].normal, Some(8));
+    assert_eq!(res[1].text, Some("foo1".to_owned()));
+    assert_eq!(res[1].byte, Some(b"bar1".to_vec()));
+    assert_eq!(res[1].d, Some(1.2367));
+    assert_eq!(res[1].r, Some(3.14676));
+    assert_eq!(res[1].v, Some("back".to_owned()));
+
+    let res = diesel::delete(gst_types::table).execute(&mut conn).unwrap();
+    assert_eq!(res, 2);
+
+    let res = diesel::insert_into(gst_types::table)
+        .values(vec![
+            (gst_types::small.eq(6), gst_types::big.eq(5)),
+            (gst_types::small.eq(42), gst_types::big.eq(-3)),
+        ])
+        .execute(&mut conn)
+        .unwrap();
+
+    assert_eq!(res, 2);
+
+    let res = gst_types::table.load::<GSTTypes>(&mut conn).unwrap();
+
+    assert_eq!(res.len(), 2);
+    assert_eq!(res[0].small, Some(6));
+    assert_eq!(res[0].big, Some(5));
+    assert_eq!(res[1].small, Some(42));
+    assert_eq!(res[1].big, Some(-3));
 }
 
 #[cfg(feature = "dynamic-schema")]

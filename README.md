@@ -5,7 +5,7 @@ A Oracle SQL database backend implementation for
 
 ## Status:
 
-- [x] Builds with Diesel 2.0.0-rc.1.
+- [x] Builds with Diesel 2.0.0.
 - [x] Support for DML statements (`SELECT`, `INSERT`, `UPDATE`, `DELETE`).
 - [x] Support for Diesel `sql_types`: `Bool`, `SmallInt`,
       `Integer`, `Bigint`, `Float`, `Double`, `Date`, `Time`, `Timestamp`.

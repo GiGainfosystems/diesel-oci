@@ -12,14 +12,8 @@ pub struct Oracle;
 
 impl Backend for Oracle {
     type QueryBuilder = OciQueryBuilder;
-}
-
-impl<'a> HasBindCollector<'a> for Oracle {
-    type BindCollector = OracleBindCollector<'a>;
-}
-
-impl<'a> HasRawValue<'a> for Oracle {
-    type RawValue = OracleValue<'a>;
+    type BindCollector<'a> = OracleBindCollector<'a>;
+    type RawValue<'a> = OracleValue<'a>;
 }
 
 impl TypeMetadata for Oracle {

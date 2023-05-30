@@ -1,7 +1,7 @@
 use std::rc::Rc;
 
 use crate::oracle::backend::Oracle;
-use diesel::row::{self, Row, RowGatWorkaround, RowIndex};
+use diesel::row::{self, Row, RowIndex, RowSealed};
 
 use super::oracle_value::OracleValue;
 
@@ -51,18 +51,20 @@ impl<'a> RowIndex<&'a str> for OciRow {
     }
 }
 
-impl<'a> RowGatWorkaround<'a, Oracle> for OciRow {
-    type Field = OciField<'a>;
-}
+impl RowSealed for OciRow {}
 
 impl<'a> Row<'a, Oracle> for OciRow {
     type InnerPartialRow = Self;
+    type Field<'f> = OciField<'f>
+    where
+        'a: 'f,
+        Self: 'f;
 
     fn field_count(&self) -> usize {
         self.row.len()
     }
 
-    fn get<'row, I>(&'row self, idx: I) -> Option<<Self as RowGatWorkaround<'row, Oracle>>::Field>
+    fn get<'row, I>(&'row self, idx: I) -> Option<OciField<'row>>
     where
         'a: 'row,
         Self: diesel::row::RowIndex<I>,
@@ -92,7 +94,7 @@ impl<'a> row::Field<'a, Oracle> for OciField<'a> {
         self.column_info.map(|c| c.name())
     }
 
-    fn value(&self) -> Option<diesel::backend::RawValue<'a, Oracle>> {
+    fn value(&self) -> Option<OracleValue<'_>> {
         self.field_value.clone()
     }
 

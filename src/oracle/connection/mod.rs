@@ -10,10 +10,11 @@ use super::query_builder::OciQueryBuilder;
 use super::OciDataType;
 use crate::oracle::connection::stmt_iter::RowIter;
 use diesel::connection::{Connection, SimpleConnection, TransactionManager};
-use diesel::connection::{ConnectionGatWorkaround, LoadConnection};
+use diesel::connection::{LoadConnection, MultiConnectionHelper};
 use diesel::deserialize::FromSql;
 use diesel::expression::QueryMetadata;
 use diesel::insertable::{CanInsertInSingleQuery, InsertValues};
+use diesel::internal::derives::multiconnection::ConnectionSealed;
 use diesel::migration::MigrationConnection;
 use diesel::query_builder::{AsQuery, BatchInsert, QueryBuilder, QueryFragment};
 use diesel::query_builder::{InsertStatement, QueryId, ValuesClause};
@@ -206,6 +207,21 @@ impl From<ErrorHelper> for diesel::result::Error {
     }
 }
 
+impl ConnectionSealed for OciConnection {}
+impl MultiConnectionHelper for OciConnection {
+    fn to_any<'a>(
+        lookup: &mut <Self::Backend as diesel::sql_types::TypeMetadata>::MetadataLookup,
+    ) -> &mut (dyn std::any::Any + 'a) {
+        lookup
+    }
+
+    fn from_any(
+        lookup: &mut dyn std::any::Any,
+    ) -> Option<&mut <Self::Backend as diesel::sql_types::TypeMetadata>::MetadataLookup> {
+        lookup.downcast_mut()
+    }
+}
+
 impl MigrationConnection for OciConnection {
     fn setup(&mut self) -> QueryResult<usize> {
         diesel::sql_query(include_str!("define_create_if_not_exists.sql")).execute(self)?;
@@ -225,11 +241,6 @@ impl SimpleConnection for OciConnection {
         self.raw.execute(query, &[]).map_err(ErrorHelper::from)?;
         Ok(())
     }
-}
-
-impl<'conn, 'query> ConnectionGatWorkaround<'conn, 'query, Oracle> for OciConnection {
-    type Cursor = RowIter;
-    type Row = OciRow;
 }
 
 impl Connection for OciConnection {
@@ -349,10 +360,10 @@ impl Connection for OciConnection {
 }
 
 impl LoadConnection for OciConnection {
-    fn load<'conn, 'query, T>(
-        &'conn mut self,
-        source: T,
-    ) -> QueryResult<<Self as ConnectionGatWorkaround<'conn, 'query, Oracle>>::Cursor>
+    type Cursor<'conn, 'query> = RowIter;
+    type Row<'conn, 'query> = OciRow;
+
+    fn load<'conn, 'query, T>(&'conn mut self, source: T) -> QueryResult<RowIter>
     where
         T: AsQuery,
         T::Query: QueryFragment<Self::Backend> + QueryId + 'query,

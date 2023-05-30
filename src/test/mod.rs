@@ -1,10 +1,10 @@
 extern crate chrono_time as chrono;
-extern crate dotenv;
+extern crate dotenvy;
 
 use crate::oracle::connection::bind_collector::BindValue;
 
 use self::chrono::{NaiveDateTime, Utc};
-use self::dotenv::dotenv;
+use self::dotenvy::dotenv;
 use super::oracle::connection::OciConnection;
 use crate::oracle::backend::Oracle;
 use crate::oracle::connection::OracleValue;

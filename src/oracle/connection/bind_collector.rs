@@ -53,7 +53,7 @@ impl<'a> BindCollector<'a, Oracle> for OracleBindCollector<'a> {
     ) -> diesel::QueryResult<()>
     where
         Oracle: HasSqlType<T>,
-        U: diesel::serialize::ToSql<T, Oracle> + 'a,
+        U: diesel::serialize::ToSql<T, Oracle> + ?Sized + 'a,
     {
         let OciTypeMetadata { tpe: ty } = Oracle::metadata(metadata_lookup);
 

@@ -132,4 +132,17 @@ impl TransactionManager<OciConnection> for OCITransactionManager {
     ) -> &mut diesel::connection::TransactionManagerStatus {
         &mut conn.transaction_manager.status
     }
+
+    fn is_broken_transaction_manager(conn: &mut OciConnection) -> bool {
+        let transaction_depth = Self::get_transaction_depth(conn);
+
+        match transaction_depth {
+            Err(_) => true,
+            Ok(None) => false,
+            Ok(Some(v)) if conn.transaction_manager.is_test_transaction && u32::from(v) == 1 => {
+                false
+            }
+            Ok(Some(_)) => true,
+        }
+    }
 }

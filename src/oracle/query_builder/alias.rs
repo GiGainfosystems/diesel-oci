@@ -54,3 +54,17 @@ where
         out.push_identifier(&self.alias)
     }
 }
+
+impl<S> QueryFragment<Oracle, crate::oracle::backend::OracleAliasSyntax>
+    for diesel::query_source::Alias<S>
+where
+    S: diesel::query_source::AliasSource,
+    S::Target: QueryFragment<Oracle>,
+{
+    fn walk_ast<'b>(&'b self, mut pass: AstPass<'_, 'b, Oracle>) -> QueryResult<()> {
+        self.source.target().walk_ast(pass.reborrow())?;
+        pass.push_sql(" ");
+        pass.push_identifier(S::NAME)?;
+        Ok(())
+    }
+}

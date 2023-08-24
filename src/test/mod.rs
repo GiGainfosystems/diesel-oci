@@ -2394,5 +2394,43 @@ fn batch_insert_1() {
     assert_eq!(res[1].big, Some(-3));
 }
 
+#[test]
+fn alias() {
+    let mut conn = init_testing();
+    create_gst_types_table(&mut conn);
+
+    ::diesel::insert_into(gst_types::table)
+        .values(Newgst_types::new(
+            Some(1),
+            Some(2),
+            Some(3),
+            Some(4),
+            Some("foo".into()),
+            Some(b"bar".to_vec()),
+            Some(1.23),
+            Some(3.14),
+            Some("bac".into()),
+        ))
+        .execute(&mut conn)
+        .unwrap();
+
+    let test_alias = diesel::alias!(gst_types as test_alias);
+    let res = test_alias
+        .filter(test_alias.field(gst_types::big).eq(1))
+        .load::<GSTTypes>(&mut conn)
+        .unwrap();
+
+    assert_eq!(res.len(), 1);
+    assert_eq!(res[0].big, Some(1));
+    assert_eq!(res[0].big2, Some(2));
+    assert_eq!(res[0].small, Some(3));
+    assert_eq!(res[0].normal, Some(4));
+    assert_eq!(res[0].text, Some("foo".to_owned()));
+    assert_eq!(res[0].byte, Some(b"bar".to_vec()));
+    assert_eq!(res[0].d, Some(1.23));
+    assert_eq!(res[0].r, Some(3.14));
+    assert_eq!(res[0].v, Some("bac".to_owned()));
+}
+
 #[cfg(feature = "dynamic-schema")]
 mod dynamic_select;

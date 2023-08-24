@@ -39,9 +39,11 @@ impl SqlDialect for Oracle {
     type ConcatClause = sql_dialect::concat_clause::ConcatWithPipesClause;
     type ArrayComparison = sql_dialect::array_comparison::AnsiSqlArrayComparison;
     type SelectStatementSyntax = sql_dialect::select_statement_syntax::AnsiSqlSelectStatement;
+    type AliasSyntax = OracleAliasSyntax;
 }
 
 pub struct OracleStyleBatchInsert;
 pub struct OracleReturningClause;
 pub struct OracleDualForEmptySelectClause;
 pub struct OracleExistsSyntax;
+pub struct OracleAliasSyntax;

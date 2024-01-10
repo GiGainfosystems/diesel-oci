@@ -18,7 +18,9 @@ where
     }
 }
 
+/// TODO
 pub trait BindColumnList {
+    #[doc(hidden)]
     fn bind_column_list(out: AstPass<Oracle>) -> diesel::QueryResult<()>;
 }
 

@@ -18,6 +18,7 @@ impl<T> Alias for T {
     }
 }
 
+/// Return type of [`Alias::alias`]
 #[derive(Debug, Clone, QueryId)]
 pub struct As<T> {
     query: T,

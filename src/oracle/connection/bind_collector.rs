@@ -70,6 +70,16 @@ impl<'a> BindCollector<'a, Oracle> for OracleBindCollector<'a> {
 
         Ok(())
     }
+
+    fn push_null_value(
+        &mut self,
+        metadata: <Oracle as diesel::sql_types::TypeMetadata>::TypeMetadata,
+    ) -> diesel::prelude::QueryResult<()> {
+        let len = self.binds.len();
+        self.binds
+            .push((format!("in{}", len), BindValue::NotSet(metadata.tpe)));
+        Ok(())
+    }
 }
 
 impl<'a, T> From<T> for BindValue<'a>

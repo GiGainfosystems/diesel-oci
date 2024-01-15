@@ -2,6 +2,8 @@ use std::num::NonZeroU32;
 
 use super::ErrorHelper;
 use super::OciConnection;
+use diesel::connection::Instrumentation;
+use diesel::connection::InstrumentationEvent;
 use diesel::connection::SimpleConnection;
 use diesel::connection::TransactionDepthChange;
 use diesel::connection::TransactionManager;
@@ -61,6 +63,11 @@ impl TransactionManager<OciConnection> for OCITransactionManager {
 
     fn begin_transaction(conn: &mut OciConnection) -> QueryResult<()> {
         let transaction_depth = Self::get_transaction_depth(conn)?;
+        conn.instrumentation
+            .on_connection_event(InstrumentationEvent::begin_transaction(
+                NonZeroU32::new(transaction_depth.map_or(0, NonZeroU32::get).wrapping_add(1))
+                    .expect("Transaction depth is too large"),
+            ));
         match transaction_depth {
             None => {
                 conn.raw.set_autocommit(false);
@@ -77,6 +84,10 @@ impl TransactionManager<OciConnection> for OCITransactionManager {
         // c.f. https://docs.oracle.com/cd/E25054_01/server.1111/e25789/transact.htm#sthref1318
         let transaction_depth = Self::get_transaction_depth(conn)?;
         let mut mark_as_broken = false;
+        if let Some(depth) = transaction_depth {
+            conn.instrumentation
+                .on_connection_event(InstrumentationEvent::rollback_transaction(depth));
+        }
         match transaction_depth.map(|d| d.into()) {
             Some(1) => {
                 let res = conn
@@ -106,6 +117,10 @@ impl TransactionManager<OciConnection> for OCITransactionManager {
 
     fn commit_transaction(conn: &mut OciConnection) -> QueryResult<()> {
         let transaction_depth = Self::get_transaction_depth(conn)?;
+        if let Some(depth) = transaction_depth {
+            conn.instrumentation
+                .on_connection_event(InstrumentationEvent::commit_transaction(depth));
+        }
         // since oracle doesn't support nested transactions we only commit the outmost transaction
         // and not every inner transaction; if the outmost transaction fails everything will be
         // rolled back, every inner transaction can fail, but no be committed since it doesn't make

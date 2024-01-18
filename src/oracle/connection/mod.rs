@@ -241,8 +241,23 @@ unsafe impl Send for OciConnection {}
 
 impl SimpleConnection for OciConnection {
     fn batch_execute(&mut self, query: &str) -> QueryResult<()> {
-        self.raw.execute(query, &[]).map_err(ErrorHelper::from)?;
-        Ok(())
+        self.instrumentation
+            .on_connection_event(InstrumentationEvent::start_query(
+                &diesel::connection::StrQueryHelper::new(query),
+            ));
+        let r = self
+            .raw
+            .execute(query, &[])
+            .map_err(ErrorHelper::from)
+            .map_err(Into::into)
+            .map(|_| ());
+        self.instrumentation
+            .on_connection_event(InstrumentationEvent::finish_query(
+                &diesel::connection::StrQueryHelper::new(query),
+                r.as_ref().err(),
+            ));
+
+        r
     }
 }
 

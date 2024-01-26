@@ -54,4 +54,4 @@ dynamic-schema = ["diesel-dynamic-schema"]
 gst = []
 
 [patch.crates-io]
-diesel = { git = "https://github.com/weiznich/diesel", rev = "e632a7ca4fa12b76d7638392aeaff7522f57adef" }
+diesel = { git = "https://github.com/weiznich/diesel", rev = "548e0d73a0f2c207f1abf03f8f6741f5a9b1cb0b" }

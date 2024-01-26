@@ -11,7 +11,8 @@ mod exists;
 mod limit_offset;
 mod returning;
 
-pub use self::alias::Alias;
+pub use self::alias::{Alias, As};
+pub use self::returning::BindColumnList;
 
 /// The Oracle query builder
 #[derive(Default)]

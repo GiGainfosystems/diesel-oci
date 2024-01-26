@@ -18,7 +18,10 @@ where
     }
 }
 
+/// A helper trait to collect columns into output binds
+/// to support RETURNING clauses for Insert/Update/Delete statements
 pub trait BindColumnList {
+    #[doc(hidden)]
     fn bind_column_list(out: AstPass<Oracle>) -> diesel::QueryResult<()>;
 }
 

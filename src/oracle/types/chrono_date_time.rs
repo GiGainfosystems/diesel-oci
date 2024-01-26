@@ -1,4 +1,5 @@
 extern crate chrono_time as chrono;
+use chrono::NaiveTime;
 use diesel::deserialize::FromSql;
 use diesel::serialize::{IsNull, Output, ToSql};
 use diesel::sql_types::*;
@@ -53,5 +54,19 @@ impl ToSql<Date, Oracle> for NaiveDate {
     ) -> Result<IsNull, Box<dyn Error + Send + Sync>> {
         out.set_value(BindValue::Borrowed(self));
         Ok(IsNull::No)
+    }
+}
+
+impl ToSql<Time, Oracle> for NaiveTime {
+    fn to_sql<'b>(&'b self, _out: &mut Output<'b, '_, Oracle>) -> diesel::serialize::Result {
+        unimplemented!("No time support in the oracle crate yet")
+    }
+}
+
+impl FromSql<Time, Oracle> for NaiveTime {
+    fn from_sql(
+        _bytes: <Oracle as diesel::backend::Backend>::RawValue<'_>,
+    ) -> diesel::deserialize::Result<Self> {
+        unimplemented!("No time support in the oracle crate yet")
     }
 }

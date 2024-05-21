@@ -9,7 +9,7 @@ pub struct OracleValue<'a> {
 #[derive(Debug, Clone)]
 pub(crate) enum InnerValue<'a> {
     Raw {
-        raw_value: &'a oracle::SqlValue,
+        raw_value: &'a oracle::SqlValue<'a>,
         tpe: oracle::sql_type::OracleType,
     },
     SmallInt(i16),
@@ -171,6 +171,10 @@ impl<'a> OracleValue<'a> {
             }
             | Raw {
                 tpe: oracle::sql_type::OracleType::Json,
+                ..
+            }
+            | Raw {
+                tpe: oracle::sql_type::OracleType::Xml,
                 ..
             } => unimplemented!(),
             // e =>

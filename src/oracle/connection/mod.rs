@@ -23,6 +23,7 @@ use diesel::query_builder::{InsertStatement, QueryId, ValuesClause};
 use diesel::sql_types::HasSqlType;
 use diesel::RunQueryDsl;
 use diesel::{result::*, Table};
+use oracle::ErrorKind;
 
 mod oracle_value;
 pub(crate) use self::oracle_value::InnerValue;
@@ -161,51 +162,49 @@ impl From<oracle::Error> for ErrorHelper {
 
 impl From<ErrorHelper> for diesel::result::Error {
     fn from(ErrorHelper(e): ErrorHelper) -> Self {
-        match e {
-            oracle::Error::OciError(_) => {
+        match (e.kind(), e.db_error()) {
+            (ErrorKind::OciError, _) => {
                 // TODO: better handling here
                 diesel::result::Error::QueryBuilderError(e.into())
             }
-            oracle::Error::DpiError(_) => {
+            (ErrorKind::DpiError, _) => {
                 // TODO: better handling here
                 diesel::result::Error::QueryBuilderError(e.into())
             }
-            oracle::Error::NullValue => diesel::result::Error::DeserializationError(
+            (ErrorKind::NullValue, _) => diesel::result::Error::DeserializationError(
                 diesel::result::UnexpectedNullError.into(),
             ),
-            oracle::Error::ParseError(e) => diesel::result::Error::SerializationError(e),
-            oracle::Error::OutOfRange(e) => diesel::result::Error::DeserializationError(e.into()),
-            oracle::Error::InvalidTypeConversion(from, to) => {
-                diesel::result::Error::DeserializationError(
-                    format!("Cannot convert from {} to {}", from, to).into(),
-                )
+            (ErrorKind::ParseError, _) => diesel::result::Error::SerializationError(e.into()),
+            (ErrorKind::OutOfRange | ErrorKind::InvalidTypeConversion, _) => {
+                diesel::result::Error::DeserializationError(e.into())
             }
-            oracle::Error::InvalidBindIndex(e) => diesel::result::Error::QueryBuilderError(
+            (ErrorKind::InvalidBindIndex, Some(e)) => diesel::result::Error::QueryBuilderError(
                 format!("Invalid bind with index: {}", e).into(),
             ),
-            oracle::Error::InvalidBindName(e) => diesel::result::Error::QueryBuilderError(
+            (ErrorKind::InvalidBindName, Some(e)) => diesel::result::Error::QueryBuilderError(
                 format!("Invalid bind with name: {}", e).into(),
             ),
-            oracle::Error::InvalidColumnIndex(_) => diesel::result::Error::DeserializationError(
+            (ErrorKind::InvalidColumnIndex, _) => diesel::result::Error::DeserializationError(
                 diesel::result::UnexpectedEndOfRow.into(),
             ),
-            oracle::Error::InvalidColumnName(c) => diesel::result::Error::DeserializationError(
-                format!("Invalid column name: {}", c).into(),
+            (ErrorKind::InvalidColumnName, _) => diesel::result::Error::DeserializationError(
+                format!("Invalid column name: {}", e).into(),
             ),
-            oracle::Error::InvalidAttributeName(e) => diesel::result::Error::QueryBuilderError(
+            (ErrorKind::InvalidAttributeName, _) => diesel::result::Error::QueryBuilderError(
                 format!("Invalid attribute name: {}", e).into(),
             ),
-            oracle::Error::InvalidOperation(e) => {
+            (ErrorKind::InvalidOperation, _) => {
                 diesel::result::Error::QueryBuilderError(format!("Invalid operation: {}", e).into())
             }
-            oracle::Error::UninitializedBindValue => {
+            (ErrorKind::UninitializedBindValue, _) => {
                 diesel::result::Error::QueryBuilderError("Uninitialized bind value".into())
             }
-            oracle::Error::NoDataFound => diesel::result::Error::NotFound,
-            oracle::Error::InternalError(e) => diesel::result::Error::QueryBuilderError(e.into()),
-            oracle::Error::BatchErrors(_e) => {
+            (ErrorKind::NoDataFound, _) => diesel::result::Error::NotFound,
+            (ErrorKind::InternalError, _) => diesel::result::Error::QueryBuilderError(e.into()),
+            (ErrorKind::BatchErrors, _) => {
                 diesel::result::Error::QueryBuilderError("Batch error".into())
             }
+            _ => unimplemented!(),
         }
     }
 }
@@ -405,7 +404,7 @@ impl OciConnection {
     fn with_prepared_statement<'conn, 'query, T, R>(
         &'conn mut self,
         query: &T,
-        callback: impl FnOnce(oracle::Statement<'conn>, OracleBindCollector) -> QueryResult<R>,
+        callback: impl FnOnce(oracle::Statement, OracleBindCollector) -> QueryResult<R>,
     ) -> Result<R, Error>
     where
         T: QueryFragment<Oracle> + QueryId + 'query,

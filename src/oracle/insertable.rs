@@ -189,7 +189,7 @@ where
     T: Table + Copy + QueryId + 'static,
     T::FromClause: QueryFragment<Oracle>,
     Op: Copy + QueryId + QueryFragment<Oracle>,
-    V: InsertValues<T, Oracle> + CanInsertInSingleQuery<Oracle> + QueryId,
+    V: InsertValues<Oracle, T> + CanInsertInSingleQuery<Oracle> + QueryId,
 {
     fn execute((Yes, query): Self, conn: &mut OciConnection) -> QueryResult<usize> {
         conn.transaction(|conn| conn.batch_insert(query))
@@ -208,7 +208,7 @@ impl<V, Tab, QId, const STATIC_QUERY_ID: bool> QueryFragment<Oracle>
 where
     ValuesClause<V, Tab>: QueryFragment<Oracle>,
     Tab: Table,
-    V: QueryFragment<Oracle> + InsertValues<Tab, Oracle>,
+    V: QueryFragment<Oracle> + InsertValues<Oracle, Tab>,
 {
     fn walk_ast<'b>(&'b self, mut out: AstPass<'_, 'b, Oracle>) -> QueryResult<()> {
         if !STATIC_QUERY_ID {

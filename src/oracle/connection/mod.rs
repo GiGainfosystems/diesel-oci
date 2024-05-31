@@ -606,7 +606,7 @@ impl OciConnection {
         T: Table + Copy + QueryId + 'static,
         T::FromClause: QueryFragment<Oracle>,
         Op: Copy + QueryId + QueryFragment<Oracle>,
-        V: InsertValues<T, Oracle> + CanInsertInSingleQuery<Oracle> + QueryId,
+        V: InsertValues<Oracle, T> + CanInsertInSingleQuery<Oracle> + QueryId,
     {
         let record_count = stmt.records.values.len();
         let mut record_iter = stmt.records.values.iter().map(|records| {

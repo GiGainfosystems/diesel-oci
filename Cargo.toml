@@ -5,7 +5,7 @@ authors = [
     "Daniel Buse <daniel.buse@giga-infosystems.com>",
 ]
 name = "diesel-oci"
-version = "0.2.1"
+version = "0.3.0"
 license = "MIT OR Apache-2.0"
 description = "A oci database adapter for diesel"
 readme = "README.md"
@@ -29,10 +29,10 @@ package = "chrono"
 [dependencies.diesel]
 default-features = false
 features = ["i-implement-a-third-party-backend-and-opt-into-breaking-changes"]
-version = "~2.1.0"
+version = "~2.2.0"
 
 [dependencies.diesel_derives]
-version = "~2.1.0"
+version = "~2.2.0"
 
 [dependencies.diesel-dynamic-schema]
 optional = true
@@ -53,5 +53,3 @@ r2d2 = ["diesel/r2d2"]
 dynamic-schema = ["diesel-dynamic-schema"]
 gst = []
 
-[patch.crates-io]
-diesel = { git = "https://github.com/weiznich/diesel", rev = "548e0d73a0f2c207f1abf03f8f6741f5a9b1cb0b" }

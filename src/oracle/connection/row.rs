@@ -55,7 +55,8 @@ impl RowSealed for OciRow {}
 
 impl<'a> Row<'a, Oracle> for OciRow {
     type InnerPartialRow = Self;
-    type Field<'f> = OciField<'f>
+    type Field<'f>
+        = OciField<'f>
     where
         'a: 'f,
         Self: 'f;

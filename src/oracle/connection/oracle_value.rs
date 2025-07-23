@@ -72,26 +72,45 @@ impl<'a> OracleValue<'a> {
                 tpe: oracle::sql_type::OracleType::BinaryDouble,
                 ..
             } => OciDataType::Double,
+            // Map number(prec, scale) to various integer types
+            // For any scale <= 0 we apply the following mapping
+            //
+            // Scale -127 seems to be used to indicate that no scale has
+            // been set
+            //
+            // *, 0 -> Unbound == Equal to 38 -> BigInt
+            // 1..=5 -> SmallInt
+            // 6..=10 -> Int,
+            // 11..=38 -> BigInt
+            //
+            // Technically anything larger than prec == 19 won't fit
+            // into a i64, we map it that way anyway as using NUMBER(*, scale)
+            // is common as integer primary key
+            //
+            // https://docs.oracle.com/cd/B28359_01/server.111/b28318/datatype.htm#CNCPT1834
             Raw {
-                tpe: oracle::sql_type::OracleType::Number(prec, 0),
+                tpe: oracle::sql_type::OracleType::Number(prec, scale),
                 ..
-            } if prec == 5 => OciDataType::SmallInt,
+            } if (1..=5).contains(&prec) && (-126..=0).contains(&scale) => OciDataType::SmallInt,
             Raw {
-                tpe: oracle::sql_type::OracleType::Number(prec, 0),
+                tpe: oracle::sql_type::OracleType::Number(prec, scale),
                 ..
-            } if prec == 10 => OciDataType::Integer,
+            } if (6..=10).contains(&prec) && (-126..=0).contains(&scale) => OciDataType::Integer,
             Raw {
-                tpe: oracle::sql_type::OracleType::Number(prec, 0),
+                tpe: oracle::sql_type::OracleType::Number(_prec, scale),
                 ..
-            } if prec == 19 => OciDataType::BigInt,
+            } if (-126..=0).contains(&scale) => OciDataType::BigInt,
+            // If we did not map NUMBER to an integer above, we just
+            // use a double value
             Raw {
-                tpe: oracle::sql_type::OracleType::Number(_, _),
+                tpe: oracle::sql_type::OracleType::Number(_prec, _scale),
                 ..
             } => OciDataType::Double,
             Raw {
+                // same as NUMBER(prec, *)
                 tpe: oracle::sql_type::OracleType::Float(_),
                 ..
-            } => OciDataType::Float,
+            } => OciDataType::Double,
             Raw {
                 tpe: oracle::sql_type::OracleType::Date,
                 ..

@@ -12,7 +12,6 @@ concurrency:
   group: ${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
 
-
 jobs:
   rustfmt:
     runs-on: ubuntu-latest
@@ -39,7 +38,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-22.04]
         rust_toolchain: ["stable", "beta", "nightly"]
 
     runs-on: ${{ matrix.os }}
@@ -60,6 +59,11 @@ jobs:
           --health-retries 10
     steps:
       - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt-get install -y libaio1
 
       - name: Install the latest Oracle instant client
         run: |

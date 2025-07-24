@@ -1,19 +1,22 @@
 extern crate chrono_time as chrono;
 extern crate dotenvy;
 
-use crate::oracle::connection::bind_collector::BindValue;
-
 use self::chrono::{NaiveDateTime, Utc};
 use self::dotenvy::dotenv;
 use super::oracle::connection::OciConnection;
 use crate::oracle::backend::Oracle;
+use crate::oracle::connection::bind_collector::BindValue;
 use crate::oracle::connection::OracleValue;
+use crate::OciDataType;
+use diesel::connection::LoadConnection;
+use diesel::connection::SimpleConnection;
 use diesel::deserialize::{self, FromSql, FromSqlRow};
 use diesel::expression::AsExpression;
 use diesel::prelude::*;
 use diesel::result::Error;
+use diesel::row::{Field, Row};
 use diesel::serialize::{self, ToSql};
-use diesel::sql_types::SmallInt;
+use diesel::sql_types::{BigInt, Double, Integer, SmallInt};
 use diesel::Connection;
 use diesel::RunQueryDsl;
 use log::error;
@@ -405,7 +408,7 @@ fn test_diesel_migration() {
     assert_eq!(pending_migrations.len(), 0);
 }
 
-#[cfg(this_test_doesnt_work)]
+#[cfg(false)]
 #[test]
 fn test_multi_insert() {
     let mut conn = init_testing();
@@ -2430,6 +2433,153 @@ fn alias() {
     assert_eq!(res[0].d, Some(1.23));
     assert_eq!(res[0].r, Some(3.14));
     assert_eq!(res[0].v, Some("bac".to_owned()));
+}
+
+#[test]
+fn numeric_type_mapping() {
+    let mut conn = init_testing();
+
+    let _ = conn.batch_execute("DROP TABLE integer_tests");
+    conn.batch_execute(
+        "CREATE TABLE integer_tests
+    (small_int_1 NUMBER(2),
+     small_int_2 NUMBER(4),
+     small_int_3 NUMBER(5),
+     small_int_4 NUMBER(5, -1),
+     int_1 NUMBER(6),
+     int_2 NUMBER(8),
+     int_3 NUMBER(10),
+     int_4 NUMBER(10, -2),
+     big_int_1 NUMBER(11),
+     big_int_2 NUMBER(15),
+     big_int_3 NUMBER(19),
+     big_int_4 NUMBER(20),
+     big_int_5 NUMBER(38),
+     big_int_6 NUMBER(*, 0),
+     big_int_7 NUMBER(11, -1),
+     big_int_8 NUMBER(*, -2),
+     double_1 NUMBER,
+     double_2 NUMBER(3, 1),
+     double_3 NUMBER(*, 1),
+     double_4 FLOAT,
+     double_5 FLOAT(42))",
+    )
+    .unwrap();
+    conn.batch_execute(
+        "INSERT INTO integer_tests VALUES (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21)",
+    )
+    .unwrap();
+
+    let mut iter = conn
+        .load(diesel::sql_query(
+            "SELECT small_int_1, small_int_2, small_int_3, small_int_4, \
+         int_1, int_2, int_3, int_4, \
+         big_int_1, big_int_2, big_int_3, big_int_4, \
+         big_int_5, big_int_6, big_int_7, big_int_8, \
+         double_1, double_2, double_3, double_4, double_5 FROM integer_tests",
+        ))
+        .unwrap();
+
+    let row = iter.next().unwrap().unwrap();
+
+    let small_int_1 = row.get("SMALL_INT_1").unwrap();
+    let small_int_2 = row.get("SMALL_INT_2").unwrap();
+    let small_int_3 = row.get("SMALL_INT_3").unwrap();
+    let small_int_4 = row.get("SMALL_INT_4").unwrap();
+    let int_1 = row.get("INT_1").unwrap();
+    let int_2 = row.get("INT_2").unwrap();
+    let int_3 = row.get("INT_3").unwrap();
+    let int_4 = row.get("INT_4").unwrap();
+    let big_int_1 = row.get("BIG_INT_1").unwrap();
+    let big_int_2 = row.get("BIG_INT_2").unwrap();
+    let big_int_3 = row.get("BIG_INT_3").unwrap();
+    let big_int_4 = row.get("BIG_INT_4").unwrap();
+    let big_int_5 = row.get("BIG_INT_5").unwrap();
+    let big_int_6 = row.get("BIG_INT_6").unwrap();
+    let big_int_7 = row.get("BIG_INT_7").unwrap();
+    let big_int_8 = row.get("BIG_INT_8").unwrap();
+    let double_1 = row.get("DOUBLE_1").unwrap();
+    let double_2 = row.get("DOUBLE_2").unwrap();
+    let double_3 = row.get("DOUBLE_3").unwrap();
+    let double_4 = row.get("DOUBLE_4").unwrap();
+    let double_5 = row.get("DOUBLE_5").unwrap();
+
+    assert_eq!(
+        small_int_1.value().unwrap().value_type(),
+        OciDataType::SmallInt
+    );
+    assert_eq!(
+        small_int_2.value().unwrap().value_type(),
+        OciDataType::SmallInt
+    );
+    assert_eq!(
+        small_int_3.value().unwrap().value_type(),
+        OciDataType::SmallInt
+    );
+    assert_eq!(
+        small_int_4.value().unwrap().value_type(),
+        OciDataType::SmallInt
+    );
+    assert_eq!(int_1.value().unwrap().value_type(), OciDataType::Integer);
+    assert_eq!(int_2.value().unwrap().value_type(), OciDataType::Integer);
+    assert_eq!(int_3.value().unwrap().value_type(), OciDataType::Integer);
+    assert_eq!(int_4.value().unwrap().value_type(), OciDataType::Integer);
+    assert_eq!(big_int_1.value().unwrap().value_type(), OciDataType::BigInt);
+    assert_eq!(big_int_2.value().unwrap().value_type(), OciDataType::BigInt);
+    assert_eq!(big_int_3.value().unwrap().value_type(), OciDataType::BigInt);
+    assert_eq!(big_int_4.value().unwrap().value_type(), OciDataType::BigInt);
+    assert_eq!(big_int_5.value().unwrap().value_type(), OciDataType::BigInt);
+    assert_eq!(big_int_6.value().unwrap().value_type(), OciDataType::BigInt);
+    assert_eq!(big_int_7.value().unwrap().value_type(), OciDataType::BigInt);
+    assert_eq!(big_int_8.value().unwrap().value_type(), OciDataType::BigInt);
+    assert_eq!(double_1.value().unwrap().value_type(), OciDataType::Double);
+    assert_eq!(double_2.value().unwrap().value_type(), OciDataType::Double);
+    assert_eq!(double_3.value().unwrap().value_type(), OciDataType::Double);
+    assert_eq!(double_4.value().unwrap().value_type(), OciDataType::Double);
+    assert_eq!(double_5.value().unwrap().value_type(), OciDataType::Double);
+
+    let small_int_1 = row.get_value::<SmallInt, i16, _>("SMALL_INT_1").unwrap();
+    assert_eq!(small_int_1, 1);
+    let small_int_2 = row.get_value::<SmallInt, i16, _>("SMALL_INT_2").unwrap();
+    assert_eq!(small_int_2, 2);
+    let small_int_3 = row.get_value::<SmallInt, i16, _>("SMALL_INT_3").unwrap();
+    assert_eq!(small_int_3, 3);
+    let small_int_4 = row.get_value::<SmallInt, i16, _>("SMALL_INT_4").unwrap();
+    assert_eq!(small_int_4, 0); // rounded due to scale -1
+    let int_1 = row.get_value::<Integer, i32, _>("INT_1").unwrap();
+    assert_eq!(int_1, 5);
+    let int_2 = row.get_value::<Integer, i32, _>("INT_2").unwrap();
+    assert_eq!(int_2, 6);
+    let int_3 = row.get_value::<Integer, i32, _>("INT_3").unwrap();
+    assert_eq!(int_3, 7);
+    let int_4 = row.get_value::<Integer, i32, _>("INT_4").unwrap();
+    assert_eq!(int_4, 0); // rounded due to scale -2
+    let big_int_1 = row.get_value::<BigInt, i64, _>("BIG_INT_1").unwrap();
+    assert_eq!(big_int_1, 9);
+    let big_int_2 = row.get_value::<BigInt, i64, _>("BIG_INT_2").unwrap();
+    assert_eq!(big_int_2, 10);
+    let big_int_3 = row.get_value::<BigInt, i64, _>("BIG_INT_3").unwrap();
+    assert_eq!(big_int_3, 11);
+    let big_int_4 = row.get_value::<BigInt, i64, _>("BIG_INT_4").unwrap();
+    assert_eq!(big_int_4, 12);
+    let big_int_5 = row.get_value::<BigInt, i64, _>("BIG_INT_5").unwrap();
+    assert_eq!(big_int_5, 13);
+    let big_int_6 = row.get_value::<BigInt, i64, _>("BIG_INT_6").unwrap();
+    assert_eq!(big_int_6, 14);
+    let big_int_7 = row.get_value::<BigInt, i64, _>("BIG_INT_7").unwrap();
+    assert_eq!(big_int_7, 20); // rounded due to scale -1
+    let big_int_8 = row.get_value::<BigInt, i64, _>("BIG_INT_8").unwrap();
+    assert_eq!(big_int_8, 0); // rounded due to scale -2
+    let double_1 = row.get_value::<Double, f64, _>("DOUBLE_1").unwrap();
+    assert_eq!(double_1, 17.0);
+    let double_2 = row.get_value::<Double, f64, _>("DOUBLE_2").unwrap();
+    assert_eq!(double_2, 18.0);
+    let double_3 = row.get_value::<Double, f64, _>("DOUBLE_3").unwrap();
+    assert_eq!(double_3, 19.0);
+    let double_4 = row.get_value::<Double, f64, _>("DOUBLE_4").unwrap();
+    assert_eq!(double_4, 20.0);
+    let double_5 = row.get_value::<Double, f64, _>("DOUBLE_5").unwrap();
+    assert_eq!(double_5, 21.0);
 }
 
 #[cfg(feature = "dynamic-schema")]

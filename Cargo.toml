@@ -5,7 +5,7 @@ authors = [
     "Daniel Buse <daniel.buse@giga-infosystems.com>",
 ]
 name = "diesel-oci"
-version = "0.3.0"
+version = "0.3.1"
 license = "MIT OR Apache-2.0"
 description = "A oci database adapter for diesel"
 readme = "README.md"
@@ -43,7 +43,7 @@ version = "0.2.1"
 log = "0.4"
 dotenvy = "0.15"
 num = { version = "0.4", default-features = false }
-num-derive = "0.3"
+num-derive = "0.4"
 num-traits = "0.2"
 
 [features]

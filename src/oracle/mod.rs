@@ -13,4 +13,6 @@ pub(crate) mod types;
 
 pub use self::backend::Oracle;
 pub use self::connection::{OciConnection, OracleValue};
-pub use self::types::{OciDataType, OciTypeMetadata};
+pub use self::types::{
+    OciDataType, OciIntervalDS, OciIntervalYM, OciTypeMetadata, SqlIntervalDS, SqlIntervalYM,
+};

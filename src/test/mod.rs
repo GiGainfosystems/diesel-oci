@@ -7,7 +7,7 @@ use super::oracle::connection::OciConnection;
 use crate::oracle::backend::Oracle;
 use crate::oracle::connection::bind_collector::BindValue;
 use crate::oracle::connection::OracleValue;
-use crate::OciDataType;
+use crate::{OciDataType, OciIntervalDS, OciIntervalYM};
 use diesel::connection::LoadConnection;
 use diesel::connection::SimpleConnection;
 use diesel::deserialize::{self, FromSql, FromSqlRow};
@@ -50,10 +50,18 @@ fn database_url_from_env(backend_specific_env_var: &str) -> String {
 const CREATE_TEST_TABLE: &str = "CREATE TABLE test (\
                                  ID NUMBER(38), \
                                  TST_CHR VARCHAR(50),\
-                                 TST_NUM NUMBER(38)\
+                                 TST_NUM NUMBER(38)
                                  )";
 
 const DROP_TEST_TABLE: &str = "DROP TABLE test";
+
+const CREATE_INTERVALS_TEST_TABLE: &str = "CREATE TABLE intervals (\
+                                    ID NUMBER(38), \
+                                    INTERVAL_YM INTERVAL YEAR TO MONTH,\
+                                    INTERVAL_DS INTERVAL DAY TO SECOND\
+                                    )";
+
+const DROP_INTERVALS_TABLE: &str = "DROP TABLE intervals";
 
 const TEST_VARCHAR: &str = "'blabla'";
 
@@ -81,6 +89,17 @@ table! {
          id -> Nullable<BigInt>,
          TST_CHR -> Nullable<Text>,
          TST_NUM -> Nullable<BigInt>,
+     }
+}
+
+table! {
+    use crate::{SqlIntervalYM, SqlIntervalDS};
+    use diesel::sql_types::{BigInt, Nullable};
+
+    intervals {
+        id -> Nullable<BigInt>,
+        interval_ym -> Nullable<SqlIntervalYM>,
+        interval_ds -> Nullable<SqlIntervalDS>
      }
 }
 
@@ -131,6 +150,12 @@ fn drop_test_table(conn: &mut OciConnection) -> usize {
     ret.unwrap()
 }
 
+fn drop_intervals_table(conn: &mut OciConnection) -> usize {
+    let ret = diesel::sql_query(DROP_INTERVALS_TABLE).execute(conn);
+    assert_result!(ret);
+    ret.unwrap()
+}
+
 fn drop_diesel_table(conn: &mut OciConnection) -> usize {
     let ret = diesel::sql_query(DROP_DIESEL_TABLE).execute(conn);
     assert_result!(ret);
@@ -153,6 +178,19 @@ fn clean_test(conn: &mut OciConnection) {
     let ret = diesel::sql_query(sql).execute(conn);
     if ret.is_ok() {
         let _ret = drop_test_table(conn);
+    }
+    let sql = "SELECT * FROM \"__DIESEL_SCHEMA_MIGRATIONS\"";
+    let ret = diesel::sql_query(sql).execute(conn);
+    if ret.is_ok() {
+        let _ret = drop_diesel_table(conn);
+    }
+}
+
+fn clean_intervals(conn: &mut OciConnection) {
+    let sql = "SELECT * FROM intervals";
+    let ret = diesel::sql_query(sql).execute(conn);
+    if ret.is_ok() {
+        let _ret = drop_intervals_table(conn);
     }
     let sql = "SELECT * FROM \"__DIESEL_SCHEMA_MIGRATIONS\"";
     let ret = diesel::sql_query(sql).execute(conn);
@@ -196,6 +234,37 @@ fn transaction_commit() {
     });
     assert_result!(out);
     let ret = self::test::dsl::test.load::<(Option<i64>, Option<String>, Option<i64>)>(&mut conn);
+    assert_result!(ret);
+    assert_eq!(ret.unwrap().len(), 1);
+}
+
+#[test]
+fn time_intervals() {
+    let mut conn = init_testing();
+
+    clean_intervals(&mut conn);
+
+    let ret = diesel::sql_query(CREATE_INTERVALS_TEST_TABLE).execute(&mut conn);
+    assert_result!(ret);
+    let out = conn.transaction::<_, Error, _>(|conn| {
+        let sql = format!(
+            "INSERT INTO intervals ({}) VALUES ({})",
+            "INTERVAL_YM, INTERVAL_DS",
+            "INTERVAL \'10-2\' YEAR TO MONTH, INTERVAL \'11 10:09:08.555\' DAY TO SECOND"
+        );
+        let _ret = diesel::sql_query(&*sql).execute(conn)?;
+        let ret = self::intervals::dsl::intervals.load::<(
+            Option<i64>,
+            Option<OciIntervalYM>,
+            Option<OciIntervalDS>,
+        )>(conn)?;
+        assert_eq!(ret.len(), 1);
+        Ok(())
+    });
+    assert_result!(out);
+    let ret =
+        self::intervals::dsl::intervals
+            .load::<(Option<i64>, Option<OciIntervalYM>, Option<OciIntervalDS>)>(&mut conn);
     assert_result!(ret);
     assert_eq!(ret.unwrap().len(), 1);
 }

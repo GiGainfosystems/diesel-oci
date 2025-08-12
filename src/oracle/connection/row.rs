@@ -80,7 +80,7 @@ impl<'a> Row<'a, Oracle> for OciRow {
     fn partial_row(
         &self,
         range: std::ops::Range<usize>,
-    ) -> diesel::row::PartialRow<Self::InnerPartialRow> {
+    ) -> diesel::row::PartialRow<'_, Self::InnerPartialRow> {
         diesel::row::PartialRow::new(self, range)
     }
 }

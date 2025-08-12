@@ -5,6 +5,7 @@ use super::backend::*;
 use diesel::sql_types::*;
 use std::hash::Hash;
 
+mod interval;
 mod primitives;
 
 /// Oracle specfic metadata about the type of a bind value
@@ -55,6 +56,10 @@ pub enum OciDataType {
     Time,
     /// A timestamp value
     Timestamp,
+    /// A time interval value with years and months
+    IntervalYM,
+    /// A time interval value with days, hours, minutes, seconds and possibly fractions of seconds
+    IntervalDS,
 }
 
 impl HasSqlType<SmallInt> for Oracle {
@@ -184,3 +189,5 @@ mod dynamic_schema_impls {
 
 #[cfg(feature = "chrono-time")]
 mod chrono_date_time;
+
+pub use interval::{OciIntervalDS, OciIntervalYM, SqlIntervalDS, SqlIntervalYM};

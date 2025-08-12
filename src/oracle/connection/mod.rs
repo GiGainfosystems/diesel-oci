@@ -457,6 +457,8 @@ impl OciConnection {
                     OciDataType::Date => oracle::sql_type::OracleType::Timestamp(0),
                     OciDataType::Time => oracle::sql_type::OracleType::Timestamp(0),
                     OciDataType::Timestamp => oracle::sql_type::OracleType::Timestamp(0),
+                    OciDataType::IntervalYM => oracle::sql_type::OracleType::IntervalYM(2),
+                    OciDataType::IntervalDS => oracle::sql_type::OracleType::IntervalDS(2, 6),
                 };
                 (format!("out{}", id), tpe)
             })

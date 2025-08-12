@@ -40,6 +40,8 @@ fn default_value(d: &'_ OciDataType) -> &'static dyn oracle::sql_type::ToSql {
         OciDataType::Date => &oracle::sql_type::OracleType::Date,
         OciDataType::Time => unimplemented!("No time support in the oracle crate yet"),
         OciDataType::Timestamp => &oracle::sql_type::OracleType::Timestamp(0),
+        OciDataType::IntervalYM => &oracle::sql_type::OracleType::IntervalYM(2),
+        OciDataType::IntervalDS => &oracle::sql_type::OracleType::IntervalDS(2, 6),
     }
 }
 

@@ -5,7 +5,7 @@ authors = [
     "Daniel Buse <daniel.buse@giga-infosystems.com>",
 ]
 name = "diesel-oci"
-version = "0.3.1"
+version = "0.4.0"
 license = "MIT OR Apache-2.0"
 description = "A oci database adapter for diesel"
 readme = "README.md"
@@ -29,15 +29,15 @@ package = "chrono"
 [dependencies.diesel]
 default-features = false
 features = ["i-implement-a-third-party-backend-and-opt-into-breaking-changes"]
-version = "~2.2.0"
+version = "~2.3.0"
 
 [dependencies.diesel_derives]
-version = "~2.2.0"
+version = "~2.3.0"
 
 [dependencies.diesel-dynamic-schema]
 optional = true
 default-features = false
-version = "0.2.1"
+version = "0.2.4"
 
 [dev-dependencies]
 log = "0.4"

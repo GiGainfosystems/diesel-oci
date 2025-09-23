@@ -330,6 +330,20 @@ impl Connection for OciConnection {
     fn set_instrumentation(&mut self, instrumentation: impl diesel::connection::Instrumentation) {
         self.instrumentation = Some(Box::new(instrumentation));
     }
+
+    fn set_prepared_statement_cache_size(&mut self, size: diesel::connection::CacheSize) {
+        match size {
+            diesel::connection::CacheSize::Unbounded => self
+                .raw
+                .set_stmt_cache_size(u32::MAX)
+                .expect("Setting the cache size failed"),
+            diesel::connection::CacheSize::Disabled => self
+                .raw
+                .set_stmt_cache_size(0)
+                .expect("Setting the cache size failed"),
+            _ => unreachable!("There are currently only these two variants defined in diesel"),
+        }
+    }
 }
 
 impl LoadConnection for OciConnection {

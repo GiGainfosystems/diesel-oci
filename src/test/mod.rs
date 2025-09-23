@@ -65,7 +65,7 @@ const DROP_INTERVALS_TABLE: &str = "DROP TABLE intervals";
 
 const TEST_VARCHAR: &str = "'blabla'";
 
-const CREATE_GST_TYPE_TABLE: &'static str = "CREATE TABLE gst_types (\
+const CREATE_GST_TYPE_TABLE: &str = "CREATE TABLE gst_types (\
         big NUMBER(19),
         big2 NUMBER(19),
         small NUMBER(5),
@@ -1226,7 +1226,7 @@ allow_tables_to_appear_in_same_query!(t1, t2);
 
 #[test]
 fn ambigious_col_names() {
-    const CREATE_T1: &'static str = "CREATE TABLE t1 (\
+    const CREATE_T1: &str = "CREATE TABLE t1 (\
             id NUMBER(10),
             name VARCHAR2(50),
             bol NUMBER(5) DEFAULT 0 NOT NULL,
@@ -1234,7 +1234,7 @@ fn ambigious_col_names() {
             bin blob,
             si NUMBER(5)
      )";
-    const CREATE_T2: &'static str = "CREATE TABLE t2 (\
+    const CREATE_T2: &str = "CREATE TABLE t2 (\
             id NUMBER(10),
             name VARCHAR2(50)
      )";
@@ -1309,7 +1309,7 @@ table! {
 
 #[test]
 fn timestamp() {
-    const CREATE_TS: &'static str = "CREATE TABLE TS (\
+    const CREATE_TS: &str = "CREATE TABLE TS (\
             id NUMBER(10),
             tis TIMESTAMP
      )";
@@ -1468,7 +1468,7 @@ fn props() {
 
 #[test]
 fn props_orig() {
-    const CREATE_TESTT: &'static str = "CREATE TABLE PROPS (\
+    const CREATE_TESTT: &str = "CREATE TABLE PROPS (\
             id NUMBER(10),
             is_based NUMBER(5)
      )";

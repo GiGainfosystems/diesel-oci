@@ -278,11 +278,15 @@ impl Connection for OciConnection {
             raw.as_ref().err(),
         ));
 
-        Ok(Self {
+        let mut conn = Self {
             raw: raw?,
             transaction_manager: OCITransactionManager::new(),
             instrumentation,
-        })
+        };
+        conn.batch_execute("ALTER SESSION SET time_zone='UTC'")
+            .map_err(diesel::result::ConnectionError::CouldntSetupConfiguration)?;
+
+        Ok(conn)
     }
 
     #[doc(hidden)]

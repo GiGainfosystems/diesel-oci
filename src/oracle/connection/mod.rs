@@ -698,6 +698,15 @@ impl OciConnection {
         let password = url
             .password()
             .ok_or_else(|| ConnectionError::InvalidConnectionUrl("Password not set".into()))?;
+
+        let password = percent_encoding::percent_decode_str(password)
+            .decode_utf8()
+            .map_err(|_| {
+                ConnectionError::InvalidConnectionUrl(
+                    "Password could not be percent decoded".into(),
+                )
+            })?;
+
         let host = url
             .host_str()
             .ok_or_else(|| ConnectionError::InvalidConnectionUrl("Hostname not set".into()))?;

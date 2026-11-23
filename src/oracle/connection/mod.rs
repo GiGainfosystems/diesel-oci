@@ -1,5 +1,4 @@
 use std::fmt::Write;
-use std::marker::PhantomData;
 use std::rc::Rc;
 
 use self::bind_collector::OracleBindCollector;
@@ -13,14 +12,12 @@ use diesel::connection::Instrumentation;
 use diesel::connection::InstrumentationEvent;
 use diesel::connection::{Connection, SimpleConnection, TransactionManager};
 use diesel::connection::{LoadConnection, MultiConnectionHelper};
-use diesel::deserialize::FromSql;
 use diesel::expression::QueryMetadata;
 use diesel::insertable::{CanInsertInSingleQuery, InsertValues};
 use diesel::internal::derives::multiconnection::ConnectionSealed;
 use diesel::migration::MigrationConnection;
 use diesel::query_builder::{AsQuery, BatchInsert, QueryBuilder, QueryFragment};
 use diesel::query_builder::{InsertStatement, QueryId, ValuesClause};
-use diesel::sql_types::HasSqlType;
 use diesel::RunQueryDsl;
 use diesel::{result::*, Table};
 use oracle::ErrorKind;
@@ -398,25 +395,8 @@ impl LoadConnection for OciConnection {
     }
 }
 
-struct ReturningClauseFromSqlHelper<T, ST>(T, PhantomData<ST>);
-
-impl<T, ST> oracle::sql_type::FromSql for ReturningClauseFromSqlHelper<T, ST>
-where
-    T: FromSql<ST, Oracle>,
-    Oracle: HasSqlType<ST>,
-{
-    fn from_sql(val: &oracle::SqlValue) -> oracle::Result<Self>
-    where
-        Self: Sized,
-    {
-        let tpe = val.oracle_type()?;
-        let oracle_value = OracleValue::new(val, tpe.clone());
-        Ok(ReturningClauseFromSqlHelper(
-            T::from_sql(oracle_value).unwrap(),
-            PhantomData,
-        ))
-    }
-}
+type BatchInsertStatement<T, V, QId, Op, const STATIC_QUERY_ID: bool> =
+    InsertStatement<T, BatchInsert<Vec<ValuesClause<V, T>>, T, QId, STATIC_QUERY_ID>, Op>;
 
 impl OciConnection {
     fn with_prepared_statement<'conn, 'query, T, R>(
@@ -483,7 +463,7 @@ impl OciConnection {
             .collect::<Vec<_>>();
 
         for (n, b) in &other_binds {
-            binds.push((n, &*b));
+            binds.push((n, b));
         }
 
         stmt.execute_named(&binds).map_err(ErrorHelper::from)?;
@@ -620,7 +600,7 @@ impl OciConnection {
 
     pub(crate) fn batch_insert<T, V, QId, Op, const STATIC_QUERY_ID: bool>(
         &mut self,
-        stmt: InsertStatement<T, BatchInsert<Vec<ValuesClause<V, T>>, T, QId, STATIC_QUERY_ID>, Op>,
+        stmt: BatchInsertStatement<T, V, QId, Op, STATIC_QUERY_ID>,
     ) -> diesel::QueryResult<usize>
     where
         T: Table + Copy + QueryId + 'static,
@@ -799,7 +779,7 @@ impl R2D2Connection for OciConnection {
         // if the transaction manager is in an error state,
         // contains an open transaction or the connection itself
         // reports an open transaction
-        matches!(self.transaction_manager.status.transaction_depth(), Err(_))
+        self.transaction_manager.status.transaction_depth().is_err()
             || (matches!(
                 self.transaction_manager.status.transaction_depth(),
                 Ok(Some(_))

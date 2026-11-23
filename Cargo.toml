@@ -37,16 +37,16 @@ package = "chrono"
 
 [dependencies.diesel]
 default-features = false
-features = ["i-implement-a-third-party-backend-and-opt-into-breaking-changes"]
-version = "~2.3.0"
+features = ["std", "i-implement-a-third-party-backend-and-opt-into-breaking-changes"]
+version = "~2.4.0"
 
 [dependencies.diesel_derives]
-version = "~2.3.0"
+version = "~2.4.0"
 
 [dependencies.diesel-dynamic-schema]
 optional = true
 default-features = false
-version = "0.2.4"
+version = "0.3.0"
 
 [dev-dependencies]
 log = "0.4"

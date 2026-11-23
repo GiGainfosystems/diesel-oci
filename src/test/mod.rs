@@ -1,6 +1,11 @@
+// Tests spell out the expected row types inline on purpose
+#![allow(clippy::type_complexity)]
+
+#[cfg(feature = "chrono")]
 extern crate chrono_time as chrono;
 extern crate dotenvy;
 
+#[cfg(feature = "chrono")]
 use self::chrono::{NaiveDateTime, Utc};
 use self::dotenvy::dotenv;
 use super::oracle::connection::OciConnection;
@@ -164,9 +169,9 @@ fn drop_diesel_table(conn: &mut OciConnection) -> usize {
 
 #[allow(dead_code)]
 fn execute_sql_or_rollback(conn: &mut OciConnection, sql: &str, rollback_sql: &str) -> usize {
-    let ret = diesel::sql_query(&*sql).execute(conn);
+    let ret = diesel::sql_query(sql).execute(conn);
     if ret.is_err() {
-        let inner = diesel::sql_query(&*rollback_sql).execute(conn);
+        let inner = diesel::sql_query(rollback_sql).execute(conn);
         assert_result!(inner)
     }
     assert_result!(ret);
@@ -471,7 +476,7 @@ fn test_diesel_migration() {
 
     let pending_migrations: Vec<_> = expected
         .into_iter()
-        .filter(|m| !already_run.contains(&m.to_string()))
+        .filter(|m| !already_run.contains(*m))
         .collect();
 
     assert_eq!(pending_migrations.len(), 0);
@@ -517,7 +522,7 @@ fn test_multi_insert() {
 
     let pending_migrations: Vec<_> = migrations
         .into_iter()
-        .filter(|m| !already_run.contains(&m.to_string()))
+        .filter(|m| !already_run.contains(*m))
         .collect();
 
     assert_eq!(pending_migrations.len(), 0);
@@ -529,6 +534,7 @@ enum Way {
     Native,
 }
 
+#[cfg(feature = "chrono")]
 #[derive(Queryable, Clone, PartialEq)]
 pub struct GSTTypes {
     pub big: Option<i64>,
@@ -543,6 +549,7 @@ pub struct GSTTypes {
     pub v: Option<String>,
 }
 
+#[cfg(feature = "chrono")]
 #[allow(non_camel_case_types)]
 #[derive(Debug, Insertable)]
 #[diesel(table_name = gst_types)]
@@ -559,7 +566,9 @@ pub struct Newgst_types {
     pub v: Option<String>,
 }
 
+#[cfg(feature = "chrono")]
 impl Newgst_types {
+    #[allow(clippy::too_many_arguments)]
     pub fn new(
         big: Option<i64>,
         big2: Option<i64>,
@@ -586,6 +595,7 @@ impl Newgst_types {
     }
 }
 
+#[cfg(feature = "chrono")]
 #[test]
 fn gst_compat() {
     // bigint -2^63 to 2^63-1 http://wiki.ispirer.com/sqlways/postgresql/data-types/bigint // 12 byte
@@ -611,7 +621,6 @@ fn gst_compat() {
     use diesel::sql_types::{BigInt, Double, Float, Integer, SmallInt, Text};
     use diesel::ExpressionMethods;
     use diesel::QueryDsl;
-    use std::{i16, i32, i64};
 
     let way_to_try = Way::Diesel;
     match way_to_try {
@@ -958,6 +967,7 @@ fn moma_elem() {
     //assert_result!(ret);
 }
 
+#[cfg(feature = "chrono")]
 #[test]
 fn limit() {
     let mut conn = init_testing();
@@ -967,7 +977,6 @@ fn limit() {
     use self::gst_types::dsl::gst_types;
     use diesel::ExpressionMethods;
     use diesel::QueryDsl;
-    use std::{i16, i32, i64};
 
     let mut bin: Vec<u8> = Vec::new();
     for i in 0..310 {
@@ -1138,6 +1147,7 @@ table! {
 }
 
 /// A struct representing a coordinate system definition from the database
+#[cfg(feature = "gst")]
 #[derive(Queryable, Debug, Clone, PartialEq)]
 pub struct CoordinateSystemDescription {
     /// The unique id of the coordinate system definition
@@ -1167,23 +1177,7 @@ fn coordinatesys() {
     use self::coordinate_system_descriptions::dsl::coordinate_system_descriptions;
     use diesel::QueryDsl;
 
-    let coord: Result<
-        Vec<(
-            i32,
-            String,
-            String,
-            bool,
-            Option<String>,
-            String,
-            bool,
-            Option<String>,
-            String,
-            bool,
-            Option<String>,
-            CoordinateSystemType,
-        )>,
-        _,
-    > = coordinate_system_descriptions
+    let coord: Result<Vec<CoordinateSystemDescription>, _> = coordinate_system_descriptions
         .select((
             id,
             name,
@@ -1307,6 +1301,7 @@ table! {
     }
 }
 
+#[cfg(feature = "chrono")]
 #[test]
 fn timestamp() {
     const CREATE_TS: &str = "CREATE TABLE TS (\
@@ -1345,7 +1340,7 @@ table! {
 
 #[test]
 fn clob() {
-    const CREATE_CLOBBER: &'static str = "CREATE TABLE CLOBBER (\
+    const CREATE_CLOBBER: &str = "CREATE TABLE CLOBBER (\
             id NUMBER(10),
             tiss VARCHAR2(50),
             tis CLOB
@@ -1419,6 +1414,7 @@ impl FromSql<SmallInt, Oracle> for PropertyDataType {
     }
 }
 
+#[cfg(feature = "chrono")]
 #[derive(PartialEq, Hash, Eq, Debug, Clone, Queryable, Identifiable)]
 #[diesel(table_name = properties)]
 pub struct Property {
@@ -1431,7 +1427,7 @@ pub struct Property {
     pub feature_class: i64,
 }
 
-#[cfg(feature = "gst")]
+#[cfg(all(feature = "gst", feature = "chrono"))]
 #[test]
 fn props() {
     let mut conn = init_testing();
@@ -1555,7 +1551,7 @@ fn exists() {
     let ret = ret.get_result::<bool>(&mut conn);
     assert_result!(ret);
     let ret = ret.unwrap(); // has been asserted before ;)
-    assert_eq!(ret, true);
+    assert!(ret);
 
     let ret = diesel::select(exists(
         all_tables::table
@@ -1565,7 +1561,7 @@ fn exists() {
     .get_result::<bool>(&mut conn);
     assert_result!(ret);
     let ret = ret.unwrap(); // has been asserted before ;)
-    assert_eq!(ret, false);
+    assert!(!ret);
 }
 
 #[test]
@@ -1964,6 +1960,7 @@ fn transaction_nested_rollback_commit_rollback() {
     assert_eq!(ret.unwrap().len(), 0);
 }
 
+#[cfg(feature = "chrono")]
 const CREATE_GEOMETRIES: &str = "CREATE TABLE geometries( \
      id NUMBER(19) GENERATED BY DEFAULT as IDENTITY(START with 1 INCREMENT by 1) PRIMARY KEY, \
      name VARCHAR2(2000) NOT NULL, \
@@ -1976,6 +1973,7 @@ const CREATE_GEOMETRIES: &str = "CREATE TABLE geometries( \
      CONSTRAINT feature_name_uniq_in_fc UNIQUE (feature_class, name) \
      )";
 
+#[cfg(feature = "chrono")]
 const DROP_GEOMETRIES: &str = "drop table geometries cascade constraints";
 
 table! {
@@ -1991,6 +1989,7 @@ table! {
     }
 }
 
+#[cfg(feature = "chrono")]
 #[test]
 fn updateing_unique_constraint() {
     let mut conn = init_testing();
@@ -2046,6 +2045,7 @@ fn updateing_unique_constraint() {
     assert_result!(ret);
 }
 
+#[cfg(feature = "chrono")]
 #[test]
 fn insert_returning() {
     let mut conn = init_testing();
@@ -2135,20 +2135,21 @@ fn umlauts() {
     let ret = diesel::sql_query(CREATE_TEST_TABLE).execute(&mut conn);
     assert_result!(ret);
 
-    let mut v = Vec::new();
-    v.push(String::from("äöüß"));
-    v.push(String::from("السلام عليكم"));
-    v.push(String::from("Dobrý den"));
-    v.push(String::from("Hello"));
-    v.push(String::from("שָׁלוֹם"));
-    v.push(String::from("नमस्ते"));
-    v.push(String::from("こんにちは"));
-    v.push(String::from("안녕하세요"));
-    v.push(String::from("你好"));
-    v.push(String::from("Olá"));
-    v.push(String::from("Здравствуйте"));
-    v.push(String::from("Hola"));
-    v.push(String::from("🎉🦀"));
+    let v = vec![
+        String::from("äöüß"),
+        String::from("السلام عليكم"),
+        String::from("Dobrý den"),
+        String::from("Hello"),
+        String::from("שָׁלוֹם"),
+        String::from("नमस्ते"),
+        String::from("こんにちは"),
+        String::from("안녕하세요"),
+        String::from("你好"),
+        String::from("Olá"),
+        String::from("Здравствуйте"),
+        String::from("Hola"),
+        String::from("🎉🦀"),
+    ];
     for hello in &v {
         let ret = ::diesel::insert_into(test)
             .values(TST_CHR.eq(&hello))
@@ -2171,8 +2172,6 @@ fn umlauts() {
 #[cfg(feature = "gst")]
 #[test]
 fn run_adhoc_procedure() {
-    use self::test;
-    use diesel::ExpressionMethods;
     let mut conn = init_testing();
 
     let proc = "BEGIN \
@@ -2210,20 +2209,21 @@ fn use_named_queries_aliased() {
     let ret = diesel::sql_query(CREATE_TEST_TABLE).execute(&mut conn);
     assert_result!(ret);
 
-    let mut v = Vec::new();
-    v.push(String::from("äöüß"));
-    v.push(String::from("السلام عليكم"));
-    v.push(String::from("Dobrý den"));
-    v.push(String::from("Hello"));
-    v.push(String::from("שָׁלוֹם"));
-    v.push(String::from("नमस्ते"));
-    v.push(String::from("こんにちは"));
-    v.push(String::from("안녕하세요"));
-    v.push(String::from("你好"));
-    v.push(String::from("Olá"));
-    v.push(String::from("Здравствуйте"));
-    v.push(String::from("Hola"));
-    v.push(String::from("🎉🦀"));
+    let v = vec![
+        String::from("äöüß"),
+        String::from("السلام عليكم"),
+        String::from("Dobrý den"),
+        String::from("Hello"),
+        String::from("שָׁלוֹם"),
+        String::from("नमस्ते"),
+        String::from("こんにちは"),
+        String::from("안녕하세요"),
+        String::from("你好"),
+        String::from("Olá"),
+        String::from("Здравствуйте"),
+        String::from("Hola"),
+        String::from("🎉🦀"),
+    ];
     for hello in &v {
         let ret = ::diesel::insert_into(test)
             .values(TST_CHR.eq(&hello))
@@ -2264,20 +2264,21 @@ fn use_named_queries() {
     let ret = diesel::sql_query(CREATE_TEST_TABLE).execute(&mut conn);
     assert_result!(ret);
 
-    let mut v = Vec::new();
-    v.push(String::from("äöüß"));
-    v.push(String::from("السلام عليكم"));
-    v.push(String::from("Dobrý den"));
-    v.push(String::from("Hello"));
-    v.push(String::from("שָׁלוֹם"));
-    v.push(String::from("नमस्ते"));
-    v.push(String::from("こんにちは"));
-    v.push(String::from("안녕하세요"));
-    v.push(String::from("你好"));
-    v.push(String::from("Olá"));
-    v.push(String::from("Здравствуйте"));
-    v.push(String::from("Hola"));
-    v.push(String::from("🎉🦀"));
+    let v = vec![
+        String::from("äöüß"),
+        String::from("السلام عليكم"),
+        String::from("Dobrý den"),
+        String::from("Hello"),
+        String::from("שָׁלוֹם"),
+        String::from("नमस्ते"),
+        String::from("こんにちは"),
+        String::from("안녕하세요"),
+        String::from("你好"),
+        String::from("Olá"),
+        String::from("Здравствуйте"),
+        String::from("Hola"),
+        String::from("🎉🦀"),
+    ];
     for hello in &v {
         let ret = ::diesel::insert_into(test)
             .values(TST_CHR.eq(&hello))
@@ -2297,6 +2298,7 @@ fn use_named_queries() {
     }
 }
 
+#[cfg(feature = "chrono")]
 #[test]
 fn insert_returning_gst_types() {
     let mut conn = init_testing();
@@ -2343,6 +2345,7 @@ fn insert_returning_gst_types() {
     // No tz test, because we don't store the subsec part.
 }
 
+#[cfg(feature = "chrono")]
 #[test]
 fn batch_insert_1() {
     let mut conn = init_testing();
@@ -2361,7 +2364,7 @@ fn batch_insert_1() {
             Some("foo".into()),
             Some(b"bar".to_vec()),
             Some(1.23),
-            Some(3.14),
+            Some(3.25),
             Some("bac".into()),
         ))
         .execute(&mut conn)
@@ -2377,7 +2380,7 @@ fn batch_insert_1() {
     assert_eq!(res[0].text, Some("foo".to_owned()));
     assert_eq!(res[0].byte, Some(b"bar".to_vec()));
     assert_eq!(res[0].d, Some(1.23));
-    assert_eq!(res[0].r, Some(3.14));
+    assert_eq!(res[0].r, Some(3.25));
     assert_eq!(res[0].v, Some("bac".to_owned()));
 
     let res = ::diesel::delete(gst_types::table)
@@ -2402,7 +2405,7 @@ fn batch_insert_1() {
             Some("foo".into()),
             Some(b"bar".to_vec()),
             Some(1.23),
-            Some(3.14),
+            Some(3.25),
             Some("bac".into()),
         ),
         Newgst_types::new(
@@ -2431,7 +2434,7 @@ fn batch_insert_1() {
     assert_eq!(res[0].text, Some("foo".to_owned()));
     assert_eq!(res[0].byte, Some(b"bar".to_vec()));
     assert_eq!(res[0].d, Some(1.23));
-    assert_eq!(res[0].r, Some(3.14));
+    assert_eq!(res[0].r, Some(3.25));
     assert_eq!(res[0].v, Some("bac".to_owned()));
 
     assert_eq!(res[1].big, Some(5));
@@ -2466,6 +2469,7 @@ fn batch_insert_1() {
     assert_eq!(res[1].big, Some(-3));
 }
 
+#[cfg(feature = "chrono")]
 #[test]
 fn alias() {
     let mut conn = init_testing();
@@ -2480,7 +2484,7 @@ fn alias() {
             Some("foo".into()),
             Some(b"bar".to_vec()),
             Some(1.23),
-            Some(3.14),
+            Some(3.25),
             Some("bac".into()),
         ))
         .execute(&mut conn)
@@ -2500,7 +2504,7 @@ fn alias() {
     assert_eq!(res[0].text, Some("foo".to_owned()));
     assert_eq!(res[0].byte, Some(b"bar".to_vec()));
     assert_eq!(res[0].d, Some(1.23));
-    assert_eq!(res[0].r, Some(3.14));
+    assert_eq!(res[0].r, Some(3.25));
     assert_eq!(res[0].v, Some("bac".to_owned()));
 }
 

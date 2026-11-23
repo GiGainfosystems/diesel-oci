@@ -95,7 +95,7 @@ where
     type Out = I::Out;
 }
 
-impl<'a, T> ContainsDefaultableValue for &'a T
+impl<T> ContainsDefaultableValue for &T
 where
     T: ContainsDefaultableValue,
 {
@@ -165,7 +165,7 @@ macro_rules! impl_contains_defaultable_value {
     }
 }
 
-diesel_derives::__diesel_for_each_tuple!(tuple_impls);
+diesel::for_each_tuple!(tuple_impls);
 
 impl<V, T, QId, Op, O, const STATIC_QUERY_ID: bool> ExecuteDsl<OciConnection, Oracle>
     for InsertStatement<T, BatchInsert<Vec<ValuesClause<V, T>>, T, QId, STATIC_QUERY_ID>, Op>

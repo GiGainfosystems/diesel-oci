@@ -52,6 +52,12 @@ impl SqlDialect for Oracle {
 
     type BuiltInWindowFunctionRequireOrder =
         sql_dialect::built_in_window_function_require_order::NoOrderRequired;
+
+    type BatchUpdateSupport = sql_dialect::batch_update_support::DoesNotSupportBatchUpdate;
+
+    // Oracle supports named parameters via `name => value`
+    type SqlFunctionParameterNotation =
+        sql_dialect::sql_function_parameter_notation::PositionalOrNamedNotation;
 }
 
 pub struct OracleStyleBatchInsert;

@@ -12,26 +12,37 @@ concurrency:
   group: ${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
 
+permissions: {}
+
 jobs:
   rustfmt:
+    name: Rustfmt
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v2
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          components: rustfmt
+          persist-credentials: false
+      - name: Install Rust
+        run: rustup toolchain install stable --profile minimal --component rustfmt
       - name: Rustfmt check
         run: cargo +stable fmt --all -- --check
   clippy:
+    name: Clippy
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v2
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          components: clippy
+          persist-credentials: false
+      - name: Install Rust
+        run: rustup toolchain install stable --profile minimal --component clippy
       - name: Clippy
         run: cargo +stable clippy --all-features
   tests:
+    name: Tests (${{ matrix.rust_toolchain }})
     needs:
       - rustfmt
       - clippy
@@ -42,10 +53,12 @@ jobs:
         rust_toolchain: ["stable", "beta", "nightly"]
 
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
 
     services:
       oracle:
-        image: gvenzl/oracle-xe:latest
+        image: gvenzl/oracle-xe:21.3.0@sha256:c2682a4216b0fe65537912c4a049c7e5c15a85bb7c94bb8137d5f2d2eef60603
         env:
           ORACLE_PASSWORD: sys_passwd
           APP_USER: diesel_oci
@@ -58,7 +71,9 @@ jobs:
           --health-timeout 5s
           --health-retries 10
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Install dependencies
         run: |
@@ -90,9 +105,12 @@ jobs:
           echo ODPIC_TEST_CONNECT_STRING=//$ORACLE_IP_ADDRESS:1521/XEPDB1 >> $GITHUB_ENV
           echo NLS_LANG=AMERICAN_AMERICA.AL32UTF8 >> $GITHUB_ENV
           echo OCI_DATABASE_URL=oracle://diesel_oci:diesel_oci@$ORACLE_IP_ADDRESS:1521/XEPDB1 >> $GITHUB_ENV
-      - uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: ${{ matrix.rust_toolchain }}
+      - name: Install Rust
+        env:
+          RUST_TOOLCHAIN: ${{ matrix.rust_toolchain }}
+        run: rustup toolchain install "$RUST_TOOLCHAIN" --profile minimal
 
       - name: cargo test
-        run: cargo +${{ matrix.rust_toolchain }} test --features "r2d2 chrono dynamic-schema" -- --test-threads=1
+        env:
+          RUST_TOOLCHAIN: ${{ matrix.rust_toolchain }}
+        run: cargo +"$RUST_TOOLCHAIN" test --features "r2d2 chrono dynamic-schema" -- --test-threads=1

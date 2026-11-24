@@ -1,5 +1,6 @@
 use crate::oracle::{backend::OracleReturningClause, Oracle};
-use diesel::query_builder::{AstPass, QueryFragment, ReturningClause};
+use diesel::query_builder::returning::ReturningClause;
+use diesel::query_builder::{AstPass, QueryFragment};
 use diesel::Column;
 
 impl<Expr> QueryFragment<Oracle, OracleReturningClause> for ReturningClause<Expr>
@@ -51,4 +52,4 @@ macro_rules!  impl_bind_column_list {
     }
 }
 
-diesel_derives::__diesel_for_each_tuple!(impl_bind_column_list);
+diesel::for_each_tuple!(impl_bind_column_list);

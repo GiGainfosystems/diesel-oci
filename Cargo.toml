@@ -52,7 +52,7 @@ version = "0.3.0"
 log = "0.4"
 dotenvy = "0.15"
 num = { version = "0.4", default-features = false }
-num-derive = "0.4"
+num-derive = "0.5"
 num-traits = "0.2"
 
 [features]
